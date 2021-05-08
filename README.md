@@ -60,11 +60,11 @@ Below is a slightly contrived example showing a number of possible supported ope
 ## Supported Platforms
 Arrow supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Arrow's source code is officially supported on the following platforms. If you notice any problems on your platform, please file an issue on the [Arrow Github Issue Tracker](https://github/jasmcaus/Arrow/issues). PRs with fixes are welcome! 
 
-Operating Systems           | Compilers       
+Operating Systems          | Compilers       
 -------------------------- | -------------------------- 
-* Linux  | gcc 5.0+ 
-* macOS  | clang 5.0+
-* Windows | MSVC 2017+
+* Linux                    | gcc 5.0+ 
+* macOS                    | clang 5.0+
+* Windows                  | MSVC 2017+
 <!-- ### Operating Systems
 * Linux
 * macOS
