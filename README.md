@@ -75,15 +75,31 @@ These macros compare two ***C-strings***.
 
 | Fatal assertion                | Nonfatal assertion             | Checks                                                 |
 | --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_EXPECT_STREQ(str1,str2);`     | the two C strings have the same content   		     |
-| `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_EXPECT_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
-| `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_EXPECT_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
+| `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
+| `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_CHECK_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
+| `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
 
 
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
+#include <Arrow/Arrow.h>
+ARROW_MAIN(); // sets up Arrow 
+
+TEST(foo, bar1) {
+    int a = 42; 
+    int b = 13; 
+    ARROW_CHECK_GE(a, b); // pass :)
+    ARROW_CHECK_LE(b, 8); // fail - Test suite not aborted 
+}
+
+TEST(foo, bar2) {
+    char* a = "foo";
+    char* b = "foobar";
+    ARROW_ASSERT_STREQ(a, a); // pass :)
+    ARROW_ASSERT_STREQ(a, b); // fail - Test suite aborted :(
+}
 ```
 
 ## Supported Platforms
