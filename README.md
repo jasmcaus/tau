@@ -33,6 +33,9 @@ The `TEST` macro takes two parameters - the first is the name of the Test Suite,
 ### Testing Macros
 Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls
 
-If an `ASSERT` fails, the test case will cease its execution and move on to the next test case to run. If a `CHECK` fails, the remainder of the test case will still execute, allowing for further checks to run. 
+`ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to run. 
+`CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further checks to run. 
+
+We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to continue when the assertion in question fails. 
 
 Below is a slightly contrived example showing a number of possible supported operations:
