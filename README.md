@@ -42,6 +42,10 @@ We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to conti
 ### Adding Custom Failure Messages
 We highly recommend you add a custom failure message for your macros - it makes it easier to track down bugs. `Invalid Type ID:` is much more useful than `FAILED`, which is what Arrow prints by default.
 
+To do this, simply do the following:
+```C
+ARROW_CHECK(i == 42, "Expected i to be 32");
+```
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
