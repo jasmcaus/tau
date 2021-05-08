@@ -39,6 +39,9 @@ Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These 
 
 We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to continue when the assertion in question fails. 
 
+### Adding Custom Failure Messages
 We highly recommend you add a custom failure message for your macros - it makes it easier to track down bugs. `Invalid Type ID:` is much more useful than `FAILED`, which is what Arrow prints by default.
 
+
+## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
