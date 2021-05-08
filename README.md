@@ -48,7 +48,7 @@ ARROW_CHECK(i == 42, "Expected i to be 32");
 ```
 
 ## A List of Avaliable Testing Macros
-### Basic Assertions
+### a. Basic Assertions
 These assertions perform basic true/false condition checking. 
 
 Fatal assertion             | Nonfatal assertion         | Checks
@@ -56,7 +56,7 @@ Fatal assertion             | Nonfatal assertion         | Checks
 `ARROW_ASSERT(condition);`  | `ARROW_CHECK(condition);`  | `condition` is true
 `ARROW_ASSERT(!condition);` | `ARROW_CHECK(!condition);` | `condition` is false
 
-### Binary Comparisons
+### b. Binary Comparisons
 For a majority of your tests, `ARROW_ASSERT` and `ARROW_CHECK` will suffice. However, Arrow provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `ARROW_ASSERT` and `ARROW_CHECK` as they provide readable comparison checks. 
 
 For user-defined types in a C++ codebase, we recommend using these Binary Comparisons (they don't require you to overload the `==`, `<=`... operators).
@@ -70,7 +70,7 @@ Fatal assertion          | Nonfatal assertion       | Checks
 `ARROW_ASSERT_GT(x, y);` | `ARROW_CHECK_GT(x, y);`  | `x > y`
 `ARROW_ASSERT_GE(x, y);` | `ARROW_CHECK_GE(x, y);`  | `x >= y`
 
-## String Comparisons
+### c. String Comparisons
 These macros compare two ***C-strings***. 
 
 | Fatal assertion                | Nonfatal assertion             | Checks                                                 |
