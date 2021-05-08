@@ -47,5 +47,35 @@ To do this, simply do the following:
 ARROW_CHECK(i == 42, "Expected i to be 32");
 ```
 
+## A List of Avaliable Testing Macros
+### Basic Assertions
+These assertions perform basic true/false condition checking. 
+
+
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
+```C
+```
+
+## Supported Platforms
+Arrow supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Arrow's source code is officially supported on the following platforms. If you notice any problems on your platform, please file an issue on the [Arrow Github Issue Tracker](https://github/jasmcaus/Arrow/issues). PRs with fixes are welcome! 
+
+Operating Systems           | Compilers       
+-------------------------- | -------------------------- 
+* Linux  | gcc 5.0+ 
+* macOS  | clang 5.0+
+* Windows | MSVC 2017+
+<!-- ### Operating Systems
+* Linux
+* macOS
+* Windows 
+
+### Compilers
+* gcc 5.0+
+* clang 5.0+
+* MSVC 2017+ -->
+
+Fatal assertion            | Nonfatal assertion         | Verifies
+-------------------------- | -------------------------- | --------------------
+`ASSERT_TRUE(condition);`  | `EXPECT_TRUE(condition);`  | `condition` is true
+`ASSERT_FALSE(condition);` | `EXPECT_FALSE(condition);` | `condition` is false
