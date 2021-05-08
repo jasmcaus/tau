@@ -6,11 +6,23 @@ Arrow is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of
 ## Installation
 None! Arrow is header-only, so simply include it in your project
 ```c
-#include <Arrow/Arrow>
+#include <Arrow/Arrow.h>
 ```
 
 ## Example Usage
-Below is a slightly contrived example showing a number of possible supported operations:
+To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Arrow to set up all your tests:
 ```c
-
+ARROW_MAIN();
 ```
+
+### Define a Test Case
+To define a test case, simply do the following:
+```c
+TEST(foo, bar) {
+    ARROW_CHECK(1);
+}
+```
+The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the test. This allows tests to be grouped for convenience. 
+
+
+Below is a slightly contrived example showing a number of possible supported operations:
