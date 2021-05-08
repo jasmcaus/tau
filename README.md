@@ -51,6 +51,24 @@ ARROW_CHECK(i == 42, "Expected i to be 32");
 ### Basic Assertions
 These assertions perform basic true/false condition checking. 
 
+Fatal assertion             | Nonfatal assertion         | Checks
+--------------------------  | -------------------------- | --------------------
+`ARROW_ASSERT(condition);`  | `ARROW_CHECK(condition);`  | `condition` is true
+`ARROW_ASSERT(!condition);` | `ARROW_CHECK(!condition);` | `condition` is false
+
+### Binary Comparisons
+For a majority of your tests, `ARROW_ASSERT` and `ARROW_CHECK` will suffice. However, Arrow provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `ARROW_ASSERT` and `ARROW_CHECK` as they provide readable comparison checks. 
+
+For user-defined types in a C++ codebase, we recommend using these Binary Comparisons (they don't require you to overload the `==`, `<=`... operators).
+
+Fatal assertion          | Nonfatal assertion       | Verifies
+------------------------ | ------------------------ | --------------
+`ARROW_ASSERT_EQ(x, y);` | `ARROW_CHECK_EQ(x, y);`  | `x == y`
+`ARROW_ASSERT_NE(x, y);` | `ARROW_CHECK_NE(x, y);`  | `x != y`
+`ARROW_ASSERT_LT(x, y);` | `ARROW_CHECK_LT(x, y);`  | `x < y`
+`ARROW_ASSERT_LE(x, y);` | `ARROW_CHECK_LE(x, y);`  | `x <= y`
+`ARROW_ASSERT_GT(x, y);` | `ARROW_CHECK_GT(x, y);`  | `x > y`
+`ARROW_ASSERT_GE(x, y);` | `ARROW_CHECK_GE(x, y);`  | `x >= y`
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
@@ -65,17 +83,3 @@ Operating Systems          | Compilers
 Linux                      | gcc 5.0+ 
 macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
-<!-- ### Operating Systems
-* Linux
-* macOS
-* Windows 
-
-### Compilers
-* gcc 5.0+
-* clang 5.0+
-* MSVC 2017+ -->
-
-Fatal assertion            | Nonfatal assertion         | Verifies
--------------------------- | -------------------------- | --------------------
-`ASSERT_TRUE(condition);`  | `EXPECT_TRUE(condition);`  | `condition` is true
-`ASSERT_FALSE(condition);` | `EXPECT_FALSE(condition);` | `condition` is false
