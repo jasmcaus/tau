@@ -62,9 +62,9 @@ Arrow supports codebases and compilers that are compliant with the C11/C++11 sta
 
 Operating Systems          | Compilers       
 -------------------------- | -------------------------- 
-* Linux                    | gcc 5.0+ 
-* macOS                    | clang 5.0+
-* Windows                  | MSVC 2017+
+Linux                      | gcc 5.0+ 
+macOS                      | clang 5.0+
+Windows                    | MSVC 2017+
 <!-- ### Operating Systems
 * Linux
 * macOS
