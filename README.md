@@ -9,24 +9,30 @@ None! Arrow is header-only, so simply include it in your project
 #include <Arrow/Arrow.h>
 ```
 
+## Basic Concepts
+When using Arrow, you begin by writing `assertions`, which are statements that check if a condition is true. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 
+
+In Arrow, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
+
 ## Example Usage
 To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Arrow to set up all your tests:
 ```c
 ARROW_MAIN();
 ```
 
-### Define a Test Case
-To define a test case, simply do the following:
+### Define a Test Suite
+To define a test suite, simply do the following:
 ```c
-TEST(foo, bar) {
+TEST(TestSuiteName, TestName) {
     ARROW_CHECK(1); // fails if false
+    ... rest of the test body ...
 }
 ```
 The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the test. This allows tests to be grouped for convenience. 
 
 ### Testing Macros
-Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. 
+Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls
 
-If an `ASSERT` fails, the test case will cease its execution and continue on to the next test case to run. If a `CHECK` fails, the remainder of the test case will still execute, allowing for further checks to run. 
+If an `ASSERT` fails, the test case will cease its execution and move on to the next test case to run. If a `CHECK` fails, the remainder of the test case will still execute, allowing for further checks to run. 
 
 Below is a slightly contrived example showing a number of possible supported operations:
