@@ -3,6 +3,7 @@ A Micro Unit Testing Framework for C11/C++14 onwards. It's tiny - about 1k lines
 
 Arrow is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of the C/C++ Standard Library, although active development happens in the [Hazel Programming Language](https://github.com/HazelLang/Hazel) repository and changes are subsequently reflected in the [`CSTL`](https://github.com/jasmcaus/CSTL) repo.
 
+
 ## Installation
 None! Arrow is header-only, so simply include it in your project
 ```c
@@ -14,12 +15,14 @@ When using Arrow, you begin by writing `assertions`, which are statements that c
 
 In Arrow, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
 
+
 ## Prerequistes
 To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Arrow to set up all your tests:
 ```c
 ARROW_MAIN();
 ```
 This defines a main function, so if you write a main function ***and*** declare `ARROW_MAIN();`, your compiler will throw a `redeclaration of main` error.
+
 
 ## Defining a Test Suite
 To define a test suite, simply do the following:
@@ -47,6 +50,7 @@ To do this, simply do the following:
 ```C
 ARROW_CHECK(i == 42, "Expected i to be 32");
 ```
+
 
 ## A List of Avaliable Testing Macros
 ### a. Basic Assertions
@@ -81,7 +85,6 @@ These macros compare two ***C-strings***.
 | `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
 
 
-
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
@@ -103,6 +106,7 @@ TEST(foo, bar2) {
 }
 ```
 
+
 ## Supported Platforms
 Arrow supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Arrow's source code is officially supported on the following platforms. If you notice any problems on your platform, please file an issue on the [Arrow Github Issue Tracker](https://github/jasmcaus/Arrow/issues). PRs with fixes are welcome! 
 
@@ -111,3 +115,6 @@ Operating Systems          | Compilers
 Linux                      | gcc 5.0+ 
 macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
+
+## License 
+This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the MIT License.
