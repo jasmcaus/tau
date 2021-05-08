@@ -70,6 +70,17 @@ Fatal assertion          | Nonfatal assertion       | Verifies
 `ARROW_ASSERT_GT(x, y);` | `ARROW_CHECK_GT(x, y);`  | `x > y`
 `ARROW_ASSERT_GE(x, y);` | `ARROW_CHECK_GE(x, y);`  | `x >= y`
 
+## String Comparisons
+These macros compare two ***C-strings***. 
+
+| Fatal assertion                | Nonfatal assertion             | Verifies                                                 |
+| --------------------------     | ------------------------------ | -------------------------------------------------------- |
+| `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_EXPECT_STREQ(str1,str2);`     | the two C strings have the same content   		     |
+| `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_EXPECT_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
+| `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_EXPECT_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
+
+
+
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
