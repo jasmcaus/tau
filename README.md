@@ -19,7 +19,7 @@ To begin, you **must** include the following in *any* (but only one) C/C++ file.
 ```c
 ARROW_MAIN();
 ```
-This defines a main function, so if you write a main function ***and** declare `ARROW_MAIN();`, your compiler will throw a `redeclaration of main` error.
+This defines a main function, so if you write a main function ***and*** declare `ARROW_MAIN();`, your compiler will throw a `redeclaration of main` error.
 
 ## Defining a Test Suite
 To define a test suite, simply do the following:
