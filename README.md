@@ -14,13 +14,13 @@ When using Arrow, you begin by writing `assertions`, which are statements that c
 
 In Arrow, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
 
-## Example Usage
+## Prerequistes
 To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Arrow to set up all your tests:
 ```c
 ARROW_MAIN();
 ```
 
-### Define a Test Suite
+## Defining a Test Suite
 To define a test suite, simply do the following:
 ```c
 TEST(TestSuiteName, TestName) {
@@ -30,12 +30,15 @@ TEST(TestSuiteName, TestName) {
 ```
 The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the test. This allows tests to be grouped for convenience. 
 
-### Testing Macros
-Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls
+
+## Testing Macros
+Arrow provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these assertions fail, Arrow prints the source code location (file + line number) along with a failure message. 
 
 `ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to run. 
 `CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further checks to run. 
 
 We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to continue when the assertion in question fails. 
+
+We highly recommend you add a custom failure message for your macros - it makes it easier to track down bugs. `Invalid Type ID:` is much more useful than `FAILED`, which is what Arrow prints by default.
 
 Below is a slightly contrived example showing a number of possible supported operations:
