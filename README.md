@@ -61,7 +61,7 @@ For a majority of your tests, `ARROW_ASSERT` and `ARROW_CHECK` will suffice. How
 
 For user-defined types in a C++ codebase, we recommend using these Binary Comparisons (they don't require you to overload the `==`, `<=`... operators).
 
-Fatal assertion          | Nonfatal assertion       | Verifies
+Fatal assertion          | Nonfatal assertion       | Checks
 ------------------------ | ------------------------ | --------------
 `ARROW_ASSERT_EQ(x, y);` | `ARROW_CHECK_EQ(x, y);`  | `x == y`
 `ARROW_ASSERT_NE(x, y);` | `ARROW_CHECK_NE(x, y);`  | `x != y`
@@ -73,7 +73,7 @@ Fatal assertion          | Nonfatal assertion       | Verifies
 ## String Comparisons
 These macros compare two ***C-strings***. 
 
-| Fatal assertion                | Nonfatal assertion             | Verifies                                                 |
+| Fatal assertion                | Nonfatal assertion             | Checks                                                 |
 | --------------------------     | ------------------------------ | -------------------------------------------------------- |
 | `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_EXPECT_STREQ(str1,str2);`     | the two C strings have the same content   		     |
 | `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_EXPECT_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
