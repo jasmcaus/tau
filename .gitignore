@@ -2,7 +2,7 @@
 *.d
 script.py
 Makefile
-
+build/*
 # Compiled Object files
 *.slo
 *.lo
