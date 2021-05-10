@@ -21,10 +21,12 @@ jobs:
           sudo apt-get install -y gcc-11
 
       - name: CMake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DARROW_BUILDTESTS=On
+        run: |
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DARROW_BUILDTESTS=On
 
       - name: Build 
-        run: cmake --build build --config=${{ matrix.build_type }}
+        run: |
+          cmake --build build --config=${{ matrix.build_type }}
 
 
   GCC:
@@ -40,7 +42,9 @@ jobs:
           sudo apt-get install -y clang-10
 
       - name: CMake
+        run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10
 
       - name: Build
-        run: cmake --build build --config=${{ matrix.build_type }}
+        run: |
+          cmake --build build --config=${{ matrix.build_type }}
