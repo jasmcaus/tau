@@ -27,20 +27,20 @@ jobs:
         run: cmake --build build --config=${{ matrix.build_type }}
 
 
-  # GCC:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
+  GCC:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Clang on Ubuntu
-  #       run: |
-  #         sudo apt-get install -y clang-10
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Clang on Ubuntu
+        run: |
+          sudo apt-get install -y clang-10
 
-  #     - name: CMake
-  #         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10
+      - name: CMake
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10
 
-  #     - name: Build
-  #       run: cmake --build build --config=${{ matrix.build_type }}
+      - name: Build
+        run: cmake --build build --config=${{ matrix.build_type }}
