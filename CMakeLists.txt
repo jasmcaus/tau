@@ -112,14 +112,24 @@ endif()
 include(GNUInstallDirs)
 
 # ------ Options ------
-set(ARROW_TARGET_NAME                  ${PROJECT_NAME})
-set(ARROW_HEADERS_DIR                  ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(ARROW_INCLUDE_BUILD_DIR            ${CMAKE_CURRENT_SOURCE_DIR}/Arrow)
-set(ARROW_CMAKE_VERSION_CONFIG_FILE    ${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+set(ARROW_TARGET_NAME           ${PROJECT_NAME}Targets)
+set(ARROW_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${ARROW_TARGET_NAME}.cmake)
+
+set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# CMake Configurations (from the ``cmake`` folder)
+set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in)
+set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
+set(CMAKE_CONFIGS_INSTALL_DIR   "lib/cmake/${PROJECT_NAME}" CACHE INTERNAL "")
+set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in)
+set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
+set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 
 # ------ Main Build ------
 # Main Build File for the main Arrow Library
-# 
 # Note that this library must have _minimal_ dependencies 
 
 # Create the Arrow Interface Library
@@ -139,7 +149,7 @@ target_include_directories(
     INTERFACE 
     # If Arrow is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
-    # $<BUILD_INTERFACE:"${ARROW_HEADERS_DIR}">
+    # $<BUILD_INTERFACE:"${ARROW_HEADERS_INCLUDE_DIR}">
     $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
     # The path if Arrow is installed
     # $<INSTALL_INTERFACE:"include">
@@ -147,51 +157,86 @@ target_include_directories(
 )
 
 # Where Arrow's .h files can be found.
-# file(GLOB_RECURSE ARROW_HEADER_SOURCES ${ARROW_HEADERS_DIR}/*.h)
+# file(GLOB_RECURSE ARROW_HEADER_SOURCES ${ARROW_HEADERS_INCLUDE_DIR}/*.h)
 # set(ARROW_BUILD_INCLUDE_DIRS
-#     "${ARROW_HEADERS_DIR}"
+#     "${ARROW_HEADERS_INCLUDE_DIR}"
 #     "${CMAKE_CURRENT_SOURCE_DIR}")
 # include_directories(${ARROW_BUILD_INCLUDE_DIRS})
 
 
-##
-## INSTALL
-##
-# Create the CMake package file descriptors.
+# ------ Installations ------
+## Installation header files, generate and install CMake config files for find_package()
 include(CMakePackageConfigHelpers)
-# We use a custom package version config file instead of write_basic_package_version_file to ensure that it's 
+
+# We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
 # architecture-independent
+
+# ConfigVersion.cmake.in --> ArrowConfigVersion.cmake
 configure_file(
-    "cmake/ArrowConfigVersion.cmake.in"
-    ${ARROW_CMAKE_VERSION_CONFIG_FILE}
+    ${CMAKE_CONFIGVERSION_IN}
+    ${CMAKE_CONFIGVERSION}
     @ONLY
+)
+# config.cmake.in --> ArrowConfig.cmake
+configure_file(
+    ${CMAKE_CONFIG_IN}
+    ${CMAKE_CONFIG}
+    @ONLY
+)
+# Install a pkg-config file, so other tools can find this.
+configure_file(
+    ${CMAKE_PKGCONFIG_IN}
+    ${CMAKE_PKGCONFIG}
+)
+# Install the pkg-config file to lib/pkgconfig
+install(
+    FILES ${CMAKE_PKGCONFIG}
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+)
+
+# Move ArrowConfig.cmake and ArrowConfigVersion.cmake  ---> lib/cmake/Arrow/...
+install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" 
+    DESTINATION "lib/cmake/${PROJECT_NAME}"
+)
+
+# ./include --> include
+install(
+    DIRECTORY ${ARROW_HEADERS_INCLUDE_DIR}
+    DESTINATION "include"
+)
+
+
+# Export ArrowTargets from ArrowTargets.cmake
+export(
+    TARGETS ${PROJECT_NAME}
+    FILE ${ARROW_TARGETS_CMAKE}
+)
+
+install(
+    EXPORT ${ARROW_TARGET_NAME}
+    DESTINATION lib/cmake/${PROJECT_NAME}
 )
 
 # install(
-#     TARGETS ${ARROW_TARGET_NAME}
+#     TARGETS ${PROJECT_NAME}
 #     EXPORT "${ARROW_TARGET_NAME}Targets"
-#     INCLUDES DESTINATION ${ARROW_INCLUDE_BUILD_DIR}
+#     INCLUDES DESTINATION ${ARROW_HEADERS_INCLUDE_DIR}
 # )
-# locations are provided by GNUInstallDirs
 install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}Targets
+        EXPORT ${ARROW_TARGET_NAME}
         ARCHIVE DESTINATION "lib"
         LIBRARY DESTINATION "lib"
         RUNTIME DESTINATION "bin"
-)
-
-# Targets and files to install
-# ${ARROW_TARGET_NAME}Targets contains the build configuration and information about Version Compatibility. 
-# These files will be install in the include_directory as well
-install(
-    EXPORT "${ARROW_TARGET_NAME}Targets"
-    FILE "${ARROW_TARGET_NAME}Targets.cmake"
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${ARROW_TARGET_NAME}/cmake
+        ## This results in an ``INTERFACE_INCLUDE_DIRECTORIES`` property contains path ... which is prefixed in the source 
+        ## directory. 
+        ## There may be something I'm missing out - if you know how to fix this, please send in a PR :)
+        # INCLUDES DESTINATION ${ARROW_HEADERS_INCLUDE_DIR)
 )
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Arrow
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
     DESTINATION include
 )
 
