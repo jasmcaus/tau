@@ -19,9 +19,9 @@ In Arrow, you would normally define a ***Test Suite*** which contains multiple t
 ## Prerequistes
 To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Arrow to set up all your tests:
 ```c
-ARROW_MAIN();
+ARROW_MAIN() // IMPORTANT: No semicolon at the end 
 ```
-This defines a main function, so if you write a main function ***and*** declare `ARROW_MAIN();`, your compiler will throw a `redeclaration of main` error.
+This defines a main function, so if you write a main function ***and*** declare `ARROW_MAIN()`, your compiler will throw a `redeclaration of main` error.
 
 
 ## Defining a Test Suite
@@ -89,7 +89,7 @@ These macros compare two ***C-strings***.
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
 #include <Arrow/Arrow.h>
-ARROW_MAIN(); // sets up Arrow 
+ARROW_MAIN() // sets up Arrow 
 
 TEST(foo, bar1) {
     int a = 42; 
