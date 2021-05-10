@@ -134,18 +134,18 @@ set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Create the Arrow Interface Library
 # Interfaces are best for header-only libraries
-add_library(${ARROW_TARGET_NAME} INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE)
 # Add an alias so that Arrow can be used with add_subdirectory
-add_library(${PROJECT_NAME}::${ARROW_TARGET_NAME} ALIAS ${ARROW_TARGET_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
-    target_compile_features(${ARROW_TARGET_NAME} INTERFACE c_range_for)
+    target_compile_features(${PROJECT_NAME} INTERFACE c_range_for)
 else()
-    target_compile_features(${ARROW_TARGET_NAME} INTERFACE c_std_11)
+    target_compile_features(${PROJECT_NAME} INTERFACE c_std_11)
 endif()
 
 target_include_directories(
-    ${ARROW_TARGET_NAME} 
+    ${PROJECT_NAME} 
     INTERFACE 
     # If Arrow is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
