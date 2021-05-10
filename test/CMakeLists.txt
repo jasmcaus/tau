@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 add_executable(
     ArrowTest
-    Arrow/Types.h
-    Arrow/Arrow.h
+    ${CMAKE_SOURCE_DIR}/include/Arrow/Types.h
+    ${CMAKE_SOURCE_DIR}/include/Arrow/Arrow.h
     test.c
 )
 
