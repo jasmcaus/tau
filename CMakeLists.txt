@@ -115,7 +115,7 @@ include(GNUInstallDirs)
 set(ARROW_TARGET_NAME           ${PROJECT_NAME}Targets)
 set(ARROW_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${ARROW_TARGET_NAME}.cmake)
 
-set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Arrow)
 
 # CMake Configurations (from the ``cmake`` folder)
 set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
@@ -125,7 +125,6 @@ set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Confi
 set(CMAKE_CONFIGS_INSTALL_DIR   "lib/cmake/${PROJECT_NAME}" CACHE INTERNAL "")
 set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in)
 set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
-set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 # ------ Main Build ------
@@ -150,10 +149,10 @@ target_include_directories(
     # If Arrow is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
     # $<BUILD_INTERFACE:"${ARROW_HEADERS_INCLUDE_DIR}">
-    $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/Arrow>
     # The path if Arrow is installed
     # $<INSTALL_INTERFACE:"include">
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    $<INSTALL_INTERFACE:Arrow}>
 )
 
 # Where Arrow's .h files can be found.
@@ -203,7 +202,7 @@ install(
 # ./include --> include
 install(
     DIRECTORY ${ARROW_HEADERS_INCLUDE_DIR}
-    DESTINATION "include"
+    DESTINATION Arrow
 )
 
 
