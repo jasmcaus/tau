@@ -2,11 +2,6 @@
 
 UTEST_MAIN()
 
-#ifdef _MSC_VER
-  /* disable 'conditional expression is constant' - our examples below use this!
-  */
-  #pragma warning(disable : 4127)
-#endif
 
 UTEST(c, ASSERT_TRUE) { ASSERT_TRUE(1); }
 
