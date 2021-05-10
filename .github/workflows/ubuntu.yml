@@ -22,7 +22,7 @@ jobs:
 
       - name: cmake
         run: cmake -S . -B build
-      - name: build
+      - name: build 
         run: cmake --build build --config=${{ matrix.build_type }}
 
 
