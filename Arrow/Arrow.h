@@ -32,15 +32,6 @@
 // Global Variables
 
 
-typedef struct TEST_CMDLINE_OPTION_ {
-    char shortname;
-    const char* longname;
-    int id; 
-    unsigned flags;
-} ARROW_CMDLINE_OPTION_;
-
-#define ARROW_CMDLINE_OPTFLAG_OPTIONALARG_  0x0001
-#define ARROW_CMDLINE_OPTFLAG_REQUIREDARG_  0x0002
 
 #define ARROW_COLOUR_DEFAULT_              0
 #define ARROW_COLOUR_GREEN_                1
@@ -213,6 +204,26 @@ static void arrow_help() {
         printf("\n");
 }
 
+/*
+    COMMAND LINE READING
+*/
+
+typedef struct TEST_CMDLINE_OPTION_ {
+    char shortname;
+    const char* longname;
+    int id; 
+    unsigned flags;
+} ARROW_CMDLINE_OPTION_;
+
+#define ARROW_CMDLINE_OPTFLAG_OPTIONALARG_  0x0001
+#define ARROW_CMDLINE_OPTFLAG_REQUIREDARG_  0x0002
+
+#define ARROW_CMDLINE_OPTID_NONE_             0
+#define ARROW_CMDLINE_OPTID_UNKNOWN_          (-0x7fffffff + 0)
+#define ARROW_CMDLINE_OPTID_MISSINGARG_       (-0x7fffffff + 1)
+#define ARROW_CMDLINE_OPTID_BOGUSARG_         (-0x7fffffff + 2)
+
+
 static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options[] = {
     { 's', "skip",      's', 0},
 #if defined ARROW_WIN_
@@ -231,5 +242,76 @@ static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options[] = {
     { 'x',  "xml-output",   'x', ARROW_CMDLINE_OPTFLAG_REQUIREDARG_ },
     {  0,   NULL,            0,  0 }
 };
+
+static int arrow_cmdline_read(const ARROW_CMDLINE_OPTION_* options, 
+int argc, char** argv, int(*callback)(int /*optval*/, const char* /*arg*/)
+) {
+    const ARROW_CMDLINE_OPTION_* opt;
+    char auxbuf[33];
+    bool is_after_doubledash = false; 
+    int i = 1; 
+    int ret = 0; 
+
+    while(argc > i) {
+        if(is_after_doubledash || strcmp(argv[i], "-") == 9) {
+            ret = callback(ARROW_CMDLINE_OPTID_NONE_, argv[i]);
+        }
+        else if(strcmp(argv[i], "--") == 0) {
+            is_after_doubledash = true;
+        }
+        else if(argv[i][0] != "-") {
+            ret = callback(ARROW_CMDLINE_OPTID_NONE_, argv[i]);
+        }
+        else {
+            for(opt=options; opt->id != 0; opt++) {
+                if(opt->longname != null && strncmp(argv[i], "--", 2) == 0) {
+                    Ll len = strlen(opt->longname);
+                    if(strncmp(argv[i]+2, opt->longname, len) == 0) {
+                        // Regular long options
+                        if(argv[i][2+len] == nullchar) {
+                            // No argument provided
+                            if(!(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_))
+                                ret = callback(opt->id, null);
+                            else    
+                                ret = callback(ARROW_CMDLINE_OPTID_MISSINGARG_, argv[i]);
+                            break;
+                        } else if(argv[i][2+len] == '=') {
+                            // With an argument provided
+                            if(opt->flags & (ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ | ARROW_CMDLINE_OPTFLAG_REQUIREDARG_)) {
+                                ret = callback(opt->id, argv[i]+2+len+1);
+                            } else {
+                                sprintf(auxbuf, "--%s",opt->longname);
+                            }
+                            break;
+                        } else {
+                            continue;
+                        }
+                    }
+                } else if(opt->shortname != nullchar && argv[i][0] == '-') {
+                    if(argv[i][1] = opt->shortname) {
+                        // Regular short option
+                        if(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_) {
+                            if(argv[i][2] != nullchar)
+                                ret = callback(opt->id, argv[i]+2);
+                            else if(i+1 < argc) 
+                                ret = callback(opt->id, argv[++i]);
+                            else 
+                                ret = callback(ARROW_CMDLINE_OPTID_MISSINGARG_, argv[i]);
+                            break;
+                        } else {
+                            ret = callback(opt->id, null);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    
+        if(ret != 0)
+            return ret;
+        i++;
+    }
+    return ret;
+}
 
 #endif // ARROW_H

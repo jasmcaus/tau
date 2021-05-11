@@ -549,7 +549,7 @@ arrow_colored_printf_(int color, const char* fmt, ...)
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
-    buffer[sizeof(buffer)-1] = '\0';
+    buffer[sizeof(buffer)-1] = nullchar;
 
     if(!ARROW_COLOUR_OUTPUT()) {
         return printf("%s", buffer);
@@ -739,7 +739,7 @@ arrow_case_(const char* fmt, ...)
 
     if(arrow_case_name_[0]) {
         arrow_case_already_logged_ = 0;
-        arrow_case_name_[0] = '\0';
+        arrow_case_name_[0] = nullchar;
     }
 
     if(fmt == NULL)
@@ -748,7 +748,7 @@ arrow_case_(const char* fmt, ...)
     va_start(args, fmt);
     vsnprintf(arrow_case_name_, sizeof(arrow_case_name_) - 1, fmt, args);
     va_end(args);
-    arrow_case_name_[sizeof(arrow_case_name_) - 1] = '\0';
+    arrow_case_name_[sizeof(arrow_case_name_) - 1] = nullchar;
 
     if(arrow_verbose_level_ >= 3) {
         arrow_line_indent_(1);
@@ -777,7 +777,7 @@ arrow_message_(const char* fmt, ...)
     va_start(args, fmt);
     vsnprintf(buffer, TEST_MSG_MAXSIZE, fmt, args);
     va_end(args);
-    buffer[TEST_MSG_MAXSIZE-1] = '\0';
+    buffer[TEST_MSG_MAXSIZE-1] = nullchar;
 
     line_beg = buffer;
     while(1) {
@@ -788,7 +788,7 @@ arrow_message_(const char* fmt, ...)
         printf("%.*s\n", (int)(line_end - line_beg), line_beg);
         line_beg = line_end + 1;
     }
-    if(line_beg[0] != '\0') {
+    if(line_beg[0] != nullchar) {
         arrow_line_indent_(arrow_case_name_[0] ? 3 : 2);
         printf("%s\n", line_beg);
     }
@@ -930,7 +930,7 @@ arrow_name_contains_word_(const char* name, const char* pattern)
     substr = strstr(name, pattern);
     while(substr != NULL) {
         int starts_on_word_boundary = (substr == name || strchr(word_delim, substr[-1]) != NULL);
-        int ends_on_word_boundary = (substr[pattern_len] == '\0' || strchr(word_delim, substr[pattern_len]) != NULL);
+        int ends_on_word_boundary = (substr[pattern_len] == nullchar || strchr(word_delim, substr[pattern_len]) != NULL);
 
         if(starts_on_word_boundary && ends_on_word_boundary)
             return 1;
@@ -1265,7 +1265,7 @@ arrow_cmdline_handle_short_opt_group_(const ARROW_CMDLINE_OPTION_* options,
     int i;
     int ret = 0;
 
-    for(i = 0; arggroup[i] != '\0'; i++) {
+    for(i = 0; arggroup[i] != nullchar; i++) {
         for(opt = options; opt->id != 0; opt++) {
             if(arggroup[i] == opt->shortname)
                 break;
@@ -1278,7 +1278,7 @@ arrow_cmdline_handle_short_opt_group_(const ARROW_CMDLINE_OPTION_* options,
             char badoptname[3];
             badoptname[0] = '-';
             badoptname[1] = arggroup[i];
-            badoptname[2] = '\0';
+            badoptname[2] = nullchar;
             ret = callback((opt->id != 0 ? ARROW_CMDLINE_OPTID_MISSINGARG_ : ARROW_CMDLINE_OPTID_UNKNOWN_),
                             badoptname);
         }
@@ -1304,7 +1304,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
     int i = 1;
     int ret = 0;
 
-    auxbuf[ARROW_CMDLINE_AUXBUF_SIZE_] = '\0';
+    auxbuf[ARROW_CMDLINE_AUXBUF_SIZE_] = nullchar;
 
     while(argc > i) {
         if(after_doubledash  ||  strcmp(argv[i], "-") == 0) {
@@ -1322,7 +1322,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                     size_t len = strlen(opt->longname);
                     if(strncmp(argv[i]+2, opt->longname, len) == 0) {
                         /* Regular long option. */
-                        if(argv[i][2+len] == '\0') {
+                        if(argv[i][2+len] == nullchar) {
                             /* with no argument provided. */
                             if(!(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_))
                                 ret = callback(opt->id, null);
@@ -1342,11 +1342,11 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                             continue;
                         }
                     }
-                } else if(opt->shortname != '\0'  &&  argv[i][0] == '-') {
+                } else if(opt->shortname != nullchar  &&  argv[i][0] == '-') {
                     if(argv[i][1] == opt->shortname) {
                         /* Regular short option. */
                         if(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_) {
-                            if(argv[i][2] != '\0')
+                            if(argv[i][2] != nullchar)
                                 ret = callback(opt->id, argv[i]+2);
                             else if(i+1 < argc)
                                 ret = callback(opt->id, argv[++i]);
@@ -1358,7 +1358,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
 
                             /* There might be more (argument-less) short options
                              * grouped together. */
-                            if(ret == 0  &&  argv[i][2] != '\0')
+                            if(ret == 0  &&  argv[i][2] != nullchar)
                                 ret = arrow_cmdline_handle_short_opt_group_(options, argv[i]+2, callback);
                             break;
                         }
@@ -1382,7 +1382,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                             if(len > ARROW_CMDLINE_AUXBUF_SIZE_)
                                 len = ARROW_CMDLINE_AUXBUF_SIZE_;
                             strncpy(auxbuf, badoptname, len);
-                            auxbuf[len] = '\0';
+                            auxbuf[len] = nullchar;
                             badoptname = auxbuf;
                         }
                     }
@@ -1612,7 +1612,7 @@ arrow_is_tracer_present_(void)
                 break;
             n_read += n;
         }
-        buf[n_read] = '\0';
+        buf[n_read] = nullchar;
 
         field = strstr(buf, pattern);
         if(field != NULL  &&  field < buf + sizeof(buf) - OVERLAP) {
