@@ -428,28 +428,6 @@ arrow_type_printer(long long unsigned int i) {
  * can be used arbitrarily in functions implementing the unit test
 */
 
-
-
-
-bool cstl_strcmp_check(x, y, cond, file, line, ...) {
-
-}
-bool cstl_strncmp_check(x, y, m, cond, file, line, ...) {
-
-}
-
-
-int cstl_check(bool cond, const char* file, int line, const char* fmt, ...) {
-    const char* result_str; 
-    int result_colour;
-
-    if(cond) {
-        result_str = "ok";
-        result_colour = CSTL_COLOR_GREEN_;
-    }
-}
-
-
 #if defined(__clang__)
 #define ARROW_STRNCMP(x, y, size)                                              \
   _Pragma("clang diagnostic push")                                             \

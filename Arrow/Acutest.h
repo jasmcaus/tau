@@ -1,6 +1,7 @@
 #ifndef ARROW_H
 #define ARROW_H
 
+#include <Arrow/Types.h>
 
 /************************
  *** Public interface ***
@@ -56,34 +57,12 @@
  *   }
  */
 #define TEST_CHECK(cond,...)   arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__)
-// #define TEST_CHECK(cond)        arrow_check_((cond), __FILE__, __LINE__, "%s", #cond)
 
-
-/* These macros are the same as TEST_CHECK and TEST_CHECK except that if the
- * condition fails, the currently executed unit test is immediately aborted.
- *
- * That is done either by calling abort() if the unit test is executed as a
- * child process; or via longjmp() if the unit test is executed within the
- * main Acutest process.
- *
- * As a side effect of such abortion, your unit tests may cause memory leaks,
- * unflushed file descriptors, and other phenomena caused by the abortion.
- *
- * Therefore you should not use these as a general replacement for TEST_CHECK.
- * Use it with some caution, especially if your test causes some other side
- * effects to the outside world (e.g. communicating with some server, inserting
- * into a database etc.).
- */
 #define TEST_ASSERT_(cond,...)                                                 \
     do {                                                                       \
         if(!arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__))           \
             arrow_abort_();                                                  \
     } while(0)
-// #define TEST_ASSERT(cond)                                                      \
-//     do {                                                                       \
-//         if(!arrow_check_((cond), __FILE__, __LINE__, "%s", #cond))           \
-//             arrow_abort_();                                                  \
-//     } while(0)
 
 
 #ifdef __cplusplus
@@ -187,15 +166,15 @@
  * The macro can deal with multi-line output fairly well. It also automatically
  * adds a final new-line if there is none present.
  */
-#define TEST_MSG(...)           arrow_message_(__VA_ARGS__)
+// #define TEST_MSG(...)           arrow_message_(__VA_ARGS__)
 
 
-/* Maximal output per TEST_MSG call. Longer messages are cut.
- * You may define another limit prior including "arrow.h"
- */
-#ifndef TEST_MSG_MAXSIZE
-    #define TEST_MSG_MAXSIZE    1024
-#endif
+// /* Maximal output per TEST_MSG call. Longer messages are cut.
+//  * You may define another limit prior including "arrow.h"
+//  */
+// #ifndef TEST_MSG_MAXSIZE
+//     #define TEST_MSG_MAXSIZE    1024
+// #endif
 
 
 /* Macro for dumping a block of memory.
@@ -209,36 +188,14 @@
  *   TEST_DUMP("Expected:", addr_expected, size_expected);
  *   TEST_DUMP("Produced:", addr_produced, size_produced);
  */
-#define TEST_DUMP(title, addr, size)    arrow_dump_(title, addr, size)
+// #define TEST_DUMP(title, addr, size)    arrow_dump_(title, addr, size)
 
 /* Maximal output per TEST_DUMP call (in bytes to dump). Longer blocks are cut.
  * You may define another limit prior including "arrow.h"
  */
-#ifndef TEST_DUMP_MAXSIZE
-    #define TEST_DUMP_MAXSIZE   1024
-#endif
-
-
-/* Common test initialiation/clean-up
- *
- * In some test suites, it may be needed to perform some sort of the same
- * initialization and/or clean-up in all the tests.
- *
- * Such test suites may use macros TEST_INIT and/or TEST_FINI prior including
- * this header. The expansion of the macro is then used as a body of helper
- * function called just before executing every single (TEST_INIT) or just after
- * it ends (TEST_FINI).
- *
- * Examples of various ways how to use the macro TEST_INIT:
- *
- *   #define TEST_INIT      my_init_func();
- *   #define TEST_INIT      my_init_func()      // Works even without the semicolon
- *   #define TEST_INIT      setlocale(LC_ALL, NULL);
- *   #define TEST_INIT      { setlocale(LC_ALL, NULL); my_init_func(); }
- *
- * TEST_FINI is to be used in the same way.
- */
-
+// #ifndef TEST_DUMP_MAXSIZE
+//     #define TEST_DUMP_MAXSIZE   1024
+// #endif
 
 /**********************
  *** Implementation ***
@@ -312,15 +269,26 @@
     #pragma warning(disable: 4996)
 #endif
 
+typedef void (*arrow_testcase_t)(int *, Ll);
 
-struct arrow_test_ {
-    const char* name;
-    void (*func)(void);
-};
+struct arrow_test_data_s {
+    arrow_testcase_t func;
+    Ll index;
+    char* name;
 
-struct arrow_test_data_ {
+    // Acutest
     unsigned char flags;
     double duration;
+};
+
+struct arrow_test_s {
+    struct arrow_test_data_s* tests;
+    Ll num_tests;
+    FILE* foutput;
+
+    // Acutest
+    const char* name;
+    void (*func)(void);
 };
 
 enum {
@@ -369,6 +337,26 @@ static int arrow_timer_ = 0;
 
 static int arrow_abort_has_jmp_buf_ = 0;
 static jmp_buf arrow_abort_jmp_buf_;
+
+
+#define ARROW_PRINTF(...) \
+    if(arrow_test_.foutput) { \
+        fprintf(arrow_test_.foutput, __VA_ARGS__); \
+    } \
+    printf(__VA_ARGS__) 
+
+
+// String Macros
+#if defined(__clang__)
+    #define ARROW_STRNCMP(x, y, size)                                              \
+        _Pragma("clang diagnostic push")                                             \
+        _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"")       \
+        strncmp(x, y, size) _Pragma("clang diagnostic pop")
+#else
+    #define ARROW_STRNCMP(x, y, size)   strncmp(x, y, size)
+#endif
+
+
 
 
 static void
