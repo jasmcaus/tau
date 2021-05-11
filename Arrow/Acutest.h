@@ -1465,9 +1465,9 @@ arrow_cmdline_callback_(int id, const char* arg)
 
         case 'e':
             if(arg == NULL || strcmp(arg, "always") == 0) {
-                arrow_no_exec_ = 0;
+                // arrow_no_exec_ = 0;
             } else if(strcmp(arg, "never") == 0) {
-                arrow_no_exec_ = 1;
+                // arrow_no_exec_ = 1;
             } else if(strcmp(arg, "auto") == 0) {
                 /*noop*/
             } else {
@@ -1477,9 +1477,9 @@ arrow_cmdline_callback_(int id, const char* arg)
             }
             break;
 
-        case 'E':
-            arrow_no_exec_ = 1;
-            break;
+        // case 'E':
+        //     arrow_no_exec_ = 1;
+        //     break;
 
         case 't':
 #if defined ARROW_WIN_  ||  defined ARROW_HAS_POSIX_TIMER_

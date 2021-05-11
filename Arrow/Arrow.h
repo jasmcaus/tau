@@ -222,9 +222,9 @@ static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options[] = {
     { 't', "time",      't', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_},
     { '0', "timer",     't', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_}, // here for compatibility
 #endif 
-    { '0', "no-summary", 'S', 0},
-    { 'l', "list",      'l', 0},
-    { 'v', "verbose",      'v', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_},
+    { '0', "no-summary",    'S', 0},
+    { 'l', "list",          'l', 0},
+    { 'v', "verbose",       'v', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_},
     { 'q',  "quiet",        'q', 0 },
     {  0,   "no-color",     'C', 0 },
     { 'h',  "help",         'h', 0 },
