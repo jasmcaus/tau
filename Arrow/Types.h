@@ -14,6 +14,10 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #ifndef ARROW_TYPES_H
 #define ARROW_TYPES_H
 
+// #ifdef __cplusplus
+// namespace Hazel {
+// #endif
+
 // Base Types (similar to the Types in the Hazel Language) ==========================================
 #if defined(ARROW_COMPILER_MSVC)
     #if _MSVC_VER < 1300 
@@ -150,7 +154,7 @@ typedef Int32 Rune;
             #define null    0
         #endif 
     #else 
-        #define null    (void*)0
+        #define null    ((void*)0)
     #endif // __cplusplus
 #endif 
 
@@ -194,5 +198,10 @@ typedef Int32 Rune;
     typedef  uintptr_t   UIntptr;
     typedef  intptr_t    Intptr;
 #endif
+
+
+// #ifdef __cplusplus
+// } // namespace Hazel
+// #endif
 
 #endif // ARROW_TYPES_H

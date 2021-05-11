@@ -4,33 +4,21 @@
 #include <Arrow/Types.h>
 
 #ifdef _MSC_VER
-/*
-   Disable warning about not inlining 'inline' functions.
-*/
-#pragma warning(disable : 4710)
+    // Disable warning about not inlining 'inline' functions.
+    #pragma warning(disable : 4710)
+    
+    // Disable warning about inlining functions that are not marked 'inline'.
+    #pragma warning(disable : 4711)
 
-/* disable warning: no function prototype given: converting '()' to '(void)' */
-#pragma warning(disable : 4255)
+    // No function prototype given: converting '()' to '(void)'
+    #pragma warning(disable : 4255)
 
-/* disable warning: '__cplusplus' is not defined as a preprocessor macro,
- * replacing with '0' for '#if/#elif' */
-#pragma warning(disable : 4668)
+    // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+    #pragma warning(disable : 4668)
 
-/*
-   Disable warning about inlining functions that are not marked 'inline'.
-*/
-#pragma warning(disable : 4711)
-#pragma warning(push, 1)
+    #pragma warning(push, 1)
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER < 1920)
-typedef __int64 arrow_int64_t;
-typedef unsigned __int64 arrow_uint64_t;
-#else
-#include <stdint.h>
-typedef int64_t arrow_int64_t;
-typedef uint64_t arrow_uint64_t;
-#endif
 
 #include <stddef.h>
 #include <stdio.h>
@@ -39,43 +27,45 @@ typedef uint64_t arrow_uint64_t;
 #include <errno.h>
 
 #if defined(_MSC_VER)
-#pragma warning(pop)
+    #pragma warning(pop)
 #endif
 
 #if defined(__cplusplus)
-#define ARROW_C_FUNC extern "C"
+    #define ARROW_C_FUNC extern "C"
 #else
-#define ARROW_C_FUNC
+    #define ARROW_C_FUNC
 #endif
 
+// Timing --> use acutest's version
 #if defined(_MSC_VER)
-// define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
-#ifndef ARROW_USE_OLD_QPC
-#pragma warning(push, 0)
-#include <Windows.h>
-#pragma warning(pop)
+    // define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
+    #ifndef ARROW_USE_OLD_QPC
+        #pragma warning(push, 0)
+        #include <Windows.h>
+        #pragma warning(pop)
 
-typedef LARGE_INTEGER arrow_large_integer;
-#else 
-//use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
-//on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
-typedef union {
-  struct {
-    unsigned long LowPart;
-    long HighPart;
-  } DUMMYSTRUCTNAME;
-  struct {
-    unsigned long LowPart;
-    long HighPart;
-  } u;
-  arrow_int64_t QuadPart;
-} arrow_large_integer;
+        typedef LARGE_INTEGER arrow_large_integer;
+    #else 
+        //use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
+        //on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
+        typedef union {
+        struct {
+            unsigned long LowPart;
+            long HighPart;
+        } s;
+        struct {
+            unsigned long LowPart;
+            long HighPart;
+        } u;
+        Int64 QuadPart;
+        } arrow_large_integer;
 
-ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
-    arrow_large_integer *);
-ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
-    arrow_large_integer *);
-#endif
+        ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
+            arrow_large_integer *);
+        ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
+            arrow_large_integer *);
+    #endif
+
 #elif defined(__linux__)
 
 /*
@@ -87,7 +77,7 @@ ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
 #include <limits.h>
 
 #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
-#include <time.h>
+    #include <time.h>
 
 #if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
 /* glibc is version 2.17 or above, so we can just use clock_gettime */
@@ -102,121 +92,20 @@ ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
 #endif
 
 #elif defined(__APPLE__)
-#include <mach/mach_time.h>
+    #include <mach/mach_time.h>
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER < 1920)
-#define ARROW_PRId64 "I64d"
-#define ARROW_PRIu64 "I64u"
-#else
-#include <inttypes.h>
-
-#define ARROW_PRId64 PRId64
-#define ARROW_PRIu64 PRIu64
-#endif
-
-#if defined(_MSC_VER)
-#define ARROW_INLINE __forceinline
-
-#if defined(_WIN64)
-#define ARROW_SYMBOL_PREFIX
-#else
-#define ARROW_SYMBOL_PREFIX "_"
-#endif
-
-#if defined(__clang__)
-#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-  _Pragma("clang diagnostic push")                                             \
-      _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
-
-#define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
-#else
-#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
-#define ARROW_INITIALIZER_END_DISABLE_WARNINGS
-#endif
-
-#pragma section(".CRT$XCU", read)
-#define ARROW_INITIALIZER(f)                                                   \
-  static void __cdecl f(void);                                                 \
-  ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
-  __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
-      ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
-                                                         f##_)(void) = f;      \
-  ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
-  static void __cdecl f(void)
-#else
-#if defined(__linux__)
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreserved-id-macro"
-#endif
-#endif
-
-#define __STDC_FORMAT_MACROS 1
-
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic pop
-#endif
-#endif
-#endif
-
-#define ARROW_INLINE inline
-
-#define ARROW_INITIALIZER(f)                                                   \
-  static void f(void) __attribute__((constructor));                            \
-  static void f(void)
-#endif
-
-#if defined(__cplusplus)
-#define ARROW_CAST(type, x) static_cast<type>(x)
-#define ARROW_PTR_CAST(type, x) reinterpret_cast<type>(x)
-#define ARROW_EXTERN extern "C"
-#define ARROW_NULL NULL
-#else
-#define ARROW_CAST(type, x) ((type)x)
-#define ARROW_PTR_CAST(type, x) ((type)x)
-#define ARROW_EXTERN extern
-#define ARROW_NULL 0
-#endif
-
-#ifdef _MSC_VER
-/*
-    io.h contains definitions for some structures with natural padding. This is
-    uninteresting, but for some reason MSVC's behaviour is to warn about
-    including this system header. That *is* interesting
-*/
-#pragma warning(disable : 4820)
-#pragma warning(push, 1)
-#include <io.h>
-#pragma warning(pop)
-#define ARROW_COLOUR_OUTPUT() (_isatty(_fileno(stdout)))
-#else
-#include <unistd.h>
-#define ARROW_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
-#endif
-
-static ARROW_INLINE void *arrow_realloc(void *const pointer, size_t new_size) {
-  void *const new_pointer = realloc(pointer, new_size);
-
-  if (ARROW_NULL == new_pointer) {
-    free(new_pointer);
-  }
-
-  return new_pointer;
-}
-
-static ARROW_INLINE arrow_int64_t arrow_ns(void) {
+// clock
+static ARROW_INLINE Int64 arrow_ns(void) {
 #ifdef _MSC_VER
   arrow_large_integer counter;
   arrow_large_integer frequency;
   QueryPerformanceCounter(&counter);
   QueryPerformanceFrequency(&frequency);
-  return ARROW_CAST(arrow_int64_t,
+  return ARROW_CAST(Int64,
                     (counter.QuadPart * 1000000000) / frequency.QuadPart);
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-  return ARROW_CAST(arrow_int64_t, clock()) * 1000000000 / CLOCKS_PER_SEC;
+  return ARROW_CAST(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
 #elif defined(__linux)
   struct timespec ts;
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
@@ -229,10 +118,113 @@ static ARROW_INLINE arrow_int64_t arrow_ns(void) {
   syscall(SYS_clock_gettime, cid, &ts);
 #endif
 #endif
-  return ARROW_CAST(arrow_int64_t, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
+  return ARROW_CAST(Int64, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
 #elif __APPLE__
-  return ARROW_CAST(arrow_int64_t, mach_absolute_time());
+  return ARROW_CAST(Int64, mach_absolute_time());
 #endif
+}
+
+
+#if defined(_MSC_VER) && (_MSC_VER < 1920)
+    #define ARROW_PRId64 "I64d"
+    #define ARROW_PRIu64 "I64u"
+#else
+    #include <inttypes.h>
+
+    #define ARROW_PRId64 PRId64
+    #define ARROW_PRIu64 PRIu64
+#endif
+
+#if defined(_MSC_VER)
+    #define ARROW_INLINE __forceinline
+
+    #if defined(_WIN64)
+        #define ARROW_SYMBOL_PREFIX
+    #else
+        #define ARROW_SYMBOL_PREFIX "_"
+    #endif
+
+    #if defined(__clang__)
+        #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
+        _Pragma("clang diagnostic push")                                             \
+            _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
+
+        #define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
+    #else
+        #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
+        #define ARROW_INITIALIZER_END_DISABLE_WARNINGS
+    #endif
+
+    #pragma section(".CRT$XCU", read)
+    #define ARROW_INITIALIZER(f)                                                   \
+    static void __cdecl f(void);                                                 \
+    ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
+    __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
+        ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
+                                                            f##_)(void) = f;      \
+    ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
+    static void __cdecl f(void)
+#else
+    #if defined(__linux__)
+        #if defined(__clang__)
+            #if __has_warning("-Wreserved-id-macro")
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wreserved-id-macro"
+            #endif
+        #endif
+
+        #define __STDC_FORMAT_MACROS 1
+
+        #if defined(__clang__)
+            #if __has_warning("-Wreserved-id-macro")
+                #pragma clang diagnostic pop
+            #endif
+        #endif
+    #endif
+
+    #define ARROW_INLINE inline
+
+    #define ARROW_INITIALIZER(f)                                                   \
+    static void f(void) __attribute__((constructor));                            \
+    static void f(void)
+#endif // _MSC_VER
+
+#if defined(__cplusplus)
+    #define ARROW_CAST(type, x)         static_cast<type>(x)
+    #define ARROW_PTR_CAST(type, x)     reinterpret_cast<type>(x)
+    #define ARROW_EXTERN                extern "C"
+    #define ARROW_NULL                  NULL
+#else
+    #define ARROW_CAST(type, x)         ((type)x)
+    #define ARROW_PTR_CAST(type, x)     ((type)x)
+    #define ARROW_EXTERN                extern
+    #define ARROW_NULL                  0
+#endif
+
+#ifdef _MSC_VER
+    /*
+        io.h contains definitions for some structures with natural padding. This is
+        uninteresting, but for some reason, MSVC's behaviour is to warn about
+        including this system header. That *is* interesting
+    */
+    #pragma warning(disable : 4820)
+    #pragma warning(push, 1)
+    #include <io.h>
+    #pragma warning(pop)
+    #define ARROW_COLOUR_OUTPUT() (_isatty(_fileno(stdout)))
+#else
+    #include <unistd.h>
+    #define ARROW_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
+#endif
+
+static ARROW_INLINE void* arrow_realloc(void* const ptr, size_t new_size) {
+  void* const new_ptr = realloc(ptr, new_size);
+
+  if (ARROW_NULL == new_ptr) {
+    free(new_ptr);
+  }
+
+  return new_ptr;
 }
 
 typedef void (*arrow_testcase_t)(int *, size_t);
@@ -338,8 +330,8 @@ ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long unsigned int i) {
   ARROW_PRINTF("%lu", i);
 }
 
-ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void *p);
-ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void *p) {
+ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void* p);
+ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void* p) {
   ARROW_PRINTF("%p", p);
 }
 
@@ -723,7 +715,7 @@ arrow_type_printer(long long unsigned int i) {
     char *name = ARROW_PTR_CAST(char *, malloc(name_size));                    \
     arrow_state.tests = ARROW_PTR_CAST(                                        \
         struct arrow_test_state_s *,                                           \
-        arrow_realloc(ARROW_PTR_CAST(void *, arrow_state.tests),               \
+        arrow_realloc(ARROW_PTR_CAST(void* , arrow_state.tests),               \
                       sizeof(struct arrow_test_state_s) *                      \
                           arrow_state.tests_length));                          \
     arrow_state.tests[index].func = &arrow_##TESTSUITE##_##TESTNAME;                     \
@@ -816,12 +808,12 @@ static ARROW_INLINE FILE *arrow_fopen(const char *filename, const char *mode) {
 
 static ARROW_INLINE int arrow_main(int argc, const char *const argv[]);
 int arrow_main(int argc, const char *const argv[]) {
-  arrow_uint64_t failed = 0;
+  UInt64 failed = 0;
   size_t index = 0;
   size_t *failed_testcases = ARROW_NULL;
   size_t failed_testcases_length = 0;
   const char *filter = ARROW_NULL;
-  arrow_uint64_t ran_tests = 0;
+  UInt64 ran_tests = 0;
 
   enum colours { RESET, GREEN, RED };
 
@@ -877,21 +869,21 @@ int arrow_main(int argc, const char *const argv[]) {
   }
 
   printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
-         colours[GREEN], colours[RESET], ARROW_CAST(arrow_uint64_t, ran_tests));
+         colours[GREEN], colours[RESET], ARROW_CAST(UInt64, ran_tests));
 
   if (arrow_state.output) {
     fprintf(arrow_state.output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     fprintf(arrow_state.output,
             "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
-            ARROW_CAST(arrow_uint64_t, ran_tests));
+            ARROW_CAST(UInt64, ran_tests));
     fprintf(arrow_state.output,
             "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
-            ARROW_CAST(arrow_uint64_t, ran_tests));
+            ARROW_CAST(UInt64, ran_tests));
   }
 
   for (index = 0; index < arrow_state.tests_length; index++) {
     int result = 0;
-    arrow_int64_t ns = 0;
+    Int64 ns = 0;
 
     if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
       continue;
@@ -917,7 +909,7 @@ int arrow_main(int argc, const char *const argv[]) {
     if (0 != result) {
       const size_t failed_testcase_index = failed_testcases_length++;
       failed_testcases = ARROW_PTR_CAST(
-          size_t *, arrow_realloc(ARROW_PTR_CAST(void *, failed_testcases),
+          size_t *, arrow_realloc(ARROW_PTR_CAST(void* , failed_testcases),
                                   sizeof(size_t) * failed_testcases_length));
       failed_testcases[failed_testcase_index] = index;
       failed++;
@@ -949,11 +941,11 @@ int arrow_main(int argc, const char *const argv[]) {
 
 cleanup:
   for (index = 0; index < arrow_state.tests_length; index++) {
-    free(ARROW_PTR_CAST(void *, arrow_state.tests[index].name));
+    free(ARROW_PTR_CAST(void* , arrow_state.tests[index].name));
   }
 
-  free(ARROW_PTR_CAST(void *, failed_testcases));
-  free(ARROW_PTR_CAST(void *, arrow_state.tests));
+  free(ARROW_PTR_CAST(void* , failed_testcases));
+  free(ARROW_PTR_CAST(void* , arrow_state.tests));
 
   if (arrow_state.output) {
     fclose(arrow_state.output);
