@@ -1,32 +1,35 @@
 #ifndef SHEREDOM_ARROW_H_INCLUDED
 #define SHEREDOM_ARROW_H_INCLUDED
 
+#include <Arrow/Types.h>
+
 #ifdef _MSC_VER
-    // Disable warning about not inlining 'inline' functions.
-    #pragma warning(disable : 4710)
+/*
+   Disable warning about not inlining 'inline' functions.
+*/
+#pragma warning(disable : 4710)
 
-    #ifdef _WIN32
-        // Fixes the `warning C4668: '__cplusplus' is not defined as a preprocessor macro`
-        #pragma warning (disable : 4668)
+/* disable warning: no function prototype given: converting '()' to '(void)' */
+#pragma warning(disable : 4255)
 
-        // Disable 'conditional expression is constant'
-        #pragma warning(disable : 4127)
-    #endif // _WIN32
+/* disable warning: '__cplusplus' is not defined as a preprocessor macro,
+ * replacing with '0' for '#if/#elif' */
+#pragma warning(disable : 4668)
 
-    /*
-    Disable warning about inlining functions that are not marked 'inline'.
-    */
-    #pragma warning(disable : 4711)
-    #pragma warning(push, 1)
+/*
+   Disable warning about inlining functions that are not marked 'inline'.
+*/
+#pragma warning(disable : 4711)
+#pragma warning(push, 1)
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER < 1920)
-    typedef __int64 arrow_int64_t;
-    typedef unsigned __int64 arrow_uint64_t;
+typedef __int64 arrow_int64_t;
+typedef unsigned __int64 arrow_uint64_t;
 #else
-    #include <stdint.h>
-    typedef int64_t arrow_int64_t;
-    typedef uint64_t arrow_uint64_t;
+#include <stdint.h>
+typedef int64_t arrow_int64_t;
+typedef uint64_t arrow_uint64_t;
 #endif
 
 #include <stddef.h>
@@ -36,43 +39,43 @@
 #include <errno.h>
 
 #if defined(_MSC_VER)
-    #pragma warning(pop)
+#pragma warning(pop)
 #endif
 
 #if defined(__cplusplus)
-    #define ARROW_C_FUNC extern "C"
+#define ARROW_C_FUNC extern "C"
 #else
-    #define ARROW_C_FUNC
+#define ARROW_C_FUNC
 #endif
 
 #if defined(_MSC_VER)
-    // define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
-    #ifndef ARROW_USE_OLD_QPC
-        #pragma warning(push, 0)
-        #include <Windows.h>
-        #pragma warning(pop)
+// define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
+#ifndef ARROW_USE_OLD_QPC
+#pragma warning(push, 0)
+#include <Windows.h>
+#pragma warning(pop)
 
-        typedef LARGE_INTEGER arrow_large_integer;
-    #else 
-    //use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
-    //on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
-    typedef union {
-    struct {
-        unsigned long LowPart;
-        long HighPart;
-    } DUMMYSTRUCTNAME;
-    struct {
-        unsigned long LowPart;
-        long HighPart;
-    } u;
-    arrow_int64_t QuadPart;
-    } arrow_large_integer;
+typedef LARGE_INTEGER arrow_large_integer;
+#else 
+//use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
+//on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
+typedef union {
+  struct {
+    unsigned long LowPart;
+    long HighPart;
+  } DUMMYSTRUCTNAME;
+  struct {
+    unsigned long LowPart;
+    long HighPart;
+  } u;
+  arrow_int64_t QuadPart;
+} arrow_large_integer;
 
-    ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
-        arrow_large_integer *);
-    ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
-        arrow_large_integer *);
-    #endif
+ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
+    arrow_large_integer *);
+ARROW_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
+    arrow_large_integer *);
+#endif
 #elif defined(__linux__)
 
 /*
@@ -113,57 +116,57 @@
 #endif
 
 #if defined(_MSC_VER)
-  #define ARROW_INLINE __forceinline
+#define ARROW_INLINE __forceinline
 
-  #if defined(_WIN64)
-    #define ARROW_SYMBOL_PREFIX
-  #else
-    #define ARROW_SYMBOL_PREFIX "_"
-  #endif
-
-  #if defined(__clang__)
-    #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-      _Pragma("clang diagnostic push")                                             \
-          _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
-
-    #define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
-  #else
-    #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
-    #define ARROW_INITIALIZER_END_DISABLE_WARNINGS
-  #endif
-
-  #pragma section(".CRT$XCU", read)
-  #define ARROW_INITIALIZER(f)                                                   \
-    static void __cdecl f(void);                                                 \
-    ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
-    __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
-        ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
-                                                          f##_)(void) = f;      \
-    ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
-    static void __cdecl f(void)
+#if defined(_WIN64)
+#define ARROW_SYMBOL_PREFIX
 #else
-  #if defined(__linux__)
-    #if defined(__clang__)
-      #if __has_warning("-Wreserved-id-macro")
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreserved-id-macro"
-      #endif
-    #endif
+#define ARROW_SYMBOL_PREFIX "_"
+#endif
 
-    #define __STDC_FORMAT_MACROS 1
+#if defined(__clang__)
+#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
+  _Pragma("clang diagnostic push")                                             \
+      _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
 
-    #if defined(__clang__)
-      #if __has_warning("-Wreserved-id-macro")
-        #pragma clang diagnostic pop
-      #endif
-    #endif
-  #endif
+#define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
+#else
+#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
+#define ARROW_INITIALIZER_END_DISABLE_WARNINGS
+#endif
 
-  #define ARROW_INLINE inline
+#pragma section(".CRT$XCU", read)
+#define ARROW_INITIALIZER(f)                                                   \
+  static void __cdecl f(void);                                                 \
+  ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
+  __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
+      ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
+                                                         f##_)(void) = f;      \
+  ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
+  static void __cdecl f(void)
+#else
+#if defined(__linux__)
+#if defined(__clang__)
+#if __has_warning("-Wreserved-id-macro")
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreserved-id-macro"
+#endif
+#endif
 
-  #define ARROW_INITIALIZER(f)                                                   \
-    static void f(void) __attribute__((constructor));                            \
-    static void f(void)
+#define __STDC_FORMAT_MACROS 1
+
+#if defined(__clang__)
+#if __has_warning("-Wreserved-id-macro")
+#pragma clang diagnostic pop
+#endif
+#endif
+#endif
+
+#define ARROW_INLINE inline
+
+#define ARROW_INITIALIZER(f)                                                   \
+  static void f(void) __attribute__((constructor));                            \
+  static void f(void)
 #endif
 
 #if defined(__cplusplus)
@@ -240,14 +243,14 @@ struct arrow_test_state_s {
   char *name;
 };
 
-struct arrow_test_s {
+struct arrow_state_s {
   struct arrow_test_state_s *tests;
-  size_t num_tests;
+  size_t tests_length;
   FILE *output;
 };
 
 /* extern to the global state arrow needs to execute */
-ARROW_EXTERN struct arrow_test_s arrow_test_;
+ARROW_EXTERN struct arrow_state_s arrow_state;
 
 #if defined(_MSC_VER)
 #define ARROW_WEAK __forceinline
@@ -267,8 +270,8 @@ ARROW_EXTERN struct arrow_test_s arrow_test_;
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 #define ARROW_PRINTF(...)                                                      \
-  if (arrow_test_.foutput) {                                                    \
-    fprintf(arrow_test_.foutput, __VA_ARGS__);                                  \
+  if (arrow_state.output) {                                                    \
+    fprintf(arrow_state.output, __VA_ARGS__);                                  \
   }                                                                            \
   printf(__VA_ARGS__)
 #ifdef __clang__
@@ -424,10 +427,6 @@ arrow_type_printer(long long unsigned int i) {
 #define ARROW_AUTO(x) typeof(x + 0)
 #endif
 
-/* Macros for testing whether an unit test succeeds or fails. These macros
- * can be used arbitrarily in functions implementing the unit test
-*/
-
 #if defined(__clang__)
 #define ARROW_STRNCMP(x, y, size)                                              \
   _Pragma("clang diagnostic push")                                             \
@@ -437,7 +436,6 @@ arrow_type_printer(long long unsigned int i) {
 #define ARROW_STRNCMP(x, y, size) strncmp(x, y, size)
 #endif
 
-//
 #if defined(__clang__)
 #define ARROW_EXPECT(x, y, cond)                                               \
   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
@@ -461,252 +459,279 @@ arrow_type_printer(long long unsigned int i) {
   }                                                                            \
   while (0)                                                                    \
   ARROW_SURPRESS_WARNING_END
-
-#endif 
-// #define EXPECT_TRUE(x)                                                         \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (!(x)) {                                                                \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : true\n");                                     \
-//       ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define EXPECT_FALSE(x)                                                        \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (x) {                                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : false\n");                                    \
-//       ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define EXPECT_EQ(x, y) ARROW_EXPECT(x, y, ==)
-// #define EXPECT_NE(x, y) ARROW_EXPECT(x, y, !=)
-// #define EXPECT_LT(x, y) ARROW_EXPECT(x, y, <)
-// #define EXPECT_LE(x, y) ARROW_EXPECT(x, y, <=)
-// #define EXPECT_GT(x, y) ARROW_EXPECT(x, y, >)
-// #define EXPECT_GE(x, y) ARROW_EXPECT(x, y, >=)
-
-// #define EXPECT_STREQ(x, y)                                                     \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 != strcmp(x, y)) {                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-//       ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define EXPECT_STRNE(x, y)                                                     \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 == strcmp(x, y)) {                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-//       ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define EXPECT_STRNEQ(x, y, n)                                                 \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 != ARROW_STRNCMP(x, y, n)) {                                         \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
-//       ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define EXPECT_STRNNE(x, y, n)                                                 \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
-//       ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #if defined(__clang__)
-// #define ARROW_ASSERT(x, y, cond)                                               \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     _Pragma("clang diagnostic push")                                           \
-//         _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
-//             _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
-//                 _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
-//                     ARROW_AUTO(x) xEval = (x);                                 \
-//     ARROW_AUTO(y) yEval = (y);                                                 \
-//     if (!((xEval)cond(yEval))) {                                               \
-//       _Pragma("clang diagnostic pop")                                          \
-//           ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                \
-//       ARROW_PRINTF("  Expected : ");                                           \
-//       arrow_type_printer(xEval);                                               \
-//       ARROW_PRINTF("\n");                                                      \
-//       ARROW_PRINTF("    Actual : ");                                           \
-//       arrow_type_printer(yEval);                                               \
-//       ARROW_PRINTF("\n");                                                      \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-// #elif defined(__GNUC__)
-// #define ARROW_ASSERT(x, y, cond)                                               \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     ARROW_AUTO(x) xEval = (x);                                                 \
-//     ARROW_AUTO(y) yEval = (y);                                                 \
-//     if (!((xEval)cond(yEval))) {                                               \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : ");                                           \
-//       arrow_type_printer(xEval);                                               \
-//       ARROW_PRINTF("\n");                                                      \
-//       ARROW_PRINTF("    Actual : ");                                           \
-//       arrow_type_printer(yEval);                                               \
-//       ARROW_PRINTF("\n");                                                      \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-// #else
-// #define ARROW_ASSERT(x, y, cond)                                               \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (!((x)cond(y))) {                                                       \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-// #endif
-
-// #define ASSERT_TRUE(x)                                                         \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (!(x)) {                                                                \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : true\n");                                     \
-//       ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define ASSERT_FALSE(x)                                                        \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (x) {                                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : false\n");                                    \
-//       ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define ASSERT_EQ(x, y) ARROW_ASSERT(x, y, ==)
-// #define ASSERT_NE(x, y) ARROW_ASSERT(x, y, !=)
-// #define ASSERT_LT(x, y) ARROW_ASSERT(x, y, <)
-// #define ASSERT_LE(x, y) ARROW_ASSERT(x, y, <=)
-// #define ASSERT_GT(x, y) ARROW_ASSERT(x, y, >)
-// #define ASSERT_GE(x, y) ARROW_ASSERT(x, y, >=)
-
-// #define ASSERT_STREQ(x, y)                                                     \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 != strcmp(x, y)) {                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-//       ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define ASSERT_STRNE(x, y)                                                     \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 == strcmp(x, y)) {                                                   \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-//       ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define ASSERT_STRNEQ(x, y, n)                                                 \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 != ARROW_STRNCMP(x, y, n)) {                                         \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
-//       ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-// #define ASSERT_STRNNE(x, y, n)                                                 \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
-//       ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
-//       *arrow_result = 1;                                                       \
-//       return;                                                                  \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-
-#define TEST(SET, NAME)                                                       \
-  ARROW_EXTERN struct arrow_test_s arrow_test_;                               \
-  static void arrow_run_##SET##_##NAME(int *arrow_result);                     \
-  static void arrow_##SET##_##NAME(int *arrow_result, size_t arrow_index) {    \
-    (void)arrow_index;                                                         \
-    arrow_run_##SET##_##NAME(arrow_result);                                    \
+#elif defined(__GNUC__)
+#define ARROW_EXPECT(x, y, cond)                                               \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    ARROW_AUTO(x) xEval = (x);                                                 \
+    ARROW_AUTO(y) yEval = (y);                                                 \
+    if (!((xEval)cond(yEval))) {                                               \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : ");                                           \
+      arrow_type_printer(xEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      ARROW_PRINTF("    Actual : ");                                           \
+      arrow_type_printer(yEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
   }                                                                            \
-  ARROW_INITIALIZER(arrow_register_##SET##_##NAME) {                           \
-    const size_t index = arrow_test_.num_tests++;                           \
-    const char *name_part = #SET "." #NAME;                                    \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+#else
+#define ARROW_EXPECT(x, y, cond)                                               \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (!((x)cond(y))) {                                                       \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+#endif
+
+#define EXPECT_TRUE(x)                                                         \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (!(x)) {                                                                \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : true\n");                                     \
+      ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define EXPECT_FALSE(x)                                                        \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (x) {                                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : false\n");                                    \
+      ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define EXPECT_EQ(x, y) ARROW_EXPECT(x, y, ==)
+#define EXPECT_NE(x, y) ARROW_EXPECT(x, y, !=)
+#define EXPECT_LT(x, y) ARROW_EXPECT(x, y, <)
+#define EXPECT_LE(x, y) ARROW_EXPECT(x, y, <=)
+#define EXPECT_GT(x, y) ARROW_EXPECT(x, y, >)
+#define EXPECT_GE(x, y) ARROW_EXPECT(x, y, >=)
+
+#define EXPECT_STREQ(x, y)                                                     \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 != strcmp(x, y)) {                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
+      ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define EXPECT_STRNE(x, y)                                                     \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 == strcmp(x, y)) {                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
+      ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define EXPECT_STRNEQ(x, y, n)                                                 \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 != ARROW_STRNCMP(x, y, n)) {                                         \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
+      ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define EXPECT_STRNNE(x, y, n)                                                 \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
+      ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
+      *arrow_result = 1;                                                       \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#if defined(__clang__)
+#define ARROW_ASSERT(x, y, cond)                                               \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    _Pragma("clang diagnostic push")                                           \
+        _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     \
+            _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    \
+                _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")          \
+                    ARROW_AUTO(x) xEval = (x);                                 \
+    ARROW_AUTO(y) yEval = (y);                                                 \
+    if (!((xEval)cond(yEval))) {                                               \
+      _Pragma("clang diagnostic pop")                                          \
+          ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                \
+      ARROW_PRINTF("  Expected : ");                                           \
+      arrow_type_printer(xEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      ARROW_PRINTF("    Actual : ");                                           \
+      arrow_type_printer(yEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+#elif defined(__GNUC__)
+#define ARROW_ASSERT(x, y, cond)                                               \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    ARROW_AUTO(x) xEval = (x);                                                 \
+    ARROW_AUTO(y) yEval = (y);                                                 \
+    if (!((xEval)cond(yEval))) {                                               \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : ");                                           \
+      arrow_type_printer(xEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      ARROW_PRINTF("    Actual : ");                                           \
+      arrow_type_printer(yEval);                                               \
+      ARROW_PRINTF("\n");                                                      \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+#else
+#define ARROW_ASSERT(x, y, cond)                                               \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (!((x)cond(y))) {                                                       \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+#endif
+
+#define ASSERT_TRUE(x)                                                         \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (!(x)) {                                                                \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : true\n");                                     \
+      ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define ASSERT_FALSE(x)                                                        \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (x) {                                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : false\n");                                    \
+      ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define ASSERT_EQ(x, y) ARROW_ASSERT(x, y, ==)
+#define ASSERT_NE(x, y) ARROW_ASSERT(x, y, !=)
+#define ASSERT_LT(x, y) ARROW_ASSERT(x, y, <)
+#define ASSERT_LE(x, y) ARROW_ASSERT(x, y, <=)
+#define ASSERT_GT(x, y) ARROW_ASSERT(x, y, >)
+#define ASSERT_GE(x, y) ARROW_ASSERT(x, y, >=)
+
+#define ASSERT_STREQ(x, y)                                                     \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 != strcmp(x, y)) {                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
+      ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define ASSERT_STRNE(x, y)                                                     \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 == strcmp(x, y)) {                                                   \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
+      ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define ASSERT_STRNEQ(x, y, n)                                                 \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 != ARROW_STRNCMP(x, y, n)) {                                         \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
+      ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define ASSERT_STRNNE(x, y, n)                                                 \
+  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
+    if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
+      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      ARROW_PRINTF("  Expected : \"%.*s\"\n", ARROW_CAST(int, n), x);          \
+      ARROW_PRINTF("    Actual : \"%.*s\"\n", ARROW_CAST(int, n), y);          \
+      *arrow_result = 1;                                                       \
+      return;                                                                  \
+    }                                                                          \
+  }                                                                            \
+  while (0)                                                                    \
+  ARROW_SURPRESS_WARNING_END
+
+#define TEST(TESTSUITE, TESTNAME)                                                       \
+  ARROW_EXTERN struct arrow_state_s arrow_state;                               \
+  static void arrow_run_##TESTSUITE##_##TESTNAME(int *arrow_result);                     \
+  static void arrow_##TESTSUITE##_##TESTNAME(int *arrow_result, size_t arrow_index) {    \
+    (void)arrow_index;                                                         \
+    arrow_run_##TESTSUITE##_##TESTNAME(arrow_result);                                    \
+  }                                                                            \
+  ARROW_INITIALIZER(arrow_register_##TESTSUITE##_##TESTNAME) {                           \
+    const size_t index = arrow_state.tests_length++;                           \
+    const char *name_part = #TESTSUITE "." #TESTNAME;                                    \
     const size_t name_size = strlen(name_part) + 1;                            \
     char *name = ARROW_PTR_CAST(char *, malloc(name_size));                    \
-    arrow_test_.tests = ARROW_PTR_CAST(                                        \
+    arrow_state.tests = ARROW_PTR_CAST(                                        \
         struct arrow_test_state_s *,                                           \
-        arrow_realloc(ARROW_PTR_CAST(void *, arrow_test_.tests),               \
+        arrow_realloc(ARROW_PTR_CAST(void *, arrow_state.tests),               \
                       sizeof(struct arrow_test_state_s) *                      \
-                          arrow_test_.num_tests));                          \
-    arrow_test_.tests[index].func = &arrow_##SET##_##NAME;                     \
-    arrow_test_.tests[index].name = name;                                      \
-    arrow_test_.tests[index].index = 0;                                        \
+                          arrow_state.tests_length));                          \
+    arrow_state.tests[index].func = &arrow_##TESTSUITE##_##TESTNAME;                     \
+    arrow_state.tests[index].name = name;                                      \
+    arrow_state.tests[index].index = 0;                                        \
     ARROW_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
-  void arrow_run_##SET##_##NAME(int *arrow_result)
-
+  void arrow_run_##TESTSUITE##_##TESTNAME(int *arrow_result)
 
 ARROW_WEAK
 int arrow_should_filter_test(const char *filter, const char *testcase);
@@ -791,13 +816,22 @@ static ARROW_INLINE FILE *arrow_fopen(const char *filename, const char *mode) {
 
 static ARROW_INLINE int arrow_main(int argc, const char *const argv[]);
 int arrow_main(int argc, const char *const argv[]) {
+  arrow_uint64_t failed = 0;
   size_t index = 0;
   size_t *failed_testcases = ARROW_NULL;
   size_t failed_testcases_length = 0;
   const char *filter = ARROW_NULL;
   arrow_uint64_t ran_tests = 0;
 
+  enum colours { RESET, GREEN, RED };
 
+  const int use_colours = ARROW_COLOUR_OUTPUT();
+  const char *colours[] = {"\033[0m", "\033[32m", "\033[31m"};
+  if (!use_colours) {
+    for (index = 0; index < sizeof colours / sizeof colours[0]; index++) {
+      colours[index] = "";
+    }
+  }
   /* loop through all arguments looking for our options */
   for (index = 1; index < ARROW_CAST(size_t, argc); index++) {
     /* Informational switches */
@@ -824,18 +858,18 @@ int arrow_main(int argc, const char *const argv[]) {
       filter = argv[index] + strlen(filter_str);
     } else if (0 ==
                ARROW_STRNCMP(argv[index], output_str, strlen(output_str))) {
-      arrow_test_.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
+      arrow_state.output = arrow_fopen(argv[index] + strlen(output_str), "w+");
     } else if (0 == ARROW_STRNCMP(argv[index], list_str, strlen(list_str))) {
-      for (index = 0; index < arrow_test_.num_tests; index++) {
-        ARROW_PRINTF("%s\n", arrow_test_.tests[index].name);
+      for (index = 0; index < arrow_state.tests_length; index++) {
+        ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
       }
       /* when printing the test list, don't actually run the tests */
       return 0;
     }
   }
 
-  for (index = 0; index < arrow_test_.num_tests; index++) {
-    if (arrow_should_filter_test(filter, arrow_test_.tests[index].name)) {
+  for (index = 0; index < arrow_state.tests_length; index++) {
+    if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
       continue;
     }
 
@@ -845,40 +879,39 @@ int arrow_main(int argc, const char *const argv[]) {
   printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
          colours[GREEN], colours[RESET], ARROW_CAST(arrow_uint64_t, ran_tests));
 
-  if (arrow_test_.foutput) {
-    fprintf(arrow_test_.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    fprintf(arrow_test_.foutput,
+  if (arrow_state.output) {
+    fprintf(arrow_state.output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(arrow_state.output,
             "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
-    fprintf(arrow_test_.foutput,
+    fprintf(arrow_state.output,
             "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
   }
 
-  // Loop through and run each test
-  for (index = 0; index < arrow_test_.num_tests; index++) {
+  for (index = 0; index < arrow_state.tests_length; index++) {
     int result = 0;
     arrow_int64_t ns = 0;
 
-    if (arrow_should_filter_test(filter, arrow_test_.tests[index].name)) {
+    if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
       continue;
     }
 
     printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
-           arrow_test_.tests[index].name);
+           arrow_state.tests[index].name);
 
-    if (arrow_test_.foutput) {
-      fprintf(arrow_test_.foutput, "<testcase name=\"%s\">",
-              arrow_test_.tests[index].name);
+    if (arrow_state.output) {
+      fprintf(arrow_state.output, "<testcase name=\"%s\">",
+              arrow_state.tests[index].name);
     }
 
     ns = arrow_ns();
     errno = 0;
-    arrow_test_.tests[index].func(&result, arrow_test_.tests[index].index);
+    arrow_state.tests[index].func(&result, arrow_state.tests[index].index);
     ns = arrow_ns() - ns;
 
-    if (arrow_test_.foutput) {
-      fprintf(arrow_test_.foutput, "</testcase>\n");
+    if (arrow_state.output) {
+      fprintf(arrow_state.output, "</testcase>\n");
     }
 
     if (0 != result) {
@@ -889,10 +922,10 @@ int arrow_main(int argc, const char *const argv[]) {
       failed_testcases[failed_testcase_index] = index;
       failed++;
       printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
-             colours[RESET], arrow_test_.tests[index].name, ns);
+             colours[RESET], arrow_state.tests[index].name, ns);
     } else {
       printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
-             colours[RESET], arrow_test_.tests[index].name, ns);
+             colours[RESET], arrow_state.tests[index].name, ns);
     }
   }
 
@@ -906,24 +939,24 @@ int arrow_main(int argc, const char *const argv[]) {
            colours[RED], colours[RESET], failed);
     for (index = 0; index < failed_testcases_length; index++) {
       printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
-             arrow_test_.tests[failed_testcases[index]].name);
+             arrow_state.tests[failed_testcases[index]].name);
     }
   }
 
-  if (arrow_test_.foutput) {
-    fprintf(arrow_test_.foutput, "</testsuite>\n</testsuites>\n");
+  if (arrow_state.output) {
+    fprintf(arrow_state.output, "</testsuite>\n</testsuites>\n");
   }
 
 cleanup:
-  for (index = 0; index < arrow_test_.num_tests; index++) {
-    free(ARROW_PTR_CAST(void *, arrow_test_.tests[index].name));
+  for (index = 0; index < arrow_state.tests_length; index++) {
+    free(ARROW_PTR_CAST(void *, arrow_state.tests[index].name));
   }
 
   free(ARROW_PTR_CAST(void *, failed_testcases));
-  free(ARROW_PTR_CAST(void *, arrow_test_.tests));
+  free(ARROW_PTR_CAST(void *, arrow_state.tests));
 
-  if (arrow_test_.foutput) {
-    fclose(arrow_test_.foutput);
+  if (arrow_state.output) {
+    fclose(arrow_state.output);
   }
 
   return ARROW_CAST(int, failed);
@@ -935,7 +968,7 @@ cleanup:
    data without having to use the ARROW_MAIN macro, thus allowing them to write
    their own main() function.
 */
-#define ARROW_STATE() struct arrow_test_s arrow_test_ = {0, 0, 0}
+#define ARROW_STATE() struct arrow_state_s arrow_state = {0, 0, 0}
 
 /*
    define a main() function to call into arrow.h and start executing tests! A
