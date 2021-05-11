@@ -55,19 +55,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 typedef float  Float32; 
 typedef double Float64; 
 
-ARROW_DEBUG_CHECK(sizeof(UInt8)  == sizeof(Int8));
-ARROW_DEBUG_CHECK(sizeof(UInt16) == sizeof(Int16));
-ARROW_DEBUG_CHECK(sizeof(UInt32) == sizeof(Int32));
-ARROW_DEBUG_CHECK(sizeof(UInt64) == sizeof(Int64));
-
-ARROW_DEBUG_CHECK(sizeof(UInt8)  == 1);
-ARROW_DEBUG_CHECK(sizeof(UInt16) == 2);
-ARROW_DEBUG_CHECK(sizeof(UInt32) == 4);
-ARROW_DEBUG_CHECK(sizeof(UInt64) == 8);
-
-ARROW_DEBUG_CHECK(sizeof(Float32) == 4);
-ARROW_DEBUG_CHECK(sizeof(Float64) == 8);
-
 // Bool-sy
 typedef Int8  Bool8; 
 typedef Int16 Bool16;
@@ -207,12 +194,5 @@ typedef Int32 Rune;
     typedef  uintptr_t   UIntptr;
     typedef  intptr_t    Intptr;
 #endif
-
-ARROW_DEBUG_CHECK(sizeof(UIntptr) == sizeof(Intptr));
-
-
-// #ifdef __cplusplus
-// } // namespace Hazel
-// #endif
 
 #endif // ARROW_TYPES_H
