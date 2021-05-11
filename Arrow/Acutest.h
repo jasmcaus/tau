@@ -34,7 +34,7 @@
  *
  * Note the list has to be ended with a zeroed record.
  */
-#define TEST_LIST               const struct arrow_test_ arrow_list_[]
+// #define TEST_LIST               const struct arrow_test_ arrow_list_[]
 
 
 /* Macros for testing whether an unit test succeeds or fails. These macros
@@ -56,9 +56,9 @@
  *       TEST_CHECK(ptr->member2 > 200);
  *   }
  */
+// #define TEST_CHECK(cond,...)   arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__)
 #define TEST_CHECK(cond,...)   arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__)
-
-#define TEST_ASSERT_(cond,...)                                                 \
+#define TEST_ASSERT(cond,...)                                                 \
     do {                                                                       \
         if(!arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__))           \
             arrow_abort_();                                                  \
@@ -315,7 +315,7 @@ enum {
     ARROW_FLAG_FAILURE_ = 1 << 2,
 };
 
-extern const struct arrow_test_ arrow_list_[];
+// extern const struct arrow_test_ arrow_list_[];
 
 int arrow_check(int cond, const char* file, int line, const char* fmt, ...);
 // void arrow_case_(const char* fmt, ...);
@@ -769,8 +769,8 @@ static ARROW_INLINE void *arrow_realloc(void* const ptr, size_t new_size) {
     return new_ptr;
 }
 
-ARROW_INLINE bool arrow_should_filter_test(const char* filter, const char* testcase);
-ARROW_INLINE bool arrow_should_filter_test(const char* filter, const char* testcase) {
+static ARROW_INLINE bool arrow_should_filter_test(const char* filter, const char* testcase);
+static ARROW_INLINE bool arrow_should_filter_test(const char* filter, const char* testcase) {
     if(filter) {
         const char* curr_filter = filter; 
         const char* curr_testcase = testcase; 
@@ -1284,7 +1284,7 @@ arrow_cmdline_callback_(int id, const char* arg)
 #endif
             break;
 
-        case 'l':
+        case 'L':
             arrow_list_tests();
             arrow_exit_(0);
             break;
