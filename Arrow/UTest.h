@@ -247,7 +247,7 @@ struct arrow_test_s {
 };
 
 /* extern to the global state arrow needs to execute */
-ARROW_EXTERN struct arrow_test_s arrow_state;
+ARROW_EXTERN struct arrow_test_s arrow_test_;
 
 #if defined(_MSC_VER)
 #define ARROW_WEAK __forceinline
@@ -267,8 +267,8 @@ ARROW_EXTERN struct arrow_test_s arrow_state;
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 #define ARROW_PRINTF(...)                                                      \
-  if (arrow_state.foutput) {                                                    \
-    fprintf(arrow_state.foutput, __VA_ARGS__);                                  \
+  if (arrow_test_.foutput) {                                                    \
+    fprintf(arrow_test_.foutput, __VA_ARGS__);                                  \
   }                                                                            \
   printf(__VA_ARGS__)
 #ifdef __clang__
@@ -684,25 +684,25 @@ arrow_type_printer(long long unsigned int i) {
 //   ARROW_SURPRESS_WARNING_END
 
 #define TEST(SET, NAME)                                                       \
-  ARROW_EXTERN struct arrow_test_s arrow_state;                               \
+  ARROW_EXTERN struct arrow_test_s arrow_test_;                               \
   static void arrow_run_##SET##_##NAME(int *arrow_result);                     \
   static void arrow_##SET##_##NAME(int *arrow_result, size_t arrow_index) {    \
     (void)arrow_index;                                                         \
     arrow_run_##SET##_##NAME(arrow_result);                                    \
   }                                                                            \
   ARROW_INITIALIZER(arrow_register_##SET##_##NAME) {                           \
-    const size_t index = arrow_state.num_tests++;                           \
+    const size_t index = arrow_test_.num_tests++;                           \
     const char *name_part = #SET "." #NAME;                                    \
     const size_t name_size = strlen(name_part) + 1;                            \
     char *name = ARROW_PTR_CAST(char *, malloc(name_size));                    \
-    arrow_state.tests = ARROW_PTR_CAST(                                        \
+    arrow_test_.tests = ARROW_PTR_CAST(                                        \
         struct arrow_test_state_s *,                                           \
-        arrow_realloc(ARROW_PTR_CAST(void *, arrow_state.tests),               \
+        arrow_realloc(ARROW_PTR_CAST(void *, arrow_test_.tests),               \
                       sizeof(struct arrow_test_state_s) *                      \
-                          arrow_state.num_tests));                          \
-    arrow_state.tests[index].func = &arrow_##SET##_##NAME;                     \
-    arrow_state.tests[index].name = name;                                      \
-    arrow_state.tests[index].index = 0;                                        \
+                          arrow_test_.num_tests));                          \
+    arrow_test_.tests[index].func = &arrow_##SET##_##NAME;                     \
+    arrow_test_.tests[index].name = name;                                      \
+    arrow_test_.tests[index].index = 0;                                        \
     ARROW_SNPRINTF(name, name_size, "%s", name_part);                          \
   }                                                                            \
   void arrow_run_##SET##_##NAME(int *arrow_result)
@@ -798,15 +798,7 @@ int arrow_main(int argc, const char *const argv[]) {
   const char *filter = ARROW_NULL;
   arrow_uint64_t ran_tests = 0;
 
-  enum colours { RESET, GREEN, RED };
 
-  const int use_colours = ARROW_COLOUR_OUTPUT();
-  const char *colours[] = {"\033[0m", "\033[32m", "\033[31m"};
-  if (!use_colours) {
-    for (index = 0; index < sizeof colours / sizeof colours[0]; index++) {
-      colours[index] = "";
-    }
-  }
   /* loop through all arguments looking for our options */
   for (index = 1; index < ARROW_CAST(size_t, argc); index++) {
     /* Informational switches */
@@ -833,18 +825,18 @@ int arrow_main(int argc, const char *const argv[]) {
       filter = argv[index] + strlen(filter_str);
     } else if (0 ==
                ARROW_STRNCMP(argv[index], output_str, strlen(output_str))) {
-      arrow_state.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
+      arrow_test_.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
     } else if (0 == ARROW_STRNCMP(argv[index], list_str, strlen(list_str))) {
-      for (index = 0; index < arrow_state.num_tests; index++) {
-        ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
+      for (index = 0; index < arrow_test_.num_tests; index++) {
+        ARROW_PRINTF("%s\n", arrow_test_.tests[index].name);
       }
       /* when printing the test list, don't actually run the tests */
       return 0;
     }
   }
 
-  for (index = 0; index < arrow_state.num_tests; index++) {
-    if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
+  for (index = 0; index < arrow_test_.num_tests; index++) {
+    if (arrow_should_filter_test(filter, arrow_test_.tests[index].name)) {
       continue;
     }
 
@@ -854,39 +846,40 @@ int arrow_main(int argc, const char *const argv[]) {
   printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
          colours[GREEN], colours[RESET], ARROW_CAST(arrow_uint64_t, ran_tests));
 
-  if (arrow_state.foutput) {
-    fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    fprintf(arrow_state.foutput,
+  if (arrow_test_.foutput) {
+    fprintf(arrow_test_.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(arrow_test_.foutput,
             "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
-    fprintf(arrow_state.foutput,
+    fprintf(arrow_test_.foutput,
             "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
   }
 
-  for (index = 0; index < arrow_state.num_tests; index++) {
+  // Loop through and run each test
+  for (index = 0; index < arrow_test_.num_tests; index++) {
     int result = 0;
     arrow_int64_t ns = 0;
 
-    if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
+    if (arrow_should_filter_test(filter, arrow_test_.tests[index].name)) {
       continue;
     }
 
     printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
-           arrow_state.tests[index].name);
+           arrow_test_.tests[index].name);
 
-    if (arrow_state.foutput) {
-      fprintf(arrow_state.foutput, "<testcase name=\"%s\">",
-              arrow_state.tests[index].name);
+    if (arrow_test_.foutput) {
+      fprintf(arrow_test_.foutput, "<testcase name=\"%s\">",
+              arrow_test_.tests[index].name);
     }
 
     ns = arrow_ns();
     errno = 0;
-    arrow_state.tests[index].func(&result, arrow_state.tests[index].index);
+    arrow_test_.tests[index].func(&result, arrow_test_.tests[index].index);
     ns = arrow_ns() - ns;
 
-    if (arrow_state.foutput) {
-      fprintf(arrow_state.foutput, "</testcase>\n");
+    if (arrow_test_.foutput) {
+      fprintf(arrow_test_.foutput, "</testcase>\n");
     }
 
     if (0 != result) {
@@ -897,10 +890,10 @@ int arrow_main(int argc, const char *const argv[]) {
       failed_testcases[failed_testcase_index] = index;
       failed++;
       printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
-             colours[RESET], arrow_state.tests[index].name, ns);
+             colours[RESET], arrow_test_.tests[index].name, ns);
     } else {
       printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
-             colours[RESET], arrow_state.tests[index].name, ns);
+             colours[RESET], arrow_test_.tests[index].name, ns);
     }
   }
 
@@ -914,24 +907,24 @@ int arrow_main(int argc, const char *const argv[]) {
            colours[RED], colours[RESET], failed);
     for (index = 0; index < failed_testcases_length; index++) {
       printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
-             arrow_state.tests[failed_testcases[index]].name);
+             arrow_test_.tests[failed_testcases[index]].name);
     }
   }
 
-  if (arrow_state.foutput) {
-    fprintf(arrow_state.foutput, "</testsuite>\n</testsuites>\n");
+  if (arrow_test_.foutput) {
+    fprintf(arrow_test_.foutput, "</testsuite>\n</testsuites>\n");
   }
 
 cleanup:
-  for (index = 0; index < arrow_state.num_tests; index++) {
-    free(ARROW_PTR_CAST(void *, arrow_state.tests[index].name));
+  for (index = 0; index < arrow_test_.num_tests; index++) {
+    free(ARROW_PTR_CAST(void *, arrow_test_.tests[index].name));
   }
 
   free(ARROW_PTR_CAST(void *, failed_testcases));
-  free(ARROW_PTR_CAST(void *, arrow_state.tests));
+  free(ARROW_PTR_CAST(void *, arrow_test_.tests));
 
-  if (arrow_state.foutput) {
-    fclose(arrow_state.foutput);
+  if (arrow_test_.foutput) {
+    fclose(arrow_test_.foutput);
   }
 
   return ARROW_CAST(int, failed);
@@ -943,7 +936,7 @@ cleanup:
    data without having to use the ARROW_MAIN macro, thus allowing them to write
    their own main() function.
 */
-#define ARROW_STATE() struct arrow_test_s arrow_state = {0, 0, 0}
+#define ARROW_STATE() struct arrow_test_s arrow_test_ = {0, 0, 0}
 
 /*
    define a main() function to call into arrow.h and start executing tests! A

@@ -841,44 +841,18 @@ static ARROW_INLINE FILE *arrow_fopen(const char *filename, const char *mode) {
     #endif
 }
 
+// arrow_main
 
-/* This is called just before each test */
-static void
-arrow_init_(const char *test_name)
-{
-#ifdef TEST_INIT
-    TEST_INIT
-    ; /* Allow for a single unterminated function call */
-#endif
 
-    /* Suppress any warnings about unused variable. */
-    (void) test_name;
-}
-
-/* This is called after each test */
-static void
-arrow_fini_(const char *test_name)
-{
-#ifdef TEST_FINI
-    TEST_FINI
-    ; /* Allow for a single unterminated function call */
-#endif
-
-    /* Suppress any warnings about unused variable. */
-    (void) test_name;
-}
 
 void
 arrow_abort_(void)
 {
-    if(arrow_current_test_ != NULL)
-        arrow_fini_(arrow_current_test_->name);
     abort();
-    }
 }
 
 static void
-arrow_list_names_(void)
+arrow_list_tests(void)
 {
     const struct arrow_test_* test;
 
@@ -887,51 +861,8 @@ arrow_list_names_(void)
         printf("  %s\n", test->name);
 }
 
-static void
-arrow_remember_(int i)
-{
-    if(arrow_test_data_[i].flags & ARROW_FLAG_RUN_)
-        return;
-
-    arrow_test_data_[i].flags |= ARROW_FLAG_RUN_;
-    arrow_count_++;
-}
-
-static void
-arrow_set_success_(int i, int success)
-{
-    arrow_test_data_[i].flags |= success ? ARROW_FLAG_SUCCESS_ : ARROW_FLAG_FAILURE_;
-}
-
-static void
-arrow_set_duration_(int i, double duration)
-{
-    arrow_test_data_[i].duration = duration;
-}
-
-static int
-arrow_name_contains_word_(const char* name, const char* pattern)
-{
-    static const char word_delim[] = " \t-_/.,:;";
-    const char* substr;
-    size_t pattern_len;
-
-    pattern_len = strlen(pattern);
-
-    substr = strstr(name, pattern);
-    while(substr != NULL) {
-        int starts_on_word_boundary = (substr == name || strchr(word_delim, substr[-1]) != NULL);
-        int ends_on_word_boundary = (substr[pattern_len] == '\0' || strchr(word_delim, substr[pattern_len]) != NULL);
-
-        if(starts_on_word_boundary && ends_on_word_boundary)
-            return 1;
-
-        substr = strstr(substr+1, pattern);
-    }
-
-    return 0;
-}
-
+// Looking for a Unit Test 
+// Used in parsing the Command Line Arguments
 static int
 arrow_lookup_(const char* pattern)
 {
@@ -971,9 +902,7 @@ arrow_lookup_(const char* pattern)
 }
 
 
-/* Called if anything goes bad in Acutest, or if the unit test ends in other
- * way then by normal returning from its function (e.g. exception or some
- * abnormal child process termination). */
+// Called if anything goes bad in Acutest, or if the unit test ends in some exception or undefined behaviour 
 static void ARROW_ATTRIBUTE_(format (printf, 1, 2))
 arrow_error_(const char* fmt, ...)
 {
@@ -997,10 +926,9 @@ arrow_error_(const char* fmt, ...)
     }
 }
 
-/* Call directly the given test unit function. */
-static int
-arrow_do_run_(const struct arrow_test_* test, int index)
-{
+// Call directly the given test unit function.
+static int 
+arrow_do_run_(const struct arrow_test_* test, int index) {
     int status = -1;
 
     arrow_was_aborted_ = 0;
@@ -1092,124 +1020,6 @@ aborted:
     arrow_current_test_ = NULL;
 
     return status;
-}
-
-/* Trigger the unit test. If possible (and not suppressed) it starts a child
- * process who calls arrow_do_run_(), otherwise it calls arrow_do_run_()
- * directly. */
-static void
-arrow_run_(const struct arrow_test_* test, int index, int master_index)
-{
-    int failed = 1;
-    arrow_timer_type_ start, end;
-
-    arrow_current_test_ = test;
-    arrow_test_already_logged_ = 0;
-    arrow_timer_get_time_(&start);
-
-    if(!arrow_no_exec_) {
-
-#if defined(ARROW_UNIX_)
-
-        pid_t pid;
-        int exit_code;
-
-        /* Make sure the child starts with empty I/O buffers. */
-        fflush(stdout);
-        fflush(stderr);
-
-        pid = fork();
-        if(pid == (pid_t)-1) {
-            arrow_error_("Cannot fork. %s [%d]", strerror(errno), errno);
-            failed = 1;
-        } else if(pid == 0) {
-            /* Child: Do the test. */
-            arrow_worker_ = 1;
-            failed = (arrow_do_run_(test, index) != 0);
-            arrow_exit_(failed ? 1 : 0);
-        } else {
-            /* Parent: Wait until child terminates and analyze its exit code. */
-            waitpid(pid, &exit_code, 0);
-            if(WIFEXITED(exit_code)) {
-                switch(WEXITSTATUS(exit_code)) {
-                    case 0:   failed = 0; break;   /* test has passed. */
-                    case 1:   /* noop */ break;    /* "normal" failure. */
-                    default:  arrow_error_("Unexpected exit code [%d]", WEXITSTATUS(exit_code));
-                }
-            } else if(WIFSIGNALED(exit_code)) {
-                char tmp[32];
-                const char* signame;
-                switch(WTERMSIG(exit_code)) {
-                    case SIGINT:  signame = "SIGINT"; break;
-                    case SIGHUP:  signame = "SIGHUP"; break;
-                    case SIGQUIT: signame = "SIGQUIT"; break;
-                    case SIGABRT: signame = "SIGABRT"; break;
-                    case SIGKILL: signame = "SIGKILL"; break;
-                    case SIGSEGV: signame = "SIGSEGV"; break;
-                    case SIGILL:  signame = "SIGILL"; break;
-                    case SIGTERM: signame = "SIGTERM"; break;
-                    default:      sprintf(tmp, "signal %d", WTERMSIG(exit_code)); signame = tmp; break;
-                }
-                arrow_error_("Test interrupted by %s.", signame);
-            } else {
-                arrow_error_("Test ended in an unexpected way [%d].", exit_code);
-            }
-        }
-
-#elif defined(ARROW_WIN_)
-
-        char buffer[512] = {0};
-        STARTUPINFOA startupInfo;
-        PROCESS_INFORMATION processInfo;
-        DWORD exitCode;
-
-        /* Windows has no fork(). So we propagate all info into the child
-         * through a command line arguments. */
-        _snprintf(buffer, sizeof(buffer)-1,
-                 "%s --worker=%d %s --no-exec --no-summary %s --verbose=%d --color=%s -- \"%s\"",
-                 arrow_argv0_, index, arrow_timer_ ? "--time" : "",
-                 test->name);
-        memset(&startupInfo, 0, sizeof(startupInfo));
-        startupInfo.cb = sizeof(STARTUPINFO);
-        if(CreateProcessA(NULL, buffer, NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {
-            WaitForSingleObject(processInfo.hProcess, INFINITE);
-            GetExitCodeProcess(processInfo.hProcess, &exitCode);
-            CloseHandle(processInfo.hThread);
-            CloseHandle(processInfo.hProcess);
-            failed = (exitCode != 0);
-            if(exitCode > 1) {
-                switch(exitCode) {
-                    case 3:             arrow_error_("Aborted."); break;
-                    case 0xC0000005:    arrow_error_("Access violation."); break;
-                    default:            arrow_error_("Test ended in an unexpected way [%lu].", exitCode); break;
-                }
-            }
-        } else {
-            arrow_error_("Cannot create unit test subprocess [%ld].", GetLastError());
-            failed = 1;
-        }
-
-#else
-
-        /* A platform where we don't know how to run child process. */
-        failed = (arrow_do_run_(test, index) != 0);
-
-#endif
-
-    } else {
-        /* Child processes suppressed through --no-exec. */
-        failed = (arrow_do_run_(test, index) != 0);
-    }
-    arrow_timer_get_time_(&end);
-
-    arrow_current_test_ = NULL;
-
-    arrow_stat_run_units_++;
-    if(failed)
-        arrow_stat_failed_units_++;
-
-    arrow_set_success_(master_index, !failed);
-    arrow_set_duration_(master_index, arrow_timer_diff_(start, end));
 }
 
 #if defined(ARROW_WIN_)
@@ -1427,7 +1237,7 @@ arrow_help_(void)
 
     if(arrow_list_size_ < 16) {
         printf("\n");
-        arrow_list_names_();
+        arrow_list_tests();
     }
 }
 
@@ -1498,7 +1308,7 @@ arrow_cmdline_callback_(int id, const char* arg)
             break;
 
         case 'l':
-            arrow_list_names_();
+            arrow_list_tests();
             arrow_exit_(0);
             break;
 
@@ -1564,56 +1374,6 @@ arrow_cmdline_callback_(int id, const char* arg)
 }
 
 
-#ifdef ARROW_LINUX_
-static int
-arrow_is_tracer_present_(void)
-{
-    /* Must be large enough so the line 'TracerPid: ${PID}' can fit in. */
-    static const int OVERLAP = 32;
-
-    char buf[256+OVERLAP+1];
-    int tracer_present = 0;
-    int fd;
-    size_t n_read = 0;
-
-    fd = open("/proc/self/status", O_RDONLY);
-    if(fd == -1)
-        return 0;
-
-    while(1) {
-        static const char pattern[] = "TracerPid:";
-        const char* field;
-
-        while(n_read < sizeof(buf) - 1) {
-            ssize_t n;
-
-            n = read(fd, buf + n_read, sizeof(buf) - 1 - n_read);
-            if(n <= 0)
-                break;
-            n_read += n;
-        }
-        buf[n_read] = '\0';
-
-        field = strstr(buf, pattern);
-        if(field != NULL  &&  field < buf + sizeof(buf) - OVERLAP) {
-            pid_t tracer_pid = (pid_t) atoi(field + sizeof(pattern) - 1);
-            tracer_present = (tracer_pid != 0);
-            break;
-        }
-
-        if(n_read == sizeof(buf)-1) {
-            memmove(buf, buf + sizeof(buf)-1 - OVERLAP, OVERLAP);
-            n_read = OVERLAP;
-        } else {
-            break;
-        }
-    }
-
-    close(fd);
-    return tracer_present;
-}
-#endif
-
 int
 main(int argc, char** argv)
 {
@@ -1657,42 +1417,20 @@ main(int argc, char** argv)
 #endif
 #endif
 
-    /* By default, we want to run all tests. */
+    // By default, we want to run all tests.
     if(arrow_count_ == 0) {
         for(i = 0; arrow_list_[i].func != NULL; i++)
             arrow_remember_(i);
     }
 
-    /* Guess whether we want to run unit tests as child processes. */
-    if(arrow_no_exec_ < 0) {
-        arrow_no_exec_ = 0;
-
-        if(arrow_count_ <= 1) {
-            arrow_no_exec_ = 1;
-        } else {
-#ifdef ARROW_WIN_
-            if(IsDebuggerPresent())
-                arrow_no_exec_ = 1;
-#endif
-#ifdef ARROW_LINUX_
-            if(arrow_is_tracer_present_())
-                arrow_no_exec_ = 1;
-#endif
-#ifdef RUNNING_ON_VALGRIND
-            /* RUNNING_ON_VALGRIND is provided by optionally included <valgrind.h> */
-            if(RUNNING_ON_VALGRIND)
-                arrow_no_exec_ = 1;
-#endif
-        }
-    }
 
     int index = arrow_worker_index_;
-    for(i = 0; arrow_list_[i].func != NULL; i++) {
+    for(i = 0; arrow_test_.tests[i].func != NULL; i++) {
         int run = (arrow_test_data_[i].flags & ARROW_FLAG_RUN_);
         if (arrow_skip_mode_) /* Run all tests except those listed. */
             run = !run;
         if(run)
-            arrow_run_(&arrow_list_[i], index++, i);
+            arrow_run_(&arrow_test_.tests[i], index++, i);
     }
 
     /* Write a summary */
