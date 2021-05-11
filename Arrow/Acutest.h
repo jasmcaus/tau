@@ -1,7 +1,6 @@
 #ifndef ARROW_H
 #define ARROW_H
 
-#include <Arrow/Types.h>
 
 /************************
  *** Public interface ***
@@ -42,7 +41,7 @@
  *
  * If any condition fails throughout execution of a test, the test fails.
  *
- * TEST_CHECK takes only one argument (the condition), TEST_CHECK_ allows
+ * TEST_CHECK takes only one argument (the condition), TEST_CHECK allows
  * also to specify an error message to print out if the condition fails.
  * (It expects printf-like format string and its parameters). The macros
  * return non-zero (condition passes) or 0 (condition fails).
@@ -56,11 +55,11 @@
  *       TEST_CHECK(ptr->member2 > 200);
  *   }
  */
-#define TEST_CHECK_(cond,...)   arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__)
+#define TEST_CHECK(cond,...)   arrow_check_((cond), __FILE__, __LINE__, __VA_ARGS__)
 // #define TEST_CHECK(cond)        arrow_check_((cond), __FILE__, __LINE__, "%s", #cond)
 
 
-/* These macros are the same as TEST_CHECK_ and TEST_CHECK except that if the
+/* These macros are the same as TEST_CHECK and TEST_CHECK except that if the
  * condition fails, the currently executed unit test is immediately aborted.
  *
  * That is done either by calling abort() if the unit test is executed as a
@@ -87,7 +86,6 @@
 //     } while(0)
 
 
-// Exceptions
 #ifdef __cplusplus
 /* Macros to verify that the code (the 1st argument) throws exception of given
  * type (the 2nd argument). (Note these macros are only available in C++.)
@@ -103,23 +101,23 @@
  * If the function throws anything incompatible with ExpectedExceptionType
  * (or if it does not thrown an exception at all), the check fails.
  */
-#define TEST_EXCEPTION(code, exctype)                                          \
-    do {                                                                       \
-        bool exc_ok_ = false;                                                  \
-        const char *msg_ = NULL;                                               \
-        try {                                                                  \
-            code;                                                              \
-            msg_ = "No exception thrown.";                                     \
-        } catch(exctype const&) {                                              \
-            exc_ok_= true;                                                     \
-        } catch(...) {                                                         \
-            msg_ = "Unexpected exception thrown.";                             \
-        }                                                                      \
-        arrow_check_(exc_ok_, __FILE__, __LINE__, #code " throws " #exctype);\
-        if(msg_ != NULL)                                                       \
-            arrow_message_("%s", msg_);                                      \
-    } while(0)
-#define TEST_EXCEPTION_(code, exctype, ...)                                    \
+// #define TEST_EXCEPTION(code, exctype)                                          \
+//     do {                                                                       \
+//         bool exc_ok_ = false;                                                  \
+//         const char *msg_ = NULL;                                               \
+//         try {                                                                  \
+//             code;                                                              \
+//             msg_ = "No exception thrown.";                                     \
+//         } catch(exctype const&) {                                              \
+//             exc_ok_= true;                                                     \
+//         } catch(...) {                                                         \
+//             msg_ = "Unexpected exception thrown.";                             \
+//         }                                                                      \
+//         arrow_check_(exc_ok_, __FILE__, __LINE__, #code " throws " #exctype);\
+//         if(msg_ != NULL)                                                       \
+//             arrow_message_("%s", msg_);                                      \
+//     } while(0)
+#define TEST_EXCEPTION(code, exctype, ...)                                    \
     do {                                                                       \
         bool exc_ok_ = false;                                                  \
         const char *msg_ = NULL;                                               \
@@ -189,15 +187,15 @@
  * The macro can deal with multi-line output fairly well. It also automatically
  * adds a final new-line if there is none present.
  */
-// #define TEST_MSG(...)           arrow_message_(__VA_ARGS__)
+#define TEST_MSG(...)           arrow_message_(__VA_ARGS__)
 
 
-// /* Maximal output per TEST_MSG call. Longer messages are cut.
-//  * You may define another limit prior including "arrow.h"
-//  */
-// #ifndef TEST_MSG_MAXSIZE
-//     #define TEST_MSG_MAXSIZE    1024
-// #endif
+/* Maximal output per TEST_MSG call. Longer messages are cut.
+ * You may define another limit prior including "arrow.h"
+ */
+#ifndef TEST_MSG_MAXSIZE
+    #define TEST_MSG_MAXSIZE    1024
+#endif
 
 
 /* Macro for dumping a block of memory.
@@ -220,6 +218,26 @@
     #define TEST_DUMP_MAXSIZE   1024
 #endif
 
+
+/* Common test initialiation/clean-up
+ *
+ * In some test suites, it may be needed to perform some sort of the same
+ * initialization and/or clean-up in all the tests.
+ *
+ * Such test suites may use macros TEST_INIT and/or TEST_FINI prior including
+ * this header. The expansion of the macro is then used as a body of helper
+ * function called just before executing every single (TEST_INIT) or just after
+ * it ends (TEST_FINI).
+ *
+ * Examples of various ways how to use the macro TEST_INIT:
+ *
+ *   #define TEST_INIT      my_init_func();
+ *   #define TEST_INIT      my_init_func()      // Works even without the semicolon
+ *   #define TEST_INIT      setlocale(LC_ALL, NULL);
+ *   #define TEST_INIT      { setlocale(LC_ALL, NULL); my_init_func(); }
+ *
+ * TEST_FINI is to be used in the same way.
+ */
 
 
 /**********************
@@ -259,15 +277,7 @@
 #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define ARROW_WIN_        1
     #include <windows.h>
-    /*
-        io.h contains definitions for some structures with natural padding. This is
-        uninteresting, but for some reason MSVC's behaviour is to warn about
-        including this system header. That *is* interesting
-    */
-    #pragma warning(disable : 4820)
-    #pragma warning(push, 1)
     #include <io.h>
-    #pragma warning(pop)
 #endif
 
 #ifdef __cplusplus
@@ -289,7 +299,7 @@
 
 /* Note our global private identifiers end with '_' to mitigate risk of clash
  * with the unit tests implementation. */
-// Extern "C"
+
 #ifdef __cplusplus
     extern "C" {
 #endif
@@ -302,38 +312,16 @@
     #pragma warning(disable: 4996)
 #endif
 
-typedef void (*arrow_testcase_t)(int*, Ll);
 
-struct arrow_test_data_s{
-    arrow_testcase_t func;
-    Ll index;
-    char* name;
-
-    // Acutest stuff 
-    unsigned char flags;
-    double duration;
-};
-
-struct arrow_test_s {
-    struct arrow_test_data_* tests;
-    Ll num_tests;
-    FILE* foutput;
-    // Acutest
+struct arrow_test_ {
     const char* name;
     void (*func)(void);
 };
 
-#if defined(__cplusplus)
-    #define ARROW_CAST(type, x)     static_cast<type>(x)
-    #define ARROW_PTR_CAST(type, x) reinterpret_cast<type>(x)
-    #define ARROW_EXTERN            extern "C"
-    #define ARROW_NULL              NULL
-#else
-    #define ARROW_CAST(type, x)     ((type)x)
-    #define ARROW_PTR_CAST(type, x) ((type)x)
-    #define ARROW_EXTERN            extern
-    #define ARROW_NULL              0
-#endif
+struct arrow_test_data_ {
+    unsigned char flags;
+    double duration;
+};
 
 enum {
     ARROW_FLAG_RUN_ = 1 << 0,
@@ -343,31 +331,22 @@ enum {
 
 extern const struct arrow_test_ arrow_list_[];
 
-int arrow_check_(int cond, const char* file, int line, const char* fmt, ...);
-void arrow_case_(const char* fmt, ...);
+int arrow_check(int cond, const char* file, int line, const char* fmt, ...);
+// void arrow_case_(const char* fmt, ...);
 // void arrow_message_(const char* fmt, ...);
-// void arrow_dump_(const char* title, const void* addr, size_t size);
+void arrow_dump_(const char* title, const void* addr, size_t size);
 void arrow_abort_(void) ARROW_ATTRIBUTE_(noreturn);
 
 
 #ifndef TEST_NO_MAIN
 
-static Ll arrow_total_tests;
-static Ll arrow_tests_to_run;  // total_tests - filtered_tests
-
-// Test Data
-static struct arrow_test_s* arrow_test_ = null;
-// Default options
-// Overridden by command-line options
-static bool arrow_no_summary = false; 
-
-
 static char* arrow_argv0_ = NULL;
 static size_t arrow_list_size_ = 0;
 static struct arrow_test_data_* arrow_test_data_ = NULL;
-// static size_t arrow_count_ = 0;
-
-// static int arrow_tap_ = 0;
+static size_t arrow_count_ = 0;
+static int arrow_no_exec_ = -1;
+static int arrow_no_summary_ = 0;
+static int arrow_tap_ = 0;
 static int arrow_skip_mode_ = 0;
 static int arrow_worker_ = 0;
 static int arrow_worker_index_ = 0;
@@ -380,12 +359,12 @@ static int arrow_stat_run_units_ = 0;
 
 static const struct arrow_test_* arrow_current_test_ = NULL;
 static int arrow_current_index_ = 0;
-static char arrow_case_name_[TEST_CASE_MAXSIZE] = "";
+// static char arrow_case_name_[TEST_CASE_MAXSIZE] = "";
 static int arrow_test_already_logged_ = 0;
-static int arrow_case_already_logged_ = 0;
+// static int arrow_case_already_logged_ = 0;
 static int arrow_verbose_level_ = 2;
 static int arrow_test_failures_ = 0;
-static bool ARROW_USE_COLOUR_OUTPUT = false;
+static int arrow_colorize_ = 0;
 static int arrow_timer_ = 0;
 
 static int arrow_abort_has_jmp_buf_ = 0;
@@ -395,16 +374,7 @@ static jmp_buf arrow_abort_jmp_buf_;
 static void
 arrow_cleanup_(void)
 {
-    for(int i=0; i<arrow_test_.num_tests; i++)
-        free(ARROW_PTR_CAST(void*, arrow_test_.tests[i].name));
-    
-    free(ARROW_PTR_CAST(void*, failed_testcases));
-    free(ARROW_PTR_CAST(void*, arrow_test_.tests));
-
-    if(arrow_test_.foutput)
-        fclose(arrow_test_.foutput);
-    // Acutest
-    // free((void*) arrow_test_data_);
+    free((void*) arrow_test_data_);
 }
 
 static void ARROW_ATTRIBUTE_(noreturn)
@@ -414,7 +384,6 @@ arrow_exit_(int exit_code)
     exit(exit_code);
 }
 
-// Timer
 #if defined ARROW_WIN_
     typedef LARGE_INTEGER arrow_timer_type_;
     static LARGE_INTEGER arrow_timer_freq_;
@@ -518,26 +487,12 @@ arrow_exit_(int exit_code)
     {}
 #endif
 
-
-// Colours
 #define ARROW_COLOR_DEFAULT_              0
 #define ARROW_COLOR_GREEN_                1
 #define ARROW_COLOR_RED_                  2
 #define ARROW_COLOR_DEFAULT_INTENSIVE_    3
 #define ARROW_COLOR_GREEN_INTENSIVE_      4
 #define ARROW_COLOR_RED_INTENSIVE_        5
-
-#if defined ARROW_UNIX_
-    ARROW_USE_COLOUR_OUTPUT = isatty(STDOUT_FILENO);
-#elif defined ARROW_WIN_
-    #if defined _BORLANDC_
-        ARROW_USE_COLOUR_OUTPUT = isatty(_fileno(stdout));
-    #else
-        ARROW_USE_COLOUR_OUTPUT = _isatty(_fileno(stdout));
-    #endif
-#else
-    ARROW_USE_COLOUR_OUTPUT = 0;
-#endif
 
 static int ARROW_ATTRIBUTE_(format (printf, 2, 3))
 arrow_colored_printf_(int color, const char* fmt, ...)
@@ -549,9 +504,9 @@ arrow_colored_printf_(int color, const char* fmt, ...)
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
-    buffer[sizeof(buffer)-1] = nullchar;
+    buffer[sizeof(buffer)-1] = '\0';
 
-    if(!ARROW_COLOUR_OUTPUT()) {
+    if(!arrow_colorize_) {
         return printf("%s", buffer);
     }
 
@@ -603,48 +558,51 @@ arrow_colored_printf_(int color, const char* fmt, ...)
 static void
 arrow_begin_test_line_(const struct arrow_test_* test)
 {
-    if(arrow_verbose_level_ >= 3) {
-        arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Test %s:\n", test->name);
-        arrow_test_already_logged_++;
-    } else if(arrow_verbose_level_ >= 1) {
-        int n;
-        char spaces[48];
+    if(!arrow_tap_) {
+        if(arrow_verbose_level_ >= 3) {
+            arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Test %s:\n", test->name);
+            arrow_test_already_logged_++;
+        } else if(arrow_verbose_level_ >= 1) {
+            int n;
+            char spaces[48];
 
-        n = arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Test %s... ", test->name);
-        memset(spaces, ' ', sizeof(spaces));
-        if(n < (int) sizeof(spaces))
-            printf("%.*s", (int) sizeof(spaces) - n, spaces);
-    } else {
-        arrow_test_already_logged_ = 1;
+            n = arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Test %s... ", test->name);
+            memset(spaces, ' ', sizeof(spaces));
+            if(n < (int) sizeof(spaces))
+                printf("%.*s", (int) sizeof(spaces) - n, spaces);
+        } else {
+            arrow_test_already_logged_ = 1;
+        }
     }
 }
 
 static void
 arrow_finish_test_line_(int result)
 {
-    // if(arrow_tap_) {
-    //     const char* str = (result == 0) ? "ok" : "not ok";
+    if(arrow_tap_) {
+        const char* str = (result == 0) ? "ok" : "not ok";
 
-    //     printf("%s %d - %s\n", str, arrow_current_index_ + 1, arrow_current_test_->name);
+        printf("%s %d - %s\n", str, arrow_current_index_ + 1, arrow_current_test_->name);
 
-    //     if(result == 0  &&  arrow_timer_) {
-    //         printf("# Duration: ");
-    //         arrow_timer_print_diff_();
-    //         printf("\n");
-    //     }
-    // } else {
-    int color = (result == 0) ? ARROW_COLOR_GREEN_INTENSIVE_ : ARROW_COLOR_RED_INTENSIVE_;
-    const char* str = (result == 0) ? "OK" : "FAILED";
-    printf("[ ");
-    arrow_colored_printf_(color, "%s", str);
-    printf(" ]");
+        if(result == 0  &&  arrow_timer_) {
+            printf("# Duration: ");
+            arrow_timer_print_diff_();
+            printf("\n");
+        }
+    } else {
+        int color = (result == 0) ? ARROW_COLOR_GREEN_INTENSIVE_ : ARROW_COLOR_RED_INTENSIVE_;
+        const char* str = (result == 0) ? "OK" : "FAILED";
+        printf("[ ");
+        arrow_colored_printf_(color, "%s", str);
+        printf(" ]");
 
-    if(result == 0  &&  arrow_timer_) {
-        printf("  ");
-        arrow_timer_print_diff_();
+        if(result == 0  &&  arrow_timer_) {
+            printf("  ");
+            arrow_timer_print_diff_();
+        }
+
+        printf("\n");
     }
-
-    printf("\n");
 }
 
 static void
@@ -653,7 +611,7 @@ arrow_line_indent_(int level)
     static const char spaces[] = "                ";
     int n = level * 2;
 
-    if(n > 0) {
+    if(arrow_tap_  &&  n > 0) {
         n--;
         printf("#");
     }
@@ -666,7 +624,7 @@ arrow_line_indent_(int level)
 }
 
 int ARROW_ATTRIBUTE_(format (printf, 4, 5))
-arrow_check_(int cond, const char* file, int line, const char* fmt, ...)
+arrow_check(int cond, const char* file, int line, const char* fmt, ...)
 {
     const char *result_str;
     int result_color;
@@ -729,70 +687,70 @@ arrow_check_(int cond, const char* file, int line, const char* fmt, ...)
     return !arrow_cond_failed_;
 }
 
-void ARROW_ATTRIBUTE_(format (printf, 1, 2))
-arrow_case_(const char* fmt, ...)
-{
-    va_list args;
+// void ARROW_ATTRIBUTE_(format (printf, 1, 2))
+// arrow_case_(const char* fmt, ...)
+// {
+//     va_list args;
 
-    if(arrow_verbose_level_ < 2)
-        return;
+//     if(arrow_verbose_level_ < 2)
+//         return;
 
-    if(arrow_case_name_[0]) {
-        arrow_case_already_logged_ = 0;
-        arrow_case_name_[0] = nullchar;
-    }
+//     if(arrow_case_name_[0]) {
+//         arrow_case_already_logged_ = 0;
+//         arrow_case_name_[0] = '\0';
+//     }
 
-    if(fmt == NULL)
-        return;
+//     if(fmt == NULL)
+//         return;
 
-    va_start(args, fmt);
-    vsnprintf(arrow_case_name_, sizeof(arrow_case_name_) - 1, fmt, args);
-    va_end(args);
-    arrow_case_name_[sizeof(arrow_case_name_) - 1] = nullchar;
+//     va_start(args, fmt);
+//     vsnprintf(arrow_case_name_, sizeof(arrow_case_name_) - 1, fmt, args);
+//     va_end(args);
+//     arrow_case_name_[sizeof(arrow_case_name_) - 1] = '\0';
 
-    if(arrow_verbose_level_ >= 3) {
-        arrow_line_indent_(1);
-        arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Case %s:\n", arrow_case_name_);
-        arrow_test_already_logged_++;
-        arrow_case_already_logged_++;
-    }
-}
+//     if(arrow_verbose_level_ >= 3) {
+//         arrow_line_indent_(1);
+//         arrow_colored_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Case %s:\n", arrow_case_name_);
+//         arrow_test_already_logged_++;
+//         arrow_case_already_logged_++;
+//     }
+// }
 
-void ARROW_ATTRIBUTE_(format (printf, 1, 2))
-arrow_message_(const char* fmt, ...)
-{
-    char buffer[TEST_MSG_MAXSIZE];
-    char* line_beg;
-    char* line_end;
-    va_list args;
+// void ARROW_ATTRIBUTE_(format (printf, 1, 2))
+// arrow_message_(const char* fmt, ...)
+// {
+//     char buffer[TEST_MSG_MAXSIZE];
+//     char* line_beg;
+//     char* line_end;
+//     va_list args;
 
-    if(arrow_verbose_level_ < 2)
-        return;
+//     if(arrow_verbose_level_ < 2)
+//         return;
 
-    /* We allow extra message only when something is already wrong in the
-     * current test. */
-    if(arrow_current_test_ == NULL  ||  !arrow_cond_failed_)
-        return;
+//     /* We allow extra message only when something is already wrong in the
+//      * current test. */
+//     if(arrow_current_test_ == NULL  ||  !arrow_cond_failed_)
+//         return;
 
-    va_start(args, fmt);
-    vsnprintf(buffer, TEST_MSG_MAXSIZE, fmt, args);
-    va_end(args);
-    buffer[TEST_MSG_MAXSIZE-1] = nullchar;
+//     va_start(args, fmt);
+//     vsnprintf(buffer, TEST_MSG_MAXSIZE, fmt, args);
+//     va_end(args);
+//     buffer[TEST_MSG_MAXSIZE-1] = '\0';
 
-    line_beg = buffer;
-    while(1) {
-        line_end = strchr(line_beg, '\n');
-        if(line_end == NULL)
-            break;
-        arrow_line_indent_(arrow_case_name_[0] ? 3 : 2);
-        printf("%.*s\n", (int)(line_end - line_beg), line_beg);
-        line_beg = line_end + 1;
-    }
-    if(line_beg[0] != nullchar) {
-        arrow_line_indent_(arrow_case_name_[0] ? 3 : 2);
-        printf("%s\n", line_beg);
-    }
-}
+//     line_beg = buffer;
+//     while(1) {
+//         line_end = strchr(line_beg, '\n');
+//         if(line_end == NULL)
+//             break;
+//         arrow_line_indent_(arrow_case_name_[0] ? 3 : 2);
+//         printf("%.*s\n", (int)(line_end - line_beg), line_beg);
+//         line_beg = line_end + 1;
+//     }
+//     if(line_beg[0] != '\0') {
+//         arrow_line_indent_(arrow_case_name_[0] ? 3 : 2);
+//         printf("%s\n", line_beg);
+//     }
+// }
 
 void
 arrow_dump_(const char* title, const void* addr, size_t size)
@@ -930,7 +888,7 @@ arrow_name_contains_word_(const char* name, const char* pattern)
     substr = strstr(name, pattern);
     while(substr != NULL) {
         int starts_on_word_boundary = (substr == name || strchr(word_delim, substr[-1]) != NULL);
-        int ends_on_word_boundary = (substr[pattern_len] == nullchar || strchr(word_delim, substr[pattern_len]) != NULL);
+        int ends_on_word_boundary = (substr[pattern_len] == '\0' || strchr(word_delim, substr[pattern_len]) != NULL);
 
         if(starts_on_word_boundary && ends_on_word_boundary)
             return 1;
@@ -1076,7 +1034,7 @@ aborted:
 #ifdef __cplusplus
     } catch(std::exception& e) {
         const char* what = e.what();
-        arrow_check_(0, NULL, 0, "Threw std::exception");
+        arrow_check(0, NULL, 0, "Threw std::exception");
         if(what != NULL)
             arrow_message_("std::exception::what(): %s", what);
 
@@ -1086,7 +1044,7 @@ aborted:
             printf("C++ exception.\n\n");
         }
     } catch(...) {
-        arrow_check_(0, NULL, 0, "Threw an exception");
+        arrow_check(0, NULL, 0, "Threw an exception");
 
         if(arrow_verbose_level_ >= 3) {
             arrow_line_indent_(1);
@@ -1177,9 +1135,8 @@ arrow_run_(const struct arrow_test_* test, int index, int master_index)
         _snprintf(buffer, sizeof(buffer)-1,
                  "%s --worker=%d %s --no-exec --no-summary %s --verbose=%d --color=%s -- \"%s\"",
                  arrow_argv0_, index, arrow_timer_ ? "--time" : "",
-                 arrow_verbose_level_,
-                //  arrow_tap_ ? "--tap" : "", arrow_verbose_level_,
-                 ARROW_USE_COLOUR_OUTPUT ? "always" : "never",
+                 arrow_tap_ ? "--tap" : "", arrow_verbose_level_,
+                 arrow_colorize_ ? "always" : "never",
                  test->name);
         memset(&startupInfo, 0, sizeof(startupInfo));
         startupInfo.cb = sizeof(STARTUPINFO);
@@ -1229,7 +1186,7 @@ arrow_run_(const struct arrow_test_* test, int index, int master_index)
 static LONG CALLBACK
 arrow_seh_exception_filter_(EXCEPTION_POINTERS *ptrs)
 {
-    arrow_check_(0, NULL, 0, "Unhandled SEH exception");
+    arrow_check(0, NULL, 0, "Unhandled SEH exception");
     arrow_message_("Exception code:    0x%08lx", ptrs->ExceptionRecord->ExceptionCode);
     arrow_message_("Exception address: 0x%p", ptrs->ExceptionRecord->ExceptionAddress);
 
@@ -1265,7 +1222,7 @@ arrow_cmdline_handle_short_opt_group_(const ARROW_CMDLINE_OPTION_* options,
     int i;
     int ret = 0;
 
-    for(i = 0; arggroup[i] != nullchar; i++) {
+    for(i = 0; arggroup[i] != '\0'; i++) {
         for(opt = options; opt->id != 0; opt++) {
             if(arggroup[i] == opt->shortname)
                 break;
@@ -1278,7 +1235,7 @@ arrow_cmdline_handle_short_opt_group_(const ARROW_CMDLINE_OPTION_* options,
             char badoptname[3];
             badoptname[0] = '-';
             badoptname[1] = arggroup[i];
-            badoptname[2] = nullchar;
+            badoptname[2] = '\0';
             ret = callback((opt->id != 0 ? ARROW_CMDLINE_OPTID_MISSINGARG_ : ARROW_CMDLINE_OPTID_UNKNOWN_),
                             badoptname);
         }
@@ -1297,35 +1254,34 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                       int (*callback)(int /*optval*/, const char* /*arg*/))
 {
 
-    // In arrow_main(), I've defined a arrow_should_filter_test() method tha 
     const ARROW_CMDLINE_OPTION_* opt;
     char auxbuf[ARROW_CMDLINE_AUXBUF_SIZE_+1];
-    bool after_doubledash = false;
+    int after_doubledash = 0;
     int i = 1;
     int ret = 0;
 
-    auxbuf[ARROW_CMDLINE_AUXBUF_SIZE_] = nullchar;
+    auxbuf[ARROW_CMDLINE_AUXBUF_SIZE_] = '\0';
 
-    while(argc > i) {
+    while(i < argc) {
         if(after_doubledash  ||  strcmp(argv[i], "-") == 0) {
-            // Non-option argument.
+            /* Non-option argument. */
             ret = callback(ARROW_CMDLINE_OPTID_NONE_, argv[i]);
         } else if(strcmp(argv[i], "--") == 0) {
             /* End of options. All the remaining members are non-option arguments. */
-            after_doubledash = true;
+            after_doubledash = 1;
         } else if(argv[i][0] != '-') {
             /* Non-option argument. */
             ret = callback(ARROW_CMDLINE_OPTID_NONE_, argv[i]);
         } else {
             for(opt = options; opt->id != 0; opt++) {
-                if(opt->longname != null  &&  strncmp(argv[i], "--", 2) == 0) {
+                if(opt->longname != NULL  &&  strncmp(argv[i], "--", 2) == 0) {
                     size_t len = strlen(opt->longname);
                     if(strncmp(argv[i]+2, opt->longname, len) == 0) {
                         /* Regular long option. */
-                        if(argv[i][2+len] == nullchar) {
+                        if(argv[i][2+len] == '\0') {
                             /* with no argument provided. */
                             if(!(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_))
-                                ret = callback(opt->id, null);
+                                ret = callback(opt->id, NULL);
                             else
                                 ret = callback(ARROW_CMDLINE_OPTID_MISSINGARG_, argv[i]);
                             break;
@@ -1342,11 +1298,11 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                             continue;
                         }
                     }
-                } else if(opt->shortname != nullchar  &&  argv[i][0] == '-') {
+                } else if(opt->shortname != '\0'  &&  argv[i][0] == '-') {
                     if(argv[i][1] == opt->shortname) {
                         /* Regular short option. */
                         if(opt->flags & ARROW_CMDLINE_OPTFLAG_REQUIREDARG_) {
-                            if(argv[i][2] != nullchar)
+                            if(argv[i][2] != '\0')
                                 ret = callback(opt->id, argv[i]+2);
                             else if(i+1 < argc)
                                 ret = callback(opt->id, argv[++i]);
@@ -1358,7 +1314,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
 
                             /* There might be more (argument-less) short options
                              * grouped together. */
-                            if(ret == 0  &&  argv[i][2] != nullchar)
+                            if(ret == 0  &&  argv[i][2] != '\0')
                                 ret = arrow_cmdline_handle_short_opt_group_(options, argv[i]+2, callback);
                             break;
                         }
@@ -1366,7 +1322,7 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                 }
             }
 
-            if(opt->id == 0) {  // still not handled?
+            if(opt->id == 0) {  /* still not handled? */
                 if(argv[i][0] != '-') {
                     /* Non-option argument. */
                     ret = callback(ARROW_CMDLINE_OPTID_NONE_, argv[i]);
@@ -1375,14 +1331,14 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
                     char* badoptname = argv[i];
 
                     if(strncmp(badoptname, "--", 2) == 0) {
-                        // Strip any argument from the long option.
+                        /* Strip any argument from the long option. */
                         char* assignment = strchr(badoptname, '=');
-                        if(assignment != null) {
+                        if(assignment != NULL) {
                             size_t len = assignment - badoptname;
                             if(len > ARROW_CMDLINE_AUXBUF_SIZE_)
                                 len = ARROW_CMDLINE_AUXBUF_SIZE_;
                             strncpy(auxbuf, badoptname, len);
-                            auxbuf[len] = nullchar;
+                            auxbuf[len] = '\0';
                             badoptname = auxbuf;
                         }
                     }
@@ -1400,7 +1356,9 @@ arrow_cmdline_read_(const ARROW_CMDLINE_OPTION_* options, int argc, char** argv,
     return ret;
 }
 
-static void arrow_help_() {
+static void
+arrow_help_(void)
+{
     printf("Usage: %s [options] [test...]\n", arrow_argv0_);
     printf("\n");
     printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
@@ -1409,7 +1367,9 @@ static void arrow_help_() {
     printf("\n");
     printf("Options:\n");
     printf("  -s, --skip            Execute all unit tests but the listed ones\n");
+    printf("      --exec[=WHEN]     If supported, execute unit tests as child processes\n");
     printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
+    printf("  -E, --no-exec         Same as --exec=never\n");
 #if defined ARROW_WIN_
     printf("  -t, --time            Measure test duration\n");
 #elif defined ARROW_HAS_POSIX_TIMER_
@@ -1418,6 +1378,8 @@ static void arrow_help_() {
     printf("                          (TIMER is one of 'real', 'cpu')\n");
 #endif
     printf("      --no-summary      Suppress printing of test results summary\n");
+    printf("      --tap             Produce TAP-compliant output\n");
+    printf("                          (See https://testanything.org/)\n");
     printf("  -x, --xml-output=FILE Enable XUnit output to the given file\n");
     printf("  -l, --list            List unit tests in the suite and exit\n");
     printf("  -v, --verbose         Make output more verbose\n");
@@ -1427,7 +1389,9 @@ static void arrow_help_() {
     printf("                          2 ... As 1 and failed conditions (this is default)\n");
     printf("                          3 ... As 1 and all conditions (and extended summary)\n");
     printf("  -q, --quiet           Same as --verbose=0\n");
-    printf("      --no-color        Disable colourized ouput\n");
+    printf("      --color[=WHEN]    Enable colorized output\n");
+    printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
+    printf("      --no-color        Same as --color=never\n");
     printf("  -h, --help            Display this help and exit\n");
 
     if(arrow_list_size_ < 16) {
@@ -1438,6 +1402,8 @@ static void arrow_help_() {
 
 static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options_[] = {
     { 's',  "skip",         's', 0 },
+    {  0,   "exec",         'e', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
+    { 'E',  "no-exec",      'E', 0 },
 #if defined ARROW_WIN_
     { 't',  "time",         't', 0 },
     {  0,   "timer",        't', 0 },   /* kept for compatibility */
@@ -1446,11 +1412,14 @@ static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options_[] = {
     {  0,   "timer",        't', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },  /* kept for compatibility */
 #endif
     {  0,   "no-summary",   'S', 0 },
+    {  0,   "tap",          'T', 0 },
     { 'l',  "list",         'l', 0 },
     { 'v',  "verbose",      'v', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
     { 'q',  "quiet",        'q', 0 },
+    {  0,   "color",        'c', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
     {  0,   "no-color",     'C', 0 },
     { 'h',  "help",         'h', 0 },
+    {  0,   "worker",       'w', ARROW_CMDLINE_OPTFLAG_REQUIREDARG_ },  /* internal */
     { 'x',  "xml-output",   'x', ARROW_CMDLINE_OPTFLAG_REQUIREDARG_ },
     {  0,   NULL,            0,  0 }
 };
@@ -1465,9 +1434,9 @@ arrow_cmdline_callback_(int id, const char* arg)
 
         case 'e':
             if(arg == NULL || strcmp(arg, "always") == 0) {
-                // arrow_no_exec_ = 0;
+                arrow_no_exec_ = 0;
             } else if(strcmp(arg, "never") == 0) {
-                // arrow_no_exec_ = 1;
+                arrow_no_exec_ = 1;
             } else if(strcmp(arg, "auto") == 0) {
                 /*noop*/
             } else {
@@ -1477,9 +1446,9 @@ arrow_cmdline_callback_(int id, const char* arg)
             }
             break;
 
-        // case 'E':
-        //     arrow_no_exec_ = 1;
-        //     break;
+        case 'E':
+            arrow_no_exec_ = 1;
+            break;
 
         case 't':
 #if defined ARROW_WIN_  ||  defined ARROW_HAS_POSIX_TIMER_
@@ -1501,9 +1470,9 @@ arrow_cmdline_callback_(int id, const char* arg)
             arrow_no_summary_ = 1;
             break;
 
-        // case 'T':
-        //     arrow_tap_ = 1;
-        //     break;
+        case 'T':
+            arrow_tap_ = 1;
+            break;
 
         case 'l':
             arrow_list_names_();
@@ -1520,9 +1489,9 @@ arrow_cmdline_callback_(int id, const char* arg)
 
         case 'c':
             if(arg == NULL || strcmp(arg, "always") == 0) {
-                ARROW_USE_COLOUR_OUTPUT = true;
+                arrow_colorize_ = 1;
             } else if(strcmp(arg, "never") == 0) {
-                ARROW_USE_COLOUR_OUTPUT = false;
+                arrow_colorize_ = 0;
             } else if(strcmp(arg, "auto") == 0) {
                 /*noop*/
             } else {
@@ -1533,7 +1502,7 @@ arrow_cmdline_callback_(int id, const char* arg)
             break;
 
         case 'C':
-            ARROW_USE_COLOUR_OUTPUT = false;
+            arrow_colorize_ = 0;
             break;
 
         case 'h':
@@ -1612,7 +1581,7 @@ arrow_is_tracer_present_(void)
                 break;
             n_read += n;
         }
-        buf[n_read] = nullchar;
+        buf[n_read] = '\0';
 
         field = strstr(buf, pattern);
         if(field != NULL  &&  field < buf + sizeof(buf) - OVERLAP) {
@@ -1634,47 +1603,48 @@ arrow_is_tracer_present_(void)
 }
 #endif
 
-// Main Function
 int
-arrow_main(int argc, char** argv)
+main(int argc, char** argv)
 {
     int i;
-    Ll arrow_failed = 0; 
-    Ll* failed_testcases = null;
-    Ll failed_testcases_length = 0; 
-    const char* filter = null;
-    Ll arrow_tests_to_run = 0;
 
     arrow_argv0_ = argv[0];
 
+#if defined ARROW_UNIX_
+    arrow_colorize_ = isatty(STDOUT_FILENO);
+#elif defined ARROW_WIN_
+ #if defined _BORLANDC_
+    arrow_colorize_ = isatty(_fileno(stdout));
+ #else
+    arrow_colorize_ = _isatty(_fileno(stdout));
+ #endif
+#else
+    arrow_colorize_ = 0;
+#endif
+
     /* Count all test units */
-    arrow_total_tests = arrow_test_;
-    for(int i=0; i<arrow_test_->num_tests; i++) {
-        if(arrow_should_filter_test(filter, arrow_test_->tests[i].name)) 
-            continue;
-        
-    }
+    arrow_list_size_ = 0;
     for(i = 0; arrow_list_[i].func != NULL; i++)
         arrow_list_size_++;
 
-    arrow_test_data_ = (struct arrow_test_data_*)calloc(arrow_list_size_, sizeof(arrow_test_data_));
+    arrow_test_data_ = (struct arrow_test_data_*)calloc(arrow_list_size_, sizeof(struct arrow_test_data_));
     if(arrow_test_data_ == NULL) {
         fprintf(stderr, "Out of memory.\n");
         arrow_exit_(2);
     }
 
-    // Parse options
+    /* Parse options */
     arrow_cmdline_read_(arrow_cmdline_options_, argc, argv, arrow_cmdline_callback_);
 
     /* Initialize the proper timer. */
     arrow_timer_init_();
 
-    #if defined(ARROW_WIN_)
-        SetUnhandledExceptionFilter(arrow_seh_exception_filter_);
-        #ifdef _MSC_VER
-            _set_abort_behavior(0, _WRITE_ABORT_MSG);
-        #endif
-    #endif
+#if defined(ARROW_WIN_)
+    SetUnhandledExceptionFilter(arrow_seh_exception_filter_);
+#ifdef _MSC_VER
+    _set_abort_behavior(0, _WRITE_ABORT_MSG);
+#endif
+#endif
 
     /* By default, we want to run all tests. */
     if(arrow_count_ == 0) {
@@ -1682,42 +1652,42 @@ arrow_main(int argc, char** argv)
             arrow_remember_(i);
     }
 
-//     /* Guess whether we want to run unit tests as child processes. */
-//     if(arrow_no_exec_ < 0) {
-//         arrow_no_exec_ = 0;
+    /* Guess whether we want to run unit tests as child processes. */
+    if(arrow_no_exec_ < 0) {
+        arrow_no_exec_ = 0;
 
-//         if(arrow_count_ <= 1) {
-//             arrow_no_exec_ = 1;
-//         } else {
-// #ifdef ARROW_WIN_
-//             if(IsDebuggerPresent())
-//                 arrow_no_exec_ = 1;
-// #endif
-// #ifdef ARROW_LINUX_
-//             if(arrow_is_tracer_present_())
-//                 arrow_no_exec_ = 1;
-// #endif
-// #ifdef RUNNING_ON_VALGRIND
-//             /* RUNNING_ON_VALGRIND is provided by optionally included <valgrind.h> */
-//             if(RUNNING_ON_VALGRIND)
-//                 arrow_no_exec_ = 1;
-// #endif
-//         }
-//     }
+        if(arrow_count_ <= 1) {
+            arrow_no_exec_ = 1;
+        } else {
+#ifdef ARROW_WIN_
+            if(IsDebuggerPresent())
+                arrow_no_exec_ = 1;
+#endif
+#ifdef ARROW_LINUX_
+            if(arrow_is_tracer_present_())
+                arrow_no_exec_ = 1;
+#endif
+#ifdef RUNNING_ON_VALGRIND
+            /* RUNNING_ON_VALGRIND is provided by optionally included <valgrind.h> */
+            if(RUNNING_ON_VALGRIND)
+                arrow_no_exec_ = 1;
+#endif
+        }
+    }
 
-    // if(arrow_tap_) {
-    //     /* TAP requires we know test result ("ok", "not ok") before we output
-    //      * anything about the test, and this gets problematic for larger verbose
-    //      * levels. */
-    //     if(arrow_verbose_level_ > 2)
-    //         arrow_verbose_level_ = 2;
+    if(arrow_tap_) {
+        /* TAP requires we know test result ("ok", "not ok") before we output
+         * anything about the test, and this gets problematic for larger verbose
+         * levels. */
+        if(arrow_verbose_level_ > 2)
+            arrow_verbose_level_ = 2;
 
-    //     /* TAP harness should provide some summary. */
-    //     arrow_no_summary_ = 1;
+        /* TAP harness should provide some summary. */
+        arrow_no_summary_ = 1;
 
-    //     if(!arrow_worker_)
-    //         printf("1..%d\n", (int) arrow_count_);
-    // }
+        if(!arrow_worker_)
+            printf("1..%d\n", (int) arrow_count_);
+    }
 
     int index = arrow_worker_index_;
     for(i = 0; arrow_list_[i].func != NULL; i++) {
@@ -1741,7 +1711,7 @@ arrow_main(int argc, char** argv)
 
         if(arrow_stat_failed_units_ == 0) {
             arrow_colored_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS:");
-            printf(" All tests have passed.\n");
+            printf(" All unit tests have passed.\n");
         } else {
             arrow_colored_printf_(ARROW_COLOR_RED_INTENSIVE_, "FAILED:");
             printf(" %d of %d unit tests %s failed.\n",
@@ -1754,15 +1724,14 @@ arrow_main(int argc, char** argv)
     }
 
     if (arrow_xml_output_) {
-        #if defined ARROW_UNIX_
-            char *suite_name = basename(argv[0]);
-        #elif defined ARROW_WIN_
-            char suite_name[_MAX_FNAME];
-            _splitpath(argv[0], NULL, NULL, suite_name, NULL);
-        #else
-            const char *suite_name = argv[0];
-        #endif
-
+#if defined ARROW_UNIX_
+        char *suite_name = basename(argv[0]);
+#elif defined ARROW_WIN_
+        char suite_name[_MAX_FNAME];
+        _splitpath(argv[0], NULL, NULL, suite_name, NULL);
+#else
+        const char *suite_name = argv[0];
+#endif
         fprintf(arrow_xml_output_, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         fprintf(arrow_xml_output_, "<testsuite name=\"%s\" tests=\"%d\" errors=\"%d\" failures=\"%d\" skip=\"%d\">\n",
             suite_name, (int)arrow_list_size_, arrow_stat_failed_units_, arrow_stat_failed_units_,
