@@ -791,7 +791,6 @@ static ARROW_INLINE FILE *arrow_fopen(const char *filename, const char *mode) {
 
 static ARROW_INLINE int arrow_main(int argc, const char *const argv[]);
 int arrow_main(int argc, const char *const argv[]) {
-  arrow_uint64_t failed = 0;
   size_t index = 0;
   size_t *failed_testcases = ARROW_NULL;
   size_t failed_testcases_length = 0;

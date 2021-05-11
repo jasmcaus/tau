@@ -1051,7 +1051,7 @@ typedef struct arrow_test_CMDLINE_OPTION_ {
     char shortname;
     const char* longname;
     int id;
-    unsigned flags;
+    // unsigned flags;
 } ARROW_CMDLINE_OPTION_;
 
 static int
@@ -1242,27 +1242,22 @@ arrow_help_(void)
 }
 
 static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options_[] = {
-    { 's',  "skip",         's', 0 },
-    {  0,   "exec",         'e', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
-    { 'E',  "no-exec",      'E', 0 },
+    { 's',   "skip",      's'},
 #if defined ARROW_WIN_
-    { 't',  "time",         't', 0 },
-    {  0,   "timer",        't', 0 },   /* kept for compatibility */
+    { 't',   "time",      't'},
+    {  0,    "timer",     't'},
 #elif defined ARROW_HAS_POSIX_TIMER_
-    { 't',  "time",         't', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
-    {  0,   "timer",        't', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },  /* kept for compatibility */
+    { 't',   "time",      't'},
+    {  0,    "timer",     't'}, // kept for compatibility
 #endif
-    {  0,   "no-summary",   'S', 0 },
-    {  0,   "tap",          'T', 0 },
-    { 'l',  "list",         'l', 0 },
-    { 'v',  "verbose",      'v', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
-    { 'q',  "quiet",        'q', 0 },
-    {  0,   "color",        'c', ARROW_CMDLINE_OPTFLAG_OPTIONALARG_ },
-    {  0,   "no-color",     'C', 0 },
-    { 'h',  "help",         'h', 0 },
-    {  0,   "worker",       'w', ARROW_CMDLINE_OPTFLAG_REQUIREDARG_ },  /* internal */
-    { 'x',  "xml-output",   'x', ARROW_CMDLINE_OPTFLAG_REQUIREDARG_ },
-    {  0,   NULL,            0,  0 }
+    {  0,    "no-summary",'S'},
+    { 'l',   "list",      'L'},
+    { 'v',   "verbose",   'V'},
+    { 'q',   "quiet",     'Q'},
+    {  0,    "no-color",  'C'},
+    { 'h',   "help",      'H'},
+    { 'o',   "output",    'O'},
+    {  0,    NULL,         0 }
 };
 
 static int
@@ -1271,24 +1266,6 @@ arrow_cmdline_callback_(int id, const char* arg)
     switch(id) {
         case 's':
             arrow_skip_mode_ = 1;
-            break;
-
-        case 'e':
-            if(arg == NULL || strcmp(arg, "always") == 0) {
-                arrow_no_exec_ = 0;
-            } else if(strcmp(arg, "never") == 0) {
-                arrow_no_exec_ = 1;
-            } else if(strcmp(arg, "auto") == 0) {
-                /*noop*/
-            } else {
-                fprintf(stderr, "%s: Unrecognized argument '%s' for option --exec.\n", arrow_argv0_, arg);
-                fprintf(stderr, "Try '%s --help' for more information.\n", arrow_argv0_);
-                arrow_exit_(2);
-            }
-            break;
-
-        case 'E':
-            arrow_no_exec_ = 1;
             break;
 
         case 't':
@@ -1378,6 +1355,10 @@ int
 main(int argc, char** argv)
 {
     int i;
+    Ll* failed_testcases = null;
+    Ll num_failed_testcases = 0;
+    const char* filter = null
+
 
     arrow_argv0_ = argv[0];
 
