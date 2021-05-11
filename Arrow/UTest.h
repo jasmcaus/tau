@@ -240,14 +240,14 @@ struct arrow_test_state_s {
   char *name;
 };
 
-struct arrow_state_s {
+struct arrow_test_s {
   struct arrow_test_state_s *tests;
-  size_t tests_length;
+  size_t num_tests;
   FILE *output;
 };
 
 /* extern to the global state arrow needs to execute */
-ARROW_EXTERN struct arrow_state_s arrow_state;
+ARROW_EXTERN struct arrow_test_s arrow_state;
 
 #if defined(_MSC_VER)
 #define ARROW_WEAK __forceinline
@@ -267,8 +267,8 @@ ARROW_EXTERN struct arrow_state_s arrow_state;
 #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
 #endif
 #define ARROW_PRINTF(...)                                                      \
-  if (arrow_state.output) {                                                    \
-    fprintf(arrow_state.output, __VA_ARGS__);                                  \
+  if (arrow_state.foutput) {                                                    \
+    fprintf(arrow_state.foutput, __VA_ARGS__);                                  \
   }                                                                            \
   printf(__VA_ARGS__)
 #ifdef __clang__
@@ -437,7 +437,7 @@ arrow_type_printer(long long unsigned int i) {
 #define ARROW_STRNCMP(x, y, size) strncmp(x, y, size)
 #endif
 
-/*
+//
 #if defined(__clang__)
 #define ARROW_EXPECT(x, y, cond)                                               \
   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
@@ -461,36 +461,8 @@ arrow_type_printer(long long unsigned int i) {
   }                                                                            \
   while (0)                                                                    \
   ARROW_SURPRESS_WARNING_END
-#elif defined(__GNUC__)
-#define ARROW_EXPECT(x, y, cond)                                               \
-  ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-    ARROW_AUTO(x) xEval = (x);                                                 \
-    ARROW_AUTO(y) yEval = (y);                                                 \
-    if (!((xEval)cond(yEval))) {                                               \
-      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-      ARROW_PRINTF("  Expected : ");                                           \
-      arrow_type_printer(xEval);                                               \
-      ARROW_PRINTF("\n");                                                      \
-      ARROW_PRINTF("    Actual : ");                                           \
-      arrow_type_printer(yEval);                                               \
-      ARROW_PRINTF("\n");                                                      \
-      *arrow_result = 1;                                                       \
-    }                                                                          \
-  }                                                                            \
-  while (0)                                                                    \
-  ARROW_SURPRESS_WARNING_END
-*/
-// #define ARROW_EXPECT(x, y, cond)                                               \
-//   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
-//     if (!((x)cond(y))) {                                                       \
-//       ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-//       *arrow_result = 1;                                                       \
-//     }                                                                          \
-//   }                                                                            \
-//   while (0)                                                                    \
-//   ARROW_SURPRESS_WARNING_END
-// #endif
 
+#endif 
 // #define EXPECT_TRUE(x)                                                         \
 //   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
 //     if (!(x)) {                                                                \
@@ -712,14 +684,14 @@ arrow_type_printer(long long unsigned int i) {
 //   ARROW_SURPRESS_WARNING_END
 
 #define TEST(SET, NAME)                                                       \
-  ARROW_EXTERN struct arrow_state_s arrow_state;                               \
+  ARROW_EXTERN struct arrow_test_s arrow_state;                               \
   static void arrow_run_##SET##_##NAME(int *arrow_result);                     \
   static void arrow_##SET##_##NAME(int *arrow_result, size_t arrow_index) {    \
     (void)arrow_index;                                                         \
     arrow_run_##SET##_##NAME(arrow_result);                                    \
   }                                                                            \
   ARROW_INITIALIZER(arrow_register_##SET##_##NAME) {                           \
-    const size_t index = arrow_state.tests_length++;                           \
+    const size_t index = arrow_state.num_tests++;                           \
     const char *name_part = #SET "." #NAME;                                    \
     const size_t name_size = strlen(name_part) + 1;                            \
     char *name = ARROW_PTR_CAST(char *, malloc(name_size));                    \
@@ -727,7 +699,7 @@ arrow_type_printer(long long unsigned int i) {
         struct arrow_test_state_s *,                                           \
         arrow_realloc(ARROW_PTR_CAST(void *, arrow_state.tests),               \
                       sizeof(struct arrow_test_state_s) *                      \
-                          arrow_state.tests_length));                          \
+                          arrow_state.num_tests));                          \
     arrow_state.tests[index].func = &arrow_##SET##_##NAME;                     \
     arrow_state.tests[index].name = name;                                      \
     arrow_state.tests[index].index = 0;                                        \
@@ -861,9 +833,9 @@ int arrow_main(int argc, const char *const argv[]) {
       filter = argv[index] + strlen(filter_str);
     } else if (0 ==
                ARROW_STRNCMP(argv[index], output_str, strlen(output_str))) {
-      arrow_state.output = arrow_fopen(argv[index] + strlen(output_str), "w+");
+      arrow_state.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
     } else if (0 == ARROW_STRNCMP(argv[index], list_str, strlen(list_str))) {
-      for (index = 0; index < arrow_state.tests_length; index++) {
+      for (index = 0; index < arrow_state.num_tests; index++) {
         ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
       }
       /* when printing the test list, don't actually run the tests */
@@ -871,7 +843,7 @@ int arrow_main(int argc, const char *const argv[]) {
     }
   }
 
-  for (index = 0; index < arrow_state.tests_length; index++) {
+  for (index = 0; index < arrow_state.num_tests; index++) {
     if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
       continue;
     }
@@ -882,17 +854,17 @@ int arrow_main(int argc, const char *const argv[]) {
   printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
          colours[GREEN], colours[RESET], ARROW_CAST(arrow_uint64_t, ran_tests));
 
-  if (arrow_state.output) {
-    fprintf(arrow_state.output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    fprintf(arrow_state.output,
+  if (arrow_state.foutput) {
+    fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(arrow_state.foutput,
             "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
-    fprintf(arrow_state.output,
+    fprintf(arrow_state.foutput,
             "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
             ARROW_CAST(arrow_uint64_t, ran_tests));
   }
 
-  for (index = 0; index < arrow_state.tests_length; index++) {
+  for (index = 0; index < arrow_state.num_tests; index++) {
     int result = 0;
     arrow_int64_t ns = 0;
 
@@ -903,8 +875,8 @@ int arrow_main(int argc, const char *const argv[]) {
     printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
            arrow_state.tests[index].name);
 
-    if (arrow_state.output) {
-      fprintf(arrow_state.output, "<testcase name=\"%s\">",
+    if (arrow_state.foutput) {
+      fprintf(arrow_state.foutput, "<testcase name=\"%s\">",
               arrow_state.tests[index].name);
     }
 
@@ -913,8 +885,8 @@ int arrow_main(int argc, const char *const argv[]) {
     arrow_state.tests[index].func(&result, arrow_state.tests[index].index);
     ns = arrow_ns() - ns;
 
-    if (arrow_state.output) {
-      fprintf(arrow_state.output, "</testcase>\n");
+    if (arrow_state.foutput) {
+      fprintf(arrow_state.foutput, "</testcase>\n");
     }
 
     if (0 != result) {
@@ -946,20 +918,20 @@ int arrow_main(int argc, const char *const argv[]) {
     }
   }
 
-  if (arrow_state.output) {
-    fprintf(arrow_state.output, "</testsuite>\n</testsuites>\n");
+  if (arrow_state.foutput) {
+    fprintf(arrow_state.foutput, "</testsuite>\n</testsuites>\n");
   }
 
 cleanup:
-  for (index = 0; index < arrow_state.tests_length; index++) {
+  for (index = 0; index < arrow_state.num_tests; index++) {
     free(ARROW_PTR_CAST(void *, arrow_state.tests[index].name));
   }
 
   free(ARROW_PTR_CAST(void *, failed_testcases));
   free(ARROW_PTR_CAST(void *, arrow_state.tests));
 
-  if (arrow_state.output) {
-    fclose(arrow_state.output);
+  if (arrow_state.foutput) {
+    fclose(arrow_state.foutput);
   }
 
   return ARROW_CAST(int, failed);
@@ -971,7 +943,7 @@ cleanup:
    data without having to use the ARROW_MAIN macro, thus allowing them to write
    their own main() function.
 */
-#define ARROW_STATE() struct arrow_state_s arrow_state = {0, 0, 0}
+#define ARROW_STATE() struct arrow_test_s arrow_state = {0, 0, 0}
 
 /*
    define a main() function to call into arrow.h and start executing tests! A
