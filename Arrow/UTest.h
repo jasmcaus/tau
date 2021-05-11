@@ -17,6 +17,10 @@
     // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
     #pragma warning(disable : 4668)
 
+    // In multi-platform code like ours, we cannot use the non-standard "safe" functions from 
+    // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
+    #pragma warning(disable: 4996)
+
     #pragma warning(push, 1)
 #endif
 
@@ -35,6 +39,13 @@
     #define ARROW_C_FUNC extern "C"
 #else
     #define ARROW_C_FUNC
+#endif
+
+// Enable the use of the non-standard keyword __attribute__ to silence warnings under some compilers
+#if defined(__GNUC__) || defined(__clang__)
+    #define ARROW_ATTRIBUTE_(attr)    __attribute__((attr))
+#else
+    #define ARROW_ATTRIBUTE_(attr)
 #endif
 
 // Timing --> use acutest's version

@@ -199,9 +199,6 @@ static void arrow_help() {
     printf("    -q, --quiet              Same as --verbose=0\n");
     printf("        --no-colour          Disable colourized output\n");
     printf("    -h, --help               Display this help prompt and exit\n");
-
-    if(arrow_total_tests < 16)
-        printf("\n");
 }
 
 /*
