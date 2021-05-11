@@ -113,57 +113,57 @@
 #endif
 
 #if defined(_MSC_VER)
-#define ARROW_INLINE __forceinline
+  #define ARROW_INLINE __forceinline
 
-#if defined(_WIN64)
-#define ARROW_SYMBOL_PREFIX
+  #if defined(_WIN64)
+    #define ARROW_SYMBOL_PREFIX
+  #else
+    #define ARROW_SYMBOL_PREFIX "_"
+  #endif
+
+  #if defined(__clang__)
+    #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
+      _Pragma("clang diagnostic push")                                             \
+          _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
+
+    #define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
+  #else
+    #define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
+    #define ARROW_INITIALIZER_END_DISABLE_WARNINGS
+  #endif
+
+  #pragma section(".CRT$XCU", read)
+  #define ARROW_INITIALIZER(f)                                                   \
+    static void __cdecl f(void);                                                 \
+    ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
+    __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
+        ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
+                                                          f##_)(void) = f;      \
+    ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
+    static void __cdecl f(void)
 #else
-#define ARROW_SYMBOL_PREFIX "_"
-#endif
+  #if defined(__linux__)
+    #if defined(__clang__)
+      #if __has_warning("-Wreserved-id-macro")
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreserved-id-macro"
+      #endif
+    #endif
 
-#if defined(__clang__)
-#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-  _Pragma("clang diagnostic push")                                             \
-      _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
+    #define __STDC_FORMAT_MACROS 1
 
-#define ARROW_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
-#else
-#define ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS
-#define ARROW_INITIALIZER_END_DISABLE_WARNINGS
-#endif
+    #if defined(__clang__)
+      #if __has_warning("-Wreserved-id-macro")
+        #pragma clang diagnostic pop
+      #endif
+    #endif
+  #endif
 
-#pragma section(".CRT$XCU", read)
-#define ARROW_INITIALIZER(f)                                                   \
-  static void __cdecl f(void);                                                 \
-  ARROW_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
-  __pragma(comment(linker, "/include:" ARROW_SYMBOL_PREFIX #f "_"))            \
-      ARROW_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
-                                                         f##_)(void) = f;      \
-  ARROW_INITIALIZER_END_DISABLE_WARNINGS                                       \
-  static void __cdecl f(void)
-#else
-#if defined(__linux__)
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreserved-id-macro"
-#endif
-#endif
+  #define ARROW_INLINE inline
 
-#define __STDC_FORMAT_MACROS 1
-
-#if defined(__clang__)
-#if __has_warning("-Wreserved-id-macro")
-#pragma clang diagnostic pop
-#endif
-#endif
-#endif
-
-#define ARROW_INLINE inline
-
-#define ARROW_INITIALIZER(f)                                                   \
-  static void f(void) __attribute__((constructor));                            \
-  static void f(void)
+  #define ARROW_INITIALIZER(f)                                                   \
+    static void f(void) __attribute__((constructor));                            \
+    static void f(void)
 #endif
 
 #if defined(__cplusplus)
