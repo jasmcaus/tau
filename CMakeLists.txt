@@ -105,6 +105,7 @@ else()
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         string(APPEND CMAKE_C_FLAGS " /O2")
     endif()
+    string(APPEND CMAKE_C_FLAGS " /std:c11")
     string(APPEND CMAKE_C_FLAGS " /Wall")
     # string(APPEND CMAKE_C_FLAGS " /WX")  # Treats Linker Warnings as Errors
     string(APPEND CMAKE_C_FLAGS " /wd4514")

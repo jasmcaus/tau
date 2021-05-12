@@ -46,8 +46,9 @@
 
 // #include <stddef.h>
 #include <stdio.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 // #include <errno.h>
 
 #if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
@@ -269,15 +270,8 @@ static inline Int64 arrow_ns(void) {
 #endif
 
 
-#if defined(_MSC_VER) && (_MSC_VER < 1920)
-    #define ARROW_PRId64 "I64d"
-    #define ARROW_PRIu64 "I64u"
-#else
-    #include <inttypes.h>
-
-    #define ARROW_PRId64 PRId64
-    #define ARROW_PRIu64 PRIu64
-#endif
+#define ARROW_PRId64 "I64d"
+#define ARROW_PRIu64 "I64u"
 
 // ARROW_INITIALIZER
 #if defined(_MSC_VER)
