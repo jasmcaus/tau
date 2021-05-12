@@ -580,21 +580,22 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #if defined(__clang__) || defined(__GNUC__)
     #define __ARROW_CHECK(x, y, cond)                                               \
-    do {                                            \
-        ARROW_AUTO(x) xEval = (x);                                 \
-        ARROW_AUTO(y) yEval = (y);                                                 \
-        if (!((xEval)cond(yEval))) {                                                                                  \
-            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                \
-            arrow_printf("  Expected : ");                                           \
-            arrow_type_printer(xEval);                                               \
-            arrow_printf("\n");                                                      \
-            arrow_printf("    Actual : ");                                           \
-            arrow_type_printer(yEval);                                               \
-            arrow_printf("\n");                                                      \
-            *arrow_result = 1;                                                       \
-        }                                                                          \
-    }                                                                            \
-    while (0)                                                                    
+        do {                                            \
+            ARROW_AUTO(x) xEval = (x);                                 \
+            ARROW_AUTO(y) yEval = (y);                                                 \
+                                                                                        \
+            if (!((xEval)cond(yEval))) {                                                                                  \
+                arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                \
+                arrow_printf("  Expected : ");                                           \
+                arrow_type_printer(xEval);                                               \
+                arrow_printf("\n");                                                      \
+                arrow_printf("    Actual : ");                                           \
+                arrow_type_printer(yEval);                                               \
+                arrow_printf("\n");                                                      \
+                *arrow_result = 1;                                                       \
+            }                                                                          \
+        }                                                                            \
+        while (0)                                                                    
 
 // arrow_type_printer does not work on other compilers
 #else
@@ -639,7 +640,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 // String Macros
 #define CHECK_STREQ(x, y)                                                     \
     do {                                            \
-        if (0 != strcmp(x, y)) {                                                   \
+        if (strcmp(x, y) != 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%s\"\n", x);                                \
             arrow_printf("    Actual : \"%s\"\n", y);                                \
@@ -651,7 +652,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define CHECK_STRNEQ(x, y)                                                     \
     do {                                            \
-        if (0 == strcmp(x, y)) {                                                   \
+        if (strcmp(x, y) == 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%s\"\n", x);                                \
             arrow_printf("    Actual : \"%s\"\n", y);                                \
@@ -663,7 +664,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define CHECK_STRNNEQ(x, y, n)                                                 \
     do {                                            \
-        if (0 == strncmp(x, y, n)) {                                         \
+        if (strncmp(x, y, n) == 0) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
             arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
@@ -720,7 +721,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define ASSERT_STREQ(x, y)                                                     \
     do {                                            \
-        if (0 != strcmp(x, y)) {                                                   \
+        if (strcmp(x, y) != 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%s\"\n", x);                                \
             arrow_printf("    Actual : \"%s\"\n", y);                                \
@@ -732,7 +733,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define ASSERT_STRNEQ(x, y)                                                     \
     do {                                            \
-        if (0 == strcmp(x, y)) {                                                   \
+        if (strcmp(x, y) == 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%s\"\n", x);                                \
             arrow_printf("    Actual : \"%s\"\n", y);                                \
@@ -745,7 +746,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define ASSERT_STRNNEQ(x, y, n)                                                 \
     do {                                            \
-        if (0 == strncmp(x, y, n)) {                                         \
+        if (strncmp(x, y, n) == 0) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
             arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
