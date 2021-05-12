@@ -58,8 +58,8 @@ These assertions perform basic true/false condition checking.
 
 Fatal assertion             | Nonfatal assertion         | Checks
 --------------------------  | -------------------------- | --------------------
-`ARROW_ASSERT(condition);`  | `ARROW_CHECK(condition);`  | `condition` is true
-`ARROW_ASSERT(!condition);` | `ARROW_CHECK(!condition);` | `condition` is false
+ARROW_ASSERT(condition);  | ARROW_CHECK(condition);  | condition is true
+ARROW_ASSERT(!condition); | ARROW_CHECK(!condition); | condition is false
 
 ### b. Binary Comparisons
 For a majority of your tests, `ARROW_ASSERT` and `ARROW_CHECK` will suffice. However, Arrow provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `ARROW_ASSERT` and `ARROW_CHECK` as they provide readable comparison checks. 
@@ -68,21 +68,21 @@ For user-defined types in a C++ codebase, we recommend using these Binary Compar
 
 Fatal assertion          | Nonfatal assertion       | Checks
 ------------------------ | ------------------------ | --------------
-`ARROW_ASSERT_EQ(x, y);` | `ARROW_CHECK_EQ(x, y);`  | `x == y`
-`ARROW_ASSERT_NE(x, y);` | `ARROW_CHECK_NE(x, y);`  | `x != y`
-`ARROW_ASSERT_LT(x, y);` | `ARROW_CHECK_LT(x, y);`  | `x < y`
-`ARROW_ASSERT_LE(x, y);` | `ARROW_CHECK_LE(x, y);`  | `x <= y`
-`ARROW_ASSERT_GT(x, y);` | `ARROW_CHECK_GT(x, y);`  | `x > y`
-`ARROW_ASSERT_GE(x, y);` | `ARROW_CHECK_GE(x, y);`  | `x >= y`
+ARROW_ASSERT_EQ(x, y); | ARROW_CHECK_EQ(x, y);  | x == y
+ARROW_ASSERT_NE(x, y); | ARROW_CHECK_NE(x, y);  | x != y
+ARROW_ASSERT_LT(x, y); | ARROW_CHECK_LT(x, y);  | x < y
+ARROW_ASSERT_LE(x, y); | ARROW_CHECK_LE(x, y);  | x <= y
+ARROW_ASSERT_GT(x, y); | ARROW_CHECK_GT(x, y);  | x > y
+ARROW_ASSERT_GE(x, y); | ARROW_CHECK_GE(x, y);  | x >= y
 
 ### c. String Comparisons
 These macros compare two ***C-strings***. 
 
 | Fatal assertion                | Nonfatal assertion             | Checks                                                 |
 | --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
-| `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_CHECK_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
-| `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
+| ARROW_ASSERT_STREQ(str1,str2);     | ARROW_CHECK_STREQ(str1,str2);     | the two C strings have the same content   		     |
+| ARROW_ASSERT_STRNEQ(str1,str2);     | ARROW_CHECK_STRNEQ(str1,str2);     | the two C strings have different contents 		     |
+| ARROW_ASSERT_STRNNEQ(str1,str2); | ARROW_CHECK_STRNNEQ(str1,str2); | the two C strings have the same content, upto the length of str1   |
 
 
 ## Example Usage
