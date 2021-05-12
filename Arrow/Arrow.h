@@ -449,11 +449,10 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 }
 
 
-#define ARROW_PRINTF(...)                                                      \
-  if (arrow_state.foutput) {                                                    \
-    fprintf(arrow_state.foutput, __VA_ARGS__);                                  \
-  }                                                                            \
-  printf(__VA_ARGS__)
+#define arrow_printf(...)                                                      \
+    if (arrow_state.foutput)                                                  \
+        fprintf(arrow_state.foutput, __VA_ARGS__);               \
+    printf(__VA_ARGS__)
 
 
 #ifdef _MSC_VER
@@ -482,36 +481,36 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void* p);
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(float f) {
-    ARROW_PRINTF("%f", cast(double, f));
+    arrow_printf("%f", cast(double, f));
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(double d) {
-    ARROW_PRINTF("%f", d);
+    arrow_printf("%f", d);
     }
 
     
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long double d) {
-    ARROW_PRINTF("%Lf", d);
+    arrow_printf("%Lf", d);
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(int i) {
-    ARROW_PRINTF("%d", i);
+    arrow_printf("%d", i);
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(unsigned int i) {
-    ARROW_PRINTF("%u", i);
+    arrow_printf("%u", i);
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long int i) {
-    ARROW_PRINTF("%ld", i);
+    arrow_printf("%ld", i);
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long unsigned int i) {
-    ARROW_PRINTF("%lu", i);
+    arrow_printf("%lu", i);
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void* p) {
-    ARROW_PRINTF("%p", p);
+    arrow_printf("%p", p);
     }
 
     /*
@@ -523,17 +522,17 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long long unsigned int i);
         
         ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(long long int i) {
-        ARROW_PRINTF("%lld", i);
+        arrow_printf("%lld", i);
         }
 
         ARROW_WEAK ARROW_OVERLOADABLE void
         arrow_type_printer(long long unsigned int i) {
-        ARROW_PRINTF("%llu", i);
+        arrow_printf("%llu", i);
         }
     #endif
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
     #define arrow_type_printer(val)                                                \
-    ARROW_PRINTF(_Generic((val), signed char                                     \
+    arrow_printf(_Generic((val), signed char                                     \
                             : "%d", unsigned char                                  \
                             : "%u", short                                          \
                             : "%d", unsigned short                                 \
@@ -557,8 +556,8 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     to tell our users we can't do anything fancy
     */
     #define arrow_type_printer(...) \
-        ARROW_PRINTF("  Error: Your compiler does not support overloadable methods.") \
-        ARROW_PRINTF("  If you think this was an error, please file an issue on Arrow' Github repo.")
+        arrow_printf("  Error: Your compiler does not support overloadable methods.") \
+        arrow_printf("  If you think this was an error, please file an issue on Arrow' Github repo.")
 #endif // ARROW_OVERLOADABLE
 
 #ifdef _MSC_VER
@@ -598,13 +597,13 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         ARROW_AUTO(x) xEval = (x);                                 \
         ARROW_AUTO(y) yEval = (y);                                                 \
         if (!((xEval)cond(yEval))) {                                                                                  \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                \
-            ARROW_PRINTF("  Expected : ");                                           \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                \
+            arrow_printf("  Expected : ");                                           \
             arrow_type_printer(xEval);                                               \
-            ARROW_PRINTF("\n");                                                      \
-            ARROW_PRINTF("    Actual : ");                                           \
+            arrow_printf("\n");                                                      \
+            arrow_printf("    Actual : ");                                           \
             arrow_type_printer(yEval);                                               \
-            ARROW_PRINTF("\n");                                                      \
+            arrow_printf("\n");                                                      \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -617,9 +616,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (!((x)cond(y))) {                                                       \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("    Expected vs Actual not displayed\n");              \
-            ARROW_PRINTF("    due to compiler limitations.\n");                    \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("    Expected vs Actual not displayed\n");              \
+            arrow_printf("    due to compiler limitations.\n");                    \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -637,9 +636,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (!(x)) {                                                                \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("  Expected : true\n");                                     \
-            ARROW_PRINTF("    Actual : %s\n", (x) ? "true" : "false");               \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("  Expected : true\n");                                     \
+            arrow_printf("    Actual : %s\n", (x) ? "true" : "false");               \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -660,9 +659,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (0 != strcmp(x, y)) {                                                   \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-            ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("  Expected : \"%s\"\n", x);                                \
+            arrow_printf("    Actual : \"%s\"\n", y);                                \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -673,9 +672,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STRNEQ(x, y)                                                     \
   ARROW_SURPRESS_WARNING_BEGIN do {                                            \
     if (0 == strcmp(x, y)) {                                                   \
-      ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-      ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-      ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+      arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+      arrow_printf("  Expected : \"%s\"\n", x);                                \
+      arrow_printf("    Actual : \"%s\"\n", y);                                \
       *arrow_result = 1;                                                       \
     }                                                                          \
   }                                                                            \
@@ -687,9 +686,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
-        ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-        ARROW_PRINTF("  Expected : \"%.*s\"\n", cast(int, n), x);          \
-        ARROW_PRINTF("    Actual : \"%.*s\"\n", cast(int, n), y);          \
+        arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+        arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
+        arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
         *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -709,13 +708,13 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
             ARROW_AUTO(x) xEval = (x);                                                 \
             ARROW_AUTO(y) yEval = (y);                                                 \
             if (!((xEval)cond(yEval))) {                                               \
-                ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-                ARROW_PRINTF("  Expected : ");                                           \
+                arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+                arrow_printf("  Expected : ");                                           \
                 arrow_type_printer(xEval);                                               \
-                ARROW_PRINTF("\n");                                                      \
-                ARROW_PRINTF("    Actual : ");                                           \
+                arrow_printf("\n");                                                      \
+                arrow_printf("    Actual : ");                                           \
                 arrow_type_printer(yEval);                                               \
-                ARROW_PRINTF("\n");                                                      \
+                arrow_printf("\n");                                                      \
                 *arrow_result = 1;                                                       \
                 return;                                                                  \
             }                                                                          \
@@ -728,7 +727,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         ARROW_SURPRESS_WARNING_BEGIN \
         do {                                            \
             if (!((x)cond(y))) {                                                       \
-                ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+                arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
                 *arrow_result = 1;                                                       \
                 return;                                                                  \
             }                                                                          \
@@ -750,9 +749,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (0 != strcmp(x, y)) {                                                   \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-            ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("  Expected : \"%s\"\n", x);                                \
+            arrow_printf("    Actual : \"%s\"\n", y);                                \
             *arrow_result = 1;                                                       \
             return;                                                                  \
         }                                                                          \
@@ -763,9 +762,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #define ASSERT_STRNEQ(x, y)                                                     \
     ARROW_SURPRESS_WARNING_BEGIN do {                                            \
         if (0 == strcmp(x, y)) {                                                   \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("  Expected : \"%s\"\n", x);                                \
-            ARROW_PRINTF("    Actual : \"%s\"\n", y);                                \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("  Expected : \"%s\"\n", x);                                \
+            arrow_printf("    Actual : \"%s\"\n", y);                                \
             *arrow_result = 1;                                                       \
             return;                                                                  \
         }                                                                          \
@@ -778,9 +777,9 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_SURPRESS_WARNING_BEGIN \
     do {                                            \
         if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
-            ARROW_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            ARROW_PRINTF("  Expected : \"%.*s\"\n", cast(int, n), x);          \
-            ARROW_PRINTF("    Actual : \"%.*s\"\n", cast(int, n), y);          \
+            arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
+            arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
+            arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
             *arrow_result = 1;                                                       \
             return;                                                                  \
         }                                                                          \
@@ -958,7 +957,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
         // List tests
         else if(ARROW_STRNCMP(argv[i], list_str, strlen(list_str)) == 0) {
             for (i = 0; i < arrow_state.num_tests; i++)
-                ARROW_PRINTF("%s\n", arrow_state.tests[i].name);
+                arrow_printf("%s\n", arrow_state.tests[i].name);
         }
 
         // Disable colouring
@@ -967,7 +966,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
         }
 
         // Disable Summary
-        else if(ARROW_STRNCMP(argv[i], summary_str, strlen(summary_str)) {
+        else if(ARROW_STRNCMP(argv[i], summary_str, strlen(summary_str))) {
             arrow_disable_summary = true;
         }
 
