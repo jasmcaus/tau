@@ -1032,10 +1032,10 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if(!arrow_disable_summary) {
         arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total unit tests:    %4d\n", cast(int, total_tests));
-        printf("   Total tests run:     %4d\n", tests_ran);
-        printf("   Total tests skipped: %4d\n", skipped_tests);
-        printf("   Total failed tests:  %4d\n", failed_tests);
+        printf("   Total unit tests:    %" ARROW_PRIu64 "\n", cast(int, total_tests));
+        printf("   Total tests run:     %" ARROW_PRIu64 "\n", tests_ran);
+        printf("   Total tests skipped: %" ARROW_PRIu64 "\n", skipped_tests);
+        printf("   Total failed tests:  %" ARROW_PRIu64 "\n", failed_tests);
     }
 
     if (failed_tests != 0) {
