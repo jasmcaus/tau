@@ -21,6 +21,13 @@
     // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
     #pragma warning(disable: 4996)
 
+    /*
+        io.h contains definitions for some structures with natural padding. This is
+        uninteresting, but for some reason, MSVC's behaviour is to warn about
+        including this system header. That *is* interesting
+    */
+    #pragma warning(disable : 4820)
+
     #pragma warning(push, 1)
 #endif
 
@@ -332,15 +339,6 @@ static inline Int64 arrow_ns(void) {
 
 // Coloured output
 #ifdef _MSC_VER
-    /*
-        io.h contains definitions for some structures with natural padding. This is
-        uninteresting, but for some reason, MSVC's behaviour is to warn about
-        including this system header. That *is* interesting
-    */
-    #pragma warning(disable : 4820)
-    #pragma warning(push, 1)
-    #include <io.h>
-    #pragma warning(pop)
     #define ARROW_USE_COLOUR_OUTPUT() (_isatty(_fileno(stdout)))
 #else
     #include <unistd.h>
@@ -878,6 +876,9 @@ inline int arrow_main(int argc, const char* const argv[]) {
     const char* filter = null;
     arrow_argv0_ = argv[0];
 
+    // Timers
+
+
     enum colours { RESET, GREEN, RED };
 
     const int use_colours = ARROW_USE_COLOUR_OUTPUT();
@@ -950,6 +951,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
         if (arrow_state.foutput)
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
+
         now = arrow_ns();
         errno = 0;
         arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
@@ -981,21 +983,21 @@ inline int arrow_main(int argc, const char* const argv[]) {
     printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
             colours[RESET], failed_tests, failed_tests == 1 ? "test" : "tests");
 
-    // printf("Summary:\n");
+    // ARROW_COLOURED_PRINTF(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
+    printf("\nSummary:\n");
 
-    // printf("   Total unit tests:    %4d\n", cast(int, total_tests));
-    // printf("   Total tests run:     %4d\n", tests_ran);
-    // printf("   Total tests skipped: %4d\n", skipped_tests);
-    // printf("   Total failed tests:  %4d\n", failed_tests);
+    printf("   Total unit tests:    %4d\n", cast(int, total_tests));
+    printf("   Total tests run:     %4d\n", tests_ran);
+    printf("   Total tests skipped: %4d\n", skipped_tests);
+    printf("   Total failed tests:  %4d\n", failed_tests);
     
     if (failed_tests != 0) {
-        // printf("%s[ SUMMARY: ]%s %" ARROW_PRIu64 " tests, listed below:\n",
-        //         colours[RED], colours[RESET], failed_tests);
-
         for (Ll i = 0; i < failed_testcases_length; i++) {
-            printf("  %s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
+            printf("  %s[ FAILED ]%s %s\n", colours[RED], colours[RESET],
                     arrow_state.tests[failed_testcases[i]].name);
         }
+    } else {
+        printf("%sSUCCESS:%s All tests have passed.\n", colours[GREEN], colours[RESET]);
     }
 
     if (arrow_state.foutput)
