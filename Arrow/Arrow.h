@@ -374,8 +374,8 @@ static const char* filter = null;
 #endif
 
 // Overridden in `arrow_main` if the cmdline option `--no-color` is passed
-static const bool arrow_should_colourize_output = true;
-static const bool arrow_disable_summary = false; 
+static int arrow_should_colourize_output = 1;
+static int arrow_disable_summary = 0; 
 
 #define ARROW_COLOR_DEFAULT_              0
 #define ARROW_COLOR_GREEN_                1
