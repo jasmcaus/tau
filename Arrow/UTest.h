@@ -32,15 +32,51 @@
     _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")  
 #endif // __clang
 
+/**********************
+ *** Implementation ***
+ **********************/
 
-#include <stddef.h>
+// #include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
+// #include <errno.h>
 
-#if defined(_MSC_VER)
-    #pragma warning(pop)
+#if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
+    #define ARROW_UNIX_   1
+    #include <errno.h>
+    #include <libgen.h>
+    #include <unistd.h>
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <signal.h>
+    #include <time.h>
+
+    #if defined CLOCK_PROCESS_CPUTIME_ID  &&  defined CLOCK_MONOTONIC
+        #define ARROW_HAS_POSIX_TIMER_    1
+    #endif
+#endif
+
+#if defined(_gnu_linux_) || defined(__linux__)
+    #define ARROW_LINUX_      1
+    #include <fcntl.h>
+    #include <sys/stat.h>
+#endif
+
+#if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+    #define ARROW_WIN_        1
+    #include <windows.h>
+    #include <io.h>
+#endif
+
+#ifdef __cplusplus
+    #include <exception>
+#endif
+
+#ifdef __has_include
+    #if __has_include(<valgrind.h>)
+        #include <valgrind.h>
+    #endif
 #endif
 
 #if defined(__cplusplus)
@@ -143,6 +179,86 @@ static inline Int64 arrow_ns(void) {
   return cast(Int64, mach_absolute_time());
 #endif
 }
+
+#if defined ARROW_WIN_
+    typedef LARGE_INTEGER arrow_timer_type_;
+    static LARGE_INTEGER arrow_timer_freq_;
+    static arrow_timer_type_ arrow_timer_start_;
+    static arrow_timer_type_ arrow_timer_end_;
+
+    static void arrow_timer_init_(void) {
+        QueryPerformanceFrequency(&arrow_timer_freq_);
+    }
+
+    static void arrow_timer_get_time_(LARGE_INTEGER* ts) {
+        QueryPerformanceCounter(ts);
+    }
+
+    static double arrow_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
+        double duration = (double)(end.QuadPart - start.QuadPart);
+        duration /= (double)arrow_timer_freq_.QuadPart;
+        return duration;
+    }
+
+    static void arrow_timer_print_diff_(void) {
+        printf("%.6lf secs", arrow_timer_diff_(arrow_timer_start_, arrow_timer_end_));
+    }
+
+#elif defined ARROW_HAS_POSIX_TIMER_
+    static clockid_t arrow_timer_id_;
+    typedef struct timespec arrow_timer_type_;
+    static arrow_timer_type_ arrow_timer_start_;
+    static arrow_timer_type_ arrow_timer_end_;
+
+    static void arrow_timer_init_() {
+        if(arrow_timer_ == 1)
+            arrow_timer_id_ = CLOCK_MONOTONIC;
+        else if(arrow_timer_ == 2)
+            arrow_timer_id_ = CLOCK_PROCESS_CPUTIME_ID;
+    }
+
+    static void arrow_timer_get_time_(struct timespec* ts) {
+        clock_gettime(arrow_timer_id_, ts);
+    }
+
+    static double arrow_timer_diff_(struct timespec start, struct timespec end) {
+        double endns;
+        double startns;
+
+        endns = end.tv_sec;
+        endns *= 1e9;
+        endns += end.tv_nsec;
+
+        startns = start.tv_sec;
+        startns *= 1e9;
+        startns += start.tv_nsec;
+
+        return ((endns - startns)/ 1e9);
+    }
+
+    static void arrow_timer_print_diff_(){
+        printf("%.6lf secs",
+            arrow_timer_diff_(arrow_timer_start_, arrow_timer_end_));
+    }
+#else
+    typedef int arrow_timer_type_;
+    static arrow_timer_type_ arrow_timer_start_;
+    static arrow_timer_type_ arrow_timer_end_;
+
+    void arrow_timer_init_(void) {}
+
+    static void arrow_timer_get_time_(int* ts) {
+        (void) ts;
+    }
+
+    static double arrow_timer_diff_(int start, int end) {
+        (void) start;
+        (void) end;
+        return 0.0;
+    }
+
+    static void arrow_timer_print_diff_(void) {}
+#endif
 
 
 #if defined(_MSC_VER) && (_MSC_VER < 1920)
@@ -919,5 +1035,9 @@ cleanup:
 #ifdef __clang__
      _Pragma("clang diagnostic pop")
 #endif // __clang__
+
+#ifdef _MSC_VER
+    #pragma warning(pop)
+#endif // _MSC_VER
 
 #endif /* SHEREDOM_ARROW_H_INCLUDED */
