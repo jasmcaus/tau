@@ -39,7 +39,7 @@ jobs:
 
       - name: Default Platform Compiler
         shell: bash
-        if: matrix.compiler == 'default'
+        if: (matrix.compiler == 'default') && !(matrix.os == 'windows-latest')
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }}
       
@@ -57,7 +57,7 @@ jobs:
 
       - name: GCC (Ubuntu)
         shell: bash
-        if: (matrix.compiler == 'gcc') && (matrix.compiler == 'gcc')
+        if: (matrix.compiler == 'gcc') && (matrix.os == 'ubuntu-latest')
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
 
