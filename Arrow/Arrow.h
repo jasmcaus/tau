@@ -435,7 +435,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
             case ARROW_COLOR_GREEN_INTENSIVE_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
             case ARROW_COLOR_RED_INTENSIVE_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
             case ARROW_COLOR_DEFAULT_INTENSIVE_:  attr = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            default:                                attr = 0; break;
+            default:                              attr = 0; break;
         }
         if(attr != 0)
             SetConsoleTextAttribute(h, attr);
@@ -535,7 +535,8 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     #define arrow_type_printer(val)                                   \
         arrow_printf(_Generic((val),                                  \
                                 signed char : "%d",                   \
-                                unsigned char : "%u", short : "%d",   \
+                                unsigned char : "%u",                 \
+                                short : "%d",                         \
                                 unsigned short : "%u",                \
                                 int : "%d",                           \
                                 long : "%ld",                         \
@@ -572,10 +573,10 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         _Pragma("clang diagnostic pop")
         /* clang-format on */
     #else
-        #define ARROW_AUTO(x) __typeof__(x + 0)
+        #define ARROW_AUTO(x)   __typeof__(x + 0)
     #endif
 #else
-    #define ARROW_AUTO(x) typeof(x + 0)
+    #define ARROW_AUTO(x)       typeof(x + 0)
 #endif
 
 #if defined(__clang__) || defined(__GNUC__)
@@ -821,11 +822,11 @@ ARROW_WEAK int arrow_should_filter_test(const char* filter, const char* testcase
                     filter_cur++;
                 }
 
-                if (('\0' == *filter_cur) && ('\0' == *testcase_cur))
+                if ((*filter_cur == nullchar) && (*testcase_cur == nullchar))
                     return 0;
 
                 /* if the testcase has been exhausted, we don't have a match! */
-                if ('\0' == *testcase_cur)
+                if (*testcase_cur == nullchar)
                     return 1;
             } else {
                 if (*testcase_cur != *filter_cur) {
@@ -839,8 +840,8 @@ ARROW_WEAK int arrow_should_filter_test(const char* filter, const char* testcase
             }
         }
 
-        if (('\0' != *filter_cur) || (('\0' != *testcase_cur) && ((filter == filter_cur) || ('*' != filter_cur[-1])))) {
-            /* we have a mismatch! */
+        if ((*filter_cur != nullchar) || ((*testcase_cur == nullchar) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
+            // We have a mismatch
             return 1;
         }
     }
@@ -964,14 +965,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
 
 
     enum colours { RESET, GREEN, RED };
-
-    // const int use_colours = ARROW_USE_COLOUR_OUTPUT();
-    // const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
-    // if (!use_colours) {
-    //     for (Ll i = 0; i < sizeof colours / sizeof colours[0]; i++) {
-    //         colours[i] = "";
-    //     }
-    // }
+    const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
 
     bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
@@ -985,8 +979,10 @@ inline int arrow_main(int argc, const char* const argv[]) {
     tests_ran = total_tests - skipped_tests;
 
     // Begin tests
-    printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
-            colours[GREEN], colours[RESET], cast(UInt64, tests_ran));
+    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========]%s Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, tests_ran));
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========]%s Running %I64d test cases.\n", cast(UInt64, tests_ran));
+    // printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
+    //         colours[GREEN], colours[RESET], cast(UInt64, tests_ran));
 
     if (arrow_state.foutput) {
         fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -1003,12 +999,13 @@ inline int arrow_main(int argc, const char* const argv[]) {
         Int64 now = 0;
 
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
-        continue;
+            continue;
 
+        // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[ RUN      ]\n");
         printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
             arrow_state.tests[i].name);
 
-        if (arrow_state.foutput)
+        if(arrow_state.foutput)
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
 
@@ -1026,18 +1023,23 @@ inline int arrow_main(int argc, const char* const argv[]) {
                                         sizeof(Ll) * failed_testcases_length));
             failed_testcases[failed_testcase_index] = i;
             failed_tests++;
+            // arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
             printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
                     colours[RESET], arrow_state.tests[i].name, now);
         } else {
-        printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
+            // arrow_coloured_printf_(ARROW_COLOR_RED_, "[       OK ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
+            printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
                 colours[RESET], arrow_state.tests[i].name, now);
         }
     }
 
+    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========] %" ARROW_PRIu64 " test cases ran.\n", tests_ran);
     printf("%s[==========]%s %" ARROW_PRIu64 " test cases ran.\n", colours[GREEN],
             colours[RESET], tests_ran);
     
     // Write a Summary
+    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", tests_ran - failed_tests);
+    // arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", failed_tests, failed_tests == 1 ? "test" : "tests");
     printf("%s[  PASSED  ]%s %" ARROW_PRIu64 " tests.\n", colours[GREEN],
             colours[RESET], tests_ran - failed_tests);
     printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
@@ -1055,11 +1057,13 @@ inline int arrow_main(int argc, const char* const argv[]) {
 
     if (failed_tests != 0) {
         for (Ll i = 0; i < failed_testcases_length; i++) {
-            printf("  %s[ FAILED ]%s %s\n", colours[RED], colours[RESET],
-                    arrow_state.tests[failed_testcases[i]].name);
+            // printf("  %s[ FAILED ]%s %s\n", colours[RED], colours[RESET],
+            //         arrow_state.tests[failed_testcases[i]].name);
+            arrow_coloured_printf_(ARROW_COLOR_RED_, "  [ FAILED ] %s\n", arrow_state.tests[failed_testcases[i]].name);
         }
     } else {
-        printf("%sSUCCESS:%s All tests have passed.\n", colours[GREEN], colours[RESET]);
+        // printf("%sSUCCESS:%s All tests have passed.\n", colours[GREEN], colours[RESET]);
+        arrow_coloured_printf_(ARROW_COLOR_GREEN_, "SUCCESS: All tests have passed.\n");
     }
 
     if (arrow_state.foutput)
