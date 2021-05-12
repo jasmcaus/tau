@@ -51,7 +51,7 @@ jobs:
       # SO link: https://stackoverflow.com/questions/65402366/c5105-and-other-compiler-warnings-when-building-with-github-actions-winsdk-10
       - name: Default Windows Compiler
         shell: bash
-        if: (matrix.compiler == 'default') && (matrix.compiler == 'windows-latest')
+        if: (matrix.compiler == 'default') && (matrix.os == 'windows-latest')
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
