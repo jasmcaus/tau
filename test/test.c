@@ -1,5 +1,10 @@
 #include <Arrow/Arrow.h>
 
+// int main() {
+//     arrow_coloured_printf_(ARROW_COLOR_GREEN_, "Hello World, %d", cast(UInt64, 2));
+//     return 0;
+// }
+
 ARROW_MAIN()
 
 

@@ -979,8 +979,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     tests_ran = total_tests - skipped_tests;
 
     // Begin tests
-    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========]%s Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, tests_ran));
-    arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========]%s Running %I64d test cases.\n", cast(UInt64, tests_ran));
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========] Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, tests_ran));
     // printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
     //         colours[GREEN], colours[RESET], cast(UInt64, tests_ran));
 
@@ -1001,9 +1000,9 @@ inline int arrow_main(int argc, const char* const argv[]) {
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
             continue;
 
-        // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[ RUN      ]\n");
-        printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
-            arrow_state.tests[i].name);
+        arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[ RUN      ]\n");
+        // printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
+        //     arrow_state.tests[i].name);
 
         if(arrow_state.foutput)
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
@@ -1023,31 +1022,31 @@ inline int arrow_main(int argc, const char* const argv[]) {
                                         sizeof(Ll) * failed_testcases_length));
             failed_testcases[failed_testcase_index] = i;
             failed_tests++;
-            // arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
-            printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
-                    colours[RESET], arrow_state.tests[i].name, now);
+            arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
+            // printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
+            //         colours[RESET], arrow_state.tests[i].name, now);
         } else {
-            // arrow_coloured_printf_(ARROW_COLOR_RED_, "[       OK ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
-            printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
-                colours[RESET], arrow_state.tests[i].name, now);
+            arrow_coloured_printf_(ARROW_COLOR_RED_, "[       OK ] %s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
+            // printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
+            //     colours[RESET], arrow_state.tests[i].name, now);
         }
     }
 
-    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========] %" ARROW_PRIu64 " test cases ran.\n", tests_ran);
-    printf("%s[==========]%s %" ARROW_PRIu64 " test cases ran.\n", colours[GREEN],
-            colours[RESET], tests_ran);
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[==========] %" ARROW_PRIu64 " test cases ran.\n", tests_ran);
+    // printf("%s[==========]%s %" ARROW_PRIu64 " test cases ran.\n", colours[GREEN],
+    //         colours[RESET], tests_ran);
     
     // Write a Summary
-    // arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", tests_ran - failed_tests);
-    // arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", failed_tests, failed_tests == 1 ? "test" : "tests");
-    printf("%s[  PASSED  ]%s %" ARROW_PRIu64 " tests.\n", colours[GREEN],
-            colours[RESET], tests_ran - failed_tests);
-    printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
-            colours[RESET], failed_tests, failed_tests == 1 ? "test" : "tests");
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", tests_ran - failed_tests);
+    arrow_coloured_printf_(ARROW_COLOR_RED_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", failed_tests, failed_tests == 1 ? "test" : "tests");
+    // printf("%s[  PASSED  ]%s %" ARROW_PRIu64 " tests.\n", colours[GREEN],
+    //         colours[RESET], tests_ran - failed_tests);
+    // printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
+    //         colours[RESET], failed_tests, failed_tests == 1 ? "test" : "tests");
 
     if(!arrow_disable_summary) {
-        // arrow_coloured_printf(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
-        printf("\nSummary:\n");
+        arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
+        // printf("\nSummary:\n");
 
         printf("   Total unit tests:    %4d\n", cast(int, total_tests));
         printf("   Total tests run:     %4d\n", tests_ran);
