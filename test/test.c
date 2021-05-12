@@ -59,9 +59,9 @@ TEST(c, CHECK_STRNNE) { CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); }
 // ================================== C11 VERSION ==================================
 // 
 
-TEST(c11, ASSERT_EQ) { ASSERT_EQ(1, 1); }
+TEST(c11, ASSERT_EQ) { ASSERT_EQ(1, 3); }
 
-TEST(c11, ASSERT_NE) { ASSERT_NE(1, 2); }
+TEST(c11, ASSERT_NE) { ASSERT_NE(1, 1); }
 
 TEST(c11, ASSERT_LT) { ASSERT_LT(1, 2); }
 

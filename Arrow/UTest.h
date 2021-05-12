@@ -752,12 +752,14 @@ static void arrow_help_(void) {
 
 static inline int arrow_main(int argc, const char* const argv[]);
 inline int arrow_main(int argc, const char* const argv[]) {
-    UInt64 failed = 0;
-    Ll index = 0;
-    Ll* failed_testcases = ARROW_NULL;
+    UInt64 total_tests = arrow_state.num_tests;
+    UInt64 tests_ran = 0;
+    UInt64 failed_tests = 0;
+    UInt64 skipped_tests = 0; 
+
+    Ll* failed_testcases = null;
     Ll failed_testcases_length = 0;
-    const char* filter = ARROW_NULL;
-    UInt64 ran_tests = 0;
+    const char* filter = null;
     arrow_argv0_ = argv[0];
 
     enum colours { RESET, GREEN, RED };
@@ -765,12 +767,12 @@ inline int arrow_main(int argc, const char* const argv[]) {
     const int use_colours = ARROW_USE_COLOUR_OUTPUT();
     const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
     if (!use_colours) {
-        for (index = 0; index < sizeof colours / sizeof colours[0]; index++) {
-            colours[index] = "";
+        for (Ll i = 0; i < sizeof colours / sizeof colours[0]; i++) {
+            colours[i] = "";
         }
     }
     /* loop through all arguments looking for our options */
-    for (index = 1; index < cast(Ll, argc); index++) {
+    for (Ll i = 1; i < cast(Ll, argc); i++) {
         /* Informational switches */
         const char help_str[] = "--help";
         const char list_str[] = "--list-tests";
@@ -778,62 +780,63 @@ inline int arrow_main(int argc, const char* const argv[]) {
         const char filter_str[] = "--filter=";
         const char output_str[] = "--output=";
 
-        if (ARROW_STRNCMP(argv[index], help_str, strlen(help_str)) == 0) {
+        if (ARROW_STRNCMP(argv[i], help_str, strlen(help_str)) == 0) {
             arrow_help_();
             goto cleanup;
         } 
-        else if(ARROW_STRNCMP(argv[index], filter_str, strlen(filter_str)) == 0)
+        else if(ARROW_STRNCMP(argv[i], filter_str, strlen(filter_str)) == 0)
             /* user wants to filter what test cases run! */
-            filter = argv[index] + strlen(filter_str);
+            filter = argv[i] + strlen(filter_str);
 
-        else if(ARROW_STRNCMP(argv[index], output_str, strlen(output_str)) == 0)
-            arrow_state.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
+        else if(ARROW_STRNCMP(argv[i], output_str, strlen(output_str)) == 0)
+            arrow_state.foutput = arrow_fopen(argv[i] + strlen(output_str), "w+");
 
-        else if(ARROW_STRNCMP(argv[index], list_str, strlen(list_str)) == 0) {
-            for (index = 0; index < arrow_state.num_tests; index++)
-                ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
+        else if(ARROW_STRNCMP(argv[i], list_str, strlen(list_str)) == 0) {
+            for (i = 0; i < arrow_state.num_tests; i++)
+                ARROW_PRINTF("%s\n", arrow_state.tests[i].name);
 
             /* when printing the test list, don't actually run the tests */
             return 0;
         }
     }
 
-    for (index = 0; index < arrow_state.num_tests; index++) {
-        if (arrow_should_filter_test(filter, arrow_state.tests[index].name))
-            continue;
-
-        ran_tests++;
+    for (Ll i = 0; i < arrow_state.num_tests; i++) {
+        if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
+            skipped_tests++;
     }
 
+    tests_ran = total_tests - skipped_tests;
+
+    // Begin tests
     printf("%s[==========]%s Running %" ARROW_PRIu64 " test cases.\n",
-            colours[GREEN], colours[RESET], cast(UInt64, ran_tests));
+            colours[GREEN], colours[RESET], cast(UInt64, tests_ran));
 
     if (arrow_state.foutput) {
         fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         fprintf(arrow_state.foutput,
                 "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
-                cast(UInt64, ran_tests));
+                cast(UInt64, tests_ran));
         fprintf(arrow_state.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
-                cast(UInt64, ran_tests));
+                cast(UInt64, tests_ran));
     }
 
-    for (index = 0; index < arrow_state.num_tests; index++) {
+    for (Ll i = 0; i < arrow_state.num_tests; i++) {
         int result = 0;
         Int64 now = 0;
 
-        if (arrow_should_filter_test(filter, arrow_state.tests[index].name))
+        if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
         continue;
 
         printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
-            arrow_state.tests[index].name);
+            arrow_state.tests[i].name);
 
         if (arrow_state.foutput)
-            fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[index].name);
+            fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
         now = arrow_ns();
         errno = 0;
-        arrow_state.tests[index].func(&result, arrow_state.tests[index].index);
+        arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
         now = arrow_ns() - now;
 
         if (arrow_state.foutput)
@@ -843,37 +846,48 @@ inline int arrow_main(int argc, const char* const argv[]) {
             const Ll failed_testcase_index = failed_testcases_length++;
             failed_testcases = ptrcast(Ll *, arrow_realloc(ptrcast(void* , failed_testcases),
                                         sizeof(Ll) * failed_testcases_length));
-            failed_testcases[failed_testcase_index] = index;
-            failed++;
+            failed_testcases[failed_testcase_index] = i;
+            failed_tests++;
             printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
-                    colours[RESET], arrow_state.tests[index].name, now);
+                    colours[RESET], arrow_state.tests[i].name, now);
         } else {
         printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
-                colours[RESET], arrow_state.tests[index].name, now);
+                colours[RESET], arrow_state.tests[i].name, now);
         }
     }
 
     printf("%s[==========]%s %" ARROW_PRIu64 " test cases ran.\n", colours[GREEN],
-            colours[RESET], ran_tests);
+            colours[RESET], tests_ran);
+    
+    // Write a Summary
     printf("%s[  PASSED  ]%s %" ARROW_PRIu64 " tests.\n", colours[GREEN],
-            colours[RESET], ran_tests - failed);
+            colours[RESET], tests_ran - failed_tests);
+    printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
+            colours[RESET], failed_tests, failed_tests == 1 ? "test" : "tests");
 
-    if (failed != 0) {
-        printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " tests, listed below:\n",
-                colours[RED], colours[RESET], failed);
+    // printf("Summary:\n");
 
-        for (index = 0; index < failed_testcases_length; index++) {
-            printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
-                    arrow_state.tests[failed_testcases[index]].name);
+    // printf("   Total unit tests:    %4d\n", cast(int, total_tests));
+    // printf("   Total tests run:     %4d\n", tests_ran);
+    // printf("   Total tests skipped: %4d\n", skipped_tests);
+    // printf("   Total failed tests:  %4d\n", failed_tests);
+    
+    if (failed_tests != 0) {
+        // printf("%s[ SUMMARY: ]%s %" ARROW_PRIu64 " tests, listed below:\n",
+        //         colours[RED], colours[RESET], failed_tests);
+
+        for (Ll i = 0; i < failed_testcases_length; i++) {
+            printf("  %s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
+                    arrow_state.tests[failed_testcases[i]].name);
         }
     }
 
     if (arrow_state.foutput)
         fprintf(arrow_state.foutput, "</testsuite>\n</testsuites>\n");
 
-    cleanup:
-    for (index = 0; index < arrow_state.num_tests; index++)
-        free(ptrcast(void* , arrow_state.tests[index].name));
+cleanup:
+    for (Ll i = 0; i < arrow_state.num_tests; i++)
+        free(ptrcast(void* , arrow_state.tests[i].name));
 
     free(ptrcast(void* , failed_testcases));
     free(ptrcast(void* , arrow_state.tests));
@@ -881,7 +895,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if (arrow_state.foutput)
         fclose(arrow_state.foutput);
 
-    return cast(int, failed);
+    return cast(int, failed_tests);
 }
 
 /*
