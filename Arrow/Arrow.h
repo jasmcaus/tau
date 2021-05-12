@@ -578,9 +578,6 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     #define ARROW_AUTO(x) typeof(x + 0)
 #endif
 
-
-#define ARROW_STRNCMP(x, y, size) strncmp(x, y, size)
-
 #if defined(__clang__) || defined(__GNUC__)
     #define __ARROW_CHECK(x, y, cond)                                               \
     do {                                            \
@@ -666,7 +663,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define CHECK_STRNNEQ(x, y, n)                                                 \
     do {                                            \
-        if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
+        if (0 == strncmp(x, y, n)) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
             arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
@@ -748,7 +745,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 #define ASSERT_STRNNEQ(x, y, n)                                                 \
     do {                                            \
-        if (0 == ARROW_STRNCMP(x, y, n)) {                                         \
+        if (0 == strncmp(x, y, n)) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
             arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
             arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
@@ -911,33 +908,33 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
         const char* filter_str = "--filter=";
         const char* output_str = "--output=";
 
-        if (ARROW_STRNCMP(argv[i], help_str, strlen(help_str)) == 0) {
+        if (strncmp(argv[i], help_str, strlen(help_str)) == 0) {
             arrow_help_();
             return false;
         } 
 
         // Filter tests
-        else if(ARROW_STRNCMP(argv[i], filter_str, strlen(filter_str)) == 0)
+        else if(strncmp(argv[i], filter_str, strlen(filter_str)) == 0)
             /* user wants to filter what test cases run! */
             filter = argv[i] + strlen(filter_str);
 
         // Write XUnit XML file
-        else if(ARROW_STRNCMP(argv[i], output_str, strlen(output_str)) == 0)
+        else if(strncmp(argv[i], output_str, strlen(output_str)) == 0)
             arrow_state.foutput = arrow_fopen(argv[i] + strlen(output_str), "w+");
 
         // List tests
-        else if(ARROW_STRNCMP(argv[i], list_str, strlen(list_str)) == 0) {
+        else if(strncmp(argv[i], list_str, strlen(list_str)) == 0) {
             for (i = 0; i < arrow_state.num_tests; i++)
                 arrow_printf("%s\n", arrow_state.tests[i].name);
         }
 
         // Disable colouring
-        else if(ARROW_STRNCMP(argv[i], color_str, strlen(color_str))) {
+        else if(strncmp(argv[i], color_str, strlen(color_str))) {
             arrow_should_colourize_output = false;
         }
 
         // Disable Summary
-        else if(ARROW_STRNCMP(argv[i], summary_str, strlen(summary_str))) {
+        else if(strncmp(argv[i], summary_str, strlen(summary_str))) {
             arrow_disable_summary = true;
         }
 
