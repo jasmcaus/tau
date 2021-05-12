@@ -101,6 +101,7 @@
     #define ARROW_ATTRIBUTE_(attr)
 #endif
 
+static int arrow_timer_ = 1;
 // Timing --> use acutest's version
 #if defined(_MSC_VER)
     // define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
@@ -163,29 +164,29 @@
 // clock
 static inline Int64 arrow_ns(void) {
 #ifdef _MSC_VER
-  arrow_large_integer counter;
-  arrow_large_integer frequency;
-  QueryPerformanceCounter(&counter);
-  QueryPerformanceFrequency(&frequency);
-  return cast(Int64,
+    arrow_large_integer counter;
+    arrow_large_integer frequency;
+    QueryPerformanceCounter(&counter);
+    QueryPerformanceFrequency(&frequency);
+    return cast(Int64,
                     (counter.QuadPart * 1000000000) / frequency.QuadPart);
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-  return cast(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
+    return cast(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
 #elif defined(__linux)
-  struct timespec ts;
+    struct timespec ts;
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-  timespec_get(&ts, TIME_UTC);
+    timespec_get(&ts, TIME_UTC);
 #else
-  const clockid_t cid = CLOCK_REALTIME;
+    const clockid_t cid = CLOCK_REALTIME;
 #if defined(ARROW_USE_CLOCKGETTIME)
-  clock_gettime(cid, &ts);
+    clock_gettime(cid, &ts);
 #else
-  syscall(SYS_clock_gettime, cid, &ts);
+    syscall(SYS_clock_gettime, cid, &ts);
 #endif
 #endif
-  return cast(Int64, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
+    return cast(Int64, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
 #elif __APPLE__
-  return cast(Int64, mach_absolute_time());
+    return cast(Int64, mach_absolute_time());
 #endif
 }
 
