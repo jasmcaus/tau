@@ -17,7 +17,6 @@ jobs:
         type: [Release] 
         compiler: [default, clang, gcc]
         exclude:
-          - {os: "windows-latest", compiler: "gcc"} # _VARIANT_BOOL error 
           - {os: "ubuntu-latest", compiler: "default"}
           - {os: "ubuntu-latest", compiler: "clang"}
           - {os: "macOS-latest", compiler: "gcc"}  # not needed
@@ -36,18 +35,36 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get install -y gcc-11 g++-10 clang-10
+
       - name: Default Platform Compiler
         shell: bash
         if: matrix.compiler == 'default'
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }}
       
+      # Slight hack when it comes to building on using Windows on Github runners 
+      # CMake apparently defaults to an older Windows SDK Version that has quite a few bugs which lead to compilation
+      # bugs. 
+      # After *hours* of work trying to track down this issue (and also a lil' help from the StackOverflow question below), 
+      # we need to force CMake to choose a later SDK version
+      # SO link: https://stackoverflow.com/questions/65402366/c5105-and-other-compiler-warnings-when-building-with-github-actions-winsdk-10
+      
+      - name: Default Windows Compiler
+        shell: bash
+        if: matrix.os == 'windows-latest'
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+
       - name: GCC
         shell: bash
         if: matrix.compiler == 'gcc'
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
-      
+
+        if: matrix.compiler == 'gcc'
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+
       - name: Clang (Ubuntu)
         shell: bash
         if: (matrix.compiler == 'clang') && (matrix.os == 'ubuntu-latest')
@@ -58,7 +75,7 @@ jobs:
         shell: bash
         if: (matrix.compiler == 'clang') && (matrix.os == 'windows-latest')
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=clang-cl 
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=clang-cl -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
       - name: Build
         shell: bash
