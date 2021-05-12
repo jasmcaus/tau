@@ -1,4 +1,4 @@
-#include <Arrow/UTest.h>
+#include <Arrow/Arrow.h>
 
 ARROW_MAIN()
 
