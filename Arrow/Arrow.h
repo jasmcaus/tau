@@ -882,9 +882,9 @@ static void arrow_help_(void) {
 
 static bool arrow_cmdline_read(int argc, const char* const argv[]) {
     // Coloured output
-#ifdef ACUTEST_UNIX_
+#ifdef ARROW_UNIX_
     arrow_should_colourize_output = isatty(STDOUT_FILENO);
-#elif defined ACUTEST_WIN_
+#elif defined ARROW_WIN_
     #ifdef _BORLANDC_
         arrow_should_colourize_output = isatty(_fileno(stdout));
     #else
@@ -892,7 +892,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
     #endif
 #else 
     arrow_should_colourize_output = isatty(STDOUT_FILENO);
-#endif // ACUTEST_UNIX_
+#endif // ARROW_UNIX_
 
     // loop through all arguments looking for our options
     for(Ll i = 1; i < cast(Ll, argc); i++) {

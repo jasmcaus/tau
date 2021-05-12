@@ -17,6 +17,7 @@ jobs:
         type: [Release] 
         compiler: [default, clang, gcc]
         exclude:
+          - {os: "windows-latest", compiler: "default"} # CMake _still_ ignore the CMAKE_SYSTEM_VERSION flags :(
           - {os: "ubuntu-latest", compiler: "default"}
           - {os: "ubuntu-latest", compiler: "clang"}
           - {os: "macOS-latest", compiler: "gcc"}  # not needed
@@ -48,12 +49,6 @@ jobs:
       # After *hours* of work trying to track down this issue (and also a lil' help from the StackOverflow question below), 
       # we need to force CMake to choose a later SDK version
       # SO link: https://stackoverflow.com/questions/65402366/c5105-and-other-compiler-warnings-when-building-with-github-actions-winsdk-10
-
-      - name: Default Windows Compiler
-        shell: bash
-        if: (matrix.compiler == 'default') && (matrix.os == 'windows-latest')
-        run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
       - name: GCC (Ubuntu)
         shell: bash
