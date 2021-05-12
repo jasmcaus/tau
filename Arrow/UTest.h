@@ -231,7 +231,7 @@ static inline Int64 arrow_ns(void) {
     #define ARROW_USE_COLOUR_OUTPUT() (isatty(STDOUT_FILENO))
 #endif
 
-static inline void* arrow_realloc(void* const ptr, size_t new_size) {
+static inline void* arrow_realloc(void* const ptr, Ll new_size) {
   void* const new_ptr = realloc(ptr, new_size);
 
   if (ARROW_NULL == new_ptr) {
@@ -241,21 +241,22 @@ static inline void* arrow_realloc(void* const ptr, size_t new_size) {
   return new_ptr;
 }
 
-typedef void (*arrow_testcase_t)(int* , size_t);
+typedef void (*arrow_testcase_t)(int* , Ll);
 struct arrow_test_s {
     arrow_testcase_t func;
-    size_t index;
+    Ll index;
     char* name;
 };
 
 struct arrow_state_s {
     struct arrow_test_s* tests;
-    size_t num_tests;
+    Ll num_tests;
     FILE* foutput;
 };
 
 /* extern to the global state arrow needs to execute */
 ARROW_EXTERN struct arrow_state_s arrow_state;
+static char* arrow_argv0_ = null;
 
 #if defined(_MSC_VER)
     #define ARROW_WEAK     force_inline
@@ -630,14 +631,14 @@ ARROW_EXTERN struct arrow_state_s arrow_state;
 #define TEST(TESTSUITE, TESTNAME)                                                       \
     ARROW_EXTERN struct arrow_state_s arrow_state;                               \
     static void arrow_run_##TESTSUITE##_##TESTNAME(int* arrow_result);                     \
-    static void arrow_##TESTSUITE##_##TESTNAME(int* arrow_result, size_t arrow_index) {    \
+    static void arrow_##TESTSUITE##_##TESTNAME(int* arrow_result, Ll arrow_index) {    \
             (void)arrow_index;                                                         \
             arrow_run_##TESTSUITE##_##TESTNAME(arrow_result);                                    \
     }                                                                            \
     ARROW_INITIALIZER(arrow_register_##TESTSUITE##_##TESTNAME) {                           \
-        const size_t index = arrow_state.num_tests++;                           \
+        const Ll index = arrow_state.num_tests++;                           \
         const char* name_part = #TESTSUITE "." #TESTNAME;                                    \
-        const size_t name_size = strlen(name_part) + 1;                            \
+        const Ll name_size = strlen(name_part) + 1;                            \
         char* name = ptrcast(char* , malloc(name_size));                    \
         arrow_state.tests = ptrcast(                                        \
             struct arrow_test_s* ,                                           \
@@ -724,14 +725,40 @@ static inline FILE* arrow_fopen(const char* filename, const char* mode) {
     #endif
 }
 
+static void arrow_help_(void) {
+        printf("Usage: %s [options] [test...]\n", arrow_argv0_);
+        printf("\n");
+        printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
+        printf("tests in the suite but those listed.  By default, if no tests are specified\n");
+        printf("on the command line, all unit tests in the suite are run.\n");
+        printf("\n");
+        printf("Options:\n");
+        printf("  --filter=<filter>   Filter the test cases to run (e.g: Suite1*.a\n");
+        printf("                        would run Suite1Case.a but not Suite1Case.b}\n");
+    #if defined ARROW_WIN_
+        printf("  --time              Measure test duration\n");
+    #elif defined ARROW_HAS_POSIX_TIMER_
+        printf("  --time              Measure test duration (real time)\n");
+        printf("  --time=TIMER        Measure test duration, using given timer\n");
+        printf("                          (TIMER is one of 'real', 'cpu')\n");
+    #endif
+        printf("  --no-summary        Suppress printing of test results summary\n");
+        printf("  --output=<FILE>     Write an XUnit XML file to Enable XUnit output\n");
+        printf("                        to the given file\n");
+        printf("  --list              List unit tests in the suite and exit\n");
+        printf("  --no-color          Disable coloured output\n");
+        printf("  --help              Display this help and exit\n");
+}
+
 static inline int arrow_main(int argc, const char* const argv[]);
 inline int arrow_main(int argc, const char* const argv[]) {
     UInt64 failed = 0;
-    size_t index = 0;
-    size_t *failed_testcases = ARROW_NULL;
-    size_t failed_testcases_length = 0;
+    Ll index = 0;
+    Ll* failed_testcases = ARROW_NULL;
+    Ll failed_testcases_length = 0;
     const char* filter = ARROW_NULL;
     UInt64 ran_tests = 0;
+    arrow_argv0_ = argv[0];
 
     enum colours { RESET, GREEN, RED };
 
@@ -743,7 +770,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
         }
     }
     /* loop through all arguments looking for our options */
-    for (index = 1; index < cast(size_t, argc); index++) {
+    for (index = 1; index < cast(Ll, argc); index++) {
         /* Informational switches */
         const char help_str[] = "--help";
         const char list_str[] = "--list-tests";
@@ -751,37 +778,29 @@ inline int arrow_main(int argc, const char* const argv[]) {
         const char filter_str[] = "--filter=";
         const char output_str[] = "--output=";
 
-        if (0 == ARROW_STRNCMP(argv[index], help_str, strlen(help_str))) {
-        printf("arrow.h - the single file unit testing solution for C/C++!\n"
-                "Command line Options:\n"
-                "  --help            Show this message and exit.\n"
-                "  --filter=<filter> Filter the test cases to run (EG. MyTest*.a "
-                "would run MyTestCase.a but not MyTestCase.b).\n"
-                "  --list-tests      List testnames, one per line. Output names "
-                "can be passed to --filter.\n"
-                "  --output=<output> Output an xunit XML file to the file "
-                "specified in <output>.\n");
-        goto cleanup;
-        } else if (0 ==
-                ARROW_STRNCMP(argv[index], filter_str, strlen(filter_str))) {
-        /* user wants to filter what test cases run! */
-        filter = argv[index] + strlen(filter_str);
-        } else if (0 ==
-                ARROW_STRNCMP(argv[index], output_str, strlen(output_str))) {
-        arrow_state.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
-        } else if (0 == ARROW_STRNCMP(argv[index], list_str, strlen(list_str))) {
-        for (index = 0; index < arrow_state.num_tests; index++) {
-            ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
-        }
-        /* when printing the test list, don't actually run the tests */
-        return 0;
+        if (ARROW_STRNCMP(argv[index], help_str, strlen(help_str)) == 0) {
+            arrow_help_();
+            goto cleanup;
+        } 
+        else if(ARROW_STRNCMP(argv[index], filter_str, strlen(filter_str)) == 0)
+            /* user wants to filter what test cases run! */
+            filter = argv[index] + strlen(filter_str);
+
+        else if(ARROW_STRNCMP(argv[index], output_str, strlen(output_str)) == 0)
+            arrow_state.foutput = arrow_fopen(argv[index] + strlen(output_str), "w+");
+
+        else if(ARROW_STRNCMP(argv[index], list_str, strlen(list_str)) == 0) {
+            for (index = 0; index < arrow_state.num_tests; index++)
+                ARROW_PRINTF("%s\n", arrow_state.tests[index].name);
+
+            /* when printing the test list, don't actually run the tests */
+            return 0;
         }
     }
 
     for (index = 0; index < arrow_state.num_tests; index++) {
-        if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
-        continue;
-        }
+        if (arrow_should_filter_test(filter, arrow_state.tests[index].name))
+            continue;
 
         ran_tests++;
     }
@@ -801,41 +820,36 @@ inline int arrow_main(int argc, const char* const argv[]) {
 
     for (index = 0; index < arrow_state.num_tests; index++) {
         int result = 0;
-        Int64 ns = 0;
+        Int64 now = 0;
 
-        if (arrow_should_filter_test(filter, arrow_state.tests[index].name)) {
+        if (arrow_should_filter_test(filter, arrow_state.tests[index].name))
         continue;
-        }
 
         printf("%s[ RUN      ]%s %s\n", colours[GREEN], colours[RESET],
             arrow_state.tests[index].name);
 
-        if (arrow_state.foutput) {
-        fprintf(arrow_state.foutput, "<testcase name=\"%s\">",
-                arrow_state.tests[index].name);
-        }
+        if (arrow_state.foutput)
+            fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[index].name);
 
-        ns = arrow_ns();
+        now = arrow_ns();
         errno = 0;
         arrow_state.tests[index].func(&result, arrow_state.tests[index].index);
-        ns = arrow_ns() - ns;
+        now = arrow_ns() - now;
 
-        if (arrow_state.foutput) {
-        fprintf(arrow_state.foutput, "</testcase>\n");
-        }
+        if (arrow_state.foutput)
+            fprintf(arrow_state.foutput, "</testcase>\n");
 
-        if (0 != result) {
-        const size_t failed_testcase_index = failed_testcases_length++;
-        failed_testcases = ptrcast(
-            size_t *, arrow_realloc(ptrcast(void* , failed_testcases),
-                                    sizeof(size_t) * failed_testcases_length));
-        failed_testcases[failed_testcase_index] = index;
-        failed++;
-        printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
-                colours[RESET], arrow_state.tests[index].name, ns);
+        if (result != 0) {
+            const Ll failed_testcase_index = failed_testcases_length++;
+            failed_testcases = ptrcast(Ll *, arrow_realloc(ptrcast(void* , failed_testcases),
+                                        sizeof(Ll) * failed_testcases_length));
+            failed_testcases[failed_testcase_index] = index;
+            failed++;
+            printf("%s[  FAILED  ]%s %s (%" ARROW_PRId64 "ns)\n", colours[RED],
+                    colours[RESET], arrow_state.tests[index].name, now);
         } else {
         printf("%s[       OK ]%s %s (%" ARROW_PRId64 "ns)\n", colours[GREEN],
-                colours[RESET], arrow_state.tests[index].name, ns);
+                colours[RESET], arrow_state.tests[index].name, now);
         }
     }
 
@@ -844,30 +858,28 @@ inline int arrow_main(int argc, const char* const argv[]) {
     printf("%s[  PASSED  ]%s %" ARROW_PRIu64 " tests.\n", colours[GREEN],
             colours[RESET], ran_tests - failed);
 
-    if (0 != failed) {
+    if (failed != 0) {
         printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " tests, listed below:\n",
-            colours[RED], colours[RESET], failed);
+                colours[RED], colours[RESET], failed);
+
         for (index = 0; index < failed_testcases_length; index++) {
-        printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
-                arrow_state.tests[failed_testcases[index]].name);
+            printf("%s[  FAILED  ]%s %s\n", colours[RED], colours[RESET],
+                    arrow_state.tests[failed_testcases[index]].name);
         }
     }
 
-    if (arrow_state.foutput) {
+    if (arrow_state.foutput)
         fprintf(arrow_state.foutput, "</testsuite>\n</testsuites>\n");
-    }
 
     cleanup:
-    for (index = 0; index < arrow_state.num_tests; index++) {
+    for (index = 0; index < arrow_state.num_tests; index++)
         free(ptrcast(void* , arrow_state.tests[index].name));
-    }
 
     free(ptrcast(void* , failed_testcases));
     free(ptrcast(void* , arrow_state.tests));
 
-    if (arrow_state.foutput) {
+    if (arrow_state.foutput)
         fclose(arrow_state.foutput);
-    }
 
     return cast(int, failed);
 }
@@ -879,13 +891,11 @@ inline int arrow_main(int argc, const char* const argv[]) {
    file, use the ARROW_STATE macro to declare a global struct variable that
    arrow requires.
 */
-#define ARROW_MAIN()     
-    /*
-        we need, in exactly one source file, define the global struct that will hold
-        the data we need to run arrow. This macro allows the user to declare the
-        data without having to use the ARROW_MAIN macro, thus allowing them to write
-        their own main() function.
-    */                                                      \
+#define ARROW_MAIN()     \
+    /* we need, in exactly one source file, define the global struct that will hold */ \
+    /* the data we need to run arrow. This macro allows the user to declare the */ \
+    /* data without having to use the ARROW_MAIN macro, thus allowing them to write */ \
+    /* their own main() function. */ \
     struct arrow_state_s arrow_state = {0, 0, 0};                                       \
                                                                 \
     int main(int argc, const char* const argv[]) {                               \

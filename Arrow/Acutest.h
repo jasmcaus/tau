@@ -1207,38 +1207,20 @@ arrow_help_(void)
     printf("on the command line, all unit tests in the suite are run.\n");
     printf("\n");
     printf("Options:\n");
-    printf("  -s, --skip            Execute all unit tests but the listed ones\n");
-    printf("      --exec[=WHEN]     If supported, execute unit tests as child processes\n");
-    printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
-    printf("  -E, --no-exec         Same as --exec=never\n");
+    printf("  --filter=<filter>     Filter the test cases to run (e.g: Suite1*.a\n");
+    printf("                          would run Suite1Case.a but not Suite1Case.b}\n");
 #if defined ARROW_WIN_
-    printf("  -t, --time            Measure test duration\n");
+    printf("  --time            Measure test duration\n");
 #elif defined ARROW_HAS_POSIX_TIMER_
-    printf("  -t, --time            Measure test duration (real time)\n");
-    printf("      --time=TIMER      Measure test duration, using given timer\n");
+    printf("  --time            Measure test duration (real time)\n");
+    printf("  --time=TIMER      Measure test duration, using given timer\n");
     printf("                          (TIMER is one of 'real', 'cpu')\n");
 #endif
-    printf("      --no-summary      Suppress printing of test results summary\n");
-    printf("      --tap             Produce TAP-compliant output\n");
-    printf("                          (See https://testanything.org/)\n");
-    printf("  -x, --xml-output=FILE Enable XUnit output to the given file\n");
-    printf("  -l, --list            List unit tests in the suite and exit\n");
-    printf("  -v, --verbose         Make output more verbose\n");
-    printf("      --verbose=LEVEL   Set verbose level to LEVEL:\n");
-    printf("                          0 ... Be silent\n");
-    printf("                          1 ... Output one line per test (and summary)\n");
-    printf("                          2 ... As 1 and failed conditions (this is default)\n");
-    printf("                          3 ... As 1 and all conditions (and extended summary)\n");
-    printf("  -q, --quiet           Same as --verbose=0\n");
-    printf("      --color[=WHEN]    Enable colorized output\n");
-    printf("                          (WHEN is one of 'auto', 'always', 'never')\n");
-    printf("      --no-color        Same as --color=never\n");
-    printf("  -h, --help            Display this help and exit\n");
-
-    if(arrow_list_size_ < 16) {
-        printf("\n");
-        arrow_list_tests();
-    }
+    printf("  --no-summary      Suppress printing of test results summary\n");
+    printf("  --output=<FILE>   Write an XUnit XML file to Enable XUnit output to the given file\n");
+    printf("  --list            List unit tests in the suite and exit\n");
+    printf("      --no-color    Disable coloured output\n");
+    printf("  --help            Display this help and exit\n");
 }
 
 static const ARROW_CMDLINE_OPTION_ arrow_cmdline_options_[] = {
