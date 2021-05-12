@@ -395,7 +395,7 @@ static bool arrow_should_colourize_output = ARROW_USE_COLOUR_OUTPUT();
 #define ARROW_COLOR_RED_INTENSIVE_        5
 
 static int ARROW_ATTRIBUTE_(format (printf, 2, 3))
-arrow_colored_printf_(int color, const char* fmt, ...) {
+arrow_coloured_printf_(int color, const char* fmt, ...) {
     va_list args;
     char buffer[256];
     int n;
@@ -1043,7 +1043,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     printf("%s[  FAILED  ]%s %" ARROW_PRIu64 " %s.\n", colours[RED],
             colours[RESET], failed_tests, failed_tests == 1 ? "test" : "tests");
 
-    // ARROW_COLOURED_PRINTF(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
+    // arrow_coloured_printf(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
     printf("\nSummary:\n");
 
     printf("   Total unit tests:    %4d\n", cast(int, total_tests));
