@@ -69,7 +69,7 @@ jobs:
         shell: bash
         if: (matrix.compiler == 'gcc') && (matrix.os == 'windows-latest')
         run: |
-          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.type }}
+          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
 
       - name: Clang (Ubuntu)
         shell: bash
