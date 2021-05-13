@@ -1074,19 +1074,16 @@ inline int arrow_main(int argc, const char* const argv[]) {
     }
 
     if (arrow_stats_tests_failed != 0) {
-        arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[ FAILED ] ");
+        arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "FAILED: ");
         printf("%" ARROW_PRIu64 " failed, %" ARROW_PRIu64 " passed in ", arrow_stats_tests_failed, arrow_stats_tests_ran - arrow_stats_tests_failed);
-        printf(" %.2lf s\n", duration);
+        printf("%.2lf s\n", duration);
 
         for (Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
-            // printf("  %s[ FAILED ]%s %s\n", colours[RED], colours[RESET],
-            //         arrow_state.tests[arrow_stats_failed_testcases[i]].name);
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[arrow_stats_failed_testcases[i]].name);
         }
     } else {
-        // printf("%sSUCCESS:%s All tests have passed.\n", colours[GREEN], colours[RESET]);
         arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" ARROW_PRIu64 "tests have passed in.", arrow_stats_tests_ran - arrow_stats_tests_failed);       
+        printf("%" ARROW_PRIu64 "tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);       
         printf("%.2lf s\n", duration);
     }
 
