@@ -39,9 +39,7 @@ jobs:
 
       - name: Set up MinGW (Windows)
         if: matrix.os == 'windows-latest'
-        uses: egor-tensin/setup-mingw@V2
-        run: |
-          echo Yes!
+        uses: egor-tensin/setup-mingw@v2
 
       - name: Default Platform Compiler
         shell: bash
