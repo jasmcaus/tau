@@ -174,17 +174,18 @@ static inline Int64 arrow_ns(void) {
     return cast(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
 #elif defined(__linux)
     struct timespec ts;
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-    timespec_get(&ts, TIME_UTC);
-#else
-    const clockid_t cid = CLOCK_REALTIME;
-#if defined(ARROW_USE_CLOCKGETTIME)
-    clock_gettime(cid, &ts);
-#else
-    syscall(SYS_clock_gettime, cid, &ts);
-#endif
-#endif
+    #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+        timespec_get(&ts, TIME_UTC);
+    #else
+        const clockid_t cid = CLOCK_REALTIME;
+        #if defined(ARROW_USE_CLOCKGETTIME)
+            clock_gettime(cid, &ts);
+        #else
+            syscall(SYS_clock_gettime, cid, &ts);
+        #endif
+    #endif
     return cast(Int64, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
+
 #elif __APPLE__
     return cast(Int64, mach_absolute_time());
 #endif
