@@ -178,17 +178,22 @@ static int arrow_timer_ = 1;
     #include <mach/mach_time.h>
 #endif
 
-// clock
+// Arrow Timer 
+// This method is useful in timing the execution of an Arrow Test Suite
+// To use this, simply call this function before and after the particular code block you want to time, 
+// and their difference will give you the time (in seconds). 
+// NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
+// (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
 static inline double arrow_ns() {
 #ifdef ARROW_WIN_
     LARGE_INTEGER counter;
     LARGE_INTEGER frequency;
     QueryPerformanceCounter(&counter);
     QueryPerformanceFrequency(&frequency);
-    return cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart);
+    return cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
 
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-    return cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC;
+    return cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
 
 #elif defined(__linux)
     struct timespec ts;
@@ -202,11 +207,34 @@ static inline double arrow_ns() {
             syscall(SYS_clock_gettime, cid, &ts);
         #endif
     #endif
-    return cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
+    return cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
 
 #elif __APPLE__
     return cast(double, mach_absolute_time());
 #endif
+}
+
+static void arrow_timer_print_duration(double nanoseconds_duration) {
+    UInt64 n; 
+    int n_digits = 0; 
+    n = (UInt64)nanoseconds_duration;
+    while(n!=0) {
+        n/=10;
+        ++n_digits;
+    }
+    
+    // Stick with nanoseconds (no need for decimal points here)
+    if(n_digits < 3) 
+        printf("%.0lfns", nanoseconds_duration);
+
+    else if(n_digits >= 3 && n_digits < 6)
+        printf("%.2lfµs", nanoseconds_duration/1000);
+        
+    else if(n_digits >= 6 && n_digits <= 9)
+        printf("%.2lfms", nanoseconds_duration/1000000);
+
+    else
+        printf("%.2lfs", nanoseconds_duration/1000000000);
 }
 
 // #if defined ARROW_WIN_
@@ -372,7 +400,6 @@ struct arrow_test_s {
     arrow_testcase_t func;
     Ll index;
     char* name;
-    double duration;
 };
 
 struct arrow_state_s {
@@ -978,13 +1005,13 @@ static double arrow_run_tests() {
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
         // Start the timer
-        Int64 start = arrow_ns();
+        double start = arrow_ns();
 
         // The actual test
         arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
 
         // Stop the timer
-        Int64 duration = arrow_ns() - start;
+        double duration = arrow_ns() - start;
     
         if (arrow_state.foutput)
             fprintf(arrow_state.foutput, "</testcase>\n");
@@ -996,10 +1023,14 @@ static double arrow_run_tests() {
             arrow_stats_failed_testcases[failed_testcase_index] = i;
             arrow_stats_tests_failed++;
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] ");
-            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
+            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (", arrow_state.tests[i].name);
+            arrow_timer_print_duration(duration);
+            printf(")\n");
         } else {
             arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[       OK ] ");
-            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
+            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (", arrow_state.tests[i].name);
+            arrow_timer_print_duration(duration);
+            printf(")\n");
         }
     }
 
@@ -1017,7 +1048,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
 
     // Start the entire Test Session timer
-    Int64 start = arrow_ns();
+    double start = arrow_ns();
 
     bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
@@ -1048,7 +1079,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     arrow_run_tests();
 
     // End the entire Test Session timer
-    Int64 duration = arrow_ns() - start;
+    double duration = arrow_ns() - start;
 
     // Write a Summary
     arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" ARROW_PRIu64 " tests\n", arrow_stats_tests_ran - arrow_stats_tests_failed);
@@ -1066,15 +1097,17 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if (arrow_stats_tests_failed != 0) {
         arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "FAILED: ");
         printf("%" ARROW_PRIu64 " failed, %" ARROW_PRIu64 " passed in ", arrow_stats_tests_failed, arrow_stats_tests_ran - arrow_stats_tests_failed);
-        printf("%" ARROW_PRId64"s\n", duration);
+        arrow_timer_print_duration(duration);
+        printf("\n");
 
         for (Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[arrow_stats_failed_testcases[i]].name);
         }
     } else {
         arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" ARROW_PRIu64 "tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);       
-        printf("%" ARROW_PRId64"s.\n", duration);
+        printf("%" ARROW_PRIu64 "tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);
+        arrow_timer_print_duration(duration);       
+        printf("\n");
     }
 
     if (arrow_state.foutput)

@@ -1,31 +1,27 @@
-#include <windows.h>
 #include <stdio.h>
+#include <Arrow/Types.h>
 
-double PCFreq = 0.0;
-__int64 CounterStart = 0;
+int main() {
+    // Max number of digits of a UInt64 number is 19
+    UInt64 n; 
+    double num = 37;
+    int n_digits = 0; 
+    n = (UInt64)num;
+    while(n!=0) {
+        n/=10;
+        ++n_digits;
+    }
+    
+    // Stick with nanoseconds (no need for decimal points here)
+    if(n_digits < 3) 
+        printf("%.0lfns\n", num);
 
-void StartCounter()
-{
-    LARGE_INTEGER li;
-    if(!QueryPerformanceFrequency(&li))
-    printf("QueryPerformanceFrequency failed!\n");
+    else if(n_digits >= 3 && n_digits < 6)
+        printf("%.2lfµs\n", num/1000);
+        
+    else if(n_digits >= 6 && n_digits <= 9)
+        printf("%.2lfms\n", num/1000000);
 
-    PCFreq = (double)(li.QuadPart);
-
-    QueryPerformanceCounter(&li);
-    CounterStart = li.QuadPart;
-}
-double GetCounter()
-{
-    LARGE_INTEGER li;
-    QueryPerformanceCounter(&li);
-    return (double)(li.QuadPart-CounterStart)/PCFreq;
-}
-
-int main()
-{
-    StartCounter();
-    Sleep(100);
-    printf("%.4lf sec\n", GetCounter());
-    return 0;
+    else
+        printf("%.2lfs\n", num/1000000000);
 }
