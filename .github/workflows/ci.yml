@@ -37,6 +37,12 @@ jobs:
         run: |
           sudo apt-get install -y gcc-11 g++-10 clang-10
 
+      - name: Set up MinGW (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: egor-tensin/setup-mingw@V2
+        run: |
+          echo Yes!
+
       - name: Default Platform Compiler
         shell: bash
         if: (matrix.compiler == 'default') && !(matrix.os == 'windows-latest')
