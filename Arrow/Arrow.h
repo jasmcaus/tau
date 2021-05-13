@@ -162,16 +162,16 @@ static int arrow_timer_ = 1;
 #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
     #include <time.h>
 
-#if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
-/* glibc is version 2.17 or above, so we can just use clock_gettime */
-#define ARROW_USE_CLOCKGETTIME
-#else
-#include <sys/syscall.h>
-#include <unistd.h>
-#endif
+    #if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
+        /* glibc is version 2.17 or above, so we can just use clock_gettime */
+        #define ARROW_USE_CLOCKGETTIME
+    #else
+        #include <sys/syscall.h>
+        #include <unistd.h>
+    #endif
 #else // Other libc implementations
-#include <time.h>
-#define ARROW_USE_CLOCKGETTIME
+    #include <time.h>
+    #define ARROW_USE_CLOCKGETTIME
 #endif
 
 #elif defined(__APPLE__)
@@ -179,16 +179,16 @@ static int arrow_timer_ = 1;
 #endif
 
 // clock
-static inline Int64 arrow_ns() {
-#ifdef _MSC_VER
-    arrow_large_integer counter;
-    arrow_large_integer frequency;
+static inline double arrow_ns() {
+#ifdef ARROW_WIN_
+    LARGE_INTEGER counter;
+    LARGE_INTEGER frequency;
     QueryPerformanceCounter(&counter);
     QueryPerformanceFrequency(&frequency);
-    return cast(Int64, (counter.QuadPart * 1000000000) / frequency.QuadPart);
+    return cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart);
 
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-    return cast(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
+    return cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC;
 
 #elif defined(__linux)
     struct timespec ts;
@@ -202,94 +202,94 @@ static inline Int64 arrow_ns() {
             syscall(SYS_clock_gettime, cid, &ts);
         #endif
     #endif
-    return cast(Int64, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
+    return cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec;
 
 #elif __APPLE__
-    return cast(Int64, mach_absolute_time());
+    return cast(double, mach_absolute_time());
 #endif
 }
 
-#if defined ARROW_WIN_
-    typedef LARGE_INTEGER arrow_timer_type_;
-    static LARGE_INTEGER arrow_timer_freq_;
-    static arrow_timer_type_ arrow_test_timer_start_;
-    static arrow_timer_type_ arrow_test_timer_end_;
+// #if defined ARROW_WIN_
+//     typedef LARGE_INTEGER arrow_timer_type_;
+//     static LARGE_INTEGER arrow_timer_freq_;
+//     static arrow_timer_type_ arrow_test_timer_start_;
+//     static arrow_timer_type_ arrow_test_timer_end_;
 
-    static void arrow_timer_init_(void) {
-        QueryPerformanceFrequency(&arrow_timer_freq_);
-    }
+//     static void arrow_timer_init_(void) {
+//         QueryPerformanceFrequency(&arrow_timer_freq_);
+//     }
 
-    static void arrow_timer_get_time_(LARGE_INTEGER* ts) {
-        QueryPerformanceCounter(ts);
-    }
+//     static void arrow_timer_get_time_(LARGE_INTEGER* ts) {
+//         QueryPerformanceCounter(ts);
+//     }
 
-    static double arrow_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
-        double duration = (double)(end.QuadPart - start.QuadPart);
-        duration /= (double)arrow_timer_freq_.QuadPart;
-        // printf("\nDURATION: %f\n", (double)arrow_timer_freq_.QuadPart);
-        duration *= 1000; // convert to milliseconds
-        return duration;
-    }
+//     static double arrow_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
+//         double duration = (double)(end.QuadPart - start.QuadPart);
+//         duration /= (double)arrow_timer_freq_.QuadPart;
+//         // printf("\nDURATION: %f\n", (double)arrow_timer_freq_.QuadPart);
+//         duration *= 1000; // convert to milliseconds
+//         return duration;
+//     }
 
-    static void arrow_timer_print_diff_(void) {
-        printf("%.6lf secs", arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
-    }
+//     static void arrow_timer_print_diff_(void) {
+//         printf("%.6lf secs", arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
+//     }
 
-#elif defined ARROW_HAS_POSIX_TIMER_
-    static clockid_t arrow_timer_id_;
-    typedef struct timespec arrow_timer_type_;
-    static arrow_timer_type_ arrow_test_timer_start_;
-    static arrow_timer_type_ arrow_test_timer_end_;
+// #elif defined ARROW_HAS_POSIX_TIMER_
+//     static clockid_t arrow_timer_id_;
+//     typedef struct timespec arrow_timer_type_;
+//     static arrow_timer_type_ arrow_test_timer_start_;
+//     static arrow_timer_type_ arrow_test_timer_end_;
 
-    static void arrow_timer_init_() {
-        if(arrow_timer_ == 1)
-            arrow_timer_id_ = CLOCK_MONOTONIC;
-        else if(arrow_timer_ == 2)
-            arrow_timer_id_ = CLOCK_PROCESS_CPUTIME_ID;
-    }
+//     static void arrow_timer_init_() {
+//         if(arrow_timer_ == 1)
+//             arrow_timer_id_ = CLOCK_MONOTONIC;
+//         else if(arrow_timer_ == 2)
+//             arrow_timer_id_ = CLOCK_PROCESS_CPUTIME_ID;
+//     }
 
-    static void arrow_timer_get_time_(struct timespec* ts) {
-        clock_gettime(arrow_timer_id_, ts);
-    }
+//     static void arrow_timer_get_time_(struct timespec* ts) {
+//         clock_gettime(arrow_timer_id_, ts);
+//     }
 
-    static double arrow_timer_diff_(struct timespec start, struct timespec end) {
-        double endns;
-        double startns;
+//     static double arrow_timer_diff_(struct timespec start, struct timespec end) {
+//         double endns;
+//         double startns;
 
-        endns = end.tv_sec;
-        endns *= 1e9;
-        endns += end.tv_nsec;
+//         endns = end.tv_sec;
+//         endns *= 1e9;
+//         endns += end.tv_nsec;
 
-        startns = start.tv_sec;
-        startns *= 1e9;
-        startns += start.tv_nsec;
+//         startns = start.tv_sec;
+//         startns *= 1e9;
+//         startns += start.tv_nsec;
 
-        return ((endns - startns)/ 1e9);
-    }
+//         return ((endns - startns)/ 1e9);
+//     }
 
-    static void arrow_timer_print_diff_(){
-        printf("%.6lf secs",
-            arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
-    }
-#else
-    typedef int arrow_timer_type_;
-    static arrow_timer_type_ arrow_test_timer_start_;
-    static arrow_timer_type_ arrow_test_timer_end_;
+//     static void arrow_timer_print_diff_(){
+//         printf("%.6lf secs",
+//             arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
+//     }
+// #else
+//     typedef int arrow_timer_type_;
+//     static arrow_timer_type_ arrow_test_timer_start_;
+//     static arrow_timer_type_ arrow_test_timer_end_;
 
-    void arrow_timer_init_(void) {}
+//     void arrow_timer_init_(void) {}
 
-    static void arrow_timer_get_time_(int* ts) {
-        (void) ts;
-    }
+//     static void arrow_timer_get_time_(int* ts) {
+//         (void) ts;
+//     }
 
-    static double arrow_timer_diff_(int start, int end) {
-        (void) start;
-        (void) end;
-        return 0.0;
-    }
+//     static double arrow_timer_diff_(int start, int end) {
+//         (void) start;
+//         (void) end;
+//         return 0.0;
+//     }
 
-    static void arrow_timer_print_diff_(void) {}
-#endif
+//     static void arrow_timer_print_diff_(void) {}
+// #endif
 
 
 #define ARROW_PRId64 "I64d"
@@ -967,7 +967,6 @@ static double arrow_run_tests() {
     // Run tests
     for (Ll i = 0; i < arrow_state.num_tests; i++) {
         int result = 0;
-        double duration = 0;
 
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
             continue;
@@ -979,13 +978,13 @@ static double arrow_run_tests() {
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
         // Start the timer
-        arrow_timer_get_time_(&arrow_test_timer_start_);
+        Int64 start = arrow_ns();
 
         // The actual test
         arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
 
         // Stop the timer
-        arrow_timer_get_time_(&arrow_test_timer_end_);
+        Int64 duration = arrow_ns() - start;
     
         if (arrow_state.foutput)
             fprintf(arrow_state.foutput, "</testcase>\n");
@@ -997,14 +996,10 @@ static double arrow_run_tests() {
             arrow_stats_failed_testcases[failed_testcase_index] = i;
             arrow_stats_tests_failed++;
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] ");
-            // arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
-            arrow_timer_print_diff_();
-            printf("\n");
+            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
         } else {
             arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[       OK ] ");
-            // arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
-            arrow_timer_print_diff_();
-            printf("\n");
+            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
         }
     }
 
@@ -1017,16 +1012,12 @@ static inline int arrow_main(int argc, const char* const argv[]);
 inline int arrow_main(int argc, const char* const argv[]) {
     arrow_stats_total_tests = arrow_state.num_tests;
     arrow_argv0_ = argv[0];
-    arrow_timer_type_ test_session_timer_start, test_session_timer_end;
-
-    // Initialize the proper timer
-    arrow_timer_init_();
     
     enum colours { RESET, GREEN, RED };
     const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
 
     // Start the entire Test Session timer
-    arrow_timer_get_time_(&test_session_timer_start);
+    Int64 start = arrow_ns();
 
     bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
@@ -1057,12 +1048,11 @@ inline int arrow_main(int argc, const char* const argv[]) {
     arrow_run_tests();
 
     // End the entire Test Session timer
-    arrow_timer_get_time_(&test_session_timer_end);
-    double duration = arrow_timer_diff_(test_session_timer_start, test_session_timer_end);
+    Int64 duration = arrow_ns() - start;
 
     // Write a Summary
-    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", arrow_stats_tests_ran - arrow_stats_tests_failed);
-    arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", arrow_stats_tests_failed, arrow_stats_tests_failed == 1 ? "test" : "tests");
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" ARROW_PRIu64 " tests\n", arrow_stats_tests_ran - arrow_stats_tests_failed);
+    arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] %" ARROW_PRIu64 " %s\n", arrow_stats_tests_failed, arrow_stats_tests_failed == 1 ? "test" : "tests");
 
     if(!arrow_disable_summary) {
         arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
@@ -1076,7 +1066,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if (arrow_stats_tests_failed != 0) {
         arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "FAILED: ");
         printf("%" ARROW_PRIu64 " failed, %" ARROW_PRIu64 " passed in ", arrow_stats_tests_failed, arrow_stats_tests_ran - arrow_stats_tests_failed);
-        printf("%.2lf s\n", duration);
+        printf("%" ARROW_PRId64"s\n", duration);
 
         for (Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[arrow_stats_failed_testcases[i]].name);
@@ -1084,7 +1074,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
     } else {
         arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
         printf("%" ARROW_PRIu64 "tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);       
-        printf("%.2lf s\n", duration);
+        printf("%" ARROW_PRId64"s.\n", duration);
     }
 
     if (arrow_state.foutput)

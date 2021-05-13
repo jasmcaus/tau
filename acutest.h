@@ -321,7 +321,7 @@ acutest_timer_diff_(LARGE_INTEGER start, LARGE_INTEGER end)
 static void
 acutest_timer_print_diff_(void)
 {
-    printf("%.6lf sec", acutest_timer_diff_(acutest_timer_start_, acutest_timer_end_), __LINE__);
+    printf("%.6lf sec", acutest_timer_diff_(acutest_timer_start_, acutest_timer_end_));
 }
 
 #define ACUTEST_COLOR_DEFAULT_              0
@@ -554,8 +554,7 @@ acutest_fini_(const char *test_name)
 }
 
 void
-acutest_abort_(void)
-{
+acutest_abort_(void) {
     if(acutest_current_test_ != NULL) {
         acutest_fini_(acutest_current_test_->name);
         abort();
@@ -711,23 +710,6 @@ acutest_run_(const struct acutest_test_* test, int index, int master_index)
     acutest_set_duration_(master_index, acutest_timer_diff_(start, end));
 }
 
-#if defined(ACUTEST_WIN_)
-/* Callback for SEH events. */
-static LONG CALLBACK
-acutest_seh_exception_filter_(EXCEPTION_POINTERS *ptrs)
-{
-    acutest_check_(0, NULL, 0, "Unhandled SEH exception");
-    acutest_message_("Exception code:    0x%08lx", ptrs->ExceptionRecord->ExceptionCode);
-    acutest_message_("Exception address: 0x%p", ptrs->ExceptionRecord->ExceptionAddress);
-
-    fflush(stdout);
-    fflush(stderr);
-
-    return EXCEPTION_EXECUTE_HANDLER;
-}
-#endif
-
-
 
 int main(int argc, char** argv) {
     int i;
@@ -759,13 +741,6 @@ int main(int argc, char** argv) {
 
     /* Initialize the proper timer. */
     acutest_timer_init_();
-
-#if defined(ACUTEST_WIN_)
-    SetUnhandledExceptionFilter(acutest_seh_exception_filter_);
-#ifdef _MSC_VER
-    _set_abort_behavior(0, _WRITE_ABORT_MSG);
-#endif
-#endif
 
     /* By default, we want to run all tests. */
     if(acutest_count_ == 0) {
