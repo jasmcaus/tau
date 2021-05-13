@@ -168,10 +168,11 @@ static inline Int64 arrow_ns(void) {
     arrow_large_integer frequency;
     QueryPerformanceCounter(&counter);
     QueryPerformanceFrequency(&frequency);
-    return cast(Int64,
-                    (counter.QuadPart * 1000000000) / frequency.QuadPart);
+    return cast(Int64, (counter.QuadPart * 1000000000) / frequency.QuadPart);
+
 #elif defined(__linux) && defined(__STRICT_ANSI__)
     return cast(Int64, clock()) * 1000000000 / CLOCKS_PER_SEC;
+
 #elif defined(__linux)
     struct timespec ts;
     #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
@@ -1033,10 +1034,10 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if(!arrow_disable_summary) {
         arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total unit tests:    %" ARROW_PRIu64 "\n", cast(int, total_tests));
-        printf("   Total tests run:     %" ARROW_PRIu64 "\n", tests_ran);
-        printf("   Total tests skipped: %" ARROW_PRIu64 "\n", skipped_tests);
-        printf("   Total failed tests:  %" ARROW_PRIu64 "\n", failed_tests);
+        printf("   Total unit tests:      %" ARROW_PRIu64 "\n", cast(int, total_tests));
+        printf("   Total tests run:       %" ARROW_PRIu64 "\n", tests_ran);
+        printf("   Total tests skipped:   %" ARROW_PRIu64 "\n", skipped_tests);
+        printf("   Total failed tests:    %" ARROW_PRIu64 "\n", failed_tests);
     }
 
     if (failed_tests != 0) {
