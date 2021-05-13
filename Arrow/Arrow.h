@@ -1,8 +1,10 @@
 #ifndef SHEREDOM_ARROW_H_INCLUDED
 #define SHEREDOM_ARROW_H_INCLUDED
 
-#include <Arrow/Types.h>
-#include <Arrow/Misc.h>
+// #include <Arrow/Types.h>
+// #include <Arrow/Misc.h>
+#include "Types.h"
+#include "Misc.h"
 
 #ifdef _MSC_VER
     // Disable warning about not inlining 'inline' functions.
@@ -44,12 +46,10 @@
  *** Implementation ***
  **********************/
 
-// #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-// #include <errno.h>
 
 #if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
     #define ARROW_UNIX_   1
@@ -101,8 +101,25 @@
     #define ARROW_ATTRIBUTE_(attr)
 #endif
 
+
+static UInt64 arrow_stats_total_tests = 0;
+static UInt64 arrow_stats_tests_ran = 0;
+static UInt64 arrow_stats_tests_failed = 0;
+static UInt64 arrow_stats_skipped_tests = 0; 
+
+// Overridden in `arrow_main` if the cmdline option `--no-color` is passed
+static int arrow_should_colourize_output = 1;
+static int arrow_disable_summary = 0; 
+
+Ll* arrow_stats_failed_testcases = null;
+Ll arrow_stats_failed_testcases_length = 0;
+
+static char* arrow_argv0_ = null;
+static const char* filter = null;
+
+
 static int arrow_timer_ = 1;
-// Timing --> use acutest's version
+// Timing --> use arrow's version
 #if defined(_MSC_VER)
     // define ARROW_USE_OLD_QPC before #include "arrow.h" to use old QueryPerformanceCounter
     #ifndef ARROW_USE_OLD_QPC
@@ -162,7 +179,7 @@ static int arrow_timer_ = 1;
 #endif
 
 // clock
-static inline Int64 arrow_ns(void) {
+static inline Int64 arrow_ns() {
 #ifdef _MSC_VER
     arrow_large_integer counter;
     arrow_large_integer frequency;
@@ -195,8 +212,8 @@ static inline Int64 arrow_ns(void) {
 #if defined ARROW_WIN_
     typedef LARGE_INTEGER arrow_timer_type_;
     static LARGE_INTEGER arrow_timer_freq_;
-    static arrow_timer_type_ arrow_timer_start_;
-    static arrow_timer_type_ arrow_timer_end_;
+    static arrow_timer_type_ arrow_test_timer_start_;
+    static arrow_timer_type_ arrow_test_timer_end_;
 
     static void arrow_timer_init_(void) {
         QueryPerformanceFrequency(&arrow_timer_freq_);
@@ -209,18 +226,20 @@ static inline Int64 arrow_ns(void) {
     static double arrow_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
         double duration = (double)(end.QuadPart - start.QuadPart);
         duration /= (double)arrow_timer_freq_.QuadPart;
+        // printf("\nDURATION: %f\n", (double)arrow_timer_freq_.QuadPart);
+        duration *= 1000; // convert to milliseconds
         return duration;
     }
 
     static void arrow_timer_print_diff_(void) {
-        printf("%.6lf secs", arrow_timer_diff_(arrow_timer_start_, arrow_timer_end_));
+        printf("%.6lf secs", arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
     }
 
 #elif defined ARROW_HAS_POSIX_TIMER_
     static clockid_t arrow_timer_id_;
     typedef struct timespec arrow_timer_type_;
-    static arrow_timer_type_ arrow_timer_start_;
-    static arrow_timer_type_ arrow_timer_end_;
+    static arrow_timer_type_ arrow_test_timer_start_;
+    static arrow_timer_type_ arrow_test_timer_end_;
 
     static void arrow_timer_init_() {
         if(arrow_timer_ == 1)
@@ -250,12 +269,12 @@ static inline Int64 arrow_ns(void) {
 
     static void arrow_timer_print_diff_(){
         printf("%.6lf secs",
-            arrow_timer_diff_(arrow_timer_start_, arrow_timer_end_));
+            arrow_timer_diff_(arrow_test_timer_start_, arrow_test_timer_end_));
     }
 #else
     typedef int arrow_timer_type_;
-    static arrow_timer_type_ arrow_timer_start_;
-    static arrow_timer_type_ arrow_timer_end_;
+    static arrow_timer_type_ arrow_test_timer_start_;
+    static arrow_timer_type_ arrow_test_timer_end_;
 
     void arrow_timer_init_(void) {}
 
@@ -335,6 +354,9 @@ static inline Int64 arrow_ns(void) {
     #define ARROW_NULL      0
 #endif
 
+// extern to the global state arrow needs to execute
+ARROW_EXTERN struct arrow_state_s arrow_state;
+
 static inline void* arrow_realloc(void* const ptr, Ll new_size) {
   void* const new_ptr = realloc(ptr, new_size);
 
@@ -350,6 +372,7 @@ struct arrow_test_s {
     arrow_testcase_t func;
     Ll index;
     char* name;
+    double duration;
 };
 
 struct arrow_state_s {
@@ -357,11 +380,6 @@ struct arrow_state_s {
     Ll num_tests;
     FILE* foutput;
 };
-
-/* extern to the global state arrow needs to execute */
-ARROW_EXTERN struct arrow_state_s arrow_state;
-static char* arrow_argv0_ = null;
-static const char* filter = null;
 
 #if defined(_MSC_VER)
     #define ARROW_WEAK     force_inline
@@ -375,9 +393,6 @@ static const char* filter = null;
     #define ARROW_UNUSED   __attribute__((unused))
 #endif
 
-// Overridden in `arrow_main` if the cmdline option `--no-color` is passed
-static int arrow_should_colourize_output = 1;
-static int arrow_disable_summary = 0; 
 
 #define ARROW_COLOR_DEFAULT_              0
 #define ARROW_COLOR_GREEN_                1
@@ -947,51 +962,12 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 }
 
 
-static inline int arrow_main(int argc, const char* const argv[]);
-inline int arrow_main(int argc, const char* const argv[]) {
-    UInt64 total_tests = arrow_state.num_tests;
-    UInt64 tests_ran = 0;
-    UInt64 failed_tests = 0;
-    UInt64 skipped_tests = 0; 
-
-    Ll* failed_testcases = null;
-    Ll failed_testcases_length = 0;
-    arrow_argv0_ = argv[0];
-
-    // Timers
-
-
-    enum colours { RESET, GREEN, RED };
-    const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
-
-    bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
-    if(!was_cmdline_read_successful) 
-        goto cleanup;
-
-    for (Ll i = 0; i < arrow_state.num_tests; i++) {
-        if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
-            skipped_tests++;
-    }
-
-    tests_ran = total_tests - skipped_tests;
-
-    // Begin tests
-    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, tests_ran));
-
-    if (arrow_state.foutput) {
-        fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        fprintf(arrow_state.foutput,
-                "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
-                cast(UInt64, tests_ran));
-        fprintf(arrow_state.foutput,
-                "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
-                cast(UInt64, tests_ran));
-    }
-
+// Triggers and runs all unit tests
+static double arrow_run_tests() {
+    // Run tests
     for (Ll i = 0; i < arrow_state.num_tests; i++) {
         int result = 0;
-        Int64 now = 0;
+        double duration = 0;
 
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
             continue;
@@ -1002,53 +978,116 @@ inline int arrow_main(int argc, const char* const argv[]) {
         if(arrow_state.foutput)
             fprintf(arrow_state.foutput, "<testcase name=\"%s\">", arrow_state.tests[i].name);
 
-        now = arrow_ns();
-        errno = 0;
-        arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
-        now = arrow_ns() - now;
+        // Start the timer
+        arrow_timer_get_time_(&arrow_test_timer_start_);
 
+        // The actual test
+        arrow_state.tests[i].func(&result, arrow_state.tests[i].index);
+
+        // Stop the timer
+        arrow_timer_get_time_(&arrow_test_timer_end_);
+    
         if (arrow_state.foutput)
             fprintf(arrow_state.foutput, "</testcase>\n");
 
         if (result != 0) {
-            const Ll failed_testcase_index = failed_testcases_length++;
-            failed_testcases = ptrcast(Ll *, arrow_realloc(ptrcast(void* , failed_testcases),
-                                        sizeof(Ll) * failed_testcases_length));
-            failed_testcases[failed_testcase_index] = i;
-            failed_tests++;
+            const Ll failed_testcase_index = arrow_stats_failed_testcases_length++;
+            arrow_stats_failed_testcases = ptrcast(Ll *, arrow_realloc(ptrcast(void* , arrow_stats_failed_testcases),
+                                                                   sizeof(Ll) * arrow_stats_failed_testcases_length));
+            arrow_stats_failed_testcases[failed_testcase_index] = i;
+            arrow_stats_tests_failed++;
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] ");
-            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
+            // arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
+            arrow_timer_print_diff_();
+            printf("\n");
         } else {
             arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[       OK ] ");
-            arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, now);
+            // arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%s (%" ARROW_PRId64 "ns)\n", arrow_state.tests[i].name, duration);
+            arrow_timer_print_diff_();
+            printf("\n");
         }
     }
 
     arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%" ARROW_PRIu64 " test cases ran.\n", tests_ran);
+    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%" ARROW_PRIu64 " test cases ran\n", arrow_stats_tests_ran);
+}
+
+
+static inline int arrow_main(int argc, const char* const argv[]);
+inline int arrow_main(int argc, const char* const argv[]) {
+    arrow_stats_total_tests = arrow_state.num_tests;
+    arrow_argv0_ = argv[0];
+    arrow_timer_type_ test_session_timer_start, test_session_timer_end;
+
+    // Initialize the proper timer
+    arrow_timer_init_();
     
+    enum colours { RESET, GREEN, RED };
+    const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
+
+    // Start the entire Test Session timer
+    arrow_timer_get_time_(&test_session_timer_start);
+
+    bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
+    if(!was_cmdline_read_successful) 
+        goto cleanup;
+
+    for (Ll i = 0; i < arrow_state.num_tests; i++) {
+        if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
+            arrow_stats_skipped_tests++;
+    }
+
+    arrow_stats_tests_ran = arrow_stats_total_tests - arrow_stats_skipped_tests;
+
+    // Begin tests
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[==========] ");
+    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, arrow_stats_tests_ran));
+
+    if (arrow_state.foutput) {
+        fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fprintf(arrow_state.foutput,
+                "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
+                cast(UInt64, arrow_stats_tests_ran));
+        fprintf(arrow_state.foutput,
+                "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
+                cast(UInt64, arrow_stats_tests_ran));
+    }
+
+    // Run tests
+    arrow_run_tests();
+
+    // End the entire Test Session timer
+    arrow_timer_get_time_(&test_session_timer_end);
+    double duration = arrow_timer_diff_(test_session_timer_start, test_session_timer_end);
+
     // Write a Summary
-    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", tests_ran - failed_tests);
-    arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", failed_tests, failed_tests == 1 ? "test" : "tests");
+    arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" ARROW_PRIu64 " tests.\n", arrow_stats_tests_ran - arrow_stats_tests_failed);
+    arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] %" ARROW_PRIu64 " %s.\n", arrow_stats_tests_failed, arrow_stats_tests_failed == 1 ? "test" : "tests");
 
     if(!arrow_disable_summary) {
         arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total unit tests:      %" ARROW_PRIu64 "\n", cast(int, total_tests));
-        printf("   Total tests run:       %" ARROW_PRIu64 "\n", tests_ran);
-        printf("   Total tests skipped:   %" ARROW_PRIu64 "\n", skipped_tests);
-        printf("   Total failed tests:    %" ARROW_PRIu64 "\n", failed_tests);
+        printf("   Total unit tests:      %" ARROW_PRIu64 "\n", cast(int, arrow_stats_total_tests));
+        printf("   Total tests run:       %" ARROW_PRIu64 "\n", arrow_stats_tests_ran);
+        printf("   Total tests skipped:   %" ARROW_PRIu64 "\n", arrow_stats_skipped_tests);
+        printf("   Total failed tests:    %" ARROW_PRIu64 "\n", arrow_stats_tests_failed);
     }
 
-    if (failed_tests != 0) {
-        for (Ll i = 0; i < failed_testcases_length; i++) {
+    if (arrow_stats_tests_failed != 0) {
+        arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[ FAILED ] ");
+        printf("%" ARROW_PRIu64 " failed, %" ARROW_PRIu64 " passed in ", arrow_stats_tests_failed, arrow_stats_tests_ran - arrow_stats_tests_failed);
+        printf(" %.2lf s\n", duration);
+
+        for (Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
             // printf("  %s[ FAILED ]%s %s\n", colours[RED], colours[RESET],
-            //         arrow_state.tests[failed_testcases[i]].name);
-            arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[failed_testcases[i]].name);
+            //         arrow_state.tests[arrow_stats_failed_testcases[i]].name);
+            arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[arrow_stats_failed_testcases[i]].name);
         }
     } else {
         // printf("%sSUCCESS:%s All tests have passed.\n", colours[GREEN], colours[RESET]);
-        arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: All tests have passed.\n");
+        arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
+        printf("%" ARROW_PRIu64 "tests have passed in.", arrow_stats_tests_ran - arrow_stats_tests_failed);       
+        printf("%.2lf s\n", duration);
     }
 
     if (arrow_state.foutput)
@@ -1058,13 +1097,13 @@ cleanup:
     for (Ll i = 0; i < arrow_state.num_tests; i++)
         free(ptrcast(void* , arrow_state.tests[i].name));
 
-    free(ptrcast(void* , failed_testcases));
+    free(ptrcast(void* , arrow_stats_failed_testcases));
     free(ptrcast(void* , arrow_state.tests));
 
     if (arrow_state.foutput)
         fclose(arrow_state.foutput);
 
-    return cast(int, failed_tests);
+    return cast(int, arrow_stats_tests_failed);
 }
 
 /*
