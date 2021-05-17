@@ -87,10 +87,10 @@ jobs:
         shell: bash
         if: (matrix.os == 'windows-latest')
         run: |
-          cd build/test/${matrix.build_type} && ArrowTest
+          cd build/test/${matrix.build_type} && ./ArrowTest
       
       - name: Test (GCC/Clang)
         shell: bash
         if: matrix.os != 'windows-latest'
         run: |
-          cd build/test && ArrowTest
+          cd build/test && ./ArrowTest
