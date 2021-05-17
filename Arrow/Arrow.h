@@ -228,7 +228,7 @@ static void arrow_timer_print_duration(double nanoseconds_duration) {
         printf("%.0lfns", nanoseconds_duration);
 
     else if(n_digits >= 3 && n_digits < 6)
-        printf("%.2lfµs", nanoseconds_duration/1000);
+        printf("%.2lfus", nanoseconds_duration/1000);
         
     else if(n_digits >= 6 && n_digits <= 9)
         printf("%.2lfms", nanoseconds_duration/1000000);
@@ -619,7 +619,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #endif
 
 #if defined(__clang__) || defined(__GNUC__)
-    #define __ARROW_CHECK(x, y, cond)                                               \
+    #define __CHECK(x, y, cond)                                               \
         do {                                            \
             ARROW_AUTO(x) xEval = (x);                                 \
             ARROW_AUTO(y) yEval = (y);                                                 \
@@ -639,7 +639,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 // arrow_type_printer does not work on other compilers
 #else
-    #define __ARROW_CHECK(x, y, cond)                                               \
+    #define __CHECK(x, y, cond)                                               \
     do {                                            \
         if (!((x)cond(y))) {                                                       \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -669,12 +669,12 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     while (0)                                                                    
 
 
-#define CHECK_EQ(x, y)     __ARROW_CHECK(x, y, ==)
-#define CHECK_NE(x, y)     __ARROW_CHECK(x, y, !=)
-#define CHECK_LT(x, y)     __ARROW_CHECK(x, y, <)
-#define CHECK_LE(x, y)     __ARROW_CHECK(x, y, <=)
-#define CHECK_GT(x, y)     __ARROW_CHECK(x, y, >)
-#define CHECK_GE(x, y)     __ARROW_CHECK(x, y, >=)
+#define CHECK_EQ(x, y)     __CHECK(x, y, ==)
+#define CHECK_NE(x, y)     __CHECK(x, y, !=)
+#define CHECK_LT(x, y)     __CHECK(x, y, <)
+#define CHECK_LE(x, y)     __CHECK(x, y, <=)
+#define CHECK_GT(x, y)     __CHECK(x, y, >)
+#define CHECK_GE(x, y)     __CHECK(x, y, >=)
 
 
 // String Macros
@@ -720,7 +720,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 //
 
 #if defined (__clang__) || defined(__GNUC__) 
-    #define __ARROW_ASSERT(x, y, cond)                                               \
+    #define __REQUIRE(x, y, cond)                                               \
         do {                                            \
             ARROW_AUTO(x) xEval = (x);                                                 \
             ARROW_AUTO(y) yEval = (y);                                                 \
@@ -739,7 +739,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         while (0)                                                                    \
 
 #else
-    #define __ARROW_ASSERT(x, y, cond)                                               \
+    #define __REQUIRE(x, y, cond)                                               \
         do {                                            \
             if (!((x)cond(y))) {                                                       \
                 arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -751,15 +751,15 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #endif
 
 
-#define ASSERT_EQ(x, y)     __ARROW_ASSERT(x, y, ==)
-#define ASSERT_NE(x, y)     __ARROW_ASSERT(x, y, !=)
-#define ASSERT_LT(x, y)     __ARROW_ASSERT(x, y, <)
-#define ASSERT_LE(x, y)     __ARROW_ASSERT(x, y, <=)
-#define ASSERT_GT(x, y)     __ARROW_ASSERT(x, y, >)
-#define ASSERT_GE(x, y)     __ARROW_ASSERT(x, y, >=)
+#define REQUIRE_EQ(x, y)     __REQUIRE(x, y, ==)
+#define REQUIRE_NE(x, y)     __REQUIRE(x, y, !=)
+#define REQUIRE_LT(x, y)     __REQUIRE(x, y, <)
+#define REQUIRE_LE(x, y)     __REQUIRE(x, y, <=)
+#define REQUIRE_GT(x, y)     __REQUIRE(x, y, >)
+#define REQUIRE_GE(x, y)     __REQUIRE(x, y, >=)
 
 
-#define ASSERT_STREQ(x, y)                                                     \
+#define REQUIRE_STREQ(x, y)                                                     \
     do {                                            \
         if (strcmp(x, y) != 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -771,7 +771,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     }                                                                            \
     while (0)                                                                    
 
-#define ASSERT_STRNEQ(x, y)                                                     \
+#define REQUIRE_STRNEQ(x, y)                                                     \
     do {                                            \
         if (strcmp(x, y) == 0) {                                                   \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -784,7 +784,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     while (0)                                                                    
 
 
-#define ASSERT_STRNNEQ(x, y, n)                                                 \
+#define REQUIRE_STRNNEQ(x, y, n)                                                 \
     do {                                            \
         if (strncmp(x, y, n) == 0) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -990,7 +990,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 
 
 // Triggers and runs all unit tests
-static double arrow_run_tests() {
+static void arrow_run_tests() {
     // Run tests
     for (Ll i = 0; i < arrow_state.num_tests; i++) {
         int result = 0;

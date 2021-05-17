@@ -14,9 +14,9 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #ifndef ARROW_MISCELLANEOUS_H
 #define ARROW_MISCELLANEOUS_H
 
-// #ifdef __cplusplus
-// namespace Hazel {
-// #endif
+#ifdef __cplusplus
+namespace Hazel {
+#endif
 
 
 // Defines 
@@ -84,6 +84,27 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #endif // __cplusplus
 
 
+// Noexcept
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+    #define noexcept    noexcept
+#endif // __cplusplus
+
+
+// Nothrow
+#if defined(__cplusplus) && defined(_MSC_VER)
+    #define nothrow   __declspec(nothrow)
+#else
+    #define nothrow
+#endif // __cplusplus
+
+
+// printf Format-string specifiers for Int64 and UInt64 respectively
+#if defined(_MSC_VER) && (_MSC_VER < 1920)
+    #define ARROW_PRId64     "I64d"
+    #define ARROW_PRIu64     "I64u"
+#endif // _MSC_VER
+
+
 // A signed sizeof is more useful 
 #ifndef ARROW_SIZEOF
     #define ARROW_SIZEOF(x)     (Ll)(sizeof(x))
@@ -119,30 +140,8 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 // }
 
 
-// Some fun with macros ==========================================
-#ifndef ARROW_MAX
-    #define ARROW_MAX(x, y)     ((x) > (y) ? (x) : (y))
-#endif 
-
-#ifndef ARROW_MIN
-    #define ARROW_MIN(x, y)     ((x) < (y) ? (x) : (y))
-#endif 
-
-#ifndef ARROW_CLAMP
-    #define ARROW_CLAMP(x, lower, upper)     ARROW_MIN(ARROW_MAX((x), (lower)), (upper))
-#endif 
-
-#ifndef ARROW_IS_BETWEEN
-    #define ARROW_IS_BETWEEN(x, lower, upper)     (((lower) <= (x) ) && ((x) <= (upper)))
-#endif 
-
-#ifndef ARROW_ABS
-    #define ARROW_ABS(x)     ((x) < 0 ? -(x) : (x))
-#endif 
-
-
-// #ifdef __cplusplus
-// } // namespace Hazel
-// #endif
+#ifdef __cplusplus
+} // namespace Hazel
+#endif
 
 #endif // ARROW_MISCELLANEOUS_H

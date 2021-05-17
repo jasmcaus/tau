@@ -28,7 +28,7 @@ This defines a main function, so if you write a main function ***and*** declare 
 To define a test suite, simply do the following:
 ```c
 TEST(TestSuiteName, TestName) {
-    ARROW_CHECK(1); // fails if false
+    CHECK(1); // fails if false
     ... rest of the test body ...
 }
 ```
@@ -48,7 +48,7 @@ We highly recommend you add a custom failure message for your macros - it makes 
 
 To do this, simply do the following:
 ```C
-ARROW_CHECK(i == 42, "Expected i to be 32");
+CHECK(i == 42, "Expected i to be 32");
 ```
 
 
@@ -58,31 +58,31 @@ These assertions perform basic true/false condition checking.
 
 Fatal assertion             | Nonfatal assertion         | Checks
 --------------------------  | -------------------------- | --------------------
-`ARROW_ASSERT(condition);`  | `ARROW_CHECK(condition);`  | `condition` is true
-`ARROW_ASSERT(!condition);` | `ARROW_CHECK(!condition);` | `condition` is false
+`REQUIRE(condition);`  | `CHECK(condition);`  | `condition` is true
+`REQUIRE(!condition);` | `CHECK(!condition);` | `condition` is false
 
 ### b. Binary Comparisons
-For a majority of your tests, `ARROW_ASSERT` and `ARROW_CHECK` will suffice. However, Arrow provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `ARROW_ASSERT` and `ARROW_CHECK` as they provide readable comparison checks. 
+For a majority of your tests, `REQUIRE` and `CHECK` will suffice. However, Arrow provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `REQUIRE` and `CHECK` as they provide readable comparison checks. 
 
 For user-defined types in a C++ codebase, we recommend using these Binary Comparisons (they don't require you to overload the `==`, `<=`... operators).
 
 Fatal assertion          | Nonfatal assertion       | Checks
 ------------------------ | ------------------------ | --------------
-`ARROW_ASSERT_EQ(x, y);` | `ARROW_CHECK_EQ(x, y);`  | `x == y`
-`ARROW_ASSERT_NE(x, y);` | `ARROW_CHECK_NE(x, y);`  | `x != y`
-`ARROW_ASSERT_LT(x, y);` | `ARROW_CHECK_LT(x, y);`  | `x < y`
-`ARROW_ASSERT_LE(x, y);` | `ARROW_CHECK_LE(x, y);`  | `x <= y`
-`ARROW_ASSERT_GT(x, y);` | `ARROW_CHECK_GT(x, y);`  | `x > y`
-`ARROW_ASSERT_GE(x, y);` | `ARROW_CHECK_GE(x, y);`  | `x >= y`
+`REQUIRE_EQ(x, y);` | `CHECK_EQ(x, y);`  | `x == y`
+`REQUIRE_NE(x, y);` | `CHECK_NE(x, y);`  | `x != y`
+`REQUIRE_LT(x, y);` | `CHECK_LT(x, y);`  | `x < y`
+`REQUIRE_LE(x, y);` | `CHECK_LE(x, y);`  | `x <= y`
+`REQUIRE_GT(x, y);` | `CHECK_GT(x, y);`  | `x > y`
+`REQUIRE_GE(x, y);` | `CHECK_GE(x, y);`  | `x >= y`
 
 ### c. String Comparisons
 These macros compare two ***C-strings***. 
 
 | Fatal assertion                | Nonfatal assertion             | Checks                                                 |
 | --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `ARROW_ASSERT_STREQ(str1,str2);`     | `ARROW_CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
-| `ARROW_ASSERT_STRNEQ(str1,str2);`     | `ARROW_CHECK_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
-| `ARROW_ASSERT_STRNNEQ(str1,str2);` | `ARROW_CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
+| `REQUIRE_STREQ(str1,str2);`     | `CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
+| `REQUIRE_STRNEQ(str1,str2);`     | `CHECK_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
+| `REQUIRE_STRNNEQ(str1,str2);` | `CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
 
 
 ## Example Usage
@@ -94,15 +94,15 @@ ARROW_MAIN() // sets up Arrow
 TEST(foo, bar1) {
     int a = 42; 
     int b = 13; 
-    ARROW_CHECK_GE(a, b); // pass :)
-    ARROW_CHECK_LE(b, 8); // fail - Test suite not aborted 
+    CHECK_GE(a, b); // pass :)
+    CHECK_LE(b, 8); // fail - Test suite not aborted 
 }
 
 TEST(foo, bar2) {
     char* a = "foo";
     char* b = "foobar";
-    ARROW_ASSERT_STREQ(a, a); // pass :)
-    ARROW_ASSERT_STREQ(a, b); // fail - Test suite aborted :(
+    REQUIRE_STREQ(a, a); // pass :)
+    REQUIRE_STREQ(a, b); // fail - Test suite aborted :(
 }
 ```
 
