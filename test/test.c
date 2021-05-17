@@ -39,7 +39,7 @@ TEST(c, REQUIRE_STRNEQ) { REQUIRE_STRNEQ("foo", "foobar"); }
 
 TEST(c, REQUIRE_STRNNE) { REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); }
 
-TEST(c, HelloWorld) { CHECK_EQ(1, 2); }
+TEST(c, HelloWorld) { CHECK_EQ(1, 1); }
 
 TEST(c, CHECK_NE) { CHECK_NE(1, 2); }
 
@@ -69,9 +69,9 @@ TEST(c, CHECK_STRNNE) { CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); }
 // ================================== C11 VERSION ==================================
 // 
 
-TEST(c11, REQUIRE_EQ) { REQUIRE_EQ(1, 3); }
+TEST(c11, REQUIRE_EQ) { REQUIRE_EQ(1, 1); }
 
-TEST(c11, REQUIRE_NE) { REQUIRE_NE(1, 1); }
+TEST(c11, REQUIRE_NE) { REQUIRE_NE(1, 2); }
 
 TEST(c11, REQUIRE_LT) { REQUIRE_LT(1, 2); }
 

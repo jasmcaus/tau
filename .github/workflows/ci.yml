@@ -82,3 +82,15 @@ jobs:
         shell: bash
         run: |
           cmake --build build/ --config ${{ matrix.type }}
+      
+      - name: Test (Windows)
+        shell: bash
+        if: (matrix.os == 'windows-latest')
+        run: |
+          cd build/test/${matrix.build_type} && ArrowTest
+      
+      - name: Test (GCC/Clang)
+        shell: bash
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd build/test && ArrowTest

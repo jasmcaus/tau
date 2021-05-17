@@ -42,6 +42,8 @@ endif()
 option(ARROW_BUILDTESTS "Build unit tests." ${IS_MAIN_PROJECT})
 option(ARROW_USE_CI "Enable CI Build Targets" OFF)
 
+message("ARROW_BUILDTESTS = ${ARROW_BUILDTESTS}")
+
 if(ARROW_USE_CI)
     include(cmake/CI.cmake)
 endif()

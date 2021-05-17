@@ -907,7 +907,7 @@ static void arrow_help_(void) {
         printf("on the command line, all unit tests in the suite are run.\n");
         printf("\n");
         printf("Options:\n");
-        printf("  --filter=<filter>   Filter the test cases to run (e.g: Suite1*.a\n");
+        printf("  --filter=<filter>   Filter the test suites to run (e.g: Suite1*.a\n");
         printf("                        would run Suite1Case.a but not Suite1Case.b}\n");
     #if defined ARROW_WIN_
         printf("  --time              Measure test duration\n");
@@ -956,7 +956,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 
         // Filter tests
         else if(strncmp(argv[i], filter_str, strlen(filter_str)) == 0)
-            /* user wants to filter what test cases run! */
+            /* user wants to filter what test suites run! */
             filter = argv[i] + strlen(filter_str);
 
         // Write XUnit XML file
@@ -1035,7 +1035,7 @@ static void arrow_run_tests() {
     }
 
     arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%" ARROW_PRIu64 " test cases ran\n", arrow_stats_tests_ran);
+    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_, "%" ARROW_PRIu64 " test suites ran\n", arrow_stats_tests_ran);
 }
 
 
@@ -1088,10 +1088,10 @@ inline int arrow_main(int argc, const char* const argv[]) {
     if(!arrow_disable_summary) {
         arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total unit tests:      %" ARROW_PRIu64 "\n", cast(int, arrow_stats_total_tests));
+        printf("   Total unit tests:      %" ARROW_PRIu64 "\n", arrow_stats_total_tests);
         printf("   Total tests run:       %" ARROW_PRIu64 "\n", arrow_stats_tests_ran);
         printf("   Total tests skipped:   %" ARROW_PRIu64 "\n", arrow_stats_skipped_tests);
-        printf("   Total failed tests:    %" ARROW_PRIu64 "\n", arrow_stats_tests_failed);
+        printf("   Total tests failed:    %" ARROW_PRIu64 "\n", arrow_stats_tests_failed);
     }
 
     if (arrow_stats_tests_failed != 0) {
@@ -1105,7 +1105,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
         }
     } else {
         arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" ARROW_PRIu64 "tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);
+        printf("%" ARROW_PRIu64 " tests have passed in ", arrow_stats_tests_ran - arrow_stats_tests_failed);
         arrow_timer_print_duration(duration);       
         printf("\n");
     }
