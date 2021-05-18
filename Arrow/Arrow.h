@@ -619,7 +619,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #endif
 
 #if defined(__clang__) || defined(__GNUC__)
-    #define CHECK(x, y, cond)                                               \
+    #define __CHECK(x, y, cond)                                               \
         do {                                            \
             ARROW_AUTO(x) xEval = (x);                                 \
             ARROW_AUTO(y) yEval = (y);                                                 \
@@ -639,7 +639,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 
 // arrow_type_printer does not work on other compilers
 #else
-    #define CHECK(x, y, cond)                                               \
+    #define __CHECK(x, y, cond)                                               \
     do {                                            \
         if (!((x)cond(y))) {                                                       \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -669,12 +669,12 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     while (0)                                                                    
 
 
-#define CHECK_EQ(x, y)     CHECK(x, y, ==)
-#define CHECK_NE(x, y)     CHECK(x, y, !=)
-#define CHECK_LT(x, y)     CHECK(x, y, <)
-#define CHECK_LE(x, y)     CHECK(x, y, <=)
-#define CHECK_GT(x, y)     CHECK(x, y, >)
-#define CHECK_GE(x, y)     CHECK(x, y, >=)
+#define CHECK_EQ(x, y)     __CHECK(x, y, ==)
+#define CHECK_NE(x, y)     __CHECK(x, y, !=)
+#define CHECK_LT(x, y)     __CHECK(x, y, <)
+#define CHECK_LE(x, y)     __CHECK(x, y, <=)
+#define CHECK_GT(x, y)     __CHECK(x, y, >)
+#define CHECK_GE(x, y)     __CHECK(x, y, >=)
 
 
 // String Macros
@@ -720,7 +720,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 //
 
 #if defined (__clang__) || defined(__GNUC__) 
-    #define REQUIRE(x, y, cond)                                               \
+    #define __REQUIRE(x, y, cond)                                               \
         do {                                            \
             ARROW_AUTO(x) xEval = (x);                                                 \
             ARROW_AUTO(y) yEval = (y);                                                 \
@@ -739,7 +739,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
         while (0)                                                                    \
 
 #else
-    #define REQUIRE(x, y, cond)                                               \
+    #define __REQUIRE(x, y, cond)                                               \
         do {                                            \
             if (!((x)cond(y))) {                                                       \
                 arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
@@ -751,12 +751,12 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #endif
 
 
-#define REQUIRE_EQ(x, y)     REQUIRE(x, y, ==)
-#define REQUIRE_NE(x, y)     REQUIRE(x, y, !=)
-#define REQUIRE_LT(x, y)     REQUIRE(x, y, <)
-#define REQUIRE_LE(x, y)     REQUIRE(x, y, <=)
-#define REQUIRE_GT(x, y)     REQUIRE(x, y, >)
-#define REQUIRE_GE(x, y)     REQUIRE(x, y, >=)
+#define REQUIRE_EQ(x, y)     __REQUIRE(x, y, ==)
+#define REQUIRE_NE(x, y)     __REQUIRE(x, y, !=)
+#define REQUIRE_LT(x, y)     __REQUIRE(x, y, <)
+#define REQUIRE_LE(x, y)     __REQUIRE(x, y, <=)
+#define REQUIRE_GT(x, y)     __REQUIRE(x, y, >)
+#define REQUIRE_GE(x, y)     __REQUIRE(x, y, >=)
 
 
 #define REQUIRE_STREQ(x, y)                                                     \
