@@ -1,5 +1,5 @@
-#ifndef SHEREDOM_ARROW_H_INCLUDED
-#define SHEREDOM_ARROW_H_INCLUDED
+#ifndef ARROW_H_
+#define ARROW_H_
 
 // #include <Arrow/Types.h>
 // #include <Arrow/Misc.h>
@@ -1152,4 +1152,4 @@ cleanup:
     #pragma warning(pop)
 #endif // _MSC_VER
 
-#endif /* SHEREDOM_ARROW_H_INCLUDED */
+#endif /* ARROW_H_ */
