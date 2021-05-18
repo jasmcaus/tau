@@ -85,10 +85,10 @@ jobs:
       
       - name: Test (Windows)
         if: (matrix.os == 'windows-latest')
-        run: cd build/test/${{matrix.build_type}}; ./ArrowTest
+        run: cd build/test/${{matrix.build_type}}; ./ArrowInternalTests
       
       - name: Test (GCC/Clang)
         shell: bash
         if: matrix.os != 'windows-latest'
         run: |
-          cd build/test && ./ArrowTest
+          cd build/test && ./ArrowInternalTests
