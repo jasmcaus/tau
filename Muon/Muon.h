@@ -419,12 +419,12 @@ struct muon_state_s {
 #endif
 
 
-#define MUON_COLOR_DEFAULT_              0
-#define MUON_COLOR_GREEN_                1
-#define MUON_COLOR_RED_                  2
-#define MUON_COLOR_DEFAULT_INTENSIVE_    3
-#define MUON_COLOR_GREEN_INTENSIVE_      4
-#define MUON_COLOR_RED_INTENSIVE_        5
+#define MUON_COLOUR_DEFAULT_              0
+#define MUON_COLOUR_GREEN_                1
+#define MUON_COLOUR_RED_                  2
+#define MUON_COLOUR_DEFAULT_INTENSIVE_    3
+#define MUON_COLOUR_GREEN_INTENSIVE_      4
+#define MUON_COLOUR_RED_INTENSIVE_        5
 
 static int MUON_ATTRIBUTE_(format (printf, 2, 3))
 muon_coloured_printf_(int color, const char* fmt, ...) {
@@ -445,11 +445,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     {
         const char* col_str;
         switch(color) {
-            case MUON_COLOR_GREEN_:              col_str = "\033[0;32m"; break;
-            case MUON_COLOR_RED_:                col_str = "\033[0;31m"; break;
-            case MUON_COLOR_GREEN_INTENSIVE_:    col_str = "\033[1;32m"; break;
-            case MUON_COLOR_RED_INTENSIVE_:      col_str = "\033[1;31m"; break;
-            case MUON_COLOR_DEFAULT_INTENSIVE_:  col_str = "\033[1m"; break;
+            case MUON_COLOUR_GREEN_:              col_str = "\033[0;32m"; break;
+            case MUON_COLOUR_RED_:                col_str = "\033[0;31m"; break;
+            case MUON_COLOUR_GREEN_INTENSIVE_:    col_str = "\033[1;32m"; break;
+            case MUON_COLOUR_RED_INTENSIVE_:      col_str = "\033[1;31m"; break;
+            case MUON_COLOUR_DEFAULT_INTENSIVE_:  col_str = "\033[1m"; break;
             default:                                col_str = "\033[0m"; break;
         }
         printf("%s", col_str);
@@ -467,11 +467,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         GetConsoleScreenBufferInfo(h, &info);
 
         switch(color) {
-            case MUON_COLOR_GREEN_:              attr = FOREGROUND_GREEN; break;
-            case MUON_COLOR_RED_:                attr = FOREGROUND_RED; break;
-            case MUON_COLOR_GREEN_INTENSIVE_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
-            case MUON_COLOR_RED_INTENSIVE_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            case MUON_COLOR_DEFAULT_INTENSIVE_:  attr = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_GREEN_:              attr = FOREGROUND_GREEN; break;
+            case MUON_COLOUR_RED_:                attr = FOREGROUND_RED; break;
+            case MUON_COLOUR_GREEN_INTENSIVE_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_RED_INTENSIVE_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_DEFAULT_INTENSIVE_:  attr = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY; break;
             default:                              attr = 0; break;
         }
         if(attr != 0)
@@ -649,6 +649,20 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         }                                                                     \
         while (0)
 #endif
+
+#define CHECK(cond, ...)                                                         \
+    do {                                                                         \
+        if (!(cond)) {                                                           \
+            muon_printf("%s:%u: ", __FILE__, __LINE__);                          \
+            if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
+                muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "Failure");    \
+            else                                                                 \
+                muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, __VA_ARGS__);  \
+            printf("\n");                                                        \
+            *muon_result = 1;                                                    \
+        }                                                                        \
+    }                                                                            \
+    while (0)
 
 //
 // #########################################
@@ -998,8 +1012,8 @@ static void muon_run_tests() {
         if (muon_should_filter_test(filter, muon_state.tests[i].name))
             continue;
 
-        muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "[ RUN      ] ");
-        muon_coloured_printf_(MUON_COLOR_DEFAULT_, "%s\n", muon_state.tests[i].name);
+        muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[ RUN      ] ");
+        muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", muon_state.tests[i].name);
 
         if(muon_state.foutput)
             fprintf(muon_state.foutput, "<testcase name=\"%s\">", muon_state.tests[i].name);
@@ -1023,20 +1037,20 @@ static void muon_run_tests() {
                                                           sizeof(MUON_Ll) * muon_stats_failed_testcases_length));
             muon_stats_failed_testcases[failed_testcase_index] = i;
             muon_stats_tests_failed++;
-            muon_coloured_printf_(MUON_COLOR_RED_INTENSIVE_, "[  FAILED  ] ");
-            muon_coloured_printf_(MUON_COLOR_DEFAULT_, "%s (", muon_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] ");
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
             muon_timer_print_duration(duration);
             printf(")\n");
         } else {
-            muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "[       OK ] ");
-            muon_coloured_printf_(MUON_COLOR_DEFAULT_, "%s (", muon_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[       OK ] ");
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
             muon_timer_print_duration(duration);
             printf(")\n");
         }
     }
 
-    muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muon_stats_tests_ran);
+    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
+    muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muon_stats_tests_ran);
 }
 
 
@@ -1063,8 +1077,8 @@ inline int muon_main(int argc, const char* const argv[]) {
     muon_stats_tests_ran = muon_stats_total_tests - muon_stats_skipped_tests;
 
     // Begin tests
-    muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_cast(MUON_UInt64, muon_stats_tests_ran));
+    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
+    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_cast(MUON_UInt64, muon_stats_tests_ran));
 
     if (muon_state.foutput) {
         fprintf(muon_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -1083,11 +1097,11 @@ inline int muon_main(int argc, const char* const argv[]) {
     double duration = muon_ns() - start;
 
     // Write a Summary
-    muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " tests\n", muon_stats_tests_ran - muon_stats_tests_failed);
-    muon_coloured_printf_(MUON_COLOR_RED_INTENSIVE_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "test" : "tests");
+    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " tests\n", muon_stats_tests_ran - muon_stats_tests_failed);
+    muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "test" : "tests");
 
     if(!muon_disable_summary) {
-        muon_coloured_printf_(MUON_COLOR_DEFAULT_INTENSIVE_, "\nSummary:\n");
+        muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
         printf("   Total unit tests:      %" MUON_PRIu64 "\n", muon_stats_total_tests);
         printf("   Total tests run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
@@ -1096,16 +1110,16 @@ inline int muon_main(int argc, const char* const argv[]) {
     }
 
     if (muon_stats_tests_failed != 0) {
-        muon_coloured_printf_(MUON_COLOR_RED_INTENSIVE_, "FAILED: ");
+        muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "FAILED: ");
         printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
         muon_timer_print_duration(duration);
         printf("\n");
 
         for (MUON_Ll i = 0; i < muon_stats_failed_testcases_length; i++) {
-            muon_coloured_printf_(MUON_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", muon_state.tests[muon_stats_failed_testcases[i]].name);
+            muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "  [ FAILED ] %s\n", muon_state.tests[muon_stats_failed_testcases[i]].name);
         }
     } else {
-        muon_coloured_printf_(MUON_COLOR_GREEN_INTENSIVE_, "SUCCESS: ");
+        muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
         printf("%" MUON_PRIu64 " tests have passed in ", muon_stats_tests_ran - muon_stats_tests_failed);
         muon_timer_print_duration(duration);       
         printf("\n");

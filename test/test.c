@@ -15,7 +15,7 @@ TEST(c, ForLoop) {
     REQUIRE_EQ(count, 10000000); 
 }
 
-TEST(c, REQUIRE_NE) { REQUIRE_NE(1, 2); }
+TEST(c, CHECK) { CHECK(1 < 2, "1 < 2"); }
 
 TEST(c, REQUIRE_LT) { REQUIRE_LT(1, 2); } 
 
