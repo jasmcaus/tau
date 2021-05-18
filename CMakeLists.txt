@@ -164,10 +164,10 @@ target_include_directories(
     # If Arrow is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
     # $<BUILD_INTERFACE:"${ARROW_HEADERS_INCLUDE_DIR}">
-    $<BUILD_INTERFACE:${ARROW_BUILD_INCLUDE_DIRS}>
+    "$<BUILD_INTERFACE:${ARROW_BUILD_INCLUDE_DIRS}>"
     # The path if Arrow is installed
     # $<INSTALL_INTERFACE:"include">
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}}>
+    "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}}>"
 )
 
 
