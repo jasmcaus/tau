@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+
+set(ARROW_VERSION 1.0.0)
+
 project(Arrow 
-        VERSION 1.0.0
+        VERSION ${ARROW_VERSION}
         DESCRIPTION "A Micro Unit Testing Framework for C/C++"
         LANGUAGES C)
 
@@ -41,9 +44,15 @@ endif()
 
 option(ARROW_BUILDTESTS "Build unit tests." ${IS_MAIN_PROJECT})
 option(ARROW_USE_CI "Enable CI Build Targets" OFF)
+option(ARROW_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
 if(ARROW_USE_CI)
     include(cmake/CI.cmake)
+endif()
+
+if (ARROW_HIDE_INTERNAL_SYMBOLS)
+    set(CMAKE_C_VISIBILITY_PRESET hidden)
+    set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
 
 
@@ -157,6 +166,8 @@ if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
 else()
     target_compile_features(${PROJECT_NAME} INTERFACE c_std_11)
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${ARROW_VERSION})
 
 target_include_directories(
     ${PROJECT_NAME} 
