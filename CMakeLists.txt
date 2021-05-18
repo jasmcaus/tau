@@ -139,9 +139,11 @@ set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-
 # Note that this library must have _minimal_ dependencies 
 
 # Where Google Test's .h files can be found.
-set(ARROW_BUILD_INCLUDE_DIRS
+set(
+    ARROW_BUILD_INCLUDE_DIRS
     "${${PROJECT_NAME}_SOURCE_DIR}/Arrow"
-    "${${PROJECT_NAME}_SOURCE_DIR}")
+    "${${PROJECT_NAME}_SOURCE_DIR}"
+)
 include_directories(${ARROW_BUILD_INCLUDE_DIRS})
 
 # Create the Arrow Interface Library
@@ -165,7 +167,7 @@ target_include_directories(
     $<BUILD_INTERFACE:${ARROW_BUILD_INCLUDE_DIRS}>
     # The path if Arrow is installed
     # $<INSTALL_INTERFACE:"include">
-    $<INSTALL_INTERFACE:Arrow}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}}>
 )
 
 
