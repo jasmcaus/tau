@@ -57,7 +57,7 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Arrow provides [here](https://github.com/jasmcaus/Arrow/blob/dev/README.md). 
+You can read more about the assertions that Arrow provides [here](https://github.com/jasmcaus/Arrow/blob/dev/docs/cmake-quickstart.md). 
 
 To build the code, add the following to the end of your `CMakeLists.txt` file:
 ```cmake
