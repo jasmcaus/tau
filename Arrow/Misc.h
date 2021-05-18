@@ -32,11 +32,11 @@ namespace Hazel {
 // Inline 
 #ifdef __cplusplus
     #if defined(_MSC_VER) && _MSC_VER <= 1800 
-        #define inline  __inline
+        #define ARROW_inline  __inline
     #elif !defined(__STDC_VERSION__)
-        #define inline __inline__
+        #define ARROW_inline __inline__
     #else 
-        #define inline 
+        #define ARROW_inline 
     #endif 
 #else
     // We default to C's inline function
@@ -46,7 +46,7 @@ namespace Hazel {
     // 
     // We can enforce this here, but I'll wait for sometime. If we decide to go ahead with it, a simple text substitution
     // should work :)
-    #define inline  inline
+    #define ARROW_inline  inline
 #endif 
 
 
@@ -54,12 +54,12 @@ namespace Hazel {
 #ifndef force_inline
     #if defined(_MSC_VER)
         #if _MSC_VER < 1300
-            #define force_inline
+            #define ARROW_force_inline
         #else 
-            #define force_inline   __forceinline
+            #define ARROW_force_inline   __forceinline
         #endif 
     #else 
-        #define force_inline       __attribute__((__always_inline__))
+        #define ARROW_force_inline       __attribute__((__always_inline__))
     #endif 
 #endif 
 
@@ -67,42 +67,40 @@ namespace Hazel {
 // No Inline 
 #ifndef no_inline
     #if defined(_MSC_VER)
-        #define no_inline   __declspec(noinline)
+        #define ARROW_no_inline   __declspec(noinline)
     #else 
-        #define no_inline   __attribute__((noinline))
+        #define ARROW_no_inline   __attribute__((noinline))
     #endif 
 #endif 
 
 
 // Casts
 #ifdef __cplusplus
-    #define cast(type, x)       static_cast<type>(x)
-    #define ptrcast(type, x)    reinterpret_cast<type>(x)
+    #define ARROW_cast(type, x)       static_cast<type>(x)
+    #define ARROW_ptrcast(type, x)    reinterpret_cast<type>(x)
 #else
-    #define cast(type, x)       ((type)x)
-    #define ptrcast(type, x)    ((type)x)
+    #define ARROW_cast(type, x)       ((type)x)
+    #define ARROW_ptrcast(type, x)    ((type)x)
 #endif // __cplusplus
 
 
 // Noexcept
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
-    #define noexcept    noexcept
+    #define ARROW_noexcept    noexcept
 #endif // __cplusplus
 
 
 // Nothrow
 #if defined(__cplusplus) && defined(_MSC_VER)
-    #define nothrow   __declspec(nothrow)
+    #define ARROW_nothrow   __declspec(nothrow)
 #else
-    #define nothrow
+    #define ARROW_nothrow
 #endif // __cplusplus
 
 
-// printf Format-string specifiers for Int64 and UInt64 respectively
-#if defined(_MSC_VER) && (_MSC_VER < 1920)
-    #define ARROW_PRId64     "I64d"
-    #define ARROW_PRIu64     "I64u"
-#endif // _MSC_VER
+// printf Format-string specifiers for ARROW_Int64 and ARROW_UInt64 respectively
+#define ARROW_PRId64     "I64d"
+#define ARROW_PRIu64     "I64u"
 
 
 // A signed sizeof is more useful 
@@ -118,27 +116,6 @@ namespace Hazel {
     #define ARROW_INTERNAL     static // Internal Linkage
     #define ARROW_LOCALPERSIST static // Local Persisting Variables  
 #endif 
-
-
-// Execute power operations
-// long power(long x, long y) {
-//     int total; 
-    
-//     if(y == 0) return 1; 
-//     else if(y == 1) return x; 
-//     else if(y == -1) return 1/x; 
-//     else if(y > 0) {
-//         total = x; 
-//         total *= power(x, y-1); 
-//     } 
-//     else {
-//         total = 1/x; 
-//         total *= power(x, y+1); 
-//     }
-
-//     return total; 
-// }
-
 
 #ifdef __cplusplus
 } // namespace Hazel

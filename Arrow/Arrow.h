@@ -102,20 +102,20 @@
 #endif
 
 
-static UInt64 arrow_stats_total_tests = 0;
-static UInt64 arrow_stats_tests_ran = 0;
-static UInt64 arrow_stats_tests_failed = 0;
-static UInt64 arrow_stats_skipped_tests = 0; 
+static ARROW_UInt64 arrow_stats_total_tests = 0;
+static ARROW_UInt64 arrow_stats_tests_ran = 0;
+static ARROW_UInt64 arrow_stats_tests_failed = 0;
+static ARROW_UInt64 arrow_stats_skipped_tests = 0; 
 
 // Overridden in `arrow_main` if the cmdline option `--no-color` is passed
 static int arrow_should_colourize_output = 1;
 static int arrow_disable_summary = 0; 
 
-Ll* arrow_stats_failed_testcases = null;
-Ll arrow_stats_failed_testcases_length = 0;
+ARROW_Ll* arrow_stats_failed_testcases = ARROW_null;
+ARROW_Ll arrow_stats_failed_testcases_length = 0;
 
-static char* arrow_argv0_ = null;
-static const char* filter = null;
+static char* arrow_argv0_ = ARROW_null;
+static const char* filter = ARROW_null;
 
 
 static int arrow_timer_ = 1;
@@ -190,10 +190,10 @@ static inline double arrow_ns() {
     LARGE_INTEGER frequency;
     QueryPerformanceCounter(&counter);
     QueryPerformanceFrequency(&frequency);
-    return cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
+    return ARROW_cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
 
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-    return cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
+    return ARROW_cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
 
 #elif defined(__linux)
     struct timespec ts;
@@ -207,17 +207,17 @@ static inline double arrow_ns() {
             syscall(SYS_clock_gettime, cid, &ts);
         #endif
     #endif
-    return cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
+    return ARROW_cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
 
 #elif __APPLE__
-    return cast(double, mach_absolute_time());
+    return ARROW_cast(double, mach_absolute_time());
 #endif
 }
 
 static void arrow_timer_print_duration(double nanoseconds_duration) {
-    UInt64 n; 
+    ARROW_UInt64 n; 
     int n_digits = 0; 
-    n = (UInt64)nanoseconds_duration;
+    n = (ARROW_UInt64)nanoseconds_duration;
     while(n!=0) {
         n/=10;
         ++n_digits;
@@ -385,7 +385,7 @@ static void arrow_timer_print_duration(double nanoseconds_duration) {
 // extern to the global state arrow needs to execute
 ARROW_EXTERN struct arrow_state_s arrow_state;
 
-static inline void* arrow_realloc(void* const ptr, Ll new_size) {
+static inline void* arrow_realloc(void* const ptr, ARROW_Ll new_size) {
   void* const new_ptr = realloc(ptr, new_size);
 
   if (ARROW_NULL == new_ptr) {
@@ -395,21 +395,21 @@ static inline void* arrow_realloc(void* const ptr, Ll new_size) {
   return new_ptr;
 }
 
-typedef void (*arrow_testcase_t)(int* , Ll);
+typedef void (*arrow_testcase_t)(int* , ARROW_Ll);
 struct arrow_test_s {
     arrow_testcase_t func;
-    Ll index;
+    ARROW_Ll index;
     char* name;
 };
 
 struct arrow_state_s {
     struct arrow_test_s* tests;
-    Ll num_tests;
+    ARROW_Ll num_tests;
     FILE* foutput;
 };
 
 #if defined(_MSC_VER)
-    #define ARROW_WEAK     force_inline
+    #define ARROW_WEAK     inline
 #else
     #define ARROW_WEAK     __attribute__((weak))
 #endif
@@ -521,7 +521,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(const void* p);
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(float f) {
-        arrow_printf("%f", cast(double, f));
+        arrow_printf("%f", ARROW_cast(double, f));
     }
 
     ARROW_WEAK ARROW_OVERLOADABLE void arrow_type_printer(double d) {
@@ -587,7 +587,7 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
                                 double : "%f",                        \
                                 long double : "%Lf",                  \
                                 default : _Generic((val - val),       \
-                                Ll : "%p",                            \
+                                ARROW_Ll : "%p",                            \
                                 default : "undef")),                  \
                     (val))
 #else
@@ -661,8 +661,8 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     do {                                            \
         if (!(x)) {                                                                \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            arrow_printf("  Expected : true\n");                                     \
-            arrow_printf("    Actual : %s\n", (x) ? "true" : "false");               \
+            arrow_printf("  Expected : ARROW_true\n");                                     \
+            arrow_printf("    Actual : %s\n", (x) ? "ARROW_true" : "ARROW_false");               \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -706,8 +706,8 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     do {                                            \
         if (strncmp(x, y, n) == 0) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
-            arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
+            arrow_printf("  Expected : \"%.*s\"\n", ARROW_cast(int, n), x);          \
+            arrow_printf("    Actual : \"%.*s\"\n", ARROW_cast(int, n), y);          \
             *arrow_result = 1;                                                       \
         }                                                                          \
     }                                                                            \
@@ -788,8 +788,8 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
     do {                                            \
         if (strncmp(x, y, n) == 0) {                                         \
             arrow_printf("%s:%u: Failure\n", __FILE__, __LINE__);                    \
-            arrow_printf("  Expected : \"%.*s\"\n", cast(int, n), x);          \
-            arrow_printf("    Actual : \"%.*s\"\n", cast(int, n), y);          \
+            arrow_printf("  Expected : \"%.*s\"\n", ARROW_cast(int, n), x);          \
+            arrow_printf("    Actual : \"%.*s\"\n", ARROW_cast(int, n), y);          \
             *arrow_result = 1;                                                       \
             return;                                                                  \
         }                                                                          \
@@ -805,18 +805,18 @@ arrow_coloured_printf_(int color, const char* fmt, ...) {
 #define TEST(TESTSUITE, TESTNAME)                                                       \
     ARROW_EXTERN struct arrow_state_s arrow_state;                               \
     static void arrow_run_##TESTSUITE##_##TESTNAME(int* arrow_result);                     \
-    static void arrow_##TESTSUITE##_##TESTNAME(int* arrow_result, Ll arrow_index) {    \
+    static void arrow_##TESTSUITE##_##TESTNAME(int* arrow_result, ARROW_Ll arrow_index) {    \
             (void)arrow_index;                                                         \
             arrow_run_##TESTSUITE##_##TESTNAME(arrow_result);                                    \
     }                                                                            \
     ARROW_INITIALIZER(arrow_register_##TESTSUITE##_##TESTNAME) {                           \
-        const Ll index = arrow_state.num_tests++;                           \
+        const ARROW_Ll index = arrow_state.num_tests++;                           \
         const char* name_part = #TESTSUITE "." #TESTNAME;                                    \
-        const Ll name_size = strlen(name_part) + 1;                            \
-        char* name = ptrcast(char* , malloc(name_size));                    \
-        arrow_state.tests = ptrcast(                                        \
+        const ARROW_Ll name_size = strlen(name_part) + 1;                            \
+        char* name = ARROW_ptrcast(char* , malloc(name_size));                    \
+        arrow_state.tests = ARROW_ptrcast(                                        \
             struct arrow_test_s* ,                                           \
-            arrow_realloc(ptrcast(void* , arrow_state.tests),               \
+            arrow_realloc(ARROW_ptrcast(void* , arrow_state.tests),               \
                         sizeof(struct arrow_test_s) *                      \
                             arrow_state.num_tests));                          \
         arrow_state.tests[index].func = &arrow_##TESTSUITE##_##TESTNAME;                     \
@@ -861,11 +861,11 @@ ARROW_WEAK int arrow_should_filter_test(const char* filter, const char* testcase
                     filter_cur++;
                 }
 
-                if ((*filter_cur == nullchar) && (*testcase_cur == nullchar))
+                if ((*filter_cur == ARROW_nullchar) && (*testcase_cur == ARROW_nullchar))
                     return 0;
 
                 /* if the testcase has been exhausted, we don't have a match! */
-                if (*testcase_cur == nullchar)
+                if (*testcase_cur == ARROW_nullchar)
                     return 1;
             } else {
                 if (*testcase_cur != *filter_cur) {
@@ -879,7 +879,7 @@ ARROW_WEAK int arrow_should_filter_test(const char* filter, const char* testcase
             }
         }
 
-        if ((*filter_cur != nullchar) || ((*testcase_cur == nullchar) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
+        if ((*filter_cur != ARROW_nullchar) || ((*testcase_cur == ARROW_nullchar) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
             // We have a mismatch
             return 1;
         }
@@ -924,7 +924,7 @@ static void arrow_help_(void) {
         printf("  --help              Display this help and exit\n");
 }
 
-static bool arrow_cmdline_read(int argc, const char* const argv[]) {
+static ARROW_bool arrow_cmdline_read(int argc, const char* const argv[]) {
     // Coloured output
 #ifdef ARROW_UNIX_
     arrow_should_colourize_output = isatty(STDOUT_FILENO);
@@ -939,7 +939,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 #endif // ARROW_UNIX_
 
     // loop through all arguments looking for our options
-    for(Ll i = 1; i < cast(Ll, argc); i++) {
+    for(ARROW_Ll i = 1; i < ARROW_cast(ARROW_Ll, argc); i++) {
         /* Informational switches */
         const char* help_str = "--help";
         const char* list_str = "--list";
@@ -951,7 +951,7 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 
         if (strncmp(argv[i], help_str, strlen(help_str)) == 0) {
             arrow_help_();
-            return false;
+            return ARROW_false;
         } 
 
         // Filter tests
@@ -971,28 +971,28 @@ static bool arrow_cmdline_read(int argc, const char* const argv[]) {
 
         // Disable colouring
         else if(strncmp(argv[i], color_str, strlen(color_str))) {
-            arrow_should_colourize_output = false;
+            arrow_should_colourize_output = ARROW_false;
         }
 
         // Disable Summary
         else if(strncmp(argv[i], summary_str, strlen(summary_str))) {
-            arrow_disable_summary = true;
+            arrow_disable_summary = ARROW_true;
         }
 
         else {
             printf("ERROR: Unrecognized option: %s", argv[i]);
-            return false;
+            return ARROW_false;
         }
     }
 
-    return true;
+    return ARROW_true;
 }
 
 
 // Triggers and runs all unit tests
 static void arrow_run_tests() {
     // Run tests
-    for (Ll i = 0; i < arrow_state.num_tests; i++) {
+    for (ARROW_Ll i = 0; i < arrow_state.num_tests; i++) {
         int result = 0;
 
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
@@ -1017,9 +1017,10 @@ static void arrow_run_tests() {
             fprintf(arrow_state.foutput, "</testcase>\n");
 
         if (result != 0) {
-            const Ll failed_testcase_index = arrow_stats_failed_testcases_length++;
-            arrow_stats_failed_testcases = ptrcast(Ll *, arrow_realloc(ptrcast(void* , arrow_stats_failed_testcases),
-                                                                   sizeof(Ll) * arrow_stats_failed_testcases_length));
+            const ARROW_Ll failed_testcase_index = arrow_stats_failed_testcases_length++;
+            arrow_stats_failed_testcases = ARROW_ptrcast(ARROW_Ll*, 
+                                            arrow_realloc(ARROW_ptrcast(void* , arrow_stats_failed_testcases), 
+                                                          sizeof(ARROW_Ll) * arrow_stats_failed_testcases_length));
             arrow_stats_failed_testcases[failed_testcase_index] = i;
             arrow_stats_tests_failed++;
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "[  FAILED  ] ");
@@ -1050,11 +1051,11 @@ inline int arrow_main(int argc, const char* const argv[]) {
     // Start the entire Test Session timer
     double start = arrow_ns();
 
-    bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
+    ARROW_bool was_cmdline_read_successful = arrow_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
         goto cleanup;
 
-    for (Ll i = 0; i < arrow_state.num_tests; i++) {
+    for (ARROW_Ll i = 0; i < arrow_state.num_tests; i++) {
         if (arrow_should_filter_test(filter, arrow_state.tests[i].name))
             arrow_stats_skipped_tests++;
     }
@@ -1063,16 +1064,16 @@ inline int arrow_main(int argc, const char* const argv[]) {
 
     // Begin tests
     arrow_coloured_printf_(ARROW_COLOR_GREEN_INTENSIVE_, "[==========] ");
-    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Running %" ARROW_PRIu64 " test cases.\n", cast(UInt64, arrow_stats_tests_ran));
+    arrow_coloured_printf_(ARROW_COLOR_DEFAULT_INTENSIVE_, "Running %" ARROW_PRIu64 " test cases.\n", ARROW_cast(ARROW_UInt64, arrow_stats_tests_ran));
 
     if (arrow_state.foutput) {
         fprintf(arrow_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         fprintf(arrow_state.foutput,
                 "<testsuites tests=\"%" ARROW_PRIu64 "\" name=\"All\">\n",
-                cast(UInt64, arrow_stats_tests_ran));
+                ARROW_cast(ARROW_UInt64, arrow_stats_tests_ran));
         fprintf(arrow_state.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" ARROW_PRIu64 "\">\n",
-                cast(UInt64, arrow_stats_tests_ran));
+                ARROW_cast(ARROW_UInt64, arrow_stats_tests_ran));
     }
 
     // Run tests
@@ -1100,7 +1101,7 @@ inline int arrow_main(int argc, const char* const argv[]) {
         arrow_timer_print_duration(duration);
         printf("\n");
 
-        for (Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
+        for (ARROW_Ll i = 0; i < arrow_stats_failed_testcases_length; i++) {
             arrow_coloured_printf_(ARROW_COLOR_RED_INTENSIVE_, "  [ FAILED ] %s\n", arrow_state.tests[arrow_stats_failed_testcases[i]].name);
         }
     } else {
@@ -1114,16 +1115,16 @@ inline int arrow_main(int argc, const char* const argv[]) {
         fprintf(arrow_state.foutput, "</testsuite>\n</testsuites>\n");
 
 cleanup:
-    for (Ll i = 0; i < arrow_state.num_tests; i++)
-        free(ptrcast(void* , arrow_state.tests[i].name));
+    for (ARROW_Ll i = 0; i < arrow_state.num_tests; i++)
+        free(ARROW_ptrcast(void* , arrow_state.tests[i].name));
 
-    free(ptrcast(void* , arrow_stats_failed_testcases));
-    free(ptrcast(void* , arrow_state.tests));
+    free(ARROW_ptrcast(void* , arrow_stats_failed_testcases));
+    free(ARROW_ptrcast(void* , arrow_state.tests));
 
     if (arrow_state.foutput)
         fclose(arrow_state.foutput);
 
-    return cast(int, arrow_stats_tests_failed);
+    return ARROW_cast(int, arrow_stats_tests_failed);
 }
 
 /*
