@@ -5,10 +5,12 @@ Arrow is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of
 
 
 ## Installation
-None! Arrow is header-only, so simply include it in your project
+None! Arrow is header-only, so simply include it in your project. 
 ```c
 #include <Arrow/Arrow.h>
 ```
+
+To build Arrow with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Arrow/blob/dev/doc/cmake-quickstart.md).
 
 ## Basic Concepts
 When using Arrow, you begin by writing `assertions`, which are statements that check if a condition is true. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 

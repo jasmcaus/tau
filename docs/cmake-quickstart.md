@@ -78,18 +78,18 @@ The above configuration enable testing in CMake, declares the C/C++ (in our case
 
 Now you can build and run your test:
 <pre>
-<strong> cmake -S . -B build </strong>
+<strong>DemoProject$ cmake -S . -B build </strong>
 -- The C compiler identification is GNU 10.2.1
 -- The CXX compiler identification is GNU 10.2.1
 ...
 -- Build files have been written to: .../DemoProject/build
 
-<strong> cmake --build build </strong>
+<strong>DemoProject$ cmake --build build </strong>
 Scanning dependencies of target gtest
 ...
 [100%] Built target Arrow
 
-<strong> cd build && ./DemoProject </strong>
+<strong>DemoProject$ cd build && ./DemoProject </strong>
 [==========] Running 2 test cases.
 ...
 Summary:
