@@ -56,7 +56,14 @@ namespace Hazel {
     typedef int64_t   ARROW_Int64; 
 #endif // Hazel Basic Types 
 
-typedef float  ARROW_Float32; 
+// <windows.h> declares a typedef float FLOAT for its internal usage. 
+// We need to be polite and respect that :)
+// NOTE: <windows.h> is declared in Arrow during Hazel's Internal Tests
+#if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+    #define ARROW_Float32     float
+#else 
+    typedef float  ARROW_Float32; 
+#endif // _WIN32
 typedef double ARROW_Float64; 
 
 // Bool-sy
