@@ -11,8 +11,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 */
 
-#ifndef ARROW_MISCELLANEOUS_H
-#define ARROW_MISCELLANEOUS_H
+#ifndef MUON_MISCELLANEOUS_H
+#define MUON_MISCELLANEOUS_H
 
 #ifdef __cplusplus
 namespace Hazel {
@@ -20,23 +20,23 @@ namespace Hazel {
 
 
 // Defines 
-#ifndef ARROW_DEF 
-    #ifdef ARROW_EXTERN
-        #define ARROW_DEF extern
+#ifndef MUON_DEF 
+    #ifdef MUON_EXTERN
+        #define MUON_DEF extern
     #else 
-        #define ARROW_DEF static
+        #define MUON_DEF static
     #endif 
-#endif // ARROW_DEF
+#endif // MUON_DEF
 
 
 // Inline 
 #ifdef __cplusplus
     #if defined(_MSC_VER) && _MSC_VER <= 1800 
-        #define ARROW_inline  __inline
+        #define MUON_inline  __inline
     #elif !defined(__STDC_VERSION__)
-        #define ARROW_inline __inline__
+        #define MUON_inline __inline__
     #else 
-        #define ARROW_inline 
+        #define MUON_inline 
     #endif 
 #else
     // We default to C's inline function
@@ -46,7 +46,7 @@ namespace Hazel {
     // 
     // We can enforce this here, but I'll wait for sometime. If we decide to go ahead with it, a simple text substitution
     // should work :)
-    #define ARROW_inline  inline
+    #define MUON_inline  inline
 #endif 
 
 
@@ -54,12 +54,12 @@ namespace Hazel {
 #ifndef force_inline
     #if defined(_MSC_VER)
         #if _MSC_VER < 1300
-            #define ARROW_force_inline
+            #define MUON_force_inline
         #else 
-            #define ARROW_force_inline   __forceinline
+            #define MUON_force_inline   __forceinline
         #endif 
     #else 
-        #define ARROW_force_inline       __attribute__((__always_inline__))
+        #define MUON_force_inline       __attribute__((__always_inline__))
     #endif 
 #endif 
 
@@ -67,58 +67,58 @@ namespace Hazel {
 // No Inline 
 #ifndef no_inline
     #if defined(_MSC_VER)
-        #define ARROW_no_inline   __declspec(noinline)
+        #define MUON_no_inline   __declspec(noinline)
     #else 
-        #define ARROW_no_inline   __attribute__((noinline))
+        #define MUON_no_inline   __attribute__((noinline))
     #endif 
 #endif 
 
 
 // Casts
 #ifdef __cplusplus
-    #define ARROW_cast(type, x)       static_cast<type>(x)
-    #define ARROW_ptrcast(type, x)    reinterpret_cast<type>(x)
+    #define MUON_cast(type, x)       static_cast<type>(x)
+    #define MUON_ptrcast(type, x)    reinterpret_cast<type>(x)
 #else
-    #define ARROW_cast(type, x)       ((type)x)
-    #define ARROW_ptrcast(type, x)    ((type)x)
+    #define MUON_cast(type, x)       ((type)x)
+    #define MUON_ptrcast(type, x)    ((type)x)
 #endif // __cplusplus
 
 
 // Noexcept
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
-    #define ARROW_noexcept    noexcept
+    #define MUON_noexcept    noexcept
 #endif // __cplusplus
 
 
 // Nothrow
 #if defined(__cplusplus) && defined(_MSC_VER)
-    #define ARROW_nothrow   __declspec(nothrow)
+    #define MUON_nothrow   __declspec(nothrow)
 #else
-    #define ARROW_nothrow
+    #define MUON_nothrow
 #endif // __cplusplus
 
 
-// printf Format-string specifiers for ARROW_Int64 and ARROW_UInt64 respectively
-#define ARROW_PRId64     "I64d"
-#define ARROW_PRIu64     "I64u"
+// printf Format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
+#define MUON_PRId64     "I64d"
+#define MUON_PRIu64     "I64u"
 
 
 // A signed sizeof is more useful 
-#ifndef ARROW_SIZEOF
-    #define ARROW_SIZEOF(x)     (Ll)(sizeof(x))
+#ifndef MUON_SIZEOF
+    #define MUON_SIZEOF(x)     (Ll)(sizeof(x))
 #endif 
 
 
 // Statics!
 // static means 3-4 different things in C/C++!!
-#ifndef ARROW_GLOBAL
-    #define ARROW_GLOBAL       static // Global Variables
-    #define ARROW_INTERNAL     static // Internal Linkage
-    #define ARROW_LOCALPERSIST static // Local Persisting Variables  
+#ifndef MUON_GLOBAL
+    #define MUON_GLOBAL       static // Global Variables
+    #define MUON_INTERNAL     static // Internal Linkage
+    #define MUON_LOCALPERSIST static // Local Persisting Variables  
 #endif 
 
 #ifdef __cplusplus
 } // namespace Hazel
 #endif
 
-#endif // ARROW_MISCELLANEOUS_H
+#endif // MUON_MISCELLANEOUS_H

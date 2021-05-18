@@ -1,11 +1,11 @@
-#include "Arrow/Arrow.h"
+#include "Muon/Muon.h"
 
 // int main() {
-//     arrow_coloured_printf_(ARROW_COLOR_GREEN_, "Hello World, %d", cast(UInt64, 2));
+//     muon_coloured_printf_(MUON_COLOR_GREEN_, "Hello World, %d", cast(UInt64, 2));
 //     return 0;
 // }
 
-ARROW_MAIN()
+MUON_MAIN()
 
 TEST(c, ForLoop) { 
     int count = 0;

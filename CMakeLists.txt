@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
-set(ARROW_VERSION 1.0.0)
+set(MUON_VERSION 1.0.0)
 
-project(Arrow 
-        VERSION ${ARROW_VERSION}
+project(Muon 
+        VERSION ${MUON_VERSION}
         DESCRIPTION "A Micro Unit Testing Framework for C/C++"
         LANGUAGES C)
 
@@ -29,7 +29,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## Options
 ##
 
-# Determine if Arrow is built as a subproject (using add_subdirectory) or if it is the main project being built
+# Determine if Muon is built as a subproject (using add_subdirectory) or if it is the main project being built
 set(IS_MAIN_PROJECT OFF)
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(IS_MAIN_PROJECT ON)
@@ -42,15 +42,15 @@ if (POLICY CMP0077)
 endif()
 
 
-option(ARROW_BUILDTESTS "Build unit tests." ${IS_MAIN_PROJECT})
-option(ARROW_USE_CI "Enable CI Build Targets" OFF)
-option(ARROW_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
+option(MUON_BUILDTESTS "Build unit tests." ${IS_MAIN_PROJECT})
+option(MUON_USE_CI "Enable CI Build Targets" OFF)
+option(MUON_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
-if(ARROW_USE_CI)
+if(MUON_USE_CI)
     include(cmake/CI.cmake)
 endif()
 
-if (ARROW_HIDE_INTERNAL_SYMBOLS)
+if (MUON_HIDE_INTERNAL_SYMBOLS)
     set(CMAKE_C_VISIBILITY_PRESET hidden)
     set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
@@ -128,10 +128,10 @@ endif()
 include(GNUInstallDirs)
 
 # ------ Options ------
-set(ARROW_TARGET_NAME           ${PROJECT_NAME}Targets)
-set(ARROW_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${ARROW_TARGET_NAME}.cmake)
+set(MUON_TARGET_NAME           ${PROJECT_NAME}Targets)
+set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.cmake)
 
-set(ARROW_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Arrow)
+set(MUON_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Muon)
 
 # CMake Configurations (from the ``cmake`` folder)
 set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
@@ -144,21 +144,21 @@ set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-
 
 
 # ------ Main Build ------
-# Main Build File for the main Arrow Library
+# Main Build File for the main Muon Library
 # Note that this library must have _minimal_ dependencies 
 
 # Where Google Test's .h files can be found.
 set(
-    ARROW_BUILD_INCLUDE_DIRS
-    "${${PROJECT_NAME}_SOURCE_DIR}/Arrow"
+    MUON_BUILD_INCLUDE_DIRS
+    "${${PROJECT_NAME}_SOURCE_DIR}/Muon"
     "${${PROJECT_NAME}_SOURCE_DIR}"
 )
-include_directories(${ARROW_BUILD_INCLUDE_DIRS})
+include_directories(${MUON_BUILD_INCLUDE_DIRS})
 
-# Create the Arrow Interface Library
+# Create the Muon Interface Library
 # Interfaces are best for header-only libraries
 add_library(${PROJECT_NAME} INTERFACE)
-# Add an alias so that Arrow can be used with add_subdirectory
+# Add an alias so that Muon can be used with add_subdirectory
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
@@ -167,16 +167,16 @@ else()
     target_compile_features(${PROJECT_NAME} INTERFACE c_std_11)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${ARROW_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MUON_VERSION})
 
 target_include_directories(
     ${PROJECT_NAME} 
     INTERFACE 
-    # If Arrow is used directly by another CMake target (such as when building tests or when it is included 
+    # If Muon is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
-    # $<BUILD_INTERFACE:"${ARROW_HEADERS_INCLUDE_DIR}">
-    "$<BUILD_INTERFACE:${ARROW_BUILD_INCLUDE_DIRS}>"
-    # The path if Arrow is installed
+    # $<BUILD_INTERFACE:"${MUON_HEADERS_INCLUDE_DIR}">
+    "$<BUILD_INTERFACE:${MUON_BUILD_INCLUDE_DIRS}>"
+    # The path if Muon is installed
     # $<INSTALL_INTERFACE:"include">
     "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}}>"
 )
@@ -189,13 +189,13 @@ include(CMakePackageConfigHelpers)
 # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
 # architecture-independent
 
-# ConfigVersion.cmake.in --> ArrowConfigVersion.cmake
+# ConfigVersion.cmake.in --> MuonConfigVersion.cmake
 configure_file(
     ${CMAKE_CONFIGVERSION_IN}
     ${CMAKE_CONFIGVERSION}
     @ONLY
 )
-# config.cmake.in --> ArrowConfig.cmake
+# config.cmake.in --> MuonConfig.cmake
 configure_file(
     ${CMAKE_CONFIG_IN}
     ${CMAKE_CONFIG}
@@ -212,7 +212,7 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
 
-# Move ArrowConfig.cmake and ArrowConfigVersion.cmake  ---> lib/cmake/Arrow/...
+# Move MuonConfig.cmake and MuonConfigVersion.cmake  ---> lib/cmake/Muon/...
 install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" 
     DESTINATION "lib/cmake/${PROJECT_NAME}"
@@ -220,36 +220,36 @@ install(
 
 # ./include --> include
 install(
-    DIRECTORY ${ARROW_HEADERS_INCLUDE_DIR}
-    DESTINATION Arrow
+    DIRECTORY ${MUON_HEADERS_INCLUDE_DIR}
+    DESTINATION Muon
 )
 
 
-# Export ArrowTargets from ArrowTargets.cmake
+# Export MuonTargets from MuonTargets.cmake
 export(
     TARGETS ${PROJECT_NAME}
-    FILE ${ARROW_TARGETS_CMAKE}
+    FILE ${MUON_TARGETS_CMAKE}
 )
 
 install(
-    EXPORT ${ARROW_TARGET_NAME}
+    EXPORT ${MUON_TARGET_NAME}
     DESTINATION lib/cmake/${PROJECT_NAME}
 )
 
 # install(
 #     TARGETS ${PROJECT_NAME}
-#     EXPORT "${ARROW_TARGET_NAME}Targets"
-#     INCLUDES DESTINATION ${ARROW_HEADERS_INCLUDE_DIR}
+#     EXPORT "${MUON_TARGET_NAME}Targets"
+#     INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR}
 # )
 install(TARGETS ${PROJECT_NAME}
-        EXPORT ${ARROW_TARGET_NAME}
+        EXPORT ${MUON_TARGET_NAME}
         ARCHIVE DESTINATION "lib"
         LIBRARY DESTINATION "lib"
         RUNTIME DESTINATION "bin"
         ## This results in an ``INTERFACE_INCLUDE_DIRECTORIES`` property contains path ... which is prefixed in the source 
         ## directory. 
         ## There may be something I'm missing out - if you know how to fix this, please send in a PR :)
-        # INCLUDES DESTINATION ${ARROW_HEADERS_INCLUDE_DIR)
+        # INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR)
 )
 
 # Header files are copied to the install directory
@@ -259,7 +259,7 @@ install(
 )
 
 # Building Tests
-if(ARROW_BUILDTESTS)
+if(MUON_BUILDTESTS)
     include(CTest)
     enable_testing()
     add_subdirectory(test)

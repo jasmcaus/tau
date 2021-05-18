@@ -1,6 +1,6 @@
 # Quickstart: Building With CMake
 
-This guide will get you up and running with Arrow using CMake. 
+This guide will get you up and running with Muon using CMake. 
 
 ## Prerequisites
 To follow along, you'll need:
@@ -12,39 +12,39 @@ If you don't already have CMake installed, see the [CMake Installation Guide](ht
 
 
 ## Set up a project
-CMake uses the `CMakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Arrow. 
+CMake uses the `CMakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Muon. 
 
 First, in your project directory (for the most part, in your ***root*** project directory), create the `CMakeLists.txt` file. 
-Next, you'll need to tell CMake that you want Arrow as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
+Next, you'll need to tell CMake that you want Muon as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
 
 Inside the CMakeLists.txt, add the following contents:
 ```cmake
 cmake_minimum_required(VERSION 3.1.4)
 project(DemoProject) # name this to whatever you'd like 
 
-# Arrow requires at least C11/C++11
+# Muon requires at least C11/C++11
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
 include(FetchContent)
 FetchContent_Declare(
-  Arrow
-  URL https://github.com/jasmcaus/Arrow/archive/dev.zip
+  Muon
+  URL https://github.com/jasmcaus/Muon/archive/dev.zip
 )
 
-FetchContent_MakeAvailable(Arrow)
+FetchContent_MakeAvailable(Muon)
 ```
 
-The above configuration declares a dependency on Arrow which is automatically downloaded from Github. This example always includes the *latest* version of Arrow. 
+The above configuration declares a dependency on Muon which is automatically downloaded from Github. This example always includes the *latest* version of Muon. 
 
 ## Creating & Running a Binary
-With Arrow as a dependency, you can now use Arrow code within your project. 
+With Muon as a dependency, you can now use Muon code within your project. 
 
 As an example, create a file named `test_assertions.c` in your project directory with the following contents:
 ```c
-#include "Arrow/Arrow.h"
+#include "Muon/Muon.h"
 
-ARROW_MAIN()
+MUON_MAIN()
 
 TEST(a, count) { 
     int count = 10000000;
@@ -57,7 +57,7 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Arrow provides [here](https://github.com/jasmcaus/Arrow/blob/dev/docs/cmake-quickstart.md). 
+You can read more about the assertions that Muon provides [here](https://github.com/jasmcaus/Muon/blob/dev/docs/cmake-quickstart.md). 
 
 To build the code, add the following to the end of your `CMakeLists.txt` file:
 ```cmake
@@ -70,11 +70,11 @@ add_executable(
 
 target_link_libraries(
     DemoProject
-    Arrow
+    Muon
 )
 ```
 
-The above configuration enable testing in CMake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Arrow`. 
+The above configuration enable testing in CMake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Muon`. 
 
 Now you can build and run your test:
 <pre>
@@ -87,7 +87,7 @@ Now you can build and run your test:
 <strong>DemoProject$ cmake --build build </strong>
 Scanning dependencies of target gtest
 ...
-[100%] Built target Arrow
+[100%] Built target Muon
 
 <strong>DemoProject$ cd build && ./DemoProject </strong>
 [==========] Running 2 test cases.
@@ -100,7 +100,7 @@ Summary:
 SUCCESS: 2 tests have passed in 8.35ms
 </pre>
 
-Congratulations! You've successfully built and run a test binary using Arrow!
+Congratulations! You've successfully built and run a test binary using Muon!
 
 # Next Steps
-* [Check out the Primer](arrow-primer.md) in Arrow to start writing powerful unit tests.
+* [Check out the Primer](muon-primer.md) in Muon to start writing powerful unit tests.
