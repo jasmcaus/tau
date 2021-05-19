@@ -8,7 +8,7 @@ on:
       - dev
 
 jobs:
-  Ubuntu&macOS:
+  UbuntuMacOS:
     strategy:
       fail-fast: false
       matrix:
