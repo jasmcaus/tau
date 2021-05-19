@@ -59,7 +59,7 @@ jobs:
         run: |
           cmake --build build/ --config ${{ matrix.build_type }}
 
-      - name: Test (GCC/Clang)
+      - name: Test
         shell: bash
         run: |
           cd build/test && ./MuonInternalTests
@@ -110,5 +110,10 @@ jobs:
         run: |
           cmake --build build/ --config ${{ matrix.build_type }}
       
-      - name: Test (Windows)
-        run: cd build/test/ ; dir; MuonInternalTests
+      - name: Test (MSVC)
+        if: matrix.compiler == 'default'
+        run: cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+
+      - name: Test (Clsng/Ubuntu)
+        if: !(matrix.compiler == 'default')
+        run: cd build/test/ ; dir; ./MuonInternalTests
