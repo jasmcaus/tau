@@ -100,22 +100,11 @@ namespace Hazel {
 
 // printf Format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
 #ifdef __clang__
-    #include <inttypes.h>
-
-    #define MUON_PRId64 "lld"
-    #define MUON_PRIu64 "llu"
-
-    // #define STR(...) STR_(__VA_ARGS__)
-    // #define STR_(...) #__VA_ARGS__
-
-    // #pragma message "Value of PRId64 is " \
-    //     STR(PRId64)
-    // #pragma message "Value of PRIu64 is " \
-    //     STR(PRIu64)
-
+    #define MUON_PRId64     "lld"
+    #define MUON_PRIu64     "llu"
 #else 
-    #define MUON_PRId64 "I64d"
-    #define MUON_PRIu64 "I64u"
+    #define MUON_PRId64     "I64d"
+    #define MUON_PRIu64     "I64u"
 #endif  // __clang__
 
 
