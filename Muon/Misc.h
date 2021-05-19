@@ -109,9 +109,9 @@ namespace Hazel {
     #define STR_(...) #__VA_ARGS__
 
     #pragma message "Value of PRId64 is " \
-        STR(PRId64))
+        STR(PRId64)
     #pragma message "Value of PRIu64 is " \
-        STR(PRIu64))
+        STR(PRIu64)
 
 #else 
     #define MUON_PRId64 "I64d"
