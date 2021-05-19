@@ -58,7 +58,7 @@ namespace Hazel {
 
 // <windows.h> declares a typedef float FLOAT for its internal usage. 
 // We need to be polite and respect that :)
-// NOTE: <windows.h> is declared in Arrow during Hazel's Internal Tests
+// NOTE: <windows.h> is declared in Muon during Hazel's Internal Tests
 // #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 //     #define MUON_Float32     float
 // #else 
@@ -101,14 +101,14 @@ typedef MUON_Int32 MUON_Rune;
     #define MUON_Int64_MIN  (-0x7fffffffffffffffll - 1)
     #define MUON_Int64_MAX  0x7fffffffffffffffll
 
-    #if defined(GB_ARCH_32_BIT)
+    #if defined(MUON_ARCH_32BIT)
         #define MUON_UINTSIZE_MIX MUON_UInt32_MIN
         #define MUON_UINTSIZE_MAX MUON_UInt32_MAX
 
         #define MUON_INTSIZE_MIX MUON_Int32_MIN
         #define MUON_INTSIZE_MAX MUON_Int32_MAX
     
-    #elif defined(GB_ARCH_64_BIT)
+    #elif defined(MUON_ARCH_64BIT)
         #define MUON_UINTSIZE_MIX MUON_UInt64_MIN
         #define MUON_UINTSIZE_MAX MUON_UInt64_MAX
 

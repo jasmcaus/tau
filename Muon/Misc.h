@@ -32,11 +32,11 @@ namespace Hazel {
 // Inline 
 #ifdef __cplusplus
     #if defined(_MSC_VER) && _MSC_VER <= 1800 
-        #define MUON_inline  __inline
+        #define MUON_INLINE     __inline
     #elif !defined(__STDC_VERSION__)
-        #define MUON_inline __inline__
+        #define MUON_INLINE     __inline__
     #else 
-        #define MUON_inline 
+        #define MUON_INLINE 
     #endif 
 #else
     // We default to C's inline function
@@ -46,30 +46,32 @@ namespace Hazel {
     // 
     // We can enforce this here, but I'll wait for sometime. If we decide to go ahead with it, a simple text substitution
     // should work :)
-    #define MUON_inline  inline
+    #define MUON_INLINE  inline
 #endif 
 
 
 // Force Inline
-#ifndef force_inline
+#ifndef MUON_ALWAYS_INLINE
     #if defined(_MSC_VER)
         #if _MSC_VER < 1300
-            #define MUON_force_inline
+            #define MUON_ALWAYS_INLINE
         #else 
-            #define MUON_force_inline   __forceinline
+            #define MUON_ALWAYS_INLINE   __forceinline
         #endif 
+    #elif __has_attribute(always_inline) || defined(__GNUC__)
+        #define MUON_ALWAYS_INLINE       __attribute__((__always_inline__)) inline
     #else 
-        #define MUON_force_inline       __attribute__((__always_inline__))
+        #define MUON_ALWAYS_INLINE       inline
     #endif 
 #endif 
 
 
 // No Inline 
-#ifndef no_inline
+#ifndef MUON_NOINLINE
     #if defined(_MSC_VER)
-        #define MUON_no_inline   __declspec(noinline)
+        #define MUON_NOINLINE   __declspec(noinline)
     #else 
-        #define MUON_no_inline   __attribute__((noinline))
+        #define MUON_NOINLINE   __attribute__((noinline))
     #endif 
 #endif 
 
@@ -98,7 +100,7 @@ namespace Hazel {
 #endif // __cplusplus
 
 
-// printf Format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
+// printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
 #ifdef __clang__
     #define MUON_PRId64     "lld"
     #define MUON_PRIu64     "llu"

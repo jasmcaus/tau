@@ -1,0 +1,63 @@
+name: Ubuntu
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+  pull_request:
+    branches:
+      - dev
+      - master
+
+jobs:
+  Clang:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
+        build_type: [Release]
+        
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up GCC on Ubuntu
+        run: |
+          sudo apt-get install -y gcc-11
+
+      - name: CMake
+        run: |
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+
+      - name: Build 
+        run: |
+          cmake --build build --config=${{ matrix.build_type }}
+
+      - name: Test
+        run: |
+          cd build/test/ ; dir;  ./MuonInternalTests
+
+
+  GCC:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
+        build_type: [Release]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Clang on Ubuntu
+        run: |
+          sudo apt-get install -y clang-10
+
+      - name: CMake
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10
+
+      - name: Build
+        run: |
+          cmake --build build --config=${{ matrix.build_type }}
+      
+      - name: Test
+        run: |
+          cd build/test/ ; dir;  ./MuonInternalTests
