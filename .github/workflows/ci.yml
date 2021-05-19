@@ -20,7 +20,7 @@ jobs:
           - {os: "ubuntu-latest", compiler: "default"}
           - {os: "ubuntu-latest", compiler: "clang"}
           - {os: "macOS-latest", compiler: "gcc"}  # not needed
-          - {os: "macOS-latest", compiler: "clang"} # handled by `default`
+          - {os: "macOS-latest", compiler: "clang"} # handled by `default` 
           
     runs-on: ${{ matrix.os }}
     
