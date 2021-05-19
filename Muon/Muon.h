@@ -325,11 +325,19 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 
     #define MUON_PRId64 PRId64
     #define MUON_PRIu64 PRIu64
+
+    #define STR(...) STR_(__VA_ARGS__)
+    #define STR_(...) #__VA_ARGS__
+
+    #pragma message "Value of PRId64 is " \
+        STR(PRId64))
+    #pragma message "Value of PRIu64 is " \
+        STR(PRIu64))
+
 #else 
     #define MUON_PRId64 "I64d"
     #define MUON_PRIu64 "I64u"
 #endif  // __clang__
-
 
 // MUON_INITIALIZER
 #if defined(_MSC_VER)
