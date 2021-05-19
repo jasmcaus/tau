@@ -17,7 +17,7 @@ jobs:
         build_type: [Release] 
         compiler: [default, clang, gcc]
         exclude:
-          - {os: "ubuntu-latest", compiler: "default"}
+          # - {os: "ubuntu-latest", compiler: "default"}
           - {os: "ubuntu-latest", compiler: "clang"}
           - {os: "macOS-latest", compiler: "gcc"}  # not needed
           - {os: "macOS-latest", compiler: "clang"} # handled by `default` 
