@@ -115,5 +115,5 @@ jobs:
         run: cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
       - name: Test (Clsng/Ubuntu)
-        if: !(matrix.compiler == 'default')
+        if: (matrix.compiler != 'default')
         run: cd build/test/ ; dir; ./MuonInternalTests
