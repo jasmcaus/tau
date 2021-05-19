@@ -25,6 +25,9 @@
     // __pragma(warning(disable : 4127))
     #pragma warning(disable : 4127)
 
+    // warning C4090: '=': different 'const' qualifiers
+    #pragma warning(disable : 4090)
+
     // io.h contains definitions for some structures with natural padding. This is uninteresting, but for some reason, 
     // MSVC's behaviour is to warn about including this system header. That *is* interesting
     #pragma warning(disable : 4820)
