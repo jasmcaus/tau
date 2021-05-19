@@ -76,10 +76,15 @@ if(NOT MSVC)
     else()
         string(APPEND CMAKE_C_FLAGS " -std=c11")
     endif()
+
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        string(APPEND CMAKE_C_FLAGS " -O2 -fPIC")
+        string(APPEND CMAKE_C_FLAGS " -O2")
     endif()
+    if (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        string(APPEND CMAKE_C_FLAGS " -fPIC")
+    endif()
+    
     string(APPEND CMAKE_C_FLAGS " -Wall")
     string(APPEND CMAKE_C_FLAGS " -Wextra")
     string(APPEND CMAKE_C_FLAGS " -Werror=return-type")
