@@ -68,6 +68,7 @@ jobs:
   Windows:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         build_type: [Release]
         compiler: [default, gcc, clang, clangcl]
@@ -91,7 +92,7 @@ jobs:
         shell: bash
         if: matrix.compiler == 'gcc'
         run: |
-          cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
+          cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
       
       - name: CMake (Clang)
         shell: bash
