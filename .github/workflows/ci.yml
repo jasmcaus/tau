@@ -111,4 +111,4 @@ jobs:
           cmake --build build/ --config ${{ matrix.build_type }}
       
       - name: Test (Windows)
-        run: cd build/test/ ; ./MuonInternalTests
+        run: cd build/test/ ; dir; MuonInternalTests
