@@ -91,7 +91,7 @@ jobs:
         shell: bash
         if: matrix.compiler == 'gcc'
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
       
       - name: CMake (Clang)
         shell: bash
@@ -114,6 +114,6 @@ jobs:
         if: matrix.compiler == 'default'
         run: cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
-      - name: Test (Clsng/Ubuntu)
+      - name: Test (Clang/Ubuntu)
         if: (matrix.compiler != 'default')
         run: cd build/test/ ; dir; ./MuonInternalTests
