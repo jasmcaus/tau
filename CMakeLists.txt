@@ -154,7 +154,7 @@ set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-
 # Main Build File for the main Muon Library
 # Note that this library must have _minimal_ dependencies 
 
-# Where Google Test's .h files can be found.
+# Where Muon's .h files can be found.
 set(
     MUON_BUILD_INCLUDE_DIRS
     "${${PROJECT_NAME}_SOURCE_DIR}/Muon"
