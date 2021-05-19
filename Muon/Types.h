@@ -74,10 +74,10 @@ typedef MUON_Int32 MUON_Bool32; // Prefer this!
 
 // Unicode codepoint
 typedef MUON_Int32 MUON_Rune; 
-#define MUON_RUNE_INVALID MUON_cast(MUON_Rune)(0xfffd)
-#define MUON_RUNE_MAX     MUON_cast(MUON_Rune)(0x0010ffff)
-#define MUON_RUNE_BOM     MUON_cast(MUON_Rune)(0xfeff)
-#define MUON_RUNE_EOF     MUON_cast(MUON_Rune)(-1)
+#define MUON_RUNE_INVALID cast(MUON_Rune)(0xfffd)
+#define MUON_RUNE_MAX     cast(MUON_Rune)(0x0010ffff)
+#define MUON_RUNE_BOM     cast(MUON_Rune)(0xfeff)
+#define MUON_RUNE_EOF     cast(MUON_Rune)(-1)
 
 // Max and Min 
 #ifndef MUON_UInt8_MIN 

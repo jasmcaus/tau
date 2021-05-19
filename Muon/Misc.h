@@ -78,26 +78,37 @@ namespace Hazel {
 
 // Casts
 #ifdef __cplusplus
-    #define MUON_cast(type, x)       static_cast<type>(x)
-    #define MUON_ptrcast(type, x)    reinterpret_cast<type>(x)
+    #define MUON_CAST(type, x)       static_cast<type>(x)
+    #define MUON_PTRCAST(type, x)    reinterpret_cast<type>(x)
 #else
-    #define MUON_cast(type, x)       ((type)x)
-    #define MUON_ptrcast(type, x)    ((type)x)
+    #define MUON_CAST(type, x)       ((type)x)
+    #define MUON_PTRCAST(type, x)    ((type)x)
 #endif // __cplusplus
 
 
 // Noexcept
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
-    #define MUON_noexcept    noexcept
+    #define MUON_NOEXCEPT    noexcept
+#else 
+    #define MUON_NOEXCEPT
 #endif // __cplusplus
 
 
 // Nothrow
 #if defined(__cplusplus) && defined(_MSC_VER)
-    #define MUON_nothrow   __declspec(nothrow)
+    #define MUON_NOTHROW   __declspec(nothrow)
 #else
-    #define MUON_nothrow
+    #define MUON_NOTHROW
 #endif // __cplusplus
+
+
+#define MUON_CONCATENATE_IMPL(s1, s2)   s1##s2
+#define MUON_CONCATENATE(s1, s2)        MUON_CONCATENATE_IMPL(s1, s2)
+
+#define MUON_MACRO_EXPAND(args)         args
+
+#define MUON_STRINGIZE_IMPL(x)          #x
+#define MUON_STRINGIZE(x)               MUON_STRINGIZE_IMPL(x)
 
 
 // printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively

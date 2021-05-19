@@ -191,10 +191,10 @@ static inline double muon_ns() {
     LARGE_INTEGER frequency;
     QueryPerformanceCounter(&counter);
     QueryPerformanceFrequency(&frequency);
-    return MUON_cast(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
+    return MUON_CAST(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
 
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-    return MUON_cast(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
+    return MUON_CAST(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
 
 #elif defined(__linux)
     struct timespec ts;
@@ -208,10 +208,10 @@ static inline double muon_ns() {
             syscall(SYS_clock_gettime, cid, &ts);
         #endif
     #endif
-    return MUON_cast(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
+    return MUON_CAST(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
 
 #elif __APPLE__
-    return MUON_cast(double, mach_absolute_time());
+    return MUON_CAST(double, mach_absolute_time());
 #endif
 }
 
@@ -518,7 +518,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(const void* p);
 
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(float f) {
-        muon_printf("%f", MUON_cast(double, f));
+        muon_printf("%f", MUON_CAST(double, f));
     }
 
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(double d) {
@@ -718,8 +718,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     do {                                                                      \
         if (strncmp(x, y, n) == 0) {                                          \
             muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%.*s\"\n", MUON_cast(int, n), x);     \
-            muon_printf("    Actual : \"%.*s\"\n", MUON_cast(int, n), y);     \
+            muon_printf("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
+            muon_printf("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
             *muon_result = 1;                                                 \
         }                                                                     \
     }                                                                         \
@@ -800,8 +800,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     do {                                                                      \
         if (strncmp(x, y, n) == 0) {                                          \
             muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%.*s\"\n", MUON_cast(int, n), x);     \
-            muon_printf("    Actual : \"%.*s\"\n", MUON_cast(int, n), y);     \
+            muon_printf("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
+            muon_printf("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -825,10 +825,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         const MUON_Ll index = muon_state.num_tests++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
-        char* name = MUON_ptrcast(char* , malloc(name_size));                           \
-        muon_state.tests = MUON_ptrcast(                                                \
+        char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
+        muon_state.tests = MUON_PTRCAST(                                                \
             struct muon_test_s* ,                                                       \
-            muon_realloc(MUON_ptrcast(void* , muon_state.tests),                        \
+            muon_realloc(MUON_PTRCAST(void* , muon_state.tests),                        \
                         sizeof(struct muon_test_s) *                                    \
                             muon_state.num_tests));                                     \
         muon_state.tests[index].func = &muon_##TESTSUITE##_##TESTNAME;                  \
@@ -952,7 +952,7 @@ static MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
 #endif // MUON_UNIX_
 
     // loop through all arguments looking for our options
-    for(MUON_Ll i = 1; i < MUON_cast(MUON_Ll, argc); i++) {
+    for(MUON_Ll i = 1; i < MUON_CAST(MUON_Ll, argc); i++) {
         /* Informational switches */
         const char* help_str = "--help";
         const char* list_str = "--list";
@@ -1031,8 +1031,8 @@ static void muon_run_tests() {
 
         if (result != 0) {
             const MUON_Ll failed_testcase_index = muon_stats_failed_testcases_length++;
-            muon_stats_failed_testcases = MUON_ptrcast(MUON_Ll*, 
-                                            muon_realloc(MUON_ptrcast(void* , muon_stats_failed_testcases), 
+            muon_stats_failed_testcases = MUON_PTRCAST(MUON_Ll*, 
+                                            muon_realloc(MUON_PTRCAST(void* , muon_stats_failed_testcases), 
                                                           sizeof(MUON_Ll) * muon_stats_failed_testcases_length));
             muon_stats_failed_testcases[failed_testcase_index] = i;
             muon_stats_tests_failed++;
@@ -1077,16 +1077,16 @@ inline int muon_main(int argc, const char* const argv[]) {
 
     // Begin tests
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_cast(MUON_UInt64, muon_stats_tests_ran));
+    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
 
     if (muon_state.foutput) {
         fprintf(muon_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         fprintf(muon_state.foutput,
                 "<testsuites tests=\"%" MUON_PRIu64 "\" name=\"All\">\n",
-                MUON_cast(MUON_UInt64, muon_stats_tests_ran));
+                MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
         fprintf(muon_state.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" MUON_PRIu64 "\">\n",
-                MUON_cast(MUON_UInt64, muon_stats_tests_ran));
+                MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
     }
 
     // Run tests
@@ -1129,15 +1129,15 @@ inline int muon_main(int argc, const char* const argv[]) {
 
 cleanup:
     for (MUON_Ll i = 0; i < muon_state.num_tests; i++)
-        free(MUON_ptrcast(void* , muon_state.tests[i].name));
+        free(MUON_PTRCAST(void* , muon_state.tests[i].name));
 
-    free(MUON_ptrcast(void* , muon_stats_failed_testcases));
-    free(MUON_ptrcast(void* , muon_state.tests));
+    free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
+    free(MUON_PTRCAST(void* , muon_state.tests));
 
     if (muon_state.foutput)
         fclose(muon_state.foutput);
 
-    return MUON_cast(int, muon_stats_tests_failed);
+    return MUON_CAST(int, muon_stats_tests_failed);
 }
 
 // Define a main() function to call into muon.h and start executing tests.
