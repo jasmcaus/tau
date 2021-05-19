@@ -92,7 +92,7 @@ jobs:
         shell: bash
         if: matrix.compiler == 'gcc'
         run: |
-          cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
+          cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       
       - name: CMake (Clang)
         shell: bash
@@ -116,5 +116,5 @@ jobs:
         run: cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
       - name: Test (Clang/Ubuntu)
-        if: (matrix.compiler != 'default') || (matrix.compiler != 'clangcl')
+        if: (matrix.compiler == 'gcc') || (matrix.compiler == 'clang')
         run: cd build/test/ ; dir; ./MuonInternalTests
