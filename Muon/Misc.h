@@ -102,16 +102,16 @@ namespace Hazel {
 #ifdef __clang__
     #include <inttypes.h>
 
-    #define MUON_PRId64 PRId64
-    #define MUON_PRIu64 PRIu64
+    #define MUON_PRId64 "lld"
+    #define MUON_PRIu64 "llu"
 
-    #define STR(...) STR_(__VA_ARGS__)
-    #define STR_(...) #__VA_ARGS__
+    // #define STR(...) STR_(__VA_ARGS__)
+    // #define STR_(...) #__VA_ARGS__
 
-    #pragma message "Value of PRId64 is " \
-        STR(PRId64)
-    #pragma message "Value of PRIu64 is " \
-        STR(PRIu64)
+    // #pragma message "Value of PRId64 is " \
+    //     STR(PRId64)
+    // #pragma message "Value of PRIu64 is " \
+    //     STR(PRIu64)
 
 #else 
     #define MUON_PRId64 "I64d"
