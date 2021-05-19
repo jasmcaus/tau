@@ -36,6 +36,12 @@ jobs:
         run: |
           sudo apt-get install -y gcc-11 g++-10 clang-10
 
+      - name: Set up Clang on windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}.0.0/LLVM-${{ matrix.version }}.0.0-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
+      
+
       - name: Default Platform Compiler
         shell: bash
         if: (matrix.compiler == 'default') && !(matrix.os == 'windows-latest')
@@ -54,11 +60,13 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
+
       - name: GCC (Ubuntu)
         shell: bash
         if: (matrix.compiler == 'gcc') && (matrix.os == 'ubuntu-latest')
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
+
 
       - name: GCC (Windows)
         shell: bash
@@ -66,17 +74,26 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
+
       - name: Clang (Ubuntu)
         shell: bash
         if: (matrix.compiler == 'clang') && (matrix.os == 'ubuntu-latest')
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10
+      
 
       - name: Clang (Windows)
         shell: bash
         if: (matrix.compiler == 'clang') && (matrix.os == 'windows-latest')
         run: |
+          cmake -S . -B build -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+
+      - name: Clang Cl (Windows)
+        shell: bash
+        if: (matrix.compiler == 'clang') && (matrix.os == 'windows-latest')
+        run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-cl -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+
 
       - name: Build
         shell: bash
