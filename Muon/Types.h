@@ -1,10 +1,9 @@
 /*
-    /\    |  __ \|  __ \ / __ \| |  | |
-   /  \   | |__) | |__) | |  | | |  | |
-  / /\ \  |  _  /|  _  /| |  | | |/\| |
- / ____ \ | | \ \| | \ \| |__| | /  \ |
-/_/    \_\|_|__\_|_|__\__\____/|_ /\ _|
-
+|  \/  | |  | |/ __ \| \ | |
+| \  / | |  | | |  | |  \| |    Muon - The Micro Testing Framework for C/C++
+| |\/| | |  | | |  | | . ` |    Languages: C, and C++
+| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Muon
+|_|  |_|\____/ \____/|_| \_|
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT
