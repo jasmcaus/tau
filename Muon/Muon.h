@@ -536,7 +536,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 
 #if defined(__clang__) || defined(__GNUC__)
-    #define __MUONCHECK(x, y, cond)                                               \
+    #define __MUONCHECK__(x, y, cond)                                         \
         do {                                                                  \
             MUON_AUTO(x) xEval = (x);                                         \
             MUON_AUTO(y) yEval = (y);                                         \
@@ -556,7 +556,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 // muon_type_printer does not work on other compilers
 #else
-    #define __MUONCHECK(x, y, cond)                                               \
+    #define __MUONCHECK__(x, y, cond)                                               \
         do {                                                                  \
             if (!((x)cond(y))) {                                              \
                 muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
@@ -587,12 +587,12 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 //            Check Macros
 // #########################################
 //
-#define CHECK_EQ(x, y)     __MUONCHECK(x, y, ==)
-#define CHECK_NE(x, y)     __MUONCHECK(x, y, !=)
-#define CHECK_LT(x, y)     __MUONCHECK(x, y, <)
-#define CHECK_LE(x, y)     __MUONCHECK(x, y, <=)
-#define CHECK_GT(x, y)     __MUONCHECK(x, y, >)
-#define CHECK_GE(x, y)     __MUONCHECK(x, y, >=)
+#define CHECK_EQ(x, y)     __MUONCHECK__(x, y, ==)
+#define CHECK_NE(x, y)     __MUONCHECK__(x, y, !=)
+#define CHECK_LT(x, y)     __MUONCHECK__(x, y, <)
+#define CHECK_LE(x, y)     __MUONCHECK__(x, y, <=)
+#define CHECK_GT(x, y)     __MUONCHECK__(x, y, >)
+#define CHECK_GE(x, y)     __MUONCHECK__(x, y, >=)
 
 
 // String Macros
@@ -638,7 +638,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 //
 
 #if defined (__clang__) || defined(__GNUC__) 
-    #define __MUONREQUIRE(x, y, cond)                                             \
+    #define __MUONREQUIRE__(x, y, cond)                                       \
         do {                                                                  \
             MUON_AUTO(x) xEval = (x);                                         \
             MUON_AUTO(y) yEval = (y);                                         \
@@ -657,7 +657,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         while (0)                                                             \
 
 #else
-    #define __MUONREQUIRE(x, y, cond)                                             \
+    #define __MUONREQUIRE__(x, y, cond)                                             \
         do {                                                                  \
             if (!((x)cond(y))) {                                              \
                 muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
@@ -669,12 +669,12 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #endif
 
 
-#define REQUIRE_EQ(x, y)     __MUONREQUIRE(x, y, ==)
-#define REQUIRE_NE(x, y)     __MUONREQUIRE(x, y, !=)
-#define REQUIRE_LT(x, y)     __MUONREQUIRE(x, y, <)
-#define REQUIRE_LE(x, y)     __MUONREQUIRE(x, y, <=)
-#define REQUIRE_GT(x, y)     __MUONREQUIRE(x, y, >)
-#define REQUIRE_GE(x, y)     __MUONREQUIRE(x, y, >=)
+#define REQUIRE_EQ(x, y)     __MUONREQUIRE__(x, y, ==)
+#define REQUIRE_NE(x, y)     __MUONREQUIRE__(x, y, !=)
+#define REQUIRE_LT(x, y)     __MUONREQUIRE__(x, y, <)
+#define REQUIRE_LE(x, y)     __MUONREQUIRE__(x, y, <=)
+#define REQUIRE_GT(x, y)     __MUONREQUIRE__(x, y, >)
+#define REQUIRE_GE(x, y)     __MUONREQUIRE__(x, y, >=)
 
 
 #define REQUIRE_STREQ(x, y)                                                   \
