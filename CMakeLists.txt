@@ -84,6 +84,8 @@ if(NOT MSVC)
     
     if (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang")
         string(APPEND COMPILE_FLAGS " -fPIC")
+    else()
+        string(APPEND COMPILER_FLAGS " -fPIE")
     endif()
     
     string(APPEND COMPILE_FLAGS " -Wall")
