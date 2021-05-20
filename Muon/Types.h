@@ -53,8 +53,10 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #define STR(...) STR_(__VA_ARGS__)
     #define STR_(...) # __VA_ARGS__
 
-    #pragma message "Value of MUON_UInt64 is " STR(MUON_UInt64)
-    #pragma message "Value of MUON_Int64 is " STR(MUON_iInt64)
+    #pragma message "Value of MUON_UInt64 is " \
+        STR(MUON_UInt64)
+    #pragma message "Value of MUON_Int64 is " \
+        STR(MUON_iInt64)
 #endif // Hazel Basic Types 
 
 // <windows.h> declares a typedef float FLOAT for its internal usage. 
