@@ -73,6 +73,7 @@ endif()
 # A (more or less comprehensive) list is here: https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html
 
 if(NOT MSVC)
+    message("----------------- [INFO] CMAKE_C_COMPILER_ID = ${CMAKE_C_COMPILER_ID}")
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         string(APPEND CMAKE_C_FLAGS " -std=gnu11")
     else()
