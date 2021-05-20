@@ -5,13 +5,13 @@ set(MUON_VERSION 1.0.0)
 project(Muon 
         VERSION ${MUON_VERSION}
         DESCRIPTION "A Micro Unit Testing Framework for C/C++"
-        LANGUAGES C)
+        LANGUAGES C CXX)
 
 # ------ Disable CMAKE_INSTALL_MESSAGE  ------
 set(CMAKE_INSTALL_MESSAGE NEVER)
 
 # ------ Check and set CMAKE_CXX_STANDARD ------
-# string(FIND "${CMAKE_C_FLAGS}" "-std=c" ENV_CXX_STANDARD)
+# string(FIND "${COMPILE_FLAGS}" "-std=c" ENV_CXX_STANDARD)
 # if(ENV_CXX_STANDARD GREATER -1)
 #     message (
 #         WARNING "C Standard Version definition detected in an environment variable."
@@ -72,59 +72,59 @@ endif()
 
 if(NOT MSVC)
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-        string(APPEND CMAKE_C_FLAGS " -std=gnu11")
+        string(APPEND COMPILE_FLAGS " -std=gnu11")
     else()
-        string(APPEND CMAKE_C_FLAGS " -std=c11")
+        string(APPEND COMPILE_FLAGS " -std=c11")
     endif()
 
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        string(APPEND CMAKE_C_FLAGS " -O2")
+        string(APPEND COMPILE_FLAGS " -O2")
     endif()
     
     if (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        string(APPEND CMAKE_C_FLAGS " -fPIC")
+        string(APPEND COMPILE_FLAGS " -fPIC")
     endif()
     
-    string(APPEND CMAKE_C_FLAGS " -Wall")
-    string(APPEND CMAKE_C_FLAGS " -Wextra")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unknown-pragmas")
-    string(APPEND CMAKE_C_FLAGS " -Wno-sign-compare")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unused-parameter")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unused-variable")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unused-function")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unused-result")
-    string(APPEND CMAKE_C_FLAGS " -Wno-unused-local-typedefs")
-    string(APPEND CMAKE_C_FLAGS " -Wno-discarded-qualifiers")
-    string(APPEND CMAKE_C_FLAGS " -Wno-multistatement-macros")
-    string(APPEND CMAKE_C_FLAGS " -Wno-strict-overflow")
-    string(APPEND CMAKE_C_FLAGS " -Wno-strict-aliasing")
-    string(APPEND CMAKE_C_FLAGS " -Werror=return-type")
-    string(APPEND CMAKE_C_FLAGS " -Wno-error=deprecated-declarations")
+    string(APPEND COMPILE_FLAGS " -Wall")
+    string(APPEND COMPILE_FLAGS " -Wextra")
+    string(APPEND COMPILE_FLAGS " -Wno-unknown-pragmas")
+    string(APPEND COMPILE_FLAGS " -Wno-sign-compare")
+    string(APPEND COMPILE_FLAGS " -Wno-unused-parameter")
+    string(APPEND COMPILE_FLAGS " -Wno-unused-variable")
+    string(APPEND COMPILE_FLAGS " -Wno-unused-function")
+    string(APPEND COMPILE_FLAGS " -Wno-unused-result")
+    string(APPEND COMPILE_FLAGS " -Wno-unused-local-typedefs")
+    string(APPEND COMPILE_FLAGS " -Wno-discarded-qualifiers")
+    string(APPEND COMPILE_FLAGS " -Wno-multistatement-macros")
+    string(APPEND COMPILE_FLAGS " -Wno-strict-overflow")
+    string(APPEND COMPILE_FLAGS " -Wno-strict-aliasing")
+    string(APPEND COMPILE_FLAGS " -Werror=return-type")
+    string(APPEND COMPILE_FLAGS " -Wno-error=deprecated-declarations")
 
     if(WERROR)
         check_cxx_compiler_flag("-Werror" COMPILER_SUPPORT_WERROR)
         if(NOT COMPILER_SUPPORT_WERROR)
             set(WERROR FALSE)
         else()
-            string(APPEND CMAKE_C_FLAGS " -Werror")   
+            string(APPEND COMPILE_FLAGS " -Werror")   
         endif()
     endif(WERROR)
 
     if(NOT APPLE)
-        string(APPEND CMAKE_C_FLAGS " -Wno-unused-but-set-variable")
-        string(APPEND CMAKE_C_FLAGS " -Wno-maybe-uninitialized")
+        string(APPEND COMPILE_FLAGS " -Wno-unused-but-set-variable")
+        string(APPEND COMPILE_FLAGS " -Wno-maybe-uninitialized")
     endif()
 
 # For MSVC 
 else()
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        string(APPEND CMAKE_C_FLAGS " /O2")
+        string(APPEND COMPILE_FLAGS " /O2")
     endif()
-    string(APPEND CMAKE_C_FLAGS " /std:c11")
-    string(APPEND CMAKE_C_FLAGS " /Wall")
-    # string(APPEND CMAKE_C_FLAGS " /WX")  # Treats Linker Warnings as Errors
+    string(APPEND COMPILE_FLAGS " /std:c11")
+    string(APPEND COMPILE_FLAGS " /Wall")
+    # string(APPEND COMPILE_FLAGS " /WX")  # Treats Linker Warnings as Errors
     
     # Ignore some MSVC warnings
     # 1. C4061: enumerator in switch os enum is not explicitly handled by a case label
@@ -135,14 +135,14 @@ else()
     # 6: C4711: function selected for automatic inline expansion
     # 7. C5105: macro expansion producing `defined` has undefined behaviour
     # NOTE: For some reason (maybe I'm looking at this the wrong way, `/IGNORE` does not seems to work!!)
-    # string(APPEND CMAKE_C_FLAGS " /IGNORE:4061,4100,4710,4711")
-    string(APPEND CMAKE_C_FLAGS " /wd4061")
-    string(APPEND CMAKE_C_FLAGS " /wd4100")
-    string(APPEND CMAKE_C_FLAGS " /wd4127")
-    string(APPEND CMAKE_C_FLAGS " /wd4514")
-    string(APPEND CMAKE_C_FLAGS " /wd4710")
-    string(APPEND CMAKE_C_FLAGS " /wd4711")
-    string(APPEND CMAKE_C_FLAGS " /wd5105")
+    # string(APPEND COMPILE_FLAGS " /IGNORE:4061,4100,4710,4711")
+    string(APPEND COMPILE_FLAGS " /wd4061")
+    string(APPEND COMPILE_FLAGS " /wd4100")
+    string(APPEND COMPILE_FLAGS " /wd4127")
+    string(APPEND COMPILE_FLAGS " /wd4514")
+    string(APPEND COMPILE_FLAGS " /wd4710")
+    string(APPEND COMPILE_FLAGS " /wd4711")
+    string(APPEND COMPILE_FLAGS " /wd5105")
 endif()
 
 

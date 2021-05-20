@@ -71,10 +71,10 @@ typedef MUON_Int32 MUON_Bool32; // Prefer this!
 
 // Unicode codepoint
 typedef MUON_Int32 MUON_Rune; 
-#define MUON_RUNE_INVALID cast(MUON_Rune)(0xfffd)
-#define MUON_RUNE_MAX     cast(MUON_Rune)(0x0010ffff)
-#define MUON_RUNE_BOM     cast(MUON_Rune)(0xfeff)
-#define MUON_RUNE_EOF     cast(MUON_Rune)(-1)
+#define MUON_RUNE_INVALID MUON_CAST(MUON_Rune)(0xfffd)
+#define MUON_RUNE_MAX     MUON_CAST(MUON_Rune)(0x0010ffff)
+#define MUON_RUNE_BOM     MUON_CAST(MUON_Rune)(0xfeff)
+#define MUON_RUNE_EOF     MUON_CAST(MUON_Rune)(-1)
 
 // Max and Min 
 #ifndef MUON_UInt8_MIN 
@@ -145,7 +145,11 @@ typedef MUON_Int64      MUON_Ll;
 
 // MUON_bool is a basic type in C++ and not C
 // We could just have used <stdMUON_bool.h> but I prefer this as it results in a smaller binary
-#ifndef __cplusplus
+#ifdef __cplusplus
+    #define MUON_bool  bool
+    #define MUON_false false;
+    #define MUON_true  true;
+#else 
     typedef MUON_Bool8 MUON_bool;
     static const MUON_bool MUON_false = 0;
     static const MUON_bool MUON_true  = 1;

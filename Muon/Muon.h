@@ -933,7 +933,7 @@ MUON_STATIC void muon_help_(void) {
         printf("  --help              Display this help and exit\n");
 }
 
-MUON_STATIC MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
+MUON_STATIC MUON_bool muon_cmdline_read(int argc, char** argv) {
     // Coloured output
 #ifdef MUON_UNIX_
     muon_should_colourize_output = isatty(STDOUT_FILENO);
@@ -997,6 +997,19 @@ MUON_STATIC MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
     return MUON_true;
 }
 
+static int muon_cleanup();
+static int muon_cleanup() {
+    for (MUON_Ll i = 0; i < muon_state.num_tests; i++)
+        free(MUON_PTRCAST(void* , muon_state.tests[i].name));
+
+    free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
+    free(MUON_PTRCAST(void* , muon_state.tests));
+
+    if (muon_state.foutput)
+        fclose(muon_state.foutput);
+
+    return MUON_CAST(int, muon_stats_tests_failed);
+}
 
 // Triggers and runs all unit tests
 // MUON_STATIC void muon_run_tests(MUON_Ll* muon_stats_failed_testcases, MUON_Ll* muon_stats_failed_testcases_length) {
@@ -1050,8 +1063,8 @@ MUON_STATIC void muon_run_tests() {
 }
 
 
-MUON_STATIC MUON_INLINE int muon_main(int argc, const char* const argv[]);
-MUON_INLINE int muon_main(int argc, const char* const argv[]) {
+MUON_STATIC MUON_INLINE int muon_main(int argc, char** argv);
+MUON_INLINE int muon_main(int argc, char** argv) {
     muon_stats_total_tests = muon_state.num_tests;
     muon_argv0_ = argv[0];
     
@@ -1063,7 +1076,7 @@ MUON_INLINE int muon_main(int argc, const char* const argv[]) {
 
     MUON_bool was_cmdline_read_successful = muon_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
-        goto cleanup;
+        return muon_cleanup();
 
     for (MUON_Ll i = 0; i < muon_state.num_tests; i++) {
         if (muon_should_filter_test(filter, muon_state.tests[i].name))
@@ -1116,7 +1129,7 @@ MUON_INLINE int muon_main(int argc, const char* const argv[]) {
         }
     } else {
         muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" MUON_PRIu64 " tests have passed in ", muon_stats_tests_ran - muon_stats_tests_failed);
+        printf("%" MUON_PRIu64 " tests passed in ", muon_stats_tests_ran - muon_stats_tests_failed);
         muon_timer_print_duration(duration);       
         printf("\n");
     }
@@ -1124,17 +1137,7 @@ MUON_INLINE int muon_main(int argc, const char* const argv[]) {
     if (muon_state.foutput)
         fprintf(muon_state.foutput, "</testsuite>\n</testsuites>\n");
 
-cleanup:
-    for (MUON_Ll i = 0; i < muon_state.num_tests; i++)
-        free(MUON_PTRCAST(void* , muon_state.tests[i].name));
-
-    free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
-    free(MUON_PTRCAST(void* , muon_state.tests));
-
-    if (muon_state.foutput)
-        fclose(muon_state.foutput);
-
-    return MUON_CAST(int, muon_stats_tests_failed);
+    return muon_cleanup();
 }
 
 // Define a main() function to call into muon.h and start executing tests.
@@ -1142,7 +1145,7 @@ cleanup:
     /* Define the global struct that will hold the data we need to run Muon. */ \
     struct muon_state_s muon_state = {0, 0, 0};                                 \
                                                                                 \
-    int main(int argc, const char* const argv[]) {                              \
+    int main(int argc, char** argv) {                              \
         return muon_main(argc, argv);                                           \
     }
 

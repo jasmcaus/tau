@@ -33,7 +33,7 @@ TEST(cpp11, REQUIRE_STRNEQ) {
 }
 
 TEST(cpp11, REQUIRE_STRNNEQ) { 
-    REQUIRE_STRNNEQ("foo", "foobar", strlen("foo")); 
+    REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); 
 }
 
 TEST(cpp11, CHECK_EQ) { 
