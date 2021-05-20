@@ -79,11 +79,11 @@ if(NOT MSVC)
         string(APPEND CMAKE_C_FLAGS " -std=c11")
     endif()
 
-    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        string(APPEND CMAKE_C_FLAGS " -std=gnu++11")
-    else()
-        string(APPEND CMAKE_C_FLAGS " -std=c++11")
-    endif()
+    # if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    #     string(APPEND CMAKE_C_FLAGS " -std=gnu++11")
+    # else()
+    #     string(APPEND CMAKE_C_FLAGS " -std=c++11")
+    # endif()
 
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")

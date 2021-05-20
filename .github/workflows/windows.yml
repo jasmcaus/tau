@@ -39,6 +39,7 @@ jobs:
         run: |
           cd build/test/ ; dir; ./MuonInternalTests
 
+
   # CMAKE_SYSTEM_VERSION on `windows-2016` _does not_ have version "10.0.18362.0" and hence defaults to a older, but 
   # buggy version of Windows SDK. Using `10.0.17134.0` works on my computer and should work 
   MSVC2017:
@@ -60,16 +61,13 @@ jobs:
       if: matrix.build_type == 'Release' && matrix.architecture != 'x64'
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
-
-    - name: CMake (Default Config)
-      if: matrix.build_type != 'Release'
+    - name: CMake (Default Configs)
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
     - name: Build
       run: |
         cmake --build build --config ${{ matrix.build_type }} --parallel 10
-
     - name: Test
       run: |
         cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
@@ -82,12 +80,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: CMake
       run: |
-        cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_VERSION="10.0.18362.0" -DMUON_BUILDTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4"
-
+        cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DMUON_BUILDTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4" -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
     - name: Build
       run: |
         cmake --build build --config Release --parallel 10
-
     - name: Test
       run: |
         cd build/test/Release ; dir; ./MuonInternalTests
