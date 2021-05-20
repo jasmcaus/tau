@@ -147,8 +147,8 @@ typedef MUON_Int64      MUON_Ll;
 // We could just have used <stdMUON_bool.h> but I prefer this as it results in a smaller binary
 #ifdef __cplusplus
     #define MUON_bool  bool
-    #define MUON_false false;
-    #define MUON_true  true;
+    #define MUON_false false
+    #define MUON_true  true
 #else 
     typedef MUON_Bool8 MUON_bool;
     static const MUON_bool MUON_false = 0;
