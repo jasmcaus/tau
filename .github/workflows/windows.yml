@@ -54,17 +54,17 @@ jobs:
     - name: CMake (Release, x64)
       if: matrix.build_type == 'Release' && matrix.architecture == 'x64'
       run: |
-        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_EXE_LINKER_FLAGS="/STACK:4000000"
+        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_EXE_LINKER_FLAGS="/STACK:4000000" -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
       
     - name: CMake (Release, !x64)
       if: matrix.build_type == 'Release' && matrix.architecture != 'x64'
       run: |
-        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
     - name: CMake (Default Config)
       if: matrix.build_type != 'Release'
       run: |
-        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+        cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
     - name: Build
       run: |
@@ -82,7 +82,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: CMake
       run: |
-        cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DMUON_BUILDTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4"
+        cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_VERSION="10.0.18362.0" -DMUON_BUILDTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4"
 
     - name: Build
       run: |

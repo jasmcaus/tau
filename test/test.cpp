@@ -162,11 +162,6 @@ TEST(cpp11, Ptr) {
     CHECK_NE(&foo, &foo + 1);
 }
 
-TEST(cpp11, VoidPtr) {
-    void *foo = reinterpret_cast<void*>(0);
-    CHECK_NE(foo, static_cast<char*>(foo) + 1);
-}
-
 static const int data[4] = {42, 13, 6, -53};
 
 TEST(cpp11, Array) { 
