@@ -147,8 +147,8 @@ typedef MUON_Int64      MUON_Ll;
 // We could just have used <stdMUON_bool.h> but I prefer this as it results in a smaller binary
 #ifdef __cplusplus
     #define MUON_bool  bool
-    #define MUON_false false
-    #define MUON_true  true
+    #define MUON_false false;
+    #define MUON_true  true;
 #else 
     typedef MUON_Bool8 MUON_bool;
     static const MUON_bool MUON_false = 0;
@@ -162,7 +162,7 @@ typedef MUON_Int64      MUON_Ll;
     typedef unsigned __int64    MUON_UIntptr;
 #elif defined(_WIN32)
     // To mark types changing their size, e.g. MUON_Intptr
-    #ifndef _w64
+    #ifndef MUON__W64
         #if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
             #define MUON__W64 __w64
         #else
@@ -170,8 +170,8 @@ typedef MUON_Int64      MUON_Ll;
         #endif
     #endif
 
-    typedef _w64 signed int     MUON_Intptr;
-    typedef _w64 unsigned int   MUON_UIntptr;
+    typedef MUON__W64 signed int     MUON_Intptr;
+    typedef MUON__W64 unsigned int   MUON_UIntptr;
 #else
     typedef  uintptr_t   MUON_UIntptr;
     typedef  intptr_t    MUON_Intptr;

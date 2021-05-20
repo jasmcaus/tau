@@ -301,10 +301,8 @@ MUON_STATIC void muon_timer_print_duration(double nanoseconds_duration) {
 
 #if defined(__cplusplus)
     #define MUON_EXTERN    extern "C"
-    #define MUON_NULL      NULL
 #else
     #define MUON_EXTERN    extern
-    #define MUON_NULL      0
 #endif
 
 // extern to the global state muon needs to execute
@@ -852,7 +850,7 @@ MUON_STATIC void muon_help_(void) {
         printf("  --help              Display this help and exit\n");
 }
 
-MUON_STATIC MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
+MUON_STATIC MUON_bool muon_cmdline_read(int argc, char** argv) {
     // Coloured output
 #ifdef MUON_UNIX_
     muon_should_colourize_output = isatty(STDOUT_FILENO);
@@ -968,8 +966,8 @@ MUON_STATIC void muon_run_tests() {
 }
 
 
-MUON_STATIC MUON_INLINE int muon_main(int argc, const char* const argv[]);
-MUON_INLINE int muon_main(int argc, const char* const argv[]) {
+MUON_STATIC MUON_INLINE int muon_main(int argc, char** argv);
+MUON_INLINE int muon_main(int argc, char** argv) {
     muon_stats_total_tests = muon_state.num_tests;
     muon_argv0_ = argv[0];
 
@@ -1057,7 +1055,7 @@ cleanup:
     /* Define the global struct that will hold the data we need to run Muon. */ \
     struct muon_state_s muon_state = {0, 0, 0};                                 \
                                                                                 \
-    int main(int argc, const char* const argv[]) {                              \
+    int main(int argc, char** argv) {                              \
         return muon_main(argc, argv);                                           \
     }
 
