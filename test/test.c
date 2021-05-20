@@ -1,20 +1,20 @@
 #include "Muon/Muon.h"
-MUON_MAIN()
+// MUON_MAIN()
 
 TEST(c, ForLoop) { 
     int count = 0;
     for(int i = 0; i<10000000; i++) {
         count ++;
     }
-    REQUIRE_EQ(count, 10000000); 
+    REQUIRE_EQ(count, 1000000); 
 }
 
 TEST(c, CHECK) { 
-    CHECK(1 < 2, "1 < 2"); 
+    CHECK(1 > 2, "1 < 2"); 
 }
 
 TEST(c, REQUIRE_LT) { 
-    REQUIRE_LT(1, 2);  
+    REQUIRE_LT(6, 2);  
 }
 
 TEST(c, REQUIRE_LE) {
