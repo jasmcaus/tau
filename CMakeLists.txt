@@ -137,21 +137,16 @@ else()
     # string(APPEND COMPILE_FLAGS " /WX")  # Treats Linker Warnings as Errors
     
     # Ignore some MSVC warnings
-    # 1. C4061: enumerator in switch os enum is not explicitly handled by a case label
-    # 2. C4100: argv & argc: unreferenced formal parameter
-    # 3. C4127: 'conditional expression is constant'
-    # 4. C4514: 'function' : unreferenced inline function has been removed
-    # 5. C4710: printf: function not inlined
-    # 6: C4711: function selected for automatic inline expansion
-    # 7. C5105: macro expansion producing `defined` has undefined behaviour
-    # NOTE: For some reason (maybe I'm looking at this the wrong way, `/IGNORE` does not seems to work!!)
-    # string(APPEND COMPILE_FLAGS " /IGNORE:4061,4100,4710,4711")
     string(APPEND COMPILE_FLAGS " /wd4061")
+    string(APPEND COMPILE_FLAGS " /wd4090")
     string(APPEND COMPILE_FLAGS " /wd4100")
     string(APPEND COMPILE_FLAGS " /wd4127")
     string(APPEND COMPILE_FLAGS " /wd4514")
+    string(APPEND COMPILE_FLAGS " /wd4668")
     string(APPEND COMPILE_FLAGS " /wd4710")
     string(APPEND COMPILE_FLAGS " /wd4711")
+    string(APPEND COMPILE_FLAGS " /wd4820")
+    string(APPEND COMPILE_FLAGS " /wd4996")
     string(APPEND COMPILE_FLAGS " /wd5045")
     string(APPEND COMPILE_FLAGS " /wd5105")
 endif()

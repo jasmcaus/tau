@@ -33,10 +33,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
     #pragma warning(disable: 4996)
 
-    // warning C4127: conditional expression is constant  
-    // __pragma(warning(disable : 4127))
-    #pragma warning(disable : 4127)
-
     // warning C4090: '=': different 'const' qualifiers
     #pragma warning(disable : 4090)
 
