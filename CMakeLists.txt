@@ -130,7 +130,7 @@ if(NOT MSVC)
             string(APPEND CMAKE_C_FLAGS " -Werror")   
         endif()
     endif(WERROR)
-
+    message("----------------- [INFO] CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 # For MSVC 
 else()
     # Optimizations
