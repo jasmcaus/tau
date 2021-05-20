@@ -657,7 +657,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         while (0)                                                             \
 
 #else
-    #define __MUONREQUIRE__(x, y, cond)                                             \
+    #define __MUONREQUIRE__(x, y, cond)                                       \
         do {                                                                  \
             if (!((x)cond(y))) {                                              \
                 muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
