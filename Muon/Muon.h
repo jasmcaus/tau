@@ -14,7 +14,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #define MUON_TEST_H_
 
 #include <Muon/Types.h>
-#include <Misc.h>
+#include <Muon/Misc.h>
 
 #ifdef _MSC_VER
     // Disable warning about not inlining 'MUON_INLINE' functions.
@@ -124,12 +124,11 @@ MUON_STATIC MUON_UInt64 muon_stats_skipped_tests = 0;
 MUON_STATIC int muon_should_colourize_output = 1;
 MUON_STATIC int muon_disable_summary = 0; 
 
-MUON_Ll* muon_stats_failed_testcases = MUON_NULL;
-MUON_Ll muon_stats_failed_testcases_length = 0;
-
 MUON_STATIC char* muon_argv0_ = MUON_NULL;
 MUON_STATIC const char* filter = MUON_NULL;
 
+static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
+static MUON_Ll muon_stats_failed_testcases_length = 0;
 
 MUON_STATIC int muon_timer_ = 1;
 // Timing --> use muon's version
@@ -385,10 +384,8 @@ MUON_STATIC void muon_timer_print_duration(double nanoseconds_duration) {
 
 #if defined(__cplusplus)
     #define MUON_EXTERN    extern "C"
-    #define MUON_NULL      NULL
 #else
     #define MUON_EXTERN    extern
-    #define MUON_NULL      0
 #endif
 
 // extern to the global state muon needs to execute
@@ -1002,6 +999,7 @@ MUON_STATIC MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
 
 
 // Triggers and runs all unit tests
+// MUON_STATIC void muon_run_tests(MUON_Ll* muon_stats_failed_testcases, MUON_Ll* muon_stats_failed_testcases_length) {
 MUON_STATIC void muon_run_tests() {
     // Run tests
     for (MUON_Ll i = 0; i < muon_state.num_tests; i++) {
@@ -1112,7 +1110,7 @@ MUON_INLINE int muon_main(int argc, const char* const argv[]) {
         printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
         muon_timer_print_duration(duration);
         printf("\n");
-
+        
         for (MUON_Ll i = 0; i < muon_stats_failed_testcases_length; i++) {
             muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "  [ FAILED ] %s\n", muon_state.tests[muon_stats_failed_testcases[i]].name);
         }

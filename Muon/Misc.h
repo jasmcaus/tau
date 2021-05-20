@@ -114,9 +114,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 // Statics!
 // static means 3-4 different things in C/C++!!
-#ifndef MUON_EXTERN
-    #define MUON_EXTERN     extern
-#endif 
+
 
 #ifndef MUON_STATIC
     #define MUON_STATIC     static

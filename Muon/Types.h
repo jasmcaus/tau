@@ -13,7 +13,9 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #ifndef MUON_TYPES_H
 #define MUON_TYPES_H
 
-// Base Types (similar to the Types in the Hazel Language) ==========================================
+#include <Muon/Compilers.h>
+
+// Base Types (similar to the Types in the Muon Language) ==========================================
 #if defined(MUON_COMPILER_MSVC)
     #if _MSVC_VER < 1300 
         typedef unsigned char     MUON_UInt8;
@@ -49,12 +51,11 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     typedef int32_t   MUON_Int32; 
     typedef uint64_t  MUON_UInt64; 
     typedef int64_t   MUON_Int64; 
-
-#endif // Hazel Basic Types 
+#endif // Muon Basic Types 
 
 // <windows.h> declares a typedef float FLOAT for its internal usage. 
 // We need to be polite and respect that :)
-// NOTE: <windows.h> is declared in Muon during Hazel's Internal Tests
+// NOTE: <windows.h> is declared in Muon during Muon's Internal Tests
 // #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 //     #define MUON_Float32     float
 // #else 
@@ -112,7 +113,7 @@ typedef MUON_Int32 MUON_Rune;
         #define MUON_INTSIZE_MAX MUON_Int64_MAX
     #endif 
 #else
-        #error Unknown architecture size. Hazel only supports 32-bit and 64-bit architectures.
+        #error Unknown architecture size. Muon only supports 32-bit and 64-bit architectures.
 #endif 
 
 #define MUON_Float32_MIN 1.17549435e-38f
@@ -148,10 +149,6 @@ typedef MUON_Int64      MUON_Ll;
     typedef MUON_Bool8 MUON_bool;
     static const MUON_bool MUON_false = 0;
     static const MUON_bool MUON_true  = 1;
-#else 
-    typedef bool MUON_bool;
-    static const bool MUON_false = false;
-    static const bool MUON_true = true;
 #endif 
 
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
