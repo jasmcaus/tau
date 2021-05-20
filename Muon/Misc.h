@@ -97,15 +97,23 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 
 // printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
-#if defined(_MSC_VER) && (_MSC_VER < 1920)
-    #define MUON_PRId64 "I64d"
-    #define MUON_PRIu64 "I64u"
-#else
-    #include <inttypes.h>
+#ifdef __clang__
+    #define MUON_PRId64     "lld"
+    #define MUON_PRIu64     "llu"
+#else 
+    #define MUON_PRId64     "I64d"
+    #define MUON_PRIu64     "I64u"
+#endif  // __clang__
 
-    #define MUON_PRId64 PRId64
-    #define MUON_PRIu64 PRIu64
-#endif
+// #if defined(_MSC_VER) && (_MSC_VER < 1920)
+//     #define MUON_PRId64 "I64d"
+//     #define MUON_PRIu64 "I64u"
+// #else
+//     #include <inttypes.h>
+
+//     #define MUON_PRId64 PRId64
+//     #define MUON_PRIu64 PRIu64
+// #endif
 
 
 // A signed sizeof is more useful 
