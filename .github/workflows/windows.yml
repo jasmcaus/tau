@@ -62,6 +62,7 @@ jobs:
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
     - name: CMake (Default Configs)
+      if: matrix.build_type != 'Release'
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 

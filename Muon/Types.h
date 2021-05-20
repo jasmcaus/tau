@@ -170,8 +170,8 @@ typedef MUON_Int64      MUON_Ll;
         #endif
     #endif
 
-    typedef _W64 signed int     MUON_Intptr;
-    typedef _W64 unsigned int   MUON_UIntptr;
+    typedef _w64 signed int     MUON_Intptr;
+    typedef _w64 unsigned int   MUON_UIntptr;
 #else
     typedef  uintptr_t   MUON_UIntptr;
     typedef  intptr_t    MUON_Intptr;
