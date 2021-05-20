@@ -79,6 +79,12 @@ if(NOT MSVC)
         string(APPEND COMPILE_FLAGS " -std=c11")
     endif()
 
+    if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        string(APPEND COMPILE_FLAGS " -std=gnu++11")
+    else()
+        string(APPEND COMPILE_FLAGS " -std=c++11")
+    endif()
+
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         string(APPEND COMPILE_FLAGS " -O2")
@@ -146,6 +152,7 @@ else()
     string(APPEND COMPILE_FLAGS " /wd4514")
     string(APPEND COMPILE_FLAGS " /wd4710")
     string(APPEND COMPILE_FLAGS " /wd4711")
+    string(APPEND COMPILE_FLAGS " /wd5045")
     string(APPEND COMPILE_FLAGS " /wd5105")
 endif()
 

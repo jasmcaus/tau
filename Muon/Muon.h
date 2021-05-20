@@ -130,7 +130,6 @@ static const char* filter = MUON_NULL;
 static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
 static MUON_Ll muon_stats_failed_testcases_length = 0;
 
-static int muon_timer_ = 1;
 // Timing --> use muon's version
 #if defined(_MSC_VER)
     // define MUON_USE_OLD_QPC before #include "muon.h" to use old QueryPerformanceCounter
@@ -248,88 +247,6 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
     else
         printf("%.2lfs", nanoseconds_duration/1000000000);
 }
-
-// #if defined MUON_WIN_
-//     typedef LARGE_INTEGER muon_timer_type_;
-//     static LARGE_INTEGER muon_timer_freq_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
-
-//     static void muon_timer_init_(void) {
-//         QueryPerformanceFrequency(&muon_timer_freq_);
-//     }
-
-//     static void muon_timer_get_time_(LARGE_INTEGER* ts) {
-//         QueryPerformanceCounter(ts);
-//     }
-
-//     static double muon_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
-//         double duration = (double)(end.QuadPart - start.QuadPart);
-//         duration /= (double)muon_timer_freq_.QuadPart;
-//         // printf("\nDURATION: %f\n", (double)muon_timer_freq_.QuadPart);
-//         duration *= 1000; // convert to milliseconds
-//         return duration;
-//     }
-
-//     static void muon_timer_print_diff_(void) {
-//         printf("%.6lf secs", muon_timer_diff_(muon_test_timer_start_, muon_test_timer_end_));
-//     }
-
-// #elif defined MUON_HAS_POSIX_TIMER_
-//     static clockid_t muon_timer_id_;
-//     typedef struct timespec muon_timer_type_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
-
-//     static void muon_timer_init_() {
-//         if(muon_timer_ == 1)
-//             muon_timer_id_ = CLOCK_MONOTONIC;
-//         else if(muon_timer_ == 2)
-//             muon_timer_id_ = CLOCK_PROCESS_CPUTIME_ID;
-//     }
-
-//     static void muon_timer_get_time_(struct timespec* ts) {
-//         clock_gettime(muon_timer_id_, ts);
-//     }
-
-//     static double muon_timer_diff_(struct timespec start, struct timespec end) {
-//         double endns;
-//         double startns;
-
-//         endns = end.tv_sec;
-//         endns *= 1e9;
-//         endns += end.tv_nsec;
-
-//         startns = start.tv_sec;
-//         startns *= 1e9;
-//         startns += start.tv_nsec;
-
-//         return ((endns - startns)/ 1e9);
-//     }
-
-//     static void muon_timer_print_diff_(){
-//         printf("%.6lf secs",
-//             muon_timer_diff_(muon_test_timer_start_, muon_test_timer_end_));
-//     }
-// #else
-//     typedef int muon_timer_type_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
-
-//     void muon_timer_init_(void) {}
-
-//     static void muon_timer_get_time_(int* ts) {
-//         (void) ts;
-//     }
-
-//     static double muon_timer_diff_(int start, int end) {
-//         (void) start;
-//         (void) end;
-//         return 0.0;
-//     }
-
-//     static void muon_timer_print_diff_(void) {}
-// #endif
 
 // MUON_INITIALIZER
 #if defined(_MSC_VER)
@@ -1068,9 +985,6 @@ inline int muon_main(int argc, char** argv) {
     muon_stats_total_tests = muon_state.num_tests;
     muon_argv0_ = argv[0];
     
-    enum colours { RESET, GREEN, RED };
-    const char* colours[] = {"\033[0m", "\033[32m", "\033[31m"};
-
     // Start the entire Test Session timer
     double start = muon_ns();
 
