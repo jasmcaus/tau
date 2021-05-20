@@ -110,8 +110,10 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #define VALUE(x) VALUE_TO_STRING(x)
 #define VAR_NAME_VALUE(var) #var "="  VALUE(var)
 
+#define STFF "%"MUON_PRIu64
+
 /* Some example here */
-#pragma message(VAR_NAME_VALUE(MUON_PRIu64))
+#pragma message(VAR_NAME_VALUE(STFF))
 #pragma message(VAR_NAME_VALUE(MUON_PRId64))
 
 // #if defined(_MSC_VER) && (_MSC_VER < 1920)

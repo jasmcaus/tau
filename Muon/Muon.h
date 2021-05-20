@@ -968,7 +968,6 @@ static void muon_run_tests() {
     }
 
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
-    #pragma message(VAR_NAME_VALUE(MUON_PRIu64))
     muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
 }
 
