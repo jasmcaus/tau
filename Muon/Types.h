@@ -162,7 +162,7 @@ typedef MUON_Int64      MUON_Ll;
     typedef unsigned __int64    MUON_UIntptr;
 #elif defined(_WIN32)
     // To mark types changing their size, e.g. MUON_Intptr
-    #ifndef _W64
+    #ifndef _w64
         #if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
             #define MUON__W64 __w64
         #else
