@@ -97,34 +97,23 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 
 // printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
-#ifdef __clang__
-    #define MUON_PRId64     "lld"
-    #define MUON_PRIu64     "llu"
-#else 
-    #define MUON_PRId64     "I64d"
-    #define MUON_PRIu64     "I64u"
-#endif  // __clang__
+// #ifdef __clang__
+//     #define MUON_PRId64     "lld"
+//     #define MUON_PRIu64     "llu"
+// #else 
+//     #define MUON_PRId64     "I64d"
+//     #define MUON_PRIu64     "I64u"
+// #endif  // __clang__
 
-/* definition to expand macro then apply to pragma message */
-#define VALUE_TO_STRING(x) #x
-#define VALUE(x) VALUE_TO_STRING(x)
-#define VAR_NAME_VALUE(var) #var "="  VALUE(var)
+#if defined(_MSC_VER) && (_MSC_VER < 1920)
+    #define MUON_PRId64 "I64d"
+    #define MUON_PRIu64 "I64u"
+#else
+    #include <inttypes.h>
 
-#define STFF "%"MUON_PRIu64
-
-/* Some example here */
-#pragma message(VAR_NAME_VALUE(STFF))
-#pragma message(VAR_NAME_VALUE(MUON_PRId64))
-
-// #if defined(_MSC_VER) && (_MSC_VER < 1920)
-//     #define MUON_PRId64 "I64d"
-//     #define MUON_PRIu64 "I64u"
-// #else
-//     #include <inttypes.h>
-
-//     #define MUON_PRId64 PRId64
-//     #define MUON_PRIu64 PRIu64
-// #endif
+    #define MUON_PRId64 PRId64
+    #define MUON_PRIu64 PRIu64
+#endif
 
 
 // A signed sizeof is more useful 
