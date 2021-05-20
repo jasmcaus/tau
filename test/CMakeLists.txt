@@ -10,7 +10,7 @@ set(MUON_TEST    "MuonInternalTests")
 
 add_executable(
     ${MUON_TEST}
-    main.c 
+    # main.c 
     test.c
     # test.cpp
 )

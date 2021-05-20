@@ -1,4 +1,5 @@
 #include "Muon/Muon.h"
+MUON_MAIN()
 
 TEST(c, ForLoop) { 
     int count = 0;

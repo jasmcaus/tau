@@ -50,15 +50,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     typedef uint64_t  MUON_UInt64; 
     typedef int64_t   MUON_Int64; 
 
-    #ifdef __clang__
-        #define STR(...) STR_(__VA_ARGS__)
-        #define STR_(...) #__VA_ARGS__
-
-        #pragma message "Value of __INT64_TYPE__ is " \
-            STR(__INT64_TYPE__)
-        // #pragma message "Value of int64_t is " \
-        //     STR(int64_t)
-    #endif 
 #endif // Hazel Basic Types 
 
 // <windows.h> declares a typedef float FLOAT for its internal usage. 
