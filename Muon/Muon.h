@@ -124,11 +124,11 @@ MUON_STATIC MUON_UInt64 muon_stats_skipped_tests = 0;
 MUON_STATIC int muon_should_colourize_output = 1;
 MUON_STATIC int muon_disable_summary = 0; 
 
-MUON_Ll* muon_stats_failed_testcases = MUON_null;
+MUON_Ll* muon_stats_failed_testcases = MUON_NULL;
 MUON_Ll muon_stats_failed_testcases_length = 0;
 
-MUON_STATIC char* muon_argv0_ = MUON_null;
-MUON_STATIC const char* filter = MUON_null;
+MUON_STATIC char* muon_argv0_ = MUON_NULL;
+MUON_STATIC const char* filter = MUON_NULL;
 
 
 MUON_STATIC int muon_timer_ = 1;
@@ -680,19 +680,6 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 //            Check Macros
 // #########################################
 //
-
-#define CHECK_TRUE(x)                                                         \
-    do {                                                                      \
-        if (!(x)) {                                                           \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : true\n");                               \
-            muon_printf("    Actual : %s\n", (x) ? "true" : "false");         \
-            *muon_result = 1;                                                 \
-        }                                                                     \
-    }                                                                         \
-    while (0)                                                                    
-
-
 #define CHECK_EQ(x, y)     __CHECK(x, y, ==)
 #define CHECK_NE(x, y)     __CHECK(x, y, !=)
 #define CHECK_LT(x, y)     __CHECK(x, y, <)
@@ -886,11 +873,11 @@ MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase) 
                     filter_cur++;
                 }
 
-                if ((*filter_cur == MUON_nullchar) && (*testcase_cur == MUON_nullchar))
+                if ((*filter_cur == MUON_NULLCHAR) && (*testcase_cur == MUON_NULLCHAR))
                     return 0;
 
                 /* if the testcase has been exhausted, we don't have a match! */
-                if (*testcase_cur == MUON_nullchar)
+                if (*testcase_cur == MUON_NULLCHAR)
                     return 1;
             } else {
                 if (*testcase_cur != *filter_cur) {
@@ -904,7 +891,7 @@ MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase) 
             }
         }
 
-        if ((*filter_cur != MUON_nullchar) || ((*testcase_cur == MUON_nullchar) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
+        if ((*filter_cur != MUON_NULLCHAR) || ((*testcase_cur == MUON_NULLCHAR) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
             // We have a mismatch
             return 1;
         }

@@ -8,10 +8,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(MUON_TEST    "MuonInternalTests")
 
-add_executable(
-    ${MUON_TEST}
-    test.c
-)
+# add_executable(
+#     ${MUON_TEST}
+#     main.c 
+#     test.c
+#     test.cpp
+# )
 
-# The Muon INTERFACE library
-target_link_libraries(${MUON_TEST} ${PROJECT_NAME})
+# # The Muon INTERFACE library
+# target_link_libraries(${MUON_TEST} ${PROJECT_NAME})

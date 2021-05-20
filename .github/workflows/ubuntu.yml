@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  Clang:
+  GCC:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
           cd build/test/ ; dir;  ./MuonInternalTests
 
 
-  GCC:
+  Clang:
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -13,10 +13,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #ifndef MUON_TYPES_H
 #define MUON_TYPES_H
 
-#ifdef __cplusplus
-namespace Hazel {
-#endif
-
 // Base Types (similar to the Types in the Hazel Language) ==========================================
 #if defined(MUON_COMPILER_MSVC)
     #if _MSVC_VER < 1300 
@@ -53,6 +49,12 @@ namespace Hazel {
     typedef int32_t   MUON_Int32; 
     typedef uint64_t  MUON_UInt64; 
     typedef int64_t   MUON_Int64; 
+
+    #define STR(...) STR_(__VA_ARGS__)
+    #define STR_(...) # __VA_ARGS__
+
+    #pragma message "Value of MUON_UInt64 is " STR(MUON_UInt64)
+    #pragma message "Value of MUON_Int64 is " STR(MUON_iInt64)
 #endif // Hazel Basic Types 
 
 // <windows.h> declares a typedef float FLOAT for its internal usage. 
@@ -130,17 +132,17 @@ typedef MUON_UInt64     MUON_Ull;
 typedef MUON_Int64      MUON_Ll;
 
 // More Useful Types
-#define MUON_nullchar '\0' 
+#define MUON_NULLCHAR '\0' 
  
-#ifndef MUON_null 
+#ifndef MUON_NULL 
     #ifdef __cplusplus
         #if __cplusplus >= 201103L
-            #define MUON_null    MUON_nullptr 
+            #define MUON_NULL    nullptr 
         #else 
-            #define MUON_null    0
+            #define MUON_NULL    0
         #endif 
     #else 
-        #define MUON_null    ((void*)0)
+        #define MUON_NULL    ((void*)0)
     #endif // __cplusplus
 #endif 
 
@@ -151,6 +153,10 @@ typedef MUON_Int64      MUON_Ll;
     typedef MUON_Bool8 MUON_bool;
     static const MUON_bool MUON_false = 0;
     static const MUON_bool MUON_true  = 1;
+#else 
+    typedef bool MUON_bool;
+    static const bool MUON_false = false;
+    static const bool MUON_true = true;
 #endif 
 
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
@@ -173,10 +179,6 @@ typedef MUON_Int64      MUON_Ll;
 #else
     typedef  uintptr_t   MUON_UIntptr;
     typedef  intptr_t    MUON_Intptr;
-#endif
-
-#ifdef __cplusplus
-} // namespace Hazel
 #endif
 
 #endif // MUON_TYPES_H
