@@ -51,7 +51,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     typedef int64_t   MUON_Int64; 
 
     #define STR(...) STR_(__VA_ARGS__)
-    #define STR_(...) # __VA_ARGS__
+    #define STR_(...) #__VA_ARGS__
 
     #pragma message "Value of uint64_t is " \
         STR(uint64_t)
