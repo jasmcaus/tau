@@ -5,10 +5,10 @@
 #include <Misc.h>
 
 #ifdef _MSC_VER
-    // Disable warning about not inlining 'inline' functions.
+    // Disable warning about not inlining 'MUON_INLINE' functions.
     #pragma warning(disable : 4710)
     
-    // Disable warning about inlining functions that are not marked 'inline'.
+    // Disable warning about inlining functions that are not marked 'MUON_INLINE'.
     #pragma warning(disable : 4711)
 
     // No function prototype given: converting '()' to '(void)'
@@ -103,23 +103,23 @@
 #endif
 
 
-static MUON_UInt64 muon_stats_total_tests = 0;
-static MUON_UInt64 muon_stats_tests_ran = 0;
-static MUON_UInt64 muon_stats_tests_failed = 0;
-static MUON_UInt64 muon_stats_skipped_tests = 0; 
+MUON_STATIC MUON_UInt64 muon_stats_total_tests = 0;
+MUON_STATIC MUON_UInt64 muon_stats_tests_ran = 0;
+MUON_STATIC MUON_UInt64 muon_stats_tests_failed = 0;
+MUON_STATIC MUON_UInt64 muon_stats_skipped_tests = 0; 
 
 // Overridden in `muon_main` if the cmdline option `--no-color` is passed
-static int muon_should_colourize_output = 1;
-static int muon_disable_summary = 0; 
+MUON_STATIC int muon_should_colourize_output = 1;
+MUON_STATIC int muon_disable_summary = 0; 
 
 MUON_Ll* muon_stats_failed_testcases = MUON_null;
 MUON_Ll muon_stats_failed_testcases_length = 0;
 
-static char* muon_argv0_ = MUON_null;
-static const char* filter = MUON_null;
+MUON_STATIC char* muon_argv0_ = MUON_null;
+MUON_STATIC const char* filter = MUON_null;
 
 
-static int muon_timer_ = 1;
+MUON_STATIC int muon_timer_ = 1;
 // Timing --> use muon's version
 #if defined(_MSC_VER)
     // define MUON_USE_OLD_QPC before #include "muon.h" to use old QueryPerformanceCounter
@@ -185,7 +185,7 @@ static int muon_timer_ = 1;
 // and their difference will give you the time (in seconds). 
 // NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
 // (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
-static inline double muon_ns() {
+MUON_STATIC MUON_INLINE double muon_ns() {
 #ifdef MUON_WIN_
     LARGE_INTEGER counter;
     LARGE_INTEGER frequency;
@@ -215,7 +215,7 @@ static inline double muon_ns() {
 #endif
 }
 
-static void muon_timer_print_duration(double nanoseconds_duration) {
+MUON_STATIC void muon_timer_print_duration(double nanoseconds_duration) {
     MUON_UInt64 n; 
     int n_digits = 0; 
     n = (MUON_UInt64)nanoseconds_duration;
@@ -240,19 +240,19 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 
 // #if defined MUON_WIN_
 //     typedef LARGE_INTEGER muon_timer_type_;
-//     static LARGE_INTEGER muon_timer_freq_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
+//     MUON_STATIC LARGE_INTEGER muon_timer_freq_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_start_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_end_;
 
-//     static void muon_timer_init_(void) {
+//     MUON_STATIC void muon_timer_init_(void) {
 //         QueryPerformanceFrequency(&muon_timer_freq_);
 //     }
 
-//     static void muon_timer_get_time_(LARGE_INTEGER* ts) {
+//     MUON_STATIC void muon_timer_get_time_(LARGE_INTEGER* ts) {
 //         QueryPerformanceCounter(ts);
 //     }
 
-//     static double muon_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
+//     MUON_STATIC double muon_timer_diff_(LARGE_INTEGER start,  LARGE_INTEGER end) {
 //         double duration = (double)(end.QuadPart - start.QuadPart);
 //         duration /= (double)muon_timer_freq_.QuadPart;
 //         // printf("\nDURATION: %f\n", (double)muon_timer_freq_.QuadPart);
@@ -260,28 +260,28 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 //         return duration;
 //     }
 
-//     static void muon_timer_print_diff_(void) {
+//     MUON_STATIC void muon_timer_print_diff_(void) {
 //         printf("%.6lf secs", muon_timer_diff_(muon_test_timer_start_, muon_test_timer_end_));
 //     }
 
 // #elif defined MUON_HAS_POSIX_TIMER_
-//     static clockid_t muon_timer_id_;
+//     MUON_STATIC clockid_t muon_timer_id_;
 //     typedef struct timespec muon_timer_type_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_start_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_end_;
 
-//     static void muon_timer_init_() {
+//     MUON_STATIC void muon_timer_init_() {
 //         if(muon_timer_ == 1)
 //             muon_timer_id_ = CLOCK_MONOTONIC;
 //         else if(muon_timer_ == 2)
 //             muon_timer_id_ = CLOCK_PROCESS_CPUTIME_ID;
 //     }
 
-//     static void muon_timer_get_time_(struct timespec* ts) {
+//     MUON_STATIC void muon_timer_get_time_(struct timespec* ts) {
 //         clock_gettime(muon_timer_id_, ts);
 //     }
 
-//     static double muon_timer_diff_(struct timespec start, struct timespec end) {
+//     MUON_STATIC double muon_timer_diff_(struct timespec start, struct timespec end) {
 //         double endns;
 //         double startns;
 
@@ -296,28 +296,28 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 //         return ((endns - startns)/ 1e9);
 //     }
 
-//     static void muon_timer_print_diff_(){
+//     MUON_STATIC void muon_timer_print_diff_(){
 //         printf("%.6lf secs",
 //             muon_timer_diff_(muon_test_timer_start_, muon_test_timer_end_));
 //     }
 // #else
 //     typedef int muon_timer_type_;
-//     static muon_timer_type_ muon_test_timer_start_;
-//     static muon_timer_type_ muon_test_timer_end_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_start_;
+//     MUON_STATIC muon_timer_type_ muon_test_timer_end_;
 
 //     void muon_timer_init_(void) {}
 
-//     static void muon_timer_get_time_(int* ts) {
+//     MUON_STATIC void muon_timer_get_time_(int* ts) {
 //         (void) ts;
 //     }
 
-//     static double muon_timer_diff_(int start, int end) {
+//     MUON_STATIC double muon_timer_diff_(int start, int end) {
 //         (void) start;
 //         (void) end;
 //         return 0.0;
 //     }
 
-//     static void muon_timer_print_diff_(void) {}
+//     MUON_STATIC void muon_timer_print_diff_(void) {}
 // #endif
 
 // MUON_INITIALIZER
@@ -341,13 +341,13 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 
     #pragma section(".CRT$XCU", read)
     #define MUON_INITIALIZER(f)                                                   \
-    static void __cdecl f(void);                                                 \
+    MUON_STATIC void __cdecl f(void);                                                 \
     MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
     __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))            \
         MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
                                                             f##_)(void) = f;      \
     MUON_INITIALIZER_END_DISABLE_WARNINGS                                       \
-    static void __cdecl f(void)
+    MUON_STATIC void __cdecl f(void)
 #else
     #if defined(__linux__)
         #if defined(__clang__)
@@ -367,8 +367,8 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
     #endif
 
     #define MUON_INITIALIZER(f)                                                   \
-    static void f(void) __attribute__((constructor));                            \
-    static void f(void)
+    MUON_STATIC void f(void) __attribute__((constructor));                            \
+    MUON_STATIC void f(void)
 #endif // _MSC_VER
 
 #if defined(__cplusplus)
@@ -382,7 +382,7 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 // extern to the global state muon needs to execute
 MUON_EXTERN struct muon_state_s muon_state;
 
-static inline void* muon_realloc(void* const ptr, MUON_Ll new_size) {
+MUON_STATIC MUON_INLINE void* muon_realloc(void* const ptr, MUON_Ll new_size) {
   void* const new_ptr = realloc(ptr, new_size);
 
   if (MUON_NULL == new_ptr) {
@@ -406,7 +406,7 @@ struct muon_state_s {
 };
 
 #if defined(_MSC_VER)
-    #define MUON_WEAK     inline
+    #define MUON_WEAK     MUON_INLINE
 #else
     #define MUON_WEAK     __attribute__((weak))
 #endif
@@ -425,7 +425,7 @@ struct muon_state_s {
 #define MUON_COLOUR_GREEN_INTENSIVE_      4
 #define MUON_COLOUR_RED_INTENSIVE_        5
 
-static int MUON_ATTRIBUTE_(format (printf, 2, 3))
+MUON_STATIC int MUON_ATTRIBUTE_(format (printf, 2, 3))
 muon_coloured_printf_(int color, const char* fmt, ...) {
     va_list args;
     char buffer[256];
@@ -816,8 +816,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 #define TEST(TESTSUITE, TESTNAME)                                                       \
     MUON_EXTERN struct muon_state_s muon_state;                                         \
-    static void muon_run_##TESTSUITE##_##TESTNAME(int* muon_result);                    \
-    static void muon_##TESTSUITE##_##TESTNAME(int* muon_result, MUON_Ll muon_index) {   \
+    MUON_STATIC void muon_run_##TESTSUITE##_##TESTNAME(int* muon_result);                    \
+    MUON_STATIC void muon_##TESTSUITE##_##TESTNAME(int* muon_result, MUON_Ll muon_index) {   \
             (void)muon_index;                                                           \
             muon_run_##TESTSUITE##_##TESTNAME(muon_result);                             \
     }                                                                                   \
@@ -900,7 +900,7 @@ MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase) 
     return 0;
 }
 
-static inline FILE* muon_fopen(const char* filename, const char* mode) {
+MUON_STATIC MUON_INLINE FILE* muon_fopen(const char* filename, const char* mode) {
     #ifdef _MSC_VER
         FILE* file;
         if (0 == fopen_s(&file, filename, mode))
@@ -912,7 +912,7 @@ static inline FILE* muon_fopen(const char* filename, const char* mode) {
     #endif
 }
 
-static void muon_help_(void) {
+MUON_STATIC void muon_help_(void) {
         printf("Usage: %s [options] [test...]\n", muon_argv0_);
         printf("\n");
         printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
@@ -937,7 +937,7 @@ static void muon_help_(void) {
         printf("  --help              Display this help and exit\n");
 }
 
-static MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
+MUON_STATIC MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
     // Coloured output
 #ifdef MUON_UNIX_
     muon_should_colourize_output = isatty(STDOUT_FILENO);
@@ -1003,7 +1003,7 @@ static MUON_bool muon_cmdline_read(int argc, const char* const argv[]) {
 
 
 // Triggers and runs all unit tests
-static void muon_run_tests() {
+MUON_STATIC void muon_run_tests() {
     // Run tests
     for (MUON_Ll i = 0; i < muon_state.num_tests; i++) {
         int result = 0;
@@ -1053,8 +1053,8 @@ static void muon_run_tests() {
 }
 
 
-static inline int muon_main(int argc, const char* const argv[]);
-inline int muon_main(int argc, const char* const argv[]) {
+MUON_STATIC MUON_INLINE int muon_main(int argc, const char* const argv[]);
+MUON_INLINE int muon_main(int argc, const char* const argv[]) {
     muon_stats_total_tests = muon_state.num_tests;
     muon_argv0_ = argv[0];
     

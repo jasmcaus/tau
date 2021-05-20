@@ -19,16 +19,6 @@ namespace Hazel {
 #endif
 
 
-// Defines 
-#ifndef MUON_DEF 
-    #ifdef MUON_EXTERN
-        #define MUON_DEF extern
-    #else 
-        #define MUON_DEF static
-    #endif 
-#endif // MUON_DEF
-
-
 // Inline 
 #ifdef __cplusplus
     #if defined(_MSC_VER) && _MSC_VER <= 1800 
@@ -129,6 +119,14 @@ namespace Hazel {
 
 // Statics!
 // static means 3-4 different things in C/C++!!
+#ifndef MUON_EXTERN
+    #define MUON_EXTERN     extern
+#endif 
+
+#ifndef MUON_STATIC
+    #define MUON_STATIC     static
+#endif
+
 #ifndef MUON_GLOBAL
     #define MUON_GLOBAL       static // Global Variables
     #define MUON_INTERNAL     static // Internal Linkage
