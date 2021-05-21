@@ -80,9 +80,9 @@ if(NOT MSVC)
     endif()
 
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        string(APPEND CMAKE_C_FLAGS " -std=gnu++11")
+        string(APPEND CMAKE_CXX_FLAGS " -std=gnu++11")
     else()
-        string(APPEND CMAKE_C_FLAGS " -std=c++11")
+        string(APPEND CMAKE_CXX_FLAGS " -std=c++11")
     endif()
 
     # Optimizations
@@ -135,10 +135,12 @@ else()
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         string(APPEND CMAKE_C_FLAGS " /O2")
     endif()
-    # string(APPEND CMAKE_C_FLAGS " /std:c11")
+    string(APPEND CMAKE_C_FLAGS " /std:c11")
+    # string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
     string(APPEND CMAKE_C_FLAGS " /Wall")
     # string(APPEND CMAKE_C_FLAGS " /WX")  # Treats Linker Warnings as Errors
     
+
     # Ignore some MSVC warnings
     string(APPEND CMAKE_C_FLAGS " /wd4061")
     string(APPEND CMAKE_C_FLAGS " /wd4090")

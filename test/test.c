@@ -1,5 +1,14 @@
 #include "Muon/Muon.h"
-// MUON_MAIN()
+
+TEST(c, MemAlloc) {
+    void* mem;
+    
+    mem = malloc(5);
+    CHECK(mem != NULL, "Mem ideally should not be NULL");
+
+    mem = realloc(mem, 10);
+    CHECK(mem != NULL, "Mem ideally should not be NULL");
+}
 
 TEST(c, ForLoop) { 
     int count = 0;
@@ -86,10 +95,6 @@ TEST(c, CHECK_STRNEQ) {
 TEST(c, CHECK_STRNNE) { 
     CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); 
 }
-
-// 
-// ================================== C11 VERSION ==================================
-// 
 
 TEST(c11, REQUIRE_EQ) { 
     REQUIRE_EQ(1, 1); 
