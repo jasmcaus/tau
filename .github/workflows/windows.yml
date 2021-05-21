@@ -131,33 +131,6 @@ jobs:
         cd build/test/Release ; dir; ./MuonInternalTests
 
 
-  Clang:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-        build_type: [Release]
-        version: [10, 11]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Clang
-        run: |
-          curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}.0.0/LLVM-${{ matrix.version }}.0.0-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
-
-      - name: CMake
-        run: |
-          cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
-
-      - name: Build
-        run: |
-          cmake --build build --parallel 10
-
-      - name: Test
-        run: |
-          cd build/test/ ; dir; ./MuonInternalTests
-
-
   Clang-cl-11:
     runs-on: windows-latest
     strategy:
@@ -179,3 +152,30 @@ jobs:
       - name: Test
         run: |
           cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+
+  
+  # Clang:
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
+  #       build_type: [Release]
+  #       version: [10, 11]
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Install Clang
+  #       run: |
+  #         curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}.0.0/LLVM-${{ matrix.version }}.0.0-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
+
+  #     - name: CMake
+  #       run: |
+  #         cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+
+  #     - name: Build
+  #       run: |
+  #         cmake --build build --parallel 10
+
+  #     - name: Test
+  #       run: |
+  #         cd build/test/ ; dir; ./MuonInternalTests
