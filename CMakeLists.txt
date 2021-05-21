@@ -73,7 +73,6 @@ endif()
 # A (more or less comprehensive) list is here: https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html
 
 if(NOT MSVC)
-    message("----------------- [INFO] CMAKE_C_COMPILER_ID = ${CMAKE_C_COMPILER_ID}")
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         string(APPEND CMAKE_C_FLAGS " -std=gnu11")
     else()
@@ -93,7 +92,7 @@ if(NOT MSVC)
     
     string(APPEND CMAKE_C_FLAGS " -Wall")
     string(APPEND CMAKE_C_FLAGS " -Wextra")
-    # string(APPEND CMAKE_C_FLAGS " -Wno-unknown-pragmas")
+    string(APPEND CMAKE_C_FLAGS " -Wno-unknown-pragmas")
     string(APPEND CMAKE_C_FLAGS " -Wno-sign-compare")
     string(APPEND CMAKE_C_FLAGS " -Wno-unused-parameter")
     # string(APPEND CMAKE_C_FLAGS " -Wno-unused-variable")
@@ -130,7 +129,6 @@ if(NOT MSVC)
             string(APPEND CMAKE_C_FLAGS " -Werror")   
         endif()
     endif(WERROR)
-    message("----------------- [INFO] CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 # For MSVC 
 else()
     # Optimizations

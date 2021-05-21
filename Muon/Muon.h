@@ -41,7 +41,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #pragma warning(disable : 4820)
 
     #pragma warning(push, 1)
-#endif
+#endif // _MSC_VER
 
 #ifdef __clang__
     _Pragma("clang diagnostic push")                                             
@@ -70,48 +70,61 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #include <signal.h>
     #include <time.h>
 
-    #if defined CLOCK_PROCESS_CPUTIME_ID  &&  defined CLOCK_MONOTONIC
+    #if defined(CLOCK_PROCESS_CPUTIME_ID) && defined(CLOCK_MONOTONIC)
         #define MUON_HAS_POSIX_TIMER_    1
-    #endif
-#endif
+    #endif // CLOCK_PROCESS_CPUTIME_ID
+#endif // unix
 
 #if defined(_gnu_linux_) || defined(__linux__)
     #define MUON_LINUX_      1
     #include <fcntl.h>
     #include <sys/stat.h>
-#endif
+#endif // _gnu_linux_
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define MUON_WIN_        1
-     #pragma warning(push, 0)
+    #pragma warning(push, 0)
         #include <Windows.h>
         #include <io.h>
     #pragma warning(pop)
-#endif
+#endif // _WIN32
 
 #ifdef __cplusplus
     #include <exception>
-#endif
+#endif // __cplusplus
 
 #ifdef __has_include
     #if __has_include(<valgrind.h>)
         #include <valgrind.h>
-    #endif
-#endif
+    #endif // __has_include(<valgrind.h>)
+#endif // __has_include
 
-#if defined(__cplusplus)
+#ifdef __cplusplus
     #define MUON_C_FUNC extern "C"
+    #define MUON_EXTERN extern "C"
 #else
     #define MUON_C_FUNC
-#endif
+    #define MUON_EXTERN    extern
+#endif // __cplusplus
 
 // Enable the use of the non-standard keyword __attribute__ to silence warnings under some compilers
 #if defined(__GNUC__) || defined(__clang__)
     #define MUON_ATTRIBUTE_(attr)    __attribute__((attr))
 #else
     #define MUON_ATTRIBUTE_(attr)
-#endif
+#endif // __GNUC__
 
+#ifdef __cplusplus
+    // On C++, default to its polymorphism capabilities
+    #define MUON_OVERLOADABLE
+#elif defined(__clang__)
+    // If we're still in C, use the __attribute__ keyword for Clang
+    #define MUON_OVERLOADABLE   __attribute__((overloadable))
+#endif // __cplusplus
+
+// #ifdef __cplusplus
+//     extern "C" {
+// #endif // __cplusplus
 
 static MUON_UInt64 muon_stats_total_tests = 0;
 static MUON_UInt64 muon_stats_tests_ran = 0;
@@ -128,10 +141,12 @@ static const char* filter = MUON_NULL;
 static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
 static MUON_Ll muon_stats_failed_testcases_length = 0;
 
+// extern to the global state muon needs to execute
+MUON_EXTERN struct muon_state_s muon_state;
+
 #if defined(_MSC_VER)
-    // define MUON_USE_OLD_QPC before #include "muon.h" to use old QueryPerformanceCounter
     #ifndef MUON_USE_OLD_QPC
-        typedef LARGE_INTEGER muon_large_integer;
+        typedef LARGE_INTEGER MUON_LARGE_INTEGER;
     #else 
         //use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
         //on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
@@ -145,42 +160,42 @@ static MUON_Ll muon_stats_failed_testcases_length = 0;
             long HighPart;
         } u;
         Int64 QuadPart;
-        } muon_large_integer;
+        } MUON_LARGE_INTEGER;
 
         MUON_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
-            muon_large_integer *);
+            MUON_LARGE_INTEGER *);
         MUON_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
-            muon_large_integer *);
-    #endif
+            MUON_LARGE_INTEGER *);
+    #endif // MUON_USE_OLD_QPC
 
 #elif defined(__linux__)
+    /*
+    slightly obscure include here - we need to include glibc's features.h, but
+    we don't want to just include a header that might not be defined for other
+    c libraries like musl. Instead we include limits.h, which we know on all
+    glibc distributions includes features.h
+    */
+    #include <limits.h>
 
-/*
-   slightly obscure include here - we need to include glibc's features.h, but
-   we don't want to just include a header that might not be defined for other
-   c libraries like musl. Instead we include limits.h, which we know on all
-   glibc distributions includes features.h
-*/
-#include <limits.h>
+    #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
+        #include <time.h>
 
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
-    #include <time.h>
+        #if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
+            /* glibc is version 2.17 or above, so we can just use clock_gettime */
+            #define MUON_USE_CLOCKGETTIME
+        #else
+            #include <sys/syscall.h>
+            #include <unistd.h>
+        #endif // __GLIBC__
 
-    #if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
-        /* glibc is version 2.17 or above, so we can just use clock_gettime */
+    #else // Other libc implementations
+        #include <time.h>
         #define MUON_USE_CLOCKGETTIME
-    #else
-        #include <sys/syscall.h>
-        #include <unistd.h>
-    #endif
-#else // Other libc implementations
-    #include <time.h>
-    #define MUON_USE_CLOCKGETTIME
-#endif
+    #endif // __GLIBC__
 
 #elif defined(__APPLE__)
     #include <mach/mach_time.h>
-#endif
+#endif // _MSC_VER
 
 // Muon Timer 
 // This method is useful in timing the execution of an Muon Test Suite
@@ -188,7 +203,7 @@ static MUON_Ll muon_stats_failed_testcases_length = 0;
 // and their difference will give you the time (in seconds). 
 // NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
 // (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
-static inline double muon_ns() {
+static inline double muon_clock() {
 #ifdef MUON_WIN_
     LARGE_INTEGER counter;
     LARGE_INTEGER frequency;
@@ -215,7 +230,7 @@ static inline double muon_ns() {
 
 #elif __APPLE__
     return MUON_CAST(double, mach_absolute_time());
-#endif
+#endif // MUON_WIN_
 }
 
 static void muon_timer_print_duration(double nanoseconds_duration) {
@@ -247,26 +262,25 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
         #define MUON_SYMBOL_PREFIX
     #else
         #define MUON_SYMBOL_PREFIX "_"
-    #endif
+    #endif // _WIN64
 
     #if defined(__clang__)
         #define MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-        _Pragma("clang diagnostic push")                                             \
+            _Pragma("clang diagnostic push")                                             \
             _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
 
         #define MUON_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
     #else
         #define MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS
         #define MUON_INITIALIZER_END_DISABLE_WARNINGS
-    #endif
+    #endif // __clang__
 
     #pragma section(".CRT$XCU", read)
     #define MUON_INITIALIZER(f)                                                   \
     static void __cdecl f(void);                                                 \
     MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
-    __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))            \
-        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl *             \
-                                                            f##_)(void) = f;      \
+        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))            \
+        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f;      \
     MUON_INITIALIZER_END_DISABLE_WARNINGS                                       \
     static void __cdecl f(void)
 #else
@@ -275,40 +289,32 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
             #if __has_warning("-Wreserved-id-macro")
                 #pragma clang diagnostic push
                 #pragma clang diagnostic ignored "-Wreserved-id-macro"
-            #endif
-        #endif
+            #endif // __has_warning("-Wreserved-id-macro")
+        #endif // __clang__
 
         #define __STDC_FORMAT_MACROS 1
 
         #if defined(__clang__)
             #if __has_warning("-Wreserved-id-macro")
                 #pragma clang diagnostic pop
-            #endif
-        #endif
-    #endif
+            #endif // __has_warning("-Wreserved-id-macro")
+        #endif // __clang__
+    #endif // __linux__
 
     #define MUON_INITIALIZER(f)                                                   \
     static void f(void) __attribute__((constructor));                            \
     static void f(void)
 #endif // _MSC_VER
 
-#if defined(__cplusplus)
-    #define MUON_EXTERN    extern "C"
-#else
-    #define MUON_EXTERN    extern
-#endif
-
-// extern to the global state muon needs to execute
-MUON_EXTERN struct muon_state_s muon_state;
 
 static inline void* muon_realloc(void* const ptr, MUON_Ll new_size) {
-  void* const new_ptr = realloc(ptr, new_size);
+    void* const new_ptr = realloc(ptr, new_size);
 
-  if (MUON_NULL == new_ptr) {
-    free(new_ptr);
-  }
+    if (MUON_NULL == new_ptr) {
+        free(new_ptr);
+    }
 
-  return new_ptr;
+    return new_ptr;
 }
 
 typedef void (*muon_testcase_t)(int* , MUON_Ll);
@@ -326,15 +332,11 @@ struct muon_state_s {
 
 #if defined(_MSC_VER)
     #define MUON_WEAK     inline
-#else
-    #define MUON_WEAK     __attribute__((weak))
-#endif
-
-#if defined(_MSC_VER)
     #define MUON_UNUSED
 #else
+    #define MUON_WEAK     __attribute__((weak))
     #define MUON_UNUSED   __attribute__((unused))
-#endif
+#endif // _MSC_VER
 
 
 #define MUON_COLOUR_DEFAULT_              0
@@ -344,7 +346,11 @@ struct muon_state_s {
 #define MUON_COLOUR_GREEN_INTENSIVE_      4
 #define MUON_COLOUR_RED_INTENSIVE_        5
 
-static int MUON_ATTRIBUTE_(format (printf, 2, 3))
+// MUON_ATTRIBUTE_(format (printf, 2, 3))
+// MUON_ATTRIBUTE_(format (printf, 2, 3))
+MUON_EXTERN int 
+muon_coloured_printf_(int color, const char* fmt, ...);
+MUON_EXTERN int 
 muon_coloured_printf_(int color, const char* fmt, ...) {
     va_list args;
     char buffer[256];
@@ -359,7 +365,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         return printf("%s", buffer);
     }
 
-#if defined MUON_UNIX_
+#ifdef MUON_UNIX_
     {
         const char* col_str;
         switch(color) {
@@ -375,7 +381,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         printf("\033[0m");
         return n;
     }
-#elif defined MUON_WIN_
+#elif defined(MUON_WIN_)
     {
         HANDLE h;
         CONSOLE_SCREEN_BUFFER_INFO info;
@@ -401,30 +407,22 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #else
     n = printf("%s", buffer);
     return n;
-#endif
+#endif // MUON_UNIX_
 }
 
 
-#define muon_printf(...)                            \
+#define MUON_PRINTF(...)                            \
     if (muon_state.foutput)                         \
         fprintf(muon_state.foutput, __VA_ARGS__);   \
     printf(__VA_ARGS__)
 
 
 #ifdef _MSC_VER
-    #define MUON_SNPRINTF(BUFFER, N, ...) _snprintf_s(BUFFER, N, N, __VA_ARGS__)
+    #define MUON_SNPRINTF(BUFFER, N, ...)  _snprintf_s(BUFFER, N, N, __VA_ARGS__)
 #else
-    #define MUON_SNPRINTF(...) snprintf(__VA_ARGS__)
-#endif
+    #define MUON_SNPRINTF(...)              snprintf(__VA_ARGS__)
+#endif // _MSC_VER
 
-
-#ifdef __cplusplus
-    /* if we are using c++ we can use overloaded methods (its in the language) */
-    #define MUON_OVERLOADABLE
-#elif defined(__clang__)
-    /* otherwise, if we are using clang with c - use the overloadable attribute */
-    #define MUON_OVERLOADABLE __attribute__((overloadable))
-#endif
 
 #ifdef MUON_OVERLOADABLE
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(float f);
@@ -436,58 +434,27 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long unsigned int i);
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(const void* p);
 
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(float f) {
-        muon_printf("%f", MUON_CAST(double, f));
-    }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(float f) { MUON_PRINTF("%f", MUON_CAST(double, f)); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(double d) { MUON_PRINTF("%f", d); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long double d) { MUON_PRINTF("%Lf", d); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(int i) { MUON_PRINTF("%d", i); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(unsigned int i) { MUON_PRINTF("%u", i); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long int i) { MUON_PRINTF("%ld", i); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long unsigned int i) { MUON_PRINTF("%lu", i); }
+    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(const void* p) { MUON_PRINTF("%p", p); }
 
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(double d) {
-        muon_printf("%f", d);
-    }
-
-    
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long double d) {
-        muon_printf("%Lf", d);
-    }
-
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(int i) {
-        muon_printf("%d", i);
-    }
-
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(unsigned int i) {
-        muon_printf("%u", i);
-    }
-
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long int i) {
-        muon_printf("%ld", i);
-    }
-
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long unsigned int i) {
-        muon_printf("%lu", i);
-    }
-
-    MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(const void* p) {
-        muon_printf("%p", p);
-    }
-
-    /*
-    long long is a c++11 extension
-    */
+    // long long is in C++ only
     #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) || defined(__cplusplus) && (__cplusplus >= 201103L)
         MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long long int i);
         MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long long unsigned int i);
-        
-        MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long long int i) {
-            muon_printf("%lld", i);
-        }
 
-        MUON_WEAK MUON_OVERLOADABLE void
-        muon_type_printer(long long unsigned int i) {
-            muon_printf("%llu", i);
-        }
-    #endif
+        MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long long int i) { MUON_PRINTF("%lld", i); }
+        MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long long unsigned int i) { MUON_PRINTF("%llu", i); }
+    #endif // __STDC_VERSION__
+
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
     #define muon_type_printer(val)                                    \
-        muon_printf(_Generic((val),                                   \
+        MUON_PRINTF(_Generic((val),                                   \
                                 signed char : "%d",                   \
                                 unsigned char : "%u",                 \
                                 short : "%d",                         \
@@ -506,14 +473,12 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
                                 default : "undef")),                  \
                     (val))
 #else
-    /*
-    we don't have the ability to print the values we got, so we create a macro
-    to tell our users we can't do anything fancy
-    */
+    // If we're here, this means that the Compiler does not support overloadable methods
     #define muon_type_printer(...) \
-        muon_printf("Error: Your compiler does not support overloadable methods.")                 \
-        muon_printf("If you think this was an error, please file an issue on Muon's Github repo.")
+        MUON_PRINTF("Error: Your compiler does not support overloadable methods.")                 \
+        MUON_PRINTF("If you think this was an error, please file an issue on Muon's Github repo.")
 #endif // MUON_OVERLOADABLE
+
 
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
     #define MUON_AUTO(x) auto
@@ -529,10 +494,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         // clang-format on
     #else
         #define MUON_AUTO(x)   __typeof__(x + 0)
-    #endif
+    #endif // __clang__
 #else
     #define MUON_AUTO(x)       typeof(x + 0)
-#endif
+#endif // __cplusplus
 
 
 #if defined(__clang__) || defined(__GNUC__)
@@ -542,26 +507,26 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
             MUON_AUTO(y) yEval = (y);                                         \
                                                                               \
             if (!((xEval)cond(yEval))) {                                      \
-                muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                muon_printf("  Expected : ");                                 \
+                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("  Expected : ");                                 \
                 muon_type_printer(xEval);                                     \
-                muon_printf("\n");                                            \
-                muon_printf("    Actual : ");                                 \
+                MUON_PRINTF("\n");                                            \
+                MUON_PRINTF("    Actual : ");                                 \
                 muon_type_printer(yEval);                                     \
-                muon_printf("\n");                                            \
+                MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
             }                                                                 \
         }                                                                     \
         while (0)
 
-// muon_type_printer does not work on other compilers
+// muon_type_printer does not work on some compilers
 #else
     #define __MUONCHECK__(x, y, cond)                                               \
         do {                                                                  \
             if (!((x)cond(y))) {                                              \
-                muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                muon_printf("    Expected vs Actual not displayed\n");        \
-                muon_printf("    due to compiler limitations.\n");            \
+                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("    Expected vs Actual not displayed\n");        \
+                MUON_PRINTF("    due to compiler limitations.\n");            \
                 *muon_result = 1;                                             \
             }                                                                 \
         }                                                                     \
@@ -571,7 +536,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK(cond, ...)                                                         \
     do {                                                                         \
         if (!(cond)) {                                                           \
-            muon_printf("%s:%u: ", __FILE__, __LINE__);                          \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                          \
             if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
                 muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "Failure");    \
             else                                                                 \
@@ -599,9 +564,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STREQ(x, y)                                                     \
     do {                                                                      \
         if (strcmp(x, y) != 0) {                                              \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%s\"\n", x);                          \
-            muon_printf("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
+            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
             *muon_result = 1;                                                 \
         }                                                                     \
     }                                                                         \
@@ -611,9 +576,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STRNEQ(x, y)                                                    \
     do {                                                                      \
         if (strcmp(x, y) == 0) {                                              \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%s\"\n", x);                          \
-            muon_printf("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
+            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
             *muon_result = 1;                                                 \
         }                                                                     \
   }                                                                           \
@@ -623,9 +588,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STRNNEQ(x, y, n)                                                \
     do {                                                                      \
         if (strncmp(x, y, n) == 0) {                                          \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
-            muon_printf("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
+            MUON_PRINTF("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
             *muon_result = 1;                                                 \
         }                                                                     \
     }                                                                         \
@@ -643,13 +608,13 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
             MUON_AUTO(x) xEval = (x);                                         \
             MUON_AUTO(y) yEval = (y);                                         \
             if (!((xEval)cond(yEval))) {                                      \
-                muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                muon_printf("  Expected : ");                                 \
+                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("  Expected : ");                                 \
                 muon_type_printer(xEval);                                     \
-                muon_printf("\n");                                            \
-                muon_printf("    Actual : ");                                 \
+                MUON_PRINTF("\n");                                            \
+                MUON_PRINTF("    Actual : ");                                 \
                 muon_type_printer(yEval);                                     \
-                muon_printf("\n");                                            \
+                MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
                 return;                                                       \
             }                                                                 \
@@ -660,7 +625,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     #define __MUONREQUIRE__(x, y, cond)                                       \
         do {                                                                  \
             if (!((x)cond(y))) {                                              \
-                muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("    Expected vs Actual not displayed\n");        \
+                MUON_PRINTF("    due to compiler limitations.\n");            \
                 *muon_result = 1;                                             \
                 return;                                                       \
             }                                                                 \
@@ -680,9 +647,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STREQ(x, y)                                                   \
     do {                                                                      \
         if (strcmp(x, y) != 0) {                                              \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%s\"\n", x);                          \
-            muon_printf("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
+            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -692,9 +659,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STRNEQ(x, y)                                                  \
     do {                                                                      \
         if (strcmp(x, y) == 0) {                                              \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%s\"\n", x);                          \
-            muon_printf("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
+            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -705,9 +672,9 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STRNNEQ(x, y, n)                                              \
     do {                                                                      \
         if (strncmp(x, y, n) == 0) {                                          \
-            muon_printf("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            muon_printf("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
-            muon_printf("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
+            MUON_PRINTF("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -815,7 +782,7 @@ static inline FILE* muon_fopen(const char* filename, const char* mode) {
             return MUON_NULL;
     #else
         return fopen(filename, mode);
-    #endif
+    #endif // _MSC_VER
 }
 
 static void muon_help_(void) {
@@ -852,7 +819,7 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
         muon_should_colourize_output = isatty(_fileno(stdout));
     #else
         muon_should_colourize_output = _isatty(_fileno(stdout));
-    #endif
+    #endif // _BORLANDC_
 #else 
     muon_should_colourize_output = isatty(STDOUT_FILENO);
 #endif // MUON_UNIX_
@@ -885,7 +852,7 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
         // List tests
         else if(strncmp(argv[i], list_str, strlen(list_str)) == 0) {
             for (i = 0; i < muon_state.num_tests; i++)
-                muon_printf("%s\n", muon_state.tests[i].name);
+                MUON_PRINTF("%s\n", muon_state.tests[i].name);
         }
 
         // Disable colouring
@@ -937,13 +904,13 @@ static void muon_run_tests() {
             fprintf(muon_state.foutput, "<testcase name=\"%s\">", muon_state.tests[i].name);
 
         // Start the timer
-        double start = muon_ns();
+        double start = muon_clock();
 
         // The actual test
         muon_state.tests[i].func(&result, muon_state.tests[i].index);
 
         // Stop the timer
-        double duration = muon_ns() - start;
+        double duration = muon_clock() - start;
     
         if (muon_state.foutput)
             fprintf(muon_state.foutput, "</testcase>\n");
@@ -978,7 +945,7 @@ inline int muon_main(int argc, char** argv) {
     muon_argv0_ = argv[0];
     
     // Start the entire Test Session timer
-    double start = muon_ns();
+    double start = muon_clock();
 
     MUON_bool was_cmdline_read_successful = muon_cmdline_read(argc, argv);
     if(!was_cmdline_read_successful) 
@@ -1009,7 +976,7 @@ inline int muon_main(int argc, char** argv) {
     muon_run_tests();
 
     // End the entire Test Session timer
-    double duration = muon_ns() - start;
+    double duration = muon_clock() - start;
 
     // Write a Summary
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " tests\n", muon_stats_tests_ran - muon_stats_tests_failed);
@@ -1020,6 +987,7 @@ inline int muon_main(int argc, char** argv) {
 
         printf("   Total unit tests:      %" MUON_PRIu64 "\n", muon_stats_total_tests);
         printf("   Total tests run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
+        printf("%s", "%" MUON_PRIu64);
         printf("   Total tests skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
         printf("   Total tests failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
     }
@@ -1051,7 +1019,7 @@ inline int muon_main(int argc, char** argv) {
     /* Define the global struct that will hold the data we need to run Muon. */ \
     struct muon_state_s muon_state = {0, 0, 0};                                 \
                                                                                 \
-    int main(int argc, char** argv) {                              \
+    int main(int argc, char** argv) {                                           \
         return muon_main(argc, argv);                                           \
     }
 
@@ -1062,5 +1030,9 @@ inline int muon_main(int argc, char** argv) {
 #ifdef _MSC_VER
     #pragma warning(pop)
 #endif // _MSC_VER
+
+// #ifdef __cplusplus
+// } // extern "C"
+// #endif
 
 #endif /* MUON_TEST_H_ */

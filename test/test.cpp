@@ -167,3 +167,5 @@ static const int data[4] = {42, 13, 6, -53};
 TEST(cpp11, Array) { 
     CHECK_NE(data, data + 1); 
 }
+
+MUON_MAIN()
