@@ -17,8 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [x64, x86]
-        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-        build_type: [Release]
+        build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
 
     steps:
       - uses: actions/checkout@v2
@@ -46,8 +45,7 @@ jobs:
     runs-on: windows-2016
     strategy:
       matrix:
-        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-        build_type: [Release]
+        build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
         architecture: [Win32, x64]
 
     steps:
@@ -94,8 +92,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-        build_type: [Release]
+        build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
         architecture: [Win32, x64]
 
     steps:
@@ -135,8 +132,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-        build_type: [Release]
+        build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
         architecture: [Win32, x64]
 
     steps:
@@ -158,8 +154,7 @@ jobs:
   #   runs-on: windows-latest
   #   strategy:
   #     matrix:
-  #       # build_type: [Debug, RelWithDebInfo, MinSizeRel, Release] 
-  #       build_type: [Release]
+  #       build_type: [Debug, RelWithDebInfo, MinSizeRel, Release]
   #       version: [10, 11]
 
   #   steps:
