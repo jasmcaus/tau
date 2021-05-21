@@ -103,20 +103,12 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #else
     // Avoid spurious trailing ‘%’ in format error
 	// See: https://stackoverflow.com/questions/8132399/how-to-printf-uint64-t-fails-with-spurious-trailing-in-format
-	#define ___STDC_FORMAT_MACROS
+	#define __STDC_FORMAT_MACROS
     #include <inttypes.h>
 
     #define MUON_PRId64 PRId64
     #define MUON_PRIu64 PRIu64
 #endif
-
-#define VALUE_TO_STRING(x) #x
-#define VALUE(x) VALUE_TO_STRING(x)
-#define VAR_NAME_VALUE(var) #var "="  VALUE(var)
-
-/* Some example here */
-#pragma message(VAR_NAME_VALUE(PRIu64))
-
 
 // #ifdef __clang__
 //     #define MUON_PRId64     "lld"

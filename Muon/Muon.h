@@ -346,11 +346,9 @@ struct muon_state_s {
 #define MUON_COLOUR_GREEN_INTENSIVE_      4
 #define MUON_COLOUR_RED_INTENSIVE_        5
 
-// MUON_ATTRIBUTE_(format (printf, 2, 3))
-// MUON_ATTRIBUTE_(format (printf, 2, 3))
-MUON_EXTERN int 
+static int MUON_ATTRIBUTE_(format (printf, 2, 3))
 muon_coloured_printf_(int color, const char* fmt, ...);
-MUON_EXTERN int 
+static int MUON_ATTRIBUTE_(format (printf, 2, 3))
 muon_coloured_printf_(int color, const char* fmt, ...) {
     va_list args;
     char buffer[256];
@@ -935,13 +933,13 @@ static void muon_run_tests() {
     }
 
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
+    muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muon_stats_tests_ran);
 }
 
 
 static inline int muon_main(int argc, char** argv);
 inline int muon_main(int argc, char** argv) {
-    muon_stats_total_tests = muon_state.num_tests;
+    muon_stats_total_tests = MUON_CAST(MUON_UInt64, muon_state.num_tests);
     muon_argv0_ = argv[0];
     
     // Start the entire Test Session timer
@@ -958,7 +956,7 @@ inline int muon_main(int argc, char** argv) {
 
     muon_stats_tests_ran = muon_stats_total_tests - muon_stats_skipped_tests;
 
-    // Begin tests
+    // Begin tests`
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
     muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
 
@@ -1002,9 +1000,10 @@ inline int muon_main(int argc, char** argv) {
             muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "  [ FAILED ] %s\n", muon_state.tests[muon_stats_failed_testcases[i]].name);
         }
     } else {
+        MUON_UInt64 total_tests_passed = muon_stats_tests_ran - muon_stats_tests_failed;
         muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" MUON_PRIu64 " tests passed in ", muon_stats_tests_ran - muon_stats_tests_failed);
-        muon_timer_print_duration(duration);       
+        printf("%" MUON_PRIu64 " tests passed in ", total_tests_passed);
+        muon_timer_print_duration(duration);
         printf("\n");
     }
 
