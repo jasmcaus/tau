@@ -56,8 +56,8 @@ TEST(c, REQUIRE_STRNNE) {
     REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); 
 }
 
-TEST(c, HelloWorld) { 
-    CHECK_EQ(4, 1); 
+TEST(c, CHECK_EQ1) { 
+    CHECK_EQ(345, 345); 
 }
 
 TEST(c, CHECK_NE) { 
@@ -130,7 +130,7 @@ TEST(c11, REQUIRE_STRNE) {
     REQUIRE_STRNEQ("foo", "bar"); 
 }
 
-TEST(c11, CHECK_EQ) { 
+TEST(c11, CHECK_EQ2) { 
     CHECK_EQ(1, 1); 
 }
 
