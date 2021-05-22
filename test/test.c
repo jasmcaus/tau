@@ -15,7 +15,7 @@ TEST(c, ForLoop) {
     for(int i = 0; i<10000000; i++) {
         count ++;
     }
-    REQUIRE_EQ(count, 10000000); 
+    REQUIRE_NE(count, 10000000); 
 }
 
 TEST(c, CHECK) { 
