@@ -23,11 +23,5 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_compile_options(
-    ${MUON_TEST} 
-    PRIVATE
-    "/P \"F:/Documents/Dev/Github/Muon/compileroutput.txt\""
-)
-
 # The Muon INTERFACE library
 target_link_libraries(${MUON_TEST} ${PROJECT_NAME})
