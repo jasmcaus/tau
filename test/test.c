@@ -57,7 +57,7 @@ TEST(c, REQUIRE_STRNNE) {
 }
 
 TEST(c, HelloWorld) { 
-    CHECK_EQ(1, 1); 
+    CHECK_EQ(4, 1); 
 }
 
 TEST(c, CHECK_NE) { 

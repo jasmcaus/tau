@@ -180,8 +180,8 @@ MUON_EXTERN struct muon_state_s muon_state;
     #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
         #include <time.h>
 
-        #if ((2 < __GLIBC__) || ((2 == __GLIBC__) && (17 <= __GLIBC_MINOR__)))
-            /* glibc is version 2.17 or above, so we can just use clock_gettime */
+        #if ((__GLIBC__ > 2) || ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 17)))
+            // glibc is version 2.17 or above, so we can just use clock_gettime
             #define MUON_USE_CLOCKGETTIME
         #else
             #include <sys/syscall.h>
@@ -266,7 +266,7 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
 
     #if defined(__clang__)
         #define MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-            _Pragma("clang diagnostic push")                                             \
+            _Pragma("clang diagnostic push")                                          \
             _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
 
         #define MUON_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
@@ -276,12 +276,12 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
     #endif // __clang__
 
     #pragma section(".CRT$XCU", read)
-    #define MUON_INITIALIZER(f)                                                   \
-    static void __cdecl f(void);                                                 \
-    MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                                     \
-        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))            \
-        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f;      \
-    MUON_INITIALIZER_END_DISABLE_WARNINGS                                       \
+    #define MUON_INITIALIZER(f)                                                      \
+    static void __cdecl f(void);                                                     \
+    MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                                          \
+        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))             \
+        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f; \
+    MUON_INITIALIZER_END_DISABLE_WARNINGS                                            \
     static void __cdecl f(void)
 #else
     #if defined(__linux__)
@@ -301,8 +301,8 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
         #endif // __clang__
     #endif // __linux__
 
-    #define MUON_INITIALIZER(f)                                                   \
-    static void f(void) __attribute__((constructor));                            \
+    #define MUON_INITIALIZER(f)                         \
+    static void f(void) __attribute__((constructor));   \
     static void f(void)
 #endif // _MSC_VER
 
@@ -389,12 +389,13 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         GetConsoleScreenBufferInfo(h, &info);
 
         switch(color) {
-            case MUON_COLOUR_GREEN_:              attr = FOREGROUND_GREEN; break;
-            case MUON_COLOUR_RED_:                attr = FOREGROUND_RED; break;
-            case MUON_COLOUR_GREEN_INTENSIVE_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
-            case MUON_COLOUR_RED_INTENSIVE_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            case MUON_COLOUR_DEFAULT_INTENSIVE_:  attr = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            default:                              attr = 0; break;
+            case MUON_COLOUR_GREEN_: attr = FOREGROUND_GREEN; break;
+            case MUON_COLOUR_RED_: attr = FOREGROUND_RED; break;
+            case MUON_COLOUR_GREEN_INTENSIVE_: attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_RED_INTENSIVE_: attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_DEFAULT_INTENSIVE_: attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
+                                                        FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            default: attr = 0; break;
         }
         if(attr != 0)
             SetConsoleTextAttribute(h, attr);
@@ -423,6 +424,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 
 #ifdef MUON_OVERLOADABLE
+    #ifndef MUON_CAN_USE_OVERLOADABLES
+        #define MUON_CAN_USE_OVERLOADABLES
+    #endif // MUON_CAN_USE_OVERLOADABLES
+
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(float f);
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(double d);
     MUON_WEAK MUON_OVERLOADABLE void muon_type_printer(long double d);
@@ -451,6 +456,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     #endif // __STDC_VERSION__
 
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+    #ifndef MUON_CAN_USE_OVERLOADABLES
+        #define MUON_CAN_USE_OVERLOADABLES
+    #endif // MUON_CAN_USE_OVERLOADABLES
+    
     #define muon_type_printer(val)                                    \
         MUON_PRINTF(_Generic((val),                                   \
                                 signed char : "%d",                   \
@@ -477,7 +486,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         MUON_PRINTF("If you think this was an error, please file an issue on Muon's Github repo.")
 #endif // MUON_OVERLOADABLE
 
-
+/*
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
     #define MUON_AUTO(x) auto
 #elif !defined(__cplusplus)
@@ -490,27 +499,33 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
             __auto_type                                                          \
             _Pragma("clang diagnostic pop")
         // clang-format on
+    #elif defined(_MSC_VER)
+        #define MUON_AUTO(X)
     #else
         #define MUON_AUTO(x)   __typeof__(x + 0)
     #endif // __clang__
 #else
     #define MUON_AUTO(x)       typeof(x + 0)
 #endif // __cplusplus
+*/
 
-
-#if defined(__clang__) || defined(__GNUC__)
-    #define __MUONCHECK__(x, y, cond)                                         \
+// condFail is the string representation of the opposite of the truthy value of `cond`
+// For example, if `cond` is "!=", then `condFail` will be `==`
+#if !defined(MUON_CAN_USE_OVERLOADABLES)
+    #define __MUONCHECK__(actual, expected, cond, condFail)                   \
         do {                                                                  \
-            MUON_AUTO(x) xEval = (x);                                         \
-            MUON_AUTO(y) yEval = (y);                                         \
-                                                                              \
-            if (!((xEval)cond(yEval))) {                                      \
+            if (!((actual)cond(expected))) {                                  \
                 MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
                 MUON_PRINTF("  Expected : ");                                 \
-                muon_type_printer(xEval);                                     \
+                muon_type_printer(actual);                                    \
+                printf(" %s ", #cond);                                        \
+                muon_type_printer(expected);                                  \
                 MUON_PRINTF("\n");                                            \
+                                                                              \
                 MUON_PRINTF("    Actual : ");                                 \
-                muon_type_printer(yEval);                                     \
+                muon_type_printer(actual);                                    \
+                printf(" %s ", #condFail);                                    \
+                muon_type_printer(expected);                                  \
                 MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
             }                                                                 \
@@ -519,17 +534,28 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 // muon_type_printer does not work on some compilers
 #else
-    #define __MUONCHECK__(x, y, cond)                                               \
+    #define __MUONCHECK__(actual, expected, cond, condFail)                   \
         do {                                                                  \
-            if (!((x)cond(y))) {                                              \
+            if (!((actual)cond(expected))) {                                  \
                 MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                MUON_PRINTF("    Expected vs Actual not displayed\n");        \
-                MUON_PRINTF("    due to compiler limitations.\n");            \
+                /* MUON_PRINTF("    Expected vs Actual not displayed\n");   */\
+                /* MUON_PRINTF("    due to compiler limitations.\n");       */\
+                MUON_PRINTF("  Expected : ");                                 \
+                printf(#actual);                                              \
+                printf(" %s ", #cond);                                        \
+                printf(#expected);                                            \
+                MUON_PRINTF("\n");                                            \
+                                                                              \
+                MUON_PRINTF("    Actual : ");                                 \
+                printf(#actual);                                              \
+                printf(" %s ", #condFail);                                    \
+                printf(#expected);                                            \
+                MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
             }                                                                 \
         }                                                                     \
         while (0)
-#endif
+#endif // MUON_CAN_USE_OVERLOADABLES
 
 #define CHECK(cond, ...)                                                         \
     do {                                                                         \
@@ -550,48 +576,50 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 //            Check Macros
 // #########################################
 //
-#define CHECK_EQ(x, y)     __MUONCHECK__(x, y, ==)
-#define CHECK_NE(x, y)     __MUONCHECK__(x, y, !=)
-#define CHECK_LT(x, y)     __MUONCHECK__(x, y, <)
-#define CHECK_LE(x, y)     __MUONCHECK__(x, y, <=)
-#define CHECK_GT(x, y)     __MUONCHECK__(x, y, >)
-#define CHECK_GE(x, y)     __MUONCHECK__(x, y, >=)
+#define CHECK_EQ(actual, expected)     __MUONCHECK__(actual, expected, ==, !=)
+#define CHECK_NE(actual, expected)     __MUONCHECK__(actual, expected, !=, ==)
+#define CHECK_LT(actual, expected)     __MUONCHECK__(actual, expected, <,  >)
+#define CHECK_LE(actual, expected)     __MUONCHECK__(actual, expected, <=, >=)
+#define CHECK_GT(actual, expected)     __MUONCHECK__(actual, expected, >,  <)
+#define CHECK_GE(actual, expected)     __MUONCHECK__(actual, expected, >=, <=)
 
 
 // String Macros
-#define CHECK_STREQ(x, y)                                                     \
+#define CHECK_STREQ(actual, expected)                                         \
     do {                                                                      \
-        if (strcmp(x, y) != 0) {                                              \
+        if (strcmp(actual, expected) != 0) {                                  \
             MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
-            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("  Expected : \"%s\" == \"%s\"\n", expected, actual); \
+            MUON_PRINTF("    Actual : \"%s\" != \"%s\"\n", expected, actual); \
             *muon_result = 1;                                                 \
         }                                                                     \
     }                                                                         \
     while (0)                                                                    
 
 
-#define CHECK_STRNEQ(x, y)                                                    \
+#define CHECK_STRNEQ(actual, expected)                                        \
     do {                                                                      \
-        if (strcmp(x, y) == 0) {                                              \
+        if (strcmp(actual, expected) == 0) {                                  \
             MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
-            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("  Expected : \"%s\" != \"%s\"\n", expected, actual); \
+            MUON_PRINTF("    Actual : \"%s\" == \"%s\"\n", expected, actual); \
             *muon_result = 1;                                                 \
         }                                                                     \
   }                                                                           \
   while (0)                                                                    
 
 
-#define CHECK_STRNNEQ(x, y, n)                                                \
-    do {                                                                      \
-        if (strncmp(x, y, n) == 0) {                                          \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
-            MUON_PRINTF("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
-            *muon_result = 1;                                                 \
-        }                                                                     \
-    }                                                                         \
+#define CHECK_STRNNEQ(actual, expected, n)                                                   \
+    do {                                                                                     \
+        if (strncmp(actual, expected, n) == 0) {                                             \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                             \
+            MUON_PRINTF("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,    \
+                                                               MUON_CAST(int, n), expected); \
+            MUON_PRINTF("    Actual : \"%.*s\" == \"%.*s\"\n", MUON_CAST(int, n), actual,    \
+                                                               MUON_CAST(int, n), expected); \
+            *muon_result = 1;                                                                \
+        }                                                                                    \
+    }                                                                                        \
     while (0)                                                                    
 
 //
@@ -600,18 +628,23 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 // #########################################
 //
 
-#if defined (__clang__) || defined(__GNUC__) 
-    #define __MUONREQUIRE__(x, y, cond)                                       \
+// condFail is the string representation of the opposite of the truthy value of `cond`
+// For example, if `cond` is "!=", then `condFail` will be `==`
+#if defined(MUON_CAN_USE_OVERLOADABLES)
+    #define __MUONREQUIRE__(actual, expected, cond, condFail)                 \
         do {                                                                  \
-            MUON_AUTO(x) xEval = (x);                                         \
-            MUON_AUTO(y) yEval = (y);                                         \
-            if (!((xEval)cond(yEval))) {                                      \
+            if (!((actual)cond(expected))) {                                  \
                 MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
                 MUON_PRINTF("  Expected : ");                                 \
-                muon_type_printer(xEval);                                     \
+                muon_type_printer(actual);                                    \
+                printf(" %s ", #cond);                                        \
+                muon_type_printer(expected);                                  \
                 MUON_PRINTF("\n");                                            \
+                                                                              \
                 MUON_PRINTF("    Actual : ");                                 \
-                muon_type_printer(yEval);                                     \
+                muon_type_printer(actual);                                    \
+                printf(" %s ", #condFail);                                    \
+                muon_type_printer(expected);                                  \
                 MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
                 return;                                                       \
@@ -620,46 +653,57 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         while (0)                                                             \
 
 #else
-    #define __MUONREQUIRE__(x, y, cond)                                       \
+    #define __MUONREQUIRE__(actual, expected, cond, condFail)                 \
         do {                                                                  \
-            if (!((x)cond(y))) {                                              \
+            if (!((actual)cond(expected))) {                                  \
                 MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                MUON_PRINTF("    Expected vs Actual not displayed\n");        \
-                MUON_PRINTF("    due to compiler limitations.\n");            \
+                /* MUON_PRINTF("    Expected vs Actual not displayed\n");   */\
+                /* MUON_PRINTF("    due to compiler limitations.\n");       */\
+                MUON_PRINTF("  Expected : ");                                 \
+                printf(#actual);                                              \
+                printf(" %s ", #cond);                                        \
+                printf(#expected);                                            \
+                MUON_PRINTF("\n");                                            \
+                                                                              \
+                MUON_PRINTF("    Actual : ");                                 \
+                printf(#actual);                                              \
+                printf(" %s ", #condFail);                                    \
+                printf(#expected);                                            \
+                MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
                 return;                                                       \
             }                                                                 \
         }                                                                     \
         while (0)                                                                    
-#endif
+#endif // MUON_CAN_USE_OVERLOADABLES
 
 
-#define REQUIRE_EQ(x, y)     __MUONREQUIRE__(x, y, ==)
-#define REQUIRE_NE(x, y)     __MUONREQUIRE__(x, y, !=)
-#define REQUIRE_LT(x, y)     __MUONREQUIRE__(x, y, <)
-#define REQUIRE_LE(x, y)     __MUONREQUIRE__(x, y, <=)
-#define REQUIRE_GT(x, y)     __MUONREQUIRE__(x, y, >)
-#define REQUIRE_GE(x, y)     __MUONREQUIRE__(x, y, >=)
+#define REQUIRE_EQ(actual, expected)     __MUONREQUIRE__(actual, expected, ==, !=)
+#define REQUIRE_NE(actual, expected)     __MUONREQUIRE__(actual, expected, !=, ==)
+#define REQUIRE_LT(actual, expected)     __MUONREQUIRE__(actual, expected, <,  >)
+#define REQUIRE_LE(actual, expected)     __MUONREQUIRE__(actual, expected, <=, >=)
+#define REQUIRE_GT(actual, expected)     __MUONREQUIRE__(actual, expected, >,  <)
+#define REQUIRE_GE(actual, expected)     __MUONREQUIRE__(actual, expected, >=, <=)
 
 
-#define REQUIRE_STREQ(x, y)                                                   \
+#define REQUIRE_STREQ(actual, expected)                                       \
     do {                                                                      \
-        if (strcmp(x, y) != 0) {                                              \
+        if (strcmp(actual, expected) != 0) {                                  \
             MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
-            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("  Expected : \"%s\" == \"%s\"\n", actual, expected); \
+            MUON_PRINTF("    Actual : \"%s\" != \"%s\"\n", actual, expected); \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
     }                                                                         \
     while (0)                                                                    
 
-#define REQUIRE_STRNEQ(x, y)                                                  \
+#define REQUIRE_STRNEQ(actual, expected)                                      \
     do {                                                                      \
-        if (strcmp(x, y) == 0) {                                              \
+        if (strcmp(actual, expected) == 0) {                                  \
             MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%s\"\n", x);                          \
-            MUON_PRINTF("    Actual : \"%s\"\n", y);                          \
+            MUON_PRINTF("  Expected : \"%s\" != \"%s\"\n", actual, expected); \
+            MUON_PRINTF("    Actual : \"%s\" == \"%s\"\n", actual, expected); \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -667,16 +711,18 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     while (0)                                                                    
 
 
-#define REQUIRE_STRNNEQ(x, y, n)                                              \
-    do {                                                                      \
-        if (strncmp(x, y, n) == 0) {                                          \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
-            MUON_PRINTF("  Expected : \"%.*s\"\n", MUON_CAST(int, n), x);     \
-            MUON_PRINTF("    Actual : \"%.*s\"\n", MUON_CAST(int, n), y);     \
-            *muon_result = 1;                                                 \
-            return;                                                           \
-        }                                                                     \
-    }                                                                         \
+#define REQUIRE_STRNNEQ(actual, expected, n)                                                 \
+    do {                                                                                     \
+        if (strncmp(actual, expected, n) == 0) {                                             \
+            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                             \
+            MUON_PRINTF("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,    \
+                                                               MUON_CAST(int, n), expected); \
+            MUON_PRINTF("    Actual : \"%.*s\" == \"%.*s\"\n", MUON_CAST(int, n), actual,    \
+                                                               MUON_CAST(int, n), expected); \
+            *muon_result = 1;                                                                \
+            return;                                                                          \
+        }                                                                                    \
+    }                                                                                        \
     while (0)                                                                    
     
 //
@@ -713,57 +759,54 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase);
 MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase) {
     if (filter) {
-        const char* filter_cur = filter;
-        const char* testcase_cur = testcase;
+        const char* filter_curr = filter;
+        const char* testcase_curr = testcase;
         const char* filter_wildcard = MUON_NULL;
 
-        while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
-            if ('*' == *filter_cur) {
-                /* store the position of the wildcard */
-                filter_wildcard = filter_cur;
+        while ((*filter_curr != MUON_NULLCHAR) && (*testcase_curr != MUON_NULLCHAR)) {
+            if ('*' == *filter_curr) {
+                // store the position of the wildcard
+                filter_wildcard = filter_curr;
 
-                /* skip the wildcard character */
-                filter_cur++;
+                // skip the wildcard character
+                filter_curr++;
 
-                while (('\0' != *filter_cur) && ('\0' != *testcase_cur)) {
-                    if ('*' == *filter_cur) {
-                        /*
-                        we found another wildcard (filter is something like *foo*) so we
-                        exit the current loop, and return to the parent loop to handle
-                        the wildcard case
-                        */
+                while ((*filter_curr != MUON_NULLCHAR) && (*testcase_curr != MUON_NULLCHAR)) {
+                    if (*filter_curr == '*') {
+                        // Found another wildcard (filter is something like *foo*), so exit the current loop, 
+                        // and return to the parent loop to handle the wildcard case
                         break;
-                    } else if(*filter_cur != *testcase_cur) {
-                        /* otherwise our filter didn't match, so reset it */
-                        filter_cur = filter_wildcard;
+                    } else if(*filter_curr != *testcase_curr) {
+                        // otherwise our filter didn't match, so reset it
+                        filter_curr = filter_wildcard;
                     }
 
-                    /* move testcase along */
-                    testcase_cur++;
+                    // move testcase along
+                    testcase_curr++;
 
-                    /* move filter along */
-                    filter_cur++;
+                    // move filter along
+                    filter_curr++;
                 }
 
-                if ((*filter_cur == MUON_NULLCHAR) && (*testcase_cur == MUON_NULLCHAR))
+                if ((*filter_curr == MUON_NULLCHAR) && (*testcase_curr == MUON_NULLCHAR))
                     return 0;
 
-                /* if the testcase has been exhausted, we don't have a match! */
-                if (*testcase_cur == MUON_NULLCHAR)
+                // if the testcase has been exhausted, we don't have a match!
+                if (*testcase_curr == MUON_NULLCHAR)
                     return 1;
             } else {
-                if (*testcase_cur != *filter_cur) {
-                    /* test case doesn't match filter */
+                if (*testcase_curr != *filter_curr) {
+                    // test case doesn't match filter
                     return 1;
                 } else {
-                    /* move our filter and testcase forward */
-                    testcase_cur++;
-                    filter_cur++;
+                    // move our filter and testcase forward
+                    testcase_curr++;
+                    filter_curr++;
                 }
             }
         }
 
-        if ((*filter_cur != MUON_NULLCHAR) || ((*testcase_cur == MUON_NULLCHAR) && ((filter == filter_cur) || (filter_cur[-1] != '*')))) {
+        if ((*filter_curr != MUON_NULLCHAR) || ((*testcase_curr == MUON_NULLCHAR) && ((filter == filter_curr) || (filter_curr[-1] != '*')))) {
             // We have a mismatch
             return 1;
         }
@@ -787,7 +830,7 @@ static void muon_help_(void) {
         printf("Usage: %s [options] [test...]\n", muon_argv0_);
         printf("\n");
         printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
-        printf("tests in the suite but those listed.  By default, if no tests are specified\n");
+        printf("tests in the suite but those listed. By default, if no tests are specified\n");
         printf("on the command line, all unit tests in the suite are run.\n");
         printf("\n");
         printf("Options:\n");
@@ -840,7 +883,7 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
 
         // Filter tests
         else if(strncmp(argv[i], filter_str, strlen(filter_str)) == 0)
-            /* user wants to filter what test suites run! */
+            // user wants to filter what test suites run!
             filter = argv[i] + strlen(filter_str);
 
         // Write XUnit XML file
@@ -958,7 +1001,7 @@ inline int muon_main(int argc, char** argv) {
 
     // Begin tests`
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test cases.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
+    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test suites.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
 
     if (muon_state.foutput) {
         fprintf(muon_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -977,17 +1020,16 @@ inline int muon_main(int argc, char** argv) {
     double duration = muon_clock() - start;
 
     // Write a Summary
-    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " tests\n", muon_stats_tests_ran - muon_stats_tests_failed);
-    muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "test" : "tests");
+    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " suites\n", muon_stats_tests_ran - muon_stats_tests_failed);
+    muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "suite" : "suites");
 
     if(!muon_disable_summary) {
         muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total unit tests:      %" MUON_PRIu64 "\n", muon_stats_total_tests);
-        printf("   Total tests run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
-        printf("%s", "%" MUON_PRIu64);
-        printf("   Total tests skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
-        printf("   Total tests failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
+        printf("   Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_tests);
+        printf("   Total suites run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
+        printf("   Total suites skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
+        printf("   Total suites failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
     }
 
     if (muon_stats_tests_failed != 0) {
@@ -1002,7 +1044,7 @@ inline int muon_main(int argc, char** argv) {
     } else {
         MUON_UInt64 total_tests_passed = muon_stats_tests_ran - muon_stats_tests_failed;
         muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
-        printf("%" MUON_PRIu64 " tests passed in ", total_tests_passed);
+        printf("%" MUON_PRIu64 " test suites passed in ", total_tests_passed);
         muon_timer_print_duration(duration);
         printf("\n");
     }
@@ -1034,4 +1076,4 @@ inline int muon_main(int argc, char** argv) {
 // } // extern "C"
 // #endif
 
-#endif /* MUON_TEST_H_ */
+#endif // MUON_TEST_H_
