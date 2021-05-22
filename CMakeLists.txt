@@ -8,6 +8,8 @@ project(Muon
         LANGUAGES C CXX
 )
 
+# CMake's FATAL_ERROR is ignored on CMake versions >2.6 
+# Hence we explicitely check for correct enforcement of CMake configurations.
 if (${CMAKE_VERSION} VERSION_LESS "3.15")
     message(
         ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Muon supports CMake 3.15 above."
