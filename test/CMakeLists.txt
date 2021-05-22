@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 # ------ Setting the C Standard ------
 set(CMAKE_C_EXTENSIONS OFF)
@@ -21,6 +21,12 @@ target_include_directories(
     ${MUON_TEST} 
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_compile_options(
+    ${MUON_TEST} 
+    PRIVATE
+    "/P \"F:/Documents/Dev/Github/Muon/compileroutput.txt\""
 )
 
 # The Muon INTERFACE library

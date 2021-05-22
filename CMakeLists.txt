@@ -1,12 +1,22 @@
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 set(MUON_VERSION 1.0.0)
 
 project(Muon 
         VERSION ${MUON_VERSION}
         DESCRIPTION "A Micro Unit Testing Framework for C/C++"
-        LANGUAGES C CXX)
+        LANGUAGES C CXX
+)
 
+if (${CMAKE_VERSION} VERSION_LESS "3.15")
+    message(
+        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Muon supports CMake 3.15 above."
+        "Please update your CMake installation."
+    )
+endif()
+
+
+        
 # ------ Disable CMAKE_INSTALL_MESSAGE  ------
 set(CMAKE_INSTALL_MESSAGE NEVER)
 
