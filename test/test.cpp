@@ -76,7 +76,7 @@ TEST(cpp, CHECK_STRNEQ) {
 }
 
 TEST(cpp, CHECK_STRMNEQ) { 
-    CHECK_STRNNEQ("foo", "foo", strlen("foo")); 
+    CHECK_STRNNEQ("foo", "foobar", strlen("food")); 
 }
 
 TEST(cpp, CHECK_STRNNEQ) { 
