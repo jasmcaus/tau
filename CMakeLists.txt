@@ -17,7 +17,6 @@ if (${CMAKE_VERSION} VERSION_LESS "3.15")
     )
 endif()
 
-
         
 # ------ Disable CMAKE_INSTALL_MESSAGE  ------
 set(CMAKE_INSTALL_MESSAGE NEVER)
