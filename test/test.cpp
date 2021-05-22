@@ -34,11 +34,11 @@ TEST(cpp, REQUIRE_STRNEQ) {
     REQUIRE_STRNEQ("foo", "bar"); 
 }
 
-TEST(cpp, REQUIRE_STRNNEQ) { 
-    REQUIRE_STRNNEQ("foo", "foobar", strlen("foo")); 
+TEST(cpp, REQUIRE_STRNNEQ1) { 
+    REQUIRE_STRNNEQ("foo", "foobar", strlen("foob")); 
 }
 
-TEST(cpp, REQUIRE_STRNNEQ) { 
+TEST(cpp, REQUIRE_STRNNEQ2) { 
     REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); 
 }
 
@@ -76,7 +76,7 @@ TEST(cpp, CHECK_STRNEQ) {
 }
 
 TEST(cpp, CHECK_STRMNEQ) { 
-    CHECK_STRNNEQ("foo", "foobar", strlen("foo")); 
+    CHECK_STRNNEQ("foobar", "foo", strlen("food")); 
 }
 
 TEST(cpp, CHECK_STRNNEQ) { 
@@ -172,10 +172,10 @@ TEST(cpp, Ptr) {
     CHECK_NE(&foo, &foo + 1);
 }
 
-static const int data[4] = {42, 13, 6, -53};
+static const int cppdata[4] = {42, 13, 6, -53};
 
 TEST(cpp, Array) { 
-    CHECK_NE(data, data + 1); 
+    CHECK_NE(cppdata, cppdata + 1); 
 }
 
 TEST(cpp11, REQUIRE_EQ) { 
@@ -340,8 +340,8 @@ TEST(cpp11, Ptr) {
     CHECK_NE(&foo, &foo + 1);
 }
 
-static const int data[4] = {42, 13, 6, -53};
+static const int cpp11[4] = {42, 13, 6, -53};
 
 TEST(cpp11, Array) { 
-    CHECK_NE(data, data + 1); 
+    CHECK_NE(cpp11, cpp11 + 1); 
 }
