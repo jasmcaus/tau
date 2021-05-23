@@ -85,11 +85,7 @@ TEST(c, CHECK_STREQ) {
 }
 
 TEST(c, CHECK_STRNE) { 
-    CHECK_STRNEQ("foo", "bar"); 
-}
-
-TEST(c, CHECK_STRNEQ) { 
-    CHECK_STRNEQ("foo", "foobar"); 
+    CHECK_STRNEQ("foo", "food"); 
 }
 
 TEST(c, CHECK_STRNNE) { 
