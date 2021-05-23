@@ -50,6 +50,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    
     _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")  
     _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
+    _Pragma("clang diagnostic ignored \"-Wreserved-id-macro"\"")
 #endif // __clang
 
 /**********************
@@ -123,10 +124,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #define MUON_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
-// #ifdef __cplusplus
-//     extern "C" {
-// #endif // __cplusplus
-
 static MUON_UInt64 muon_stats_total_tests = 0;
 static MUON_UInt64 muon_stats_tests_ran = 0;
 static MUON_UInt64 muon_stats_tests_failed = 0;
@@ -170,12 +167,9 @@ MUON_EXTERN struct muon_state_s muon_state;
     #endif // MUON_USE_OLD_QPC
 
 #elif defined(__linux__)
-    /*
-    slightly obscure include here - we need to include glibc's features.h, but
-    we don't want to just include a header that might not be defined for other
-    c libraries like musl. Instead we include limits.h, which we know on all
-    glibc distributions includes features.h
-    */
+    // We need to include glibc's features.h, but we don't want to just include a header that might not be 
+    // defined for other C libraries like musl. 
+    // Instead we include limits.h, which I know all glibc distributions include features.h
     #include <limits.h>
 
     #if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
@@ -266,29 +260,12 @@ static void muon_clock_print_duration(double nanoseconds_duration) {
     #endif // _WIN64
 
     #pragma section(".CRT$XCU", read)
-    #define MUON_TEST_INITIALIZER(f)                                                  \
-    static void __cdecl f(void);                                                      \
-        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))              \
-        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f;  \
+    #define MUON_TEST_INITIALIZER(f)                                                     \
+    static void __cdecl f(void);                                                         \
+        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))                 \
+        MUON_C_FUNC __declspec(allocate(".CRT$XCU"))    void(__cdecl * f##_)(void) = f;  \
     static void __cdecl f(void)
 #else
-    #if defined(__linux__)
-        #if defined(__clang__)
-            #if __has_warning("-Wreserved-id-macro")
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Wreserved-id-macro"
-            #endif // __has_warning("-Wreserved-id-macro")
-        #endif // __clang__
-
-        #define __STDC_FORMAT_MACROS 1
-
-        #if defined(__clang__)
-            #if __has_warning("-Wreserved-id-macro")
-                #pragma clang diagnostic pop
-            #endif // __has_warning("-Wreserved-id-macro")
-        #endif // __clang__
-    #endif // __linux__
-
     #define MUON_TEST_INITIALIZER(f)                    \
     static void f(void) __attribute__((constructor));   \
     static void f(void)
@@ -1079,9 +1056,5 @@ inline int muon_main(int argc, char** argv) {
 #ifdef _MSC_VER
     #pragma warning(pop)
 #endif // _MSC_VER
-
-// #ifdef __cplusplus
-// } // extern "C"
-// #endif
 
 #endif // MUON_TEST_H_
