@@ -1053,10 +1053,10 @@ inline int muon_main(int argc, char** argv) {
     if(!muon_disable_summary) {
         muon_coloured_printf_(MUON_COLOUR_BOLD_, "\nSummary:\n");
 
-        printf("   Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_test_suites);
-        printf("   Total suites run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
-        printf("   Total suites skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
-        printf("   Total suites failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
+        printf("    Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_test_suites);
+        printf("    Total suites run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
+        printf("    Total suites skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
+        printf("    Total suites failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
     }
 
     if(muon_stats_tests_failed != 0) {
