@@ -140,7 +140,7 @@ static MUON_Ll* muon_stats_failed_testcases = MUON_NULL;
 static MUON_Ll muon_stats_failed_testcases_length = 0;
 
 // extern to the global state muon needs to execute
-MUON_EXTERN struct muon_state_s muon_state;
+MUON_EXTERN struct muon_test_state_s muon_test_state;
 
 #if defined(_MSC_VER)
     #ifndef MUON_USE_OLD_QPC
@@ -160,10 +160,10 @@ MUON_EXTERN struct muon_state_s muon_state;
         Int64 QuadPart;
         } MUON_LARGE_INTEGER;
 
-        MUON_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(
-            MUON_LARGE_INTEGER *);
-        MUON_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(
-            MUON_LARGE_INTEGER *);
+        MUON_C_FUNC __declspec(dllimport) int 
+        __stdcall QueryPerformanceCounter(MUON_LARGE_INTEGER*);
+        MUON_C_FUNC __declspec(dllimport) int 
+        __stdcall QueryPerformanceFrequency(MUON_LARGE_INTEGER*);
     #endif // MUON_USE_OLD_QPC
 
 #elif defined(__linux__)
@@ -282,14 +282,14 @@ static inline void* muon_realloc(void* const ptr, MUON_Ll new_size) {
     return new_ptr;
 }
 
-typedef void (*muon_testcase_t)(int* , MUON_Ll);
+typedef void (*muon_testsuite_t)(int* , MUON_Ll);
 struct muon_test_s {
-    muon_testcase_t func;
+    muon_testsuite_t func;
     MUON_Ll index;
     char* name;
 };
 
-struct muon_state_s {
+struct muon_test_state_s {
     struct muon_test_s* tests;
     MUON_Ll num_test_suites;
     FILE* foutput;
@@ -303,18 +303,23 @@ struct muon_state_s {
     #define MUON_UNUSED   __attribute__((unused))
 #endif // _MSC_VER
 
-
 #define MUON_COLOUR_DEFAULT_              0
-#define MUON_COLOUR_GREEN_                1
-#define MUON_COLOUR_RED_                  2
-#define MUON_COLOUR_DEFAULT_INTENSIVE_    3
-#define MUON_COLOUR_GREEN_INTENSIVE_      4
-#define MUON_COLOUR_RED_INTENSIVE_        5
+#define MUON_COLOUR_RED_                  1
+#define MUON_COLOUR_GREEN_                2
+#define MUON_COLOUR_YELLOW_               4
+#define MUON_COLOUR_BLUE_                 5
+#define MUON_COLOUR_CYAN_                 6
+#define MUON_COLOUR_BRIGHTRED_            7
+#define MUON_COLOUR_BRIGHTGREEN_          8
+#define MUON_COLOUR_BRIGHTYELLOW_         9
+#define MUON_COLOUR_BRIGHTBLUE_           10
+#define MUON_COLOUR_BRIGHTCYAN_           11
+#define MUON_COLOUR_BOLD_                 12
 
-static int MUON_ATTRIBUTE_(format (printf, 2, 3))
-muon_coloured_printf_(int color, const char* fmt, ...);
-static int MUON_ATTRIBUTE_(format (printf, 2, 3))
-muon_coloured_printf_(int color, const char* fmt, ...) {
+static inline int MUON_ATTRIBUTE_(format (printf, 2, 3))
+muon_coloured_printf_(int colour, const char* fmt, ...);
+static inline int MUON_ATTRIBUTE_(format (printf, 2, 3))
+muon_coloured_printf_(int colour, const char* fmt, ...) {
     va_list args;
     char buffer[256];
     int n;
@@ -330,18 +335,24 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 #ifdef MUON_UNIX_
     {
-        const char* col_str;
-        switch(color) {
-            case MUON_COLOUR_GREEN_:              col_str = "\033[0;32m"; break;
-            case MUON_COLOUR_RED_:                col_str = "\033[0;31m"; break;
-            case MUON_COLOUR_GREEN_INTENSIVE_:    col_str = "\033[1;32m"; break;
-            case MUON_COLOUR_RED_INTENSIVE_:      col_str = "\033[1;31m"; break;
-            case MUON_COLOUR_DEFAULT_INTENSIVE_:  col_str = "\033[1m"; break;
-            default:                                col_str = "\033[0m"; break;
+        const char* str;
+        switch(colour) {
+            case MUON_COLOUR_RED_:          str = "\033[0;31m"; break;
+            case MUON_COLOUR_GREEN_:        str = "\033[0;32m"; break;
+            case MUON_COLOUR_YELLOW_:       str = "\033[0;33m"; break;
+            case MUON_COLOUR_BLUE_:         str = "\033[0;34m"; break;
+            case MUON_COLOUR_CYAN_:         str = "\033[0;36m"; break;
+            case MUON_COLOUR_BRIGHTRED_:    str = "\033[1;31m"; break;
+            case MUON_COLOUR_BRIGHTGREEN_:  str = "\033[1;32m"; break;
+            case MUON_COLOUR_BRIGHTYELLOW_: str = "\033[1;33m"; break;
+            case MUON_COLOUR_BRIGHTBLUE_:   str = "\033[1;34m"; break;
+            case MUON_COLOUR_BRIGHTCYAN_:   str = "\033[1;36m"; break;
+            case MUON_COLOUR_BOLD_:         str = "\033[1m"; break;
+            default:                        str = "\033[0m"; break;
         }
-        printf("%s", col_str);
+        printf("%s", str);
         n = printf("%s", buffer);
-        printf("\033[0m");
+        printf("\033[0m"); // Reset the colour
         return n;
     }
 #elif defined(MUON_WIN_)
@@ -353,14 +364,21 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         h = GetStdHandle(STD_OUTPUT_HANDLE);
         GetConsoleScreenBufferInfo(h, &info);
 
-        switch(color) {
-            case MUON_COLOUR_GREEN_: attr = FOREGROUND_GREEN; break;
-            case MUON_COLOUR_RED_: attr = FOREGROUND_RED; break;
-            case MUON_COLOUR_GREEN_INTENSIVE_: attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
-            case MUON_COLOUR_RED_INTENSIVE_: attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            case MUON_COLOUR_DEFAULT_INTENSIVE_: attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
-                                                        FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            default: attr = 0; break;
+        switch(colour) {
+            case MUON_COLOUR_RED_:            attr = FOREGROUND_RED; break;
+            case MUON_COLOUR_GREEN_:          attr = FOREGROUND_GREEN; break;
+            case MUON_COLOUR_BLUE_:           attr = FOREGROUND_BLUE; break;
+            case MUON_COLOUR_CYAN_:           attr = FOREGROUND_BLUE | FOREGROUND_GREEN; break;
+            case MUON_COLOUR_YELLOW_:         attr = FOREGROUND_RED | FOREGROUND_GREEN; break;
+            case MUON_COLOUR_BRIGHTRED_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_BRIGHTGREEN_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_BRIGHTCYAN_:     attr = FOREGROUND_BLUE | FOREGROUND_GREEN | 
+                                                     FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_BRIGHTYELLOW_:   attr = FOREGROUND_RED | FOREGROUND_GREEN | 
+                                                     FOREGROUND_INTENSITY; break;
+            case MUON_COLOUR_BOLD_:           attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
+                                                     FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+            default:                          attr = 0; break;
         }
         if(attr != 0)
             SetConsoleTextAttribute(h, attr);
@@ -376,8 +394,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 
 #define MUON_PRINTF(...)                            \
-    if(muon_state.foutput)                         \
-        fprintf(muon_state.foutput, __VA_ARGS__);   \
+    if(muon_test_state.foutput)                          \
+        fprintf(muon_test_state.foutput, __VA_ARGS__);   \
     printf(__VA_ARGS__)
 
 
@@ -457,17 +475,18 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
         do {                                                                  \
             if(!((actual)cond(expected))) {                                   \
-                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
                 MUON_PRINTF("  Expected : ");                                 \
-                MUON_OVERLOAD_PRINTER(actual);                                    \
+                MUON_OVERLOAD_PRINTER(actual);                                \
                 printf(" %s ", #cond);                                        \
-                MUON_OVERLOAD_PRINTER(expected);                                  \
+                MUON_OVERLOAD_PRINTER(expected);                              \
                 MUON_PRINTF("\n");                                            \
                                                                               \
                 MUON_PRINTF("    Actual : ");                                 \
-                MUON_OVERLOAD_PRINTER(actual);                                    \
+                MUON_OVERLOAD_PRINTER(actual);                                \
                 printf(" %s ", #ifCondFailsThenPrint);                        \
-                MUON_OVERLOAD_PRINTER(expected);                                  \
+                MUON_OVERLOAD_PRINTER(expected);                              \
                 MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
             }                                                                 \
@@ -476,12 +495,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)                   \
+    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
         do {                                                                  \
             if(!((actual)cond(expected))) {                                   \
-                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                /* MUON_PRINTF("    Expected vs Actual not displayed\n");   */\
-                /* MUON_PRINTF("    due to compiler limitations.\n");       */\
+                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
                 MUON_PRINTF("  Expected : ");                                 \
                 printf(#actual);                                              \
                 printf(" %s ", #cond);                                        \
@@ -490,7 +508,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
                                                                               \
                 MUON_PRINTF("    Actual : ");                                 \
                 printf(#actual);                                              \
-                printf(" %s ", #ifCondFailsThenPrint);                                    \
+                printf(" %s ", #ifCondFailsThenPrint);                        \
                 printf(#expected);                                            \
                 MUON_PRINTF("\n");                                            \
                 *muon_result = 1;                                             \
@@ -499,19 +517,6 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         while(0)
 #endif // MUON_CAN_USE_OVERLOADABLES
 
-#define CHECK(cond, ...)                                                         \
-    do {                                                                         \
-        if(!(cond)) {                                                            \
-            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                          \
-            if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
-                muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "Failure");    \
-            else                                                                 \
-                muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, __VA_ARGS__);  \
-            printf("\n");                                                        \
-            *muon_result = 1;                                                    \
-        }                                                                        \
-    }                                                                            \
-    while(0)
 
 //
 // #########################################
@@ -525,11 +530,27 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_GT(actual, expected)     __MUONCHECK__(actual, expected, >,  <)
 #define CHECK_GE(actual, expected)     __MUONCHECK__(actual, expected, >=, <=)
 
+#define CHECK(cond, ...)                                                         \
+    do {                                                                         \
+        if(!(cond)) {                                                            \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                          \
+            if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED");         \
+            else                                                                 \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, __VA_ARGS__);      \
+            printf("\n");                                                        \
+            muon_coloured_printf_(MUON_COLOUR_YELLOW_, "The following check failed: \n"); \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "   CHECK( %s )\n", #cond); \
+            *muon_result = 1;                                                    \
+        }                                                                        \
+    }                                                                            \
+    while(0)
 
 #define CHECK_TRUE(cond)                                                      \
     do {                                                                      \
         if(!(cond)) {                                                         \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : true\n");                               \
             MUON_PRINTF("    Actual : false\n");                              \
             *muon_result = 1;                                                 \
@@ -540,7 +561,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_FALSE(cond)                                                     \
     do {                                                                      \
         if((cond)) {                                                          \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : false\n");                              \
             MUON_PRINTF("    Actual : true\n");                               \
             *muon_result = 1;                                                 \
@@ -552,7 +574,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STREQ(actual, expected)                                         \
     do {                                                                      \
         if(strcmp(actual, expected) != 0) {                                   \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : \"%s\" == \"%s\"\n", actual, expected); \
             MUON_PRINTF("    Actual : not equal\n"); \
             *muon_result = 1;                                                 \
@@ -565,7 +588,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STRNEQ(actual, expected)                                        \
     do {                                                                      \
         if(strcmp(actual, expected) == 0) {                                   \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : \"%s\" != \"%s\"\n", actual, expected); \
             MUON_PRINTF("    Actual : equal\n"); \
             *muon_result = 1;                                                 \
@@ -577,10 +601,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define CHECK_STRNNEQ(actual, expected, n)                                                   \
     do {                                                                                     \
         if(strncmp(actual, expected, n) == 0) {                                              \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                             \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                                      \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                   \
             MUON_PRINTF("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,    \
                                                                MUON_CAST(int, n), expected); \
-            MUON_PRINTF("    Actual : equal subtrings\n");                                             \
+            MUON_PRINTF("    Actual : equal subtrings\n");                                   \
             *muon_result = 1;                                                                \
         }                                                                                    \
     }                                                                                        \
@@ -595,10 +620,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONREQUIRE__(actual, expected, cond, ifCondFailsThenPrint)                 \
+    #define __MUONREQUIRE__(actual, expected, cond, ifCondFailsThenPrint)     \
         do {                                                                  \
             if(!((actual)cond(expected))) {                                   \
-                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
+                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
                 MUON_PRINTF("  Expected : ");                                 \
                 MUON_OVERLOAD_PRINTER(actual);                                \
                 MUON_PRINTF(" %s ", #cond);                                   \
@@ -620,9 +646,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     #define __MUONREQUIRE__(actual, expected, cond, ifCondFailsThenPrint)     \
         do {                                                                  \
             if(!((actual)cond(expected))) {                                   \
-                MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);          \
-                /* MUON_PRINTF("    Expected vs Actual not displayed\n");   */\
-                /* MUON_PRINTF("    due to compiler limitations.\n");       */\
+                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
                 MUON_PRINTF("  Expected : ");                                 \
                 MUON_PRINTF(#actual);                                         \
                 MUON_PRINTF(" %s ", #cond);                                   \
@@ -649,11 +674,25 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_GT(actual, expected)     __MUONREQUIRE__(actual, expected, >,  <)
 #define REQUIRE_GE(actual, expected)     __MUONREQUIRE__(actual, expected, >=, <=)
 
+#define REQUIRE(cond, ...)                                                       \
+    do {                                                                         \
+        if(!(cond)) {                                                            \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                          \
+            if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED");     \
+            else                                                                 \
+                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, __VA_ARGS__);  \
+            printf("\n");                                                        \
+            *muon_result = 1;                                                    \
+        }                                                                        \
+    }                                                                            \
+    while(0)
 
 #define REQUIRE_TRUE(cond)                                                    \
     do {                                                                      \
         if(!(cond)) {                                                         \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : true\n");                               \
             MUON_PRINTF("    Actual : false\n");                              \
             *muon_result = 1;                                                 \
@@ -661,10 +700,11 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
     } while(0)
 
 
-#define REQUIRE_FALSE(cond)                                                     \
+#define REQUIRE_FALSE(cond)                                                   \
     do {                                                                      \
         if((cond)) {                                                          \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : false\n");                              \
             MUON_PRINTF("    Actual : true\n");                               \
             *muon_result = 1;                                                 \
@@ -674,9 +714,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STREQ(actual, expected)                                       \
     do {                                                                      \
         if(strcmp(actual, expected) != 0) {                                   \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : \"%s\" == \"%s\"\n", actual, expected); \
-            MUON_PRINTF("    Actual : not equal\n"); \
+            MUON_PRINTF("    Actual : not equal\n");                          \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -686,9 +727,10 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STRNEQ(actual, expected)                                      \
     do {                                                                      \
         if(strcmp(actual, expected) == 0) {                                   \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);              \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                       \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");    \
             MUON_PRINTF("  Expected : \"%s\" != \"%s\"\n", actual, expected); \
-            MUON_PRINTF("    Actual : equal\n"); \
+            MUON_PRINTF("    Actual : equal\n");                              \
             *muon_result = 1;                                                 \
             return;                                                           \
         }                                                                     \
@@ -699,7 +741,8 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 #define REQUIRE_STRNNEQ(actual, expected, n)                                                 \
     do {                                                                                     \
         if(strncmp(actual, expected, n) == 0) {                                              \
-            MUON_PRINTF("%s:%u: Failure\n", __FILE__, __LINE__);                             \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                                      \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                   \
             MUON_PRINTF("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,    \
                                                                MUON_CAST(int, n), expected); \
             MUON_PRINTF("    Actual : equal subtrings\n");                                   \
@@ -716,25 +759,25 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
 //
 
 #define TEST(TESTSUITE, TESTNAME)                                                       \
-    MUON_EXTERN struct muon_state_s muon_state;                                         \
+    MUON_EXTERN struct muon_test_state_s muon_test_state;                                         \
     static void muon_run_##TESTSUITE##_##TESTNAME(int* muon_result);                    \
     static void muon_##TESTSUITE##_##TESTNAME(int* muon_result, MUON_Ll muon_index) {   \
         (void)muon_index;                                                               \
         muon_run_##TESTSUITE##_##TESTNAME(muon_result);                                 \
     }                                                                                   \
     MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
-        const MUON_Ll index = muon_state.num_test_suites++;                                   \
+        const MUON_Ll index = muon_test_state.num_test_suites++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
-        muon_state.tests = MUON_PTRCAST(                                                \
+        muon_test_state.tests = MUON_PTRCAST(                                                \
             struct muon_test_s* ,                                                       \
-            muon_realloc(MUON_PTRCAST(void* , muon_state.tests),                        \
+            muon_realloc(MUON_PTRCAST(void* , muon_test_state.tests),                        \
                         sizeof(struct muon_test_s) *                                    \
-                            muon_state.num_test_suites));                                     \
-        muon_state.tests[index].func = &muon_##TESTSUITE##_##TESTNAME;                  \
-        muon_state.tests[index].name = name;                                            \
-        muon_state.tests[index].index = 0;                                              \
+                            muon_test_state.num_test_suites));                                     \
+        muon_test_state.tests[index].func = &muon_##TESTSUITE##_##TESTNAME;                  \
+        muon_test_state.tests[index].name = name;                                            \
+        muon_test_state.tests[index].index = 0;                                              \
         MUON_SNPRINTF(name, name_size, "%s", name_part);                                \
     }                                                                                   \
     void muon_run_##TESTSUITE##_##TESTNAME(int* muon_result)
@@ -872,12 +915,12 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
 
         // Write XUnit XML file
         else if(strncmp(argv[i], output_str, strlen(output_str)) == 0)
-            muon_state.foutput = muon_fopen(argv[i] + strlen(output_str), "w+");
+            muon_test_state.foutput = muon_fopen(argv[i] + strlen(output_str), "w+");
 
         // List tests
         else if(strncmp(argv[i], list_str, strlen(list_str)) == 0) {
-            for (i = 0; i < muon_state.num_test_suites; i++)
-                MUON_PRINTF("%s\n", muon_state.tests[i].name);
+            for (i = 0; i < muon_test_state.num_test_suites; i++)
+                MUON_PRINTF("%s\n", muon_test_state.tests[i].name);
         }
 
         // Disable colouring
@@ -900,14 +943,14 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
 }
 
 static int muon_cleanup() {
-    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++)
-        free(MUON_PTRCAST(void* , muon_state.tests[i].name));
+    for (MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++)
+        free(MUON_PTRCAST(void* , muon_test_state.tests[i].name));
 
     free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
-    free(MUON_PTRCAST(void* , muon_state.tests));
+    free(MUON_PTRCAST(void* , muon_test_state.tests));
 
-    if(muon_state.foutput)
-        fclose(muon_state.foutput);
+    if(muon_test_state.foutput)
+        fclose(muon_test_state.foutput);
 
     return MUON_CAST(int, muon_stats_tests_failed);
 }
@@ -916,29 +959,29 @@ static int muon_cleanup() {
 // static void muon_run_tests(MUON_Ll* muon_stats_failed_testcases, MUON_Ll* muon_stats_failed_testcases_length) {
 static void muon_run_tests() {
     // Run tests
-    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++) {
+    for (MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++) {
         int result = 0;
 
-        if(muon_should_filter_test(filter, muon_state.tests[i].name))
+        if(muon_should_filter_test(filter, muon_test_state.tests[i].name))
             continue;
 
-        muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[ RUN      ] ");
-        muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", muon_state.tests[i].name);
+        muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
+        muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", muon_test_state.tests[i].name);
 
-        if(muon_state.foutput)
-            fprintf(muon_state.foutput, "<testcase name=\"%s\">", muon_state.tests[i].name);
+        if(muon_test_state.foutput)
+            fprintf(muon_test_state.foutput, "<testcase name=\"%s\">", muon_test_state.tests[i].name);
 
         // Start the timer
         double start = muon_clock();
 
         // The actual test
-        muon_state.tests[i].func(&result, muon_state.tests[i].index);
+        muon_test_state.tests[i].func(&result, muon_test_state.tests[i].index);
 
         // Stop the timer
         double duration = muon_clock() - start;
     
-        if(muon_state.foutput)
-            fprintf(muon_state.foutput, "</testcase>\n");
+        if(muon_test_state.foutput)
+            fprintf(muon_test_state.foutput, "</testcase>\n");
 
         if(result != 0) {
             const MUON_Ll failed_testcase_index = muon_stats_failed_testcases_length++;
@@ -947,26 +990,26 @@ static void muon_run_tests() {
                                                           sizeof(MUON_Ll) * muon_stats_failed_testcases_length));
             muon_stats_failed_testcases[failed_testcase_index] = i;
             muon_stats_tests_failed++;
-            muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] ");
-            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_test_state.tests[i].name);
             muon_clock_print_duration(duration);
             printf(")\n");
         } else {
-            muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[       OK ] ");
-            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[       OK ] ");
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_test_state.tests[i].name);
             muon_clock_print_duration(duration);
             printf(")\n");
         }
     }
 
-    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
+    muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[==========] ");
     muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muon_stats_tests_ran);
 }
 
 
 static inline int muon_main(int argc, char** argv);
 inline int muon_main(int argc, char** argv) {
-    muon_stats_total_test_suites = MUON_CAST(MUON_UInt64, muon_state.num_test_suites);
+    muon_stats_total_test_suites = MUON_CAST(MUON_UInt64, muon_test_state.num_test_suites);
     muon_argv0_ = argv[0];
     
     // Start the entire Test Session timer
@@ -976,23 +1019,23 @@ inline int muon_main(int argc, char** argv) {
     if(!was_cmdline_read_successful) 
         return muon_cleanup();
 
-    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++) {
-        if(muon_should_filter_test(filter, muon_state.tests[i].name))
+    for (MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++) {
+        if(muon_should_filter_test(filter, muon_test_state.tests[i].name))
             muon_stats_skipped_tests++;
     }
 
     muon_stats_tests_ran = muon_stats_total_test_suites - muon_stats_skipped_tests;
 
     // Begin tests`
-    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
-    muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "Running %" MUON_PRIu64 " test suites.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
+    muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[==========] ");
+    muon_coloured_printf_(MUON_COLOUR_BOLD_, "Running %" MUON_PRIu64 " test suites.\n", MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
 
-    if(muon_state.foutput) {
-        fprintf(muon_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        fprintf(muon_state.foutput,
+    if(muon_test_state.foutput) {
+        fprintf(muon_test_state.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fprintf(muon_test_state.foutput,
                 "<testsuites tests=\"%" MUON_PRIu64 "\" name=\"All\">\n",
                 MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
-        fprintf(muon_state.foutput,
+        fprintf(muon_test_state.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" MUON_PRIu64 "\">\n",
                 MUON_CAST(MUON_UInt64, muon_stats_tests_ran));
     }
@@ -1004,11 +1047,11 @@ inline int muon_main(int argc, char** argv) {
     double duration = muon_clock() - start;
 
     // Write a Summary
-    muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[  PASSED  ] %" MUON_PRIu64 " suites\n", muon_stats_tests_ran - muon_stats_tests_failed);
-    muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "suite" : "suites");
+    muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" MUON_PRIu64 " suites\n", muon_stats_tests_ran - muon_stats_tests_failed);
+    muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "[  FAILED  ] %" MUON_PRIu64 " %s\n", muon_stats_tests_failed, muon_stats_tests_failed == 1 ? "suite" : "suites");
 
     if(!muon_disable_summary) {
-        muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "\nSummary:\n");
+        muon_coloured_printf_(MUON_COLOUR_BOLD_, "\nSummary:\n");
 
         printf("   Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_test_suites);
         printf("   Total suites run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
@@ -1017,24 +1060,24 @@ inline int muon_main(int argc, char** argv) {
     }
 
     if(muon_stats_tests_failed != 0) {
-        muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "FAILED: ");
+        muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED: ");
         printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
         muon_clock_print_duration(duration);
         printf("\n");
         
         for (MUON_Ll i = 0; i < muon_stats_failed_testcases_length; i++) {
-            muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "  [ FAILED ] %s\n", muon_state.tests[muon_stats_failed_testcases[i]].name);
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", muon_test_state.tests[muon_stats_failed_testcases[i]].name);
         }
     } else {
         MUON_UInt64 total_tests_passed = muon_stats_tests_ran - muon_stats_tests_failed;
-        muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
+        muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" MUON_PRIu64 " test suites passed in ", total_tests_passed);
         muon_clock_print_duration(duration);
         printf("\n");
     }
 
-    if(muon_state.foutput)
-        fprintf(muon_state.foutput, "</testsuite>\n</testsuites>\n");
+    if(muon_test_state.foutput)
+        fprintf(muon_test_state.foutput, "</testsuite>\n</testsuites>\n");
 
     return muon_cleanup();
 }
@@ -1042,12 +1085,12 @@ inline int muon_main(int argc, char** argv) {
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define MUON_NO_MAIN()                                                          \
-    struct muon_state_s muon_state = {0, 0, 0};
+    struct muon_test_state_s muon_test_state = {0, 0, 0};
 
 // Define a main() function to call into muon.h and start executing tests.
 #define MUON_MAIN()                                                             \
     /* Define the global struct that will hold the data we need to run Muon. */ \
-    struct muon_state_s muon_state = {0, 0, 0};                                 \
+    struct muon_test_state_s muon_test_state = {0, 0, 0};                                 \
                                                                                 \
     int main(int argc, char** argv) {                                           \
         return muon_main(argc, argv);                                           \
