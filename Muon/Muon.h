@@ -124,7 +124,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #define MUON_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
-static MUON_UInt64 muon_stats_total_tests = 0;
+static MUON_UInt64 muon_stats_total_test_suites = 0;
 static MUON_UInt64 muon_stats_tests_ran = 0;
 static MUON_UInt64 muon_stats_tests_failed = 0;
 static MUON_UInt64 muon_stats_skipped_tests = 0; 
@@ -291,7 +291,7 @@ struct muon_test_s {
 
 struct muon_state_s {
     struct muon_test_s* tests;
-    MUON_Ll num_tests;
+    MUON_Ll num_test_suites;
     FILE* foutput;
 };
 
@@ -723,7 +723,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
         muon_run_##TESTSUITE##_##TESTNAME(muon_result);                                 \
     }                                                                                   \
     MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
-        const MUON_Ll index = muon_state.num_tests++;                                   \
+        const MUON_Ll index = muon_state.num_test_suites++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
@@ -731,7 +731,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
             struct muon_test_s* ,                                                       \
             muon_realloc(MUON_PTRCAST(void* , muon_state.tests),                        \
                         sizeof(struct muon_test_s) *                                    \
-                            muon_state.num_tests));                                     \
+                            muon_state.num_test_suites));                                     \
         muon_state.tests[index].func = &muon_##TESTSUITE##_##TESTNAME;                  \
         muon_state.tests[index].name = name;                                            \
         muon_state.tests[index].index = 0;                                              \
@@ -876,7 +876,7 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
 
         // List tests
         else if(strncmp(argv[i], list_str, strlen(list_str)) == 0) {
-            for (i = 0; i < muon_state.num_tests; i++)
+            for (i = 0; i < muon_state.num_test_suites; i++)
                 MUON_PRINTF("%s\n", muon_state.tests[i].name);
         }
 
@@ -900,7 +900,7 @@ static MUON_bool muon_cmdline_read(int argc, char** argv) {
 }
 
 static int muon_cleanup() {
-    for (MUON_Ll i = 0; i < muon_state.num_tests; i++)
+    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++)
         free(MUON_PTRCAST(void* , muon_state.tests[i].name));
 
     free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
@@ -916,7 +916,7 @@ static int muon_cleanup() {
 // static void muon_run_tests(MUON_Ll* muon_stats_failed_testcases, MUON_Ll* muon_stats_failed_testcases_length) {
 static void muon_run_tests() {
     // Run tests
-    for (MUON_Ll i = 0; i < muon_state.num_tests; i++) {
+    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++) {
         int result = 0;
 
         if(muon_should_filter_test(filter, muon_state.tests[i].name))
@@ -966,7 +966,7 @@ static void muon_run_tests() {
 
 static inline int muon_main(int argc, char** argv);
 inline int muon_main(int argc, char** argv) {
-    muon_stats_total_tests = MUON_CAST(MUON_UInt64, muon_state.num_tests);
+    muon_stats_total_test_suites = MUON_CAST(MUON_UInt64, muon_state.num_test_suites);
     muon_argv0_ = argv[0];
     
     // Start the entire Test Session timer
@@ -976,12 +976,12 @@ inline int muon_main(int argc, char** argv) {
     if(!was_cmdline_read_successful) 
         return muon_cleanup();
 
-    for (MUON_Ll i = 0; i < muon_state.num_tests; i++) {
+    for (MUON_Ll i = 0; i < muon_state.num_test_suites; i++) {
         if(muon_should_filter_test(filter, muon_state.tests[i].name))
             muon_stats_skipped_tests++;
     }
 
-    muon_stats_tests_ran = muon_stats_total_tests - muon_stats_skipped_tests;
+    muon_stats_tests_ran = muon_stats_total_test_suites - muon_stats_skipped_tests;
 
     // Begin tests`
     muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[==========] ");
@@ -1010,7 +1010,7 @@ inline int muon_main(int argc, char** argv) {
     if(!muon_disable_summary) {
         muon_coloured_printf_(MUON_COLOUR_DEFAULT_INTENSIVE_, "\nSummary:\n");
 
-        printf("   Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_tests);
+        printf("   Total test suites:      %" MUON_PRIu64 "\n", muon_stats_total_test_suites);
         printf("   Total suites run:       %" MUON_PRIu64 "\n", muon_stats_tests_ran);
         printf("   Total suites skipped:   %" MUON_PRIu64 "\n", muon_stats_skipped_tests);
         printf("   Total suites failed:    %" MUON_PRIu64 "\n", muon_stats_tests_failed);
@@ -1018,7 +1018,7 @@ inline int muon_main(int argc, char** argv) {
 
     if(muon_stats_tests_failed != 0) {
         muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "FAILED: ");
-        printf("%" MUON_PRIu64 " THESE MANY TESTS IN THESE MANY TEST SUITES failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
+        printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
         muon_clock_print_duration(duration);
         printf("\n");
         
