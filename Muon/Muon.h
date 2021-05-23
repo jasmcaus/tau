@@ -49,6 +49,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     
     _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    
     _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")  
+    _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
 #endif // __clang
 
 /**********************
@@ -233,7 +234,7 @@ static inline double muon_clock() {
 #endif // MUON_WIN_
 }
 
-static void muon_timer_print_duration(double nanoseconds_duration) {
+static void muon_clock_print_duration(double nanoseconds_duration) {
     MUON_UInt64 n; 
     int n_digits = 0; 
     n = (MUON_UInt64)nanoseconds_duration;
@@ -256,7 +257,7 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
         printf("%.2lfs", nanoseconds_duration/1000000000);
 }
 
-// MUON_INITIALIZER
+// MUON_TEST_INITIALIZER
 #if defined(_MSC_VER)
     #if defined(_WIN64)
         #define MUON_SYMBOL_PREFIX
@@ -264,24 +265,11 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
         #define MUON_SYMBOL_PREFIX "_"
     #endif // _WIN64
 
-    #if defined(__clang__)
-        #define MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                               \
-            _Pragma("clang diagnostic push")                                          \
-            _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
-
-        #define MUON_INITIALIZER_END_DISABLE_WARNINGS _Pragma("clang diagnostic pop")
-    #else
-        #define MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS
-        #define MUON_INITIALIZER_END_DISABLE_WARNINGS
-    #endif // __clang__
-
     #pragma section(".CRT$XCU", read)
-    #define MUON_INITIALIZER(f)                                                      \
-    static void __cdecl f(void);                                                     \
-    MUON_INITIALIZER_BEGIN_DISABLE_WARNINGS                                          \
-        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))             \
-        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f; \
-    MUON_INITIALIZER_END_DISABLE_WARNINGS                                            \
+    #define MUON_TEST_INITIALIZER(f)                                                  \
+    static void __cdecl f(void);                                                      \
+        __pragma(comment(linker, "/include:" MUON_SYMBOL_PREFIX #f "_"))              \
+        MUON_C_FUNC __declspec(allocate(".CRT$XCU")) void(__cdecl * f##_)(void) = f;  \
     static void __cdecl f(void)
 #else
     #if defined(__linux__)
@@ -301,7 +289,7 @@ static void muon_timer_print_duration(double nanoseconds_duration) {
         #endif // __clang__
     #endif // __linux__
 
-    #define MUON_INITIALIZER(f)                         \
+    #define MUON_TEST_INITIALIZER(f)                    \
     static void f(void) __attribute__((constructor));   \
     static void f(void)
 #endif // _MSC_VER
@@ -758,7 +746,7 @@ muon_coloured_printf_(int color, const char* fmt, ...) {
             (void)muon_index;                                                           \
             muon_run_##TESTSUITE##_##TESTNAME(muon_result);                             \
     }                                                                                   \
-    MUON_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                          \
+    MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
         const MUON_Ll index = muon_state.num_tests++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
@@ -985,12 +973,12 @@ static void muon_run_tests() {
             muon_stats_tests_failed++;
             muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "[  FAILED  ] ");
             muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
-            muon_timer_print_duration(duration);
+            muon_clock_print_duration(duration);
             printf(")\n");
         } else {
             muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "[       OK ] ");
             muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_state.tests[i].name);
-            muon_timer_print_duration(duration);
+            muon_clock_print_duration(duration);
             printf(")\n");
         }
     }
@@ -1055,7 +1043,7 @@ inline int muon_main(int argc, char** argv) {
     if(muon_stats_tests_failed != 0) {
         muon_coloured_printf_(MUON_COLOUR_RED_INTENSIVE_, "FAILED: ");
         printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muon_stats_tests_failed, muon_stats_tests_ran - muon_stats_tests_failed);
-        muon_timer_print_duration(duration);
+        muon_clock_print_duration(duration);
         printf("\n");
         
         for (MUON_Ll i = 0; i < muon_stats_failed_testcases_length; i++) {
@@ -1065,7 +1053,7 @@ inline int muon_main(int argc, char** argv) {
         MUON_UInt64 total_tests_passed = muon_stats_tests_ran - muon_stats_tests_failed;
         muon_coloured_printf_(MUON_COLOUR_GREEN_INTENSIVE_, "SUCCESS: ");
         printf("%" MUON_PRIu64 " test suites passed in ", total_tests_passed);
-        muon_timer_print_duration(duration);
+        muon_clock_print_duration(duration);
         printf("\n");
     }
 
