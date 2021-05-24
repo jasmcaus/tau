@@ -105,7 +105,7 @@ jobs:
 #         shell: bash
 #         if: matrix.compiler == 'clang'
 #         run: |
-#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDTESTS=On
+#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On
 
 #       - name: CMake (Clang Cl)
 #         shell: bash
