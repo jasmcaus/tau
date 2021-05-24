@@ -44,7 +44,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Determine if Muon is built as a subproject (using add_subdirectory) or if it is the main project being built
 set(IS_MAIN_PROJECT OFF)
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(IS_MAIN_PROJECT ON)
 endif()
 
@@ -55,7 +55,8 @@ if (POLICY CMP0077)
 endif()
 
 
-option(MUON_BUILDTESTS "Build unit tests." ${IS_MAIN_PROJECT})
+option(MUON_BUILDINTERNALTESTS "Build unit tests." ${IS_MAIN_PROJECT})
+option(MUON_BUILDTHIRDPARTYTESTS "Build third party tests." OFF})
 option(MUON_USE_CI "Enable CI Build Targets" OFF)
 option(MUON_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
@@ -63,8 +64,10 @@ if(MUON_USE_CI)
     include(cmake/CI.cmake)
 endif()
 
+
 if (MUON_HIDE_INTERNAL_SYMBOLS)
     set(CMAKE_C_VISIBILITY_PRESET hidden)
+    set(CMAKE_CXX_VISIBILITY_PRESET hidden)
     set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
 
@@ -77,7 +80,7 @@ endif()
 # In case of Makefiles, if the user does not setup CMAKE_BUILD_TYPE, assume it's Release: 
 if(CMAKE_GENERATOR MATCHES "Makefiles|Ninja" AND "${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "Build type not set - defaulting to Release")
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build from: Debug Release." FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build from: [Debug, Release, RelWithDebInfo, MinSizeRel]." FORCE)
 endif()
 
 # ------ A List of Compiler Flags ------
@@ -305,9 +308,8 @@ install(
     DESTINATION include
 )
 
-# Building Tests
-if(MUON_BUILDTESTS)
-    include(CTest)
-    enable_testing()
+# If at least one test option is ON, we need to enter the `test` directory
+# The relevant options will be parsed and the appropriate tests will be called
+if(MUON_BUILDINTERNALTESTS OR MUON_BUILDTHIRDPARTYTESTS)
     add_subdirectory(test)
 endif()
