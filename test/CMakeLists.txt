@@ -8,20 +8,15 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(MUON_TEST    "MuonInternalTests")
+include(CTest)
+enable_testing()
 
-add_executable(
-    ${MUON_TEST}
-    main.c 
-    test.c
-    test.cpp
-)
+# ------ Internal Tests  ------
+if(MUON_BUILDINTERNALTESTS)
+    add_subdirectory(InternalTests)
+endif() # MUON_BUILDINTERNALTESTS
 
-target_include_directories(
-    ${MUON_TEST} 
-    PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-# The Muon INTERFACE library
-target_link_libraries(${MUON_TEST} ${PROJECT_NAME})
+# ------ Third-Party Tests  ------
+if(MUON_BUILDTHIRDPARTYTESTS)
+    add_subdirectory(thirdparty)
+endif() # MUON_BUILDTHIRDPARTYTESTS
