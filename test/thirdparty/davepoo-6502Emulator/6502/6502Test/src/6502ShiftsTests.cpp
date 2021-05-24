@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include <Muon/Muon.h>
 #include "m6502.h"
 
 class M6502ShiftsTests : public testing::Test
