@@ -79,7 +79,7 @@ endif()
 # ------Compiler and linker options ------
 # In case of Makefiles, if the user does not setup CMAKE_BUILD_TYPE, assume it's Release: 
 if(CMAKE_GENERATOR MATCHES "Makefiles|Ninja" AND "${CMAKE_BUILD_TYPE}" STREQUAL "")
-    message(STATUS "Build type not set - defaulting to Release")
+    message(STATUS "[INFO] Build type not set - defaulting to Release")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build from: [Debug, Release, RelWithDebInfo, MinSizeRel]." FORCE)
 endif()
 

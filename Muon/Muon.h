@@ -771,16 +771,54 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
         muon_test_state.tests = MUON_PTRCAST(                                                \
-            struct muon_test_s* ,                                                       \
-            muon_realloc(MUON_PTRCAST(void* , muon_test_state.tests),                        \
-                        sizeof(struct muon_test_s) *                                    \
-                            muon_test_state.num_test_suites));                                     \
+                                    struct muon_test_s* ,                                                       \
+                                    muon_realloc(MUON_PTRCAST(void* , muon_test_state.tests), \
+                                                sizeof(struct muon_test_s) *             \
+                                                    muon_test_state.num_test_suites));       \
         muon_test_state.tests[index].func = &muon_##TESTSUITE##_##TESTNAME;                  \
         muon_test_state.tests[index].name = name;                                            \
         muon_test_state.tests[index].index = 0;                                              \
         MUON_SNPRINTF(name, name_size, "%s", name_part);                                \
     }                                                                                   \
     void muon_run_##TESTSUITE##_##TESTNAME(int* muon_result)
+
+
+#define TEST_F_SETUP(FIXTURE)                                                 \
+    static void muon_f_setup_##FIXTURE(int* muon_result, struct FIXTURE* muon)
+
+#define TEST_F_TEARDOWN(FIXTURE)                                              \
+    static void muon_f_teardown_##FIXTURE(int* muon_result, struct FIXTURE* muon)
+
+#define TEST_F(FIXTURE, NAME)                                                 \
+    MUON_EXTERN struct muon_test_state_s muon_test_state;                                 \
+    static void muon_f_setup_##FIXTURE(int* , struct FIXTURE*);                \
+    static void muon_f_teardown_##FIXTURE(int* , struct FIXTURE*);             \
+    static void muon_run_##FIXTURE##_##NAME(int* , struct FIXTURE*);           \
+    static void muon_f_##FIXTURE##_##NAME(int* muon_result, MUON_Ll muon_index) {                 \
+        struct FIXTURE fixture;                                                    \
+        (void)muon_index;                                                         \
+        memset(&fixture, 0, sizeof(fixture));                                      \
+        muon_f_setup_##FIXTURE(muon_result, &fixture);                           \
+        if (*muon_result != 0) { return; }                                              \
+\
+        muon_run_##FIXTURE##_##NAME(muon_result, &fixture);                      \
+        muon_f_teardown_##FIXTURE(muon_result, &fixture);                        \
+    }                                                                            \
+    MUON_TEST_INITIALIZER(muon_register_##FIXTURE##_##NAME) {                       \
+        const MUON_Ll index = muon_test_state.num_test_suites++;                           \
+        const char* name_part = #FIXTURE "." #NAME;                                \
+        const MUON_Ll name_size = strlen(name_part) + 1;                            \
+        char* name = MUON_PTRCAST(char* , malloc(name_size));                    \
+        muon_test_state.tests = MUON_PTRCAST(                                        \
+                                    struct muon_test_s*,                                           \
+                                    muon_realloc(MUON_PTRCAST(void *, muon_test_state.tests),               \
+                                                                sizeof(struct muon_test_s) *               \
+                                                                        muon_test_state.num_test_suites));   \
+        muon_test_state.tests[index].func = &muon_f_##FIXTURE##_##NAME;               \
+        muon_test_state.tests[index].name = name;                                      \
+        MUON_SNPRINTF(name, name_size, "%s", name_part);                          \
+    }                                                                            \
+    void muon_run_##FIXTURE##_##NAME(int* muon_result, struct FIXTURE* muon)
 
 
 MUON_WEAK int muon_should_filter_test(const char* filter, const char* testcase);
