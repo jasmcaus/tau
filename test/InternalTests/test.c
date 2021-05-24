@@ -165,3 +165,26 @@ TEST(c11, no_double_eval) {
     REQUIRE_EQ(i++, 0);
     REQUIRE_EQ(i, 1);
 }
+
+struct MyTestF {
+  int foo;
+};
+
+TEST_F_SETUP(MyTestF) {
+    REQUIRE_EQ(0, muon->foo);
+    muon->foo = 42;
+}
+
+TEST_F_TEARDOWN(MyTestF) { 
+    REQUIRE_EQ(13, muon->foo); 
+}
+
+TEST_F(MyTestF, c) {
+    REQUIRE_EQ(42, muon->foo);
+    muon->foo = 13;
+}
+
+TEST_F(MyTestF, c2) {
+    REQUIRE_EQ(42, muon->foo);
+    muon->foo = 13;
+}

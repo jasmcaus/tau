@@ -18,11 +18,11 @@ public:
 
 	void ExpectUnaffectedRegisters( m6502::CPU CPUBefore )
 	{
-		EXPECT_EQ( CPUBefore.Flag.C, cpu.Flag.C );
-		EXPECT_EQ( CPUBefore.Flag.I, cpu.Flag.I );
-		EXPECT_EQ( CPUBefore.Flag.D, cpu.Flag.D );
-		EXPECT_EQ( CPUBefore.Flag.B, cpu.Flag.B );
-		EXPECT_EQ( CPUBefore.Flag.V, cpu.Flag.V );
+		CHECK_EQ( CPUBefore.Flag.C, cpu.Flag.C );
+		CHECK_EQ( CPUBefore.Flag.I, cpu.Flag.I );
+		CHECK_EQ( CPUBefore.Flag.D, cpu.Flag.D );
+		CHECK_EQ( CPUBefore.Flag.B, cpu.Flag.B );
+		CHECK_EQ( CPUBefore.Flag.V, cpu.Flag.V );
 	}
 };
 
@@ -43,11 +43,11 @@ TEST_F( M6502TransferRegistgerTests, TAXCanTransferANonNegativeNonZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_EQ( cpu.X, 0x42 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_EQ( cpu.X, 0x42 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -68,11 +68,11 @@ TEST_F( M6502TransferRegistgerTests, TAXCanTransferANonNegativeZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x0 );
-	EXPECT_EQ( cpu.X, 0x0 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x0 );
+	CHECK_EQ( cpu.X, 0x0 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -93,11 +93,11 @@ TEST_F( M6502TransferRegistgerTests, TAXCanTransferANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10001011 );
-	EXPECT_EQ( cpu.X, 0b10001011 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10001011 );
+	CHECK_EQ( cpu.X, 0b10001011 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -118,11 +118,11 @@ TEST_F( M6502TransferRegistgerTests, TAYCanTransferANonNegativeNonZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_EQ( cpu.Y, 0x42 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_EQ( cpu.Y, 0x42 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -143,11 +143,11 @@ TEST_F( M6502TransferRegistgerTests, TAYCanTransferANonNegativeZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x0 );
-	EXPECT_EQ( cpu.Y, 0x0 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x0 );
+	CHECK_EQ( cpu.Y, 0x0 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -168,11 +168,11 @@ TEST_F( M6502TransferRegistgerTests, TAYCanTransferANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10001011 );
-	EXPECT_EQ( cpu.Y, 0b10001011 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10001011 );
+	CHECK_EQ( cpu.Y, 0b10001011 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -193,11 +193,11 @@ TEST_F( M6502TransferRegistgerTests, TXACanTransferANonNegativeNonZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x42 );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x42 );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -218,11 +218,11 @@ TEST_F( M6502TransferRegistgerTests, TXACanTransferANonNegativeZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x0 );
-	EXPECT_EQ( cpu.A, 0x0 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x0 );
+	CHECK_EQ( cpu.A, 0x0 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -243,11 +243,11 @@ TEST_F( M6502TransferRegistgerTests, TXACanTransferANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0b10001011 );
-	EXPECT_EQ( cpu.A, 0b10001011 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0b10001011 );
+	CHECK_EQ( cpu.A, 0b10001011 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -268,11 +268,11 @@ TEST_F( M6502TransferRegistgerTests, TYACanTransferANonNegativeNonZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0x42 );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0x42 );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -293,11 +293,11 @@ TEST_F( M6502TransferRegistgerTests, TYACanTransferANonNegativeZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0x0 );
-	EXPECT_EQ( cpu.A, 0x0 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0x0 );
+	CHECK_EQ( cpu.A, 0x0 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }
 
@@ -318,10 +318,10 @@ TEST_F( M6502TransferRegistgerTests, TYACanTransferANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0b10001011 );
-	EXPECT_EQ( cpu.A, 0b10001011 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0b10001011 );
+	CHECK_EQ( cpu.A, 0b10001011 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedRegisters( CPUCopy );
 }

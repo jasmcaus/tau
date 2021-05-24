@@ -46,15 +46,15 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramIntoTheCorrectAreaOfMemory )
 	cpu.LoadPrg( TestPrg, NumBytesInPrg, mem );
 
 	//then:
-	EXPECT_EQ( mem[0x0FFF], 0x0 );
-	EXPECT_EQ( mem[0x1000], 0xA9 );
-	EXPECT_EQ( mem[0x1001], 0xFF );
-	EXPECT_EQ( mem[0x1002], 0x85 );
+	CHECK_EQ( mem[0x0FFF], 0x0 );
+	CHECK_EQ( mem[0x1000], 0xA9 );
+	CHECK_EQ( mem[0x1001], 0xFF );
+	CHECK_EQ( mem[0x1002], 0x85 );
 	//....
-	EXPECT_EQ( mem[0x1009], 0x4C );
-	EXPECT_EQ( mem[0x100A], 0x02 );
-	EXPECT_EQ( mem[0x100B], 0x10 );
-	EXPECT_EQ( mem[0x100C], 0x0 );
+	CHECK_EQ( mem[0x1009], 0x4C );
+	CHECK_EQ( mem[0x100A], 0x02 );
+	CHECK_EQ( mem[0x100B], 0x10 );
+	CHECK_EQ( mem[0x100C], 0x0 );
 }
 
 TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramAndExecuteIt )

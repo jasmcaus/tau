@@ -18,9 +18,9 @@ public:
 
 	void ExpectUnaffectedRegisters( m6502::CPU CPUBefore )
 	{
-		EXPECT_EQ( CPUBefore.Flag.I, cpu.Flag.I );
-		EXPECT_EQ( CPUBefore.Flag.D, cpu.Flag.D );
-		EXPECT_EQ( CPUBefore.Flag.B, cpu.Flag.B );
+		CHECK_EQ( CPUBefore.Flag.I, cpu.Flag.I );
+		CHECK_EQ( CPUBefore.Flag.D, cpu.Flag.D );
+		CHECK_EQ( CPUBefore.Flag.B, cpu.Flag.B );
 	}
 
 	struct ADCTestData
@@ -70,12 +70,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -109,12 +109,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -148,12 +148,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -184,12 +184,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -221,12 +221,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -259,12 +259,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -299,12 +299,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
@@ -339,12 +339,12 @@ public:
 		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 		// then:
-		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.Answer );
-		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
-		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
-		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
-		EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+		CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+		CHECK_EQ( cpu.A, Test.Answer );
+		CHECK_EQ( cpu.Flag.C, Test.ExpectC );
+		CHECK_EQ( cpu.Flag.Z, Test.ExpectZ );
+		CHECK_EQ( cpu.Flag.N, Test.ExpectN );
+		CHECK_EQ( cpu.Flag.V, Test.ExpectV );
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 };

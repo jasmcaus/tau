@@ -57,11 +57,11 @@ static void VerfifyUnmodifiedFlagsFromLoadRegister(
 	const m6502::CPU& cpu, 
 	const m6502::CPU& CPUCopy )
 {
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
 }
 
 TEST_F( M6502LoadRegisterTests, TheCPUDoesNothingWhenWeExecuteZeroCycles )
@@ -74,7 +74,7 @@ TEST_F( M6502LoadRegisterTests, TheCPUDoesNothingWhenWeExecuteZeroCycles )
 	s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, 0 );
+	CHECK_EQ( CyclesUsed, 0 );
 }
 
 TEST_F( M6502LoadRegisterTests, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstruction )
@@ -90,7 +90,7 @@ TEST_F( M6502LoadRegisterTests, CPUCanExecuteMoreCyclesThanRequestedIfRequiredBy
 	s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, 2 );
+	CHECK_EQ( CyclesUsed, 2 );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterImmediate( 
@@ -107,10 +107,10 @@ void M6502LoadRegisterTests::TestLoadRegisterImmediate(
 	s32 CyclesUsed = cpu.Execute( 2, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x84 );
-	EXPECT_EQ( CyclesUsed, 2 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x84 );
+	CHECK_EQ( CyclesUsed, 2 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -147,10 +147,10 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPage(
 	s32 CyclesUsed = cpu.Execute( 3, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, 3 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, 3 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -185,8 +185,8 @@ TEST_F( M6502LoadRegisterTests, LDAImmediateCanAffectTheZeroFlag )
 	cpu.Execute( 2, mem );
 
 	//then:
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -206,10 +206,10 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPageX(
 	s32 CyclesUsed = cpu.Execute( 4, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, 4 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, 4 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -229,10 +229,10 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPageY(
 	s32 CyclesUsed = cpu.Execute( 4, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, 4 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, 4 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -268,10 +268,10 @@ TEST_F( M6502LoadRegisterTests, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItW
 	s32 CyclesUsed = cpu.Execute( 4, mem );
 
 	//then:
-	EXPECT_EQ( cpu.A, 0x37 );
-	EXPECT_EQ( CyclesUsed, 4 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.A, 0x37 );
+	CHECK_EQ( CyclesUsed, 4 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -293,10 +293,10 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsolute(
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -337,10 +337,10 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteX(
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -363,10 +363,10 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteY(
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -406,10 +406,10 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteXWhenCrossingPage(
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -449,10 +449,10 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteYWhenCrossingPage(
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -486,10 +486,10 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectXCanLoadAValueIntoTheARegister )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.A, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.A, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -511,10 +511,10 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegister )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.A, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.A, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
@@ -535,9 +535,9 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItC
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( cpu.A, 0x37 );
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.A, 0x37 );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }

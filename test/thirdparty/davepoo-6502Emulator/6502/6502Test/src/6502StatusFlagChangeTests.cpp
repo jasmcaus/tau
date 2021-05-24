@@ -31,14 +31,14 @@ TEST_F( M6502StatusFlagChangeTests, CLCWillClearTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, SECWillSetTheCarryFlag )
@@ -55,14 +55,14 @@ TEST_F( M6502StatusFlagChangeTests, SECWillSetTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, CLDWillClearTheDecimalFlag )
@@ -79,14 +79,14 @@ TEST_F( M6502StatusFlagChangeTests, CLDWillClearTheDecimalFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.D );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.D );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, SEDWillSetTheDecimalFlag )
@@ -103,14 +103,14 @@ TEST_F( M6502StatusFlagChangeTests, SEDWillSetTheDecimalFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_TRUE( cpu.Flag.D );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_TRUE( cpu.Flag.D );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, CLIWillClearTheInterruptFlag )
@@ -127,14 +127,14 @@ TEST_F( M6502StatusFlagChangeTests, CLIWillClearTheInterruptFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.I );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.I );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, SEIWillSetTheInterruptFlag )
@@ -151,14 +151,14 @@ TEST_F( M6502StatusFlagChangeTests, SEIWillSetTheInterruptFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_TRUE( cpu.Flag.I );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_TRUE( cpu.Flag.I );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
 TEST_F( M6502StatusFlagChangeTests, CLVWillClearTheOverflowFlag )
@@ -175,13 +175,13 @@ TEST_F( M6502StatusFlagChangeTests, CLVWillClearTheOverflowFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_FALSE( cpu.Flag.V );
-	EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
-	EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-	EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-	EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-	EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-	EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_FALSE( cpu.Flag.V );
+	CHECK_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+	CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+	CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+	CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 

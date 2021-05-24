@@ -34,11 +34,11 @@ TEST_F( M6502ShiftsTests, ASLCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 2 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );	
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 2 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );	
 }
 
 TEST_F( M6502ShiftsTests, ASLCanShiftANegativeValue )
@@ -58,11 +58,11 @@ TEST_F( M6502ShiftsTests, ASLCanShiftANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10000100 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10000100 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftTheValueOfOne )
@@ -83,11 +83,11 @@ TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 2 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 2 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftANegativeValue )
@@ -108,11 +108,11 @@ TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0b10000100 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0b10000100 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftTheValueOfOne )
@@ -134,11 +134,11 @@ TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 2 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 2 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftANegativeValue )
@@ -160,11 +160,11 @@ TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0b10000100 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0b10000100 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLAbsCanShiftTheValueOfOne )
@@ -186,11 +186,11 @@ TEST_F( M6502ShiftsTests, ASLAbsCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 2 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 2 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLAbsCanShiftANegativeValue )
@@ -212,11 +212,11 @@ TEST_F( M6502ShiftsTests, ASLAbsCanShiftANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0b10000100 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0b10000100 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLAbsXCanShiftTheValueOfOne )
@@ -239,11 +239,11 @@ TEST_F( M6502ShiftsTests, ASLAbsXCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 2 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 2 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLAbsXCanShiftANegativeValue )
@@ -266,11 +266,11 @@ TEST_F( M6502ShiftsTests, ASLAbsXCanShiftANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0b10000100 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0b10000100 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRCanShiftTheValueOfOne )
@@ -290,11 +290,11 @@ TEST_F( M6502ShiftsTests, LSRCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRCanShiftAZeroIntoTheCarryFlag )
@@ -314,11 +314,11 @@ TEST_F( M6502ShiftsTests, LSRCanShiftAZeroIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 4 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 4 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftTheValueOfOne )
@@ -339,11 +339,11 @@ TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftAZeroIntoTheCarryFlag )
@@ -364,11 +364,11 @@ TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftAZeroIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 4 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 4 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftTheValueOfOne )
@@ -390,11 +390,11 @@ TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042+0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042+0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftAZeroIntoTheCarryFlag )
@@ -416,11 +416,11 @@ TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftAZeroIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042+ 0x10], 4 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042+ 0x10], 4 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRAbsCanShiftTheValueOfOne )
@@ -442,11 +442,11 @@ TEST_F( M6502ShiftsTests, LSRAbsCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRAbsCanShiftAZeroIntoTheCarryFlag )
@@ -468,11 +468,11 @@ TEST_F( M6502ShiftsTests, LSRAbsCanShiftAZeroIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 4 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 4 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRAbsXCanShiftTheValueOfOne )
@@ -495,11 +495,11 @@ TEST_F( M6502ShiftsTests, LSRAbsXCanShiftTheValueOfOne )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, LSRAbsXCanShiftAZeroIntoTheCarryFlag )
@@ -522,11 +522,11 @@ TEST_F( M6502ShiftsTests, LSRAbsXCanShiftAZeroIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 4 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 4 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
  // ------------ ROL ----------------
@@ -548,11 +548,11 @@ TEST_F( M6502ShiftsTests, ROLCanShiftABitOutOfTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 1 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 1 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLCanShiftABitIntoTheCarryFlag )
@@ -572,11 +572,11 @@ TEST_F( M6502ShiftsTests, ROLCanShiftABitIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLCanShiftZeroWithNoCarry )
@@ -596,11 +596,11 @@ TEST_F( M6502ShiftsTests, ROLCanShiftZeroWithNoCarry )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLCanShiftAValueThatResultInANegativeValue )
@@ -620,11 +620,11 @@ TEST_F( M6502ShiftsTests, ROLCanShiftAValueThatResultInANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b11100111 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b11100111 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // ---------- Zero Page -------------
@@ -647,11 +647,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitOutOfTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 1 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 1 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitIntoTheCarryFlag )
@@ -672,11 +672,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftZeroWithNoCarry )
@@ -697,11 +697,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftZeroWithNoCarry )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftAValueThatResultInANegativeValue )
@@ -722,11 +722,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftAValueThatResultInANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0b11100111 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0b11100111 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // ------------- Zero Page X --------------
@@ -750,11 +750,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitOutOfTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042+0x10], 1 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042+0x10], 1 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitIntoTheCarryFlag )
@@ -776,11 +776,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftZeroWithNoCarry )
@@ -802,11 +802,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftZeroWithNoCarry )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftAValueThatResultInANegativeValue )
@@ -828,11 +828,11 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftAValueThatResultInANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0b11100111 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0b11100111 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // ------------- Absolute --------------
@@ -856,11 +856,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftABitOutOfTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 1 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 1 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftABitIntoTheCarryFlag )
@@ -882,11 +882,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftABitIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftZeroWithNoCarry )
@@ -908,11 +908,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftZeroWithNoCarry )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftAValueThatResultInANegativeValue )
@@ -934,11 +934,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftAValueThatResultInANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0b11100111 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0b11100111 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // ------------- Absolute X --------------
@@ -963,11 +963,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftABitOutOfTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 1 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 1 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftABitIntoTheCarryFlag )
@@ -990,11 +990,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftABitIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftZeroWithNoCarry )
@@ -1017,11 +1017,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftZeroWithNoCarry )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftAValueThatResultInANegativeValue )
@@ -1044,11 +1044,11 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftAValueThatResultInANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0b11100111 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0b11100111 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // --------------- ROR --------------------
@@ -1070,11 +1070,11 @@ TEST_F( M6502ShiftsTests, RORCanShiftTheCarryFlagIntoTheOperand )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10000000 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORCanShiftAValueIntoTheCarryFlag )
@@ -1094,11 +1094,11 @@ TEST_F( M6502ShiftsTests, RORCanShiftAValueIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORCanRotateANumber )
@@ -1118,11 +1118,11 @@ TEST_F( M6502ShiftsTests, RORCanRotateANumber )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10110110 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10110110 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // ZeroPage
@@ -1145,11 +1145,11 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanShiftTheCarryFlagIntoTheOperand )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0b10000000 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORZeroPageCanShiftAValueIntoTheCarryFlag )
@@ -1170,11 +1170,11 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanShiftAValueIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORZeroPageCanRotateANumber )
@@ -1195,11 +1195,11 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanRotateANumber )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0b10110110 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0b10110110 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // Zero Page X
@@ -1223,11 +1223,11 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanShiftTheCarryFlagIntoTheOperand )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0b10000000 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORZeroXPageCanShiftAValueIntoTheCarryFlag )
@@ -1249,11 +1249,11 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanShiftAValueIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORZeroXPageCanRotateANumber )
@@ -1275,11 +1275,11 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanRotateANumber )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0b10110110 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0b10110110 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // Absolute
@@ -1303,11 +1303,11 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftTheCarryFlagIntoTheOperand )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0b10000000 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftAValueIntoTheCarryFlag )
@@ -1329,11 +1329,11 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftAValueIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORAbsolutePageCanRotateANumber )
@@ -1355,11 +1355,11 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanRotateANumber )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0b10110110 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0b10110110 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 // Absolute X
@@ -1384,11 +1384,11 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftTheCarryFlagIntoTheOperand )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0b10000000 );
+	CHECK_FALSE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftAValueIntoTheCarryFlag )
@@ -1411,11 +1411,11 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftAValueIntoTheCarryFlag )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanRotateANumber )
@@ -1438,9 +1438,9 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanRotateANumber )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0b10110110 );
-	EXPECT_TRUE( cpu.Flag.C );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0b10110110 );
+	CHECK_TRUE( cpu.Flag.C );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }

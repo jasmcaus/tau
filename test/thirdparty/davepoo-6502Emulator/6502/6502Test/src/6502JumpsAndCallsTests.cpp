@@ -35,9 +35,9 @@ TEST_F( M6502JumpsAndCallsTests, CanJumpToASubroutineAndJumpBackAgain )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_EQ( cpu.SP, CPUCopy.SP );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_EQ( cpu.SP, CPUCopy.SP );
 }
 
 TEST_F( M6502JumpsAndCallsTests, JSRDoesNotAffectTheProcessorStatus )
@@ -55,10 +55,10 @@ TEST_F( M6502JumpsAndCallsTests, JSRDoesNotAffectTheProcessorStatus )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_NE( cpu.SP, CPUCopy.SP );
-	EXPECT_EQ( cpu.PC, 0x8000 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_NE( cpu.SP, CPUCopy.SP );
+	CHECK_EQ( cpu.PC, 0x8000 );
 }
 
 TEST_F( M6502JumpsAndCallsTests, RTSDoesNotAffectTheProcessorStatus )
@@ -77,9 +77,9 @@ TEST_F( M6502JumpsAndCallsTests, RTSDoesNotAffectTheProcessorStatus )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( cpu.PC, 0xFF03 );
 }
 
 TEST_F( M6502JumpsAndCallsTests, JumpAbsoluteCanJumpToAnNewLocationInTheProgram )
@@ -97,10 +97,10 @@ TEST_F( M6502JumpsAndCallsTests, JumpAbsoluteCanJumpToAnNewLocationInTheProgram 
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_EQ( cpu.SP, CPUCopy.SP );
-	EXPECT_EQ( cpu.PC, 0x8000 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( cpu.SP, CPUCopy.SP );
+	CHECK_EQ( cpu.PC, 0x8000 );
 }
 
 TEST_F( M6502JumpsAndCallsTests, JumpIndirectCanJumpToAnNewLocationInTheProgram )
@@ -120,8 +120,8 @@ TEST_F( M6502JumpsAndCallsTests, JumpIndirectCanJumpToAnNewLocationInTheProgram 
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_EQ( cpu.SP, CPUCopy.SP );
-	EXPECT_EQ( cpu.PC, 0x9000 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( cpu.SP, CPUCopy.SP );
+	CHECK_EQ( cpu.PC, 0x9000 );
 }

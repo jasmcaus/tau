@@ -33,10 +33,10 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferTheStackPointerToXRegister )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x01 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x01 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502StackOperationsTests, TSXCanTransferAZeroStackPointerToXRegister )
@@ -55,10 +55,10 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferAZeroStackPointerToXRegister )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x00 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x00 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502StackOperationsTests, TSXCanTransferANegativeStackPointerToXRegister )
@@ -77,10 +77,10 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferANegativeStackPointerToXRegiste
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0b10000000 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0b10000000 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502StackOperationsTests, TXSCanTransferXRegisterToTheStackPointer )
@@ -98,9 +98,9 @@ TEST_F( M6502StackOperationsTests, TXSCanTransferXRegisterToTheStackPointer )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.SP, 0xFF );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.SP, 0xFF );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502StackOperationsTests, PHACanPushARegsiterOntoTheStack )
@@ -117,10 +117,10 @@ TEST_F( M6502StackOperationsTests, PHACanPushARegsiterOntoTheStack )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[cpu.SPToAddress()+1] ,cpu.A );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_EQ( cpu.SP, 0xFE );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[cpu.SPToAddress()+1] ,cpu.A );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( cpu.SP, 0xFE );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegsiter )
@@ -139,9 +139,9 @@ TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegsiter 
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x42 );
-	EXPECT_EQ( cpu.SP, 0xFF );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x42 );
+	CHECK_EQ( cpu.SP, 0xFF );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegsiter )
@@ -162,11 +162,11 @@ TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegsi
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x00 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
-	EXPECT_EQ( cpu.SP, 0xFF );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x00 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	CHECK_EQ( cpu.SP, 0xFF );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheARegsiter )
@@ -187,11 +187,11 @@ TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheAR
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0b10000001 );
-	EXPECT_TRUE( cpu.Flag.N );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_EQ( cpu.SP, 0xFF );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0b10000001 );
+	CHECK_TRUE( cpu.Flag.N );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_EQ( cpu.SP, 0xFF );
 }
 
 TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
@@ -208,11 +208,11 @@ TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[cpu.SPToAddress() + 1], 
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[cpu.SPToAddress() + 1], 
 		0xCC | CPU::UnusedFlagBit | CPU::BreakFlagBit );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
-	EXPECT_EQ( cpu.SP, 0xFE );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( cpu.SP, 0xFE );
 }
 
 TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
@@ -230,7 +230,7 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 
 	// then:
 	Word AddPSOnStack = cpu.SPToAddress() + 1;
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
 
 	// https://wiki.nesdev.com/w/index.php/Status_flags
 	//Two interrupts (/IRQ and /NMI) and two instructions (PHP and BRK) push 
@@ -240,7 +240,7 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 	// and place where the B flag actually exists: not in the status register 
 	// itself, but in bit 4 of the copy that is written to the stack. 
 	const Byte FlagsOnStack = CPU::UnusedFlagBit | CPU::BreakFlagBit;
-	EXPECT_EQ( mem[AddPSOnStack], FlagsOnStack );
+	CHECK_EQ( mem[AddPSOnStack], FlagsOnStack );
 }
 
 TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorStatus )
@@ -259,8 +259,8 @@ TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorS
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, 0x42 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, 0x42 );
 }
 
 TEST_F( M6502StackOperationsTests, PLPClearsBits4And5WhenPullingFromTheStack )
@@ -279,6 +279,6 @@ TEST_F( M6502StackOperationsTests, PLPClearsBits4And5WhenPullingFromTheStack )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PS, 0 );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PS, 0 );
 }

@@ -20,11 +20,11 @@ public:
 		const m6502::CPU& cpu,
 		const m6502::CPU& CPUCopy )
 	{
-		EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
-		EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
-		EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D );
-		EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
-		EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+		CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+		CHECK_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+		CHECK_EQ( cpu.Flag.D, CPUCopy.Flag.D );
+		CHECK_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+		CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
 	}
 
 	enum class ELogicalOp
@@ -80,10 +80,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x84, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, 2 );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, 2 );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -114,10 +114,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, 3 );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, 3 );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -149,10 +149,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, 4 );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, 4 );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -186,10 +186,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -224,10 +224,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -262,10 +262,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -299,10 +299,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -336,10 +336,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -375,10 +375,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -414,10 +414,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -452,10 +452,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 
@@ -488,10 +488,10 @@ public:
 		//then:
 		const Byte ExpectedResult = DoLogicalOp( 0xCC, 0x37, LogicalOp );
 		const bool ExpectedNegative = (ExpectedResult & 0b10000000) > 0;
-		EXPECT_EQ( cpu.A, ExpectedResult );
-		EXPECT_EQ( CyclesUsed, 4 );
-		EXPECT_FALSE( cpu.Flag.Z );
-		EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
+		CHECK_EQ( cpu.A, ExpectedResult );
+		CHECK_EQ( CyclesUsed, 4 );
+		CHECK_FALSE( cpu.Flag.Z );
+		CHECK_EQ( cpu.Flag.N, ExpectedNegative );
 		VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 	}
 };
@@ -545,8 +545,8 @@ TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorImmediateCanAffectZeroFlag )
 	cpu.Execute( 2, mem );
 
 	//then:
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	VerfifyUnmodifiedFlagsFromLogicalOpInstruction( cpu, CPUCopy );
 }
 
@@ -715,11 +715,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPage )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0xCC );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.V );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0xCC );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.V );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZero )
@@ -738,11 +738,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZero )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0xCC );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.V );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0xCC );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.V );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Zero )
@@ -761,11 +761,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Zero )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x33 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.V );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x33 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.V );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Mixed )
@@ -783,8 +783,8 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Mixed )
 	cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_TRUE( cpu.Flag.V );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_TRUE( cpu.Flag.V );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsolute )
@@ -804,11 +804,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsolute )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0xCC );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.V );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0xCC );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.V );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZero )
@@ -828,11 +828,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZero )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0xCC );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.V );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0xCC );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.V );
+	CHECK_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Zero )
@@ -852,11 +852,11 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Zero )
 	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A, 0x33 );
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.V );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.A, 0x33 );
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.V );
+	CHECK_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Mixed )
@@ -876,6 +876,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Mixed )
 	cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	EXPECT_FALSE( cpu.Flag.V );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_FALSE( cpu.Flag.V );
+	CHECK_TRUE( cpu.Flag.N );
 }

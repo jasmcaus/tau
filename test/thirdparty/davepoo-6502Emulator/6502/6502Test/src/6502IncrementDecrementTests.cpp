@@ -18,11 +18,11 @@ public:
 
 	void ExpectUnaffectedFlags( m6502::CPU CPUBefore )
 	{
-		EXPECT_EQ( CPUBefore.Flag.C, cpu.Flag.C );
-		EXPECT_EQ( CPUBefore.Flag.I, cpu.Flag.I );
-		EXPECT_EQ( CPUBefore.Flag.D, cpu.Flag.D );
-		EXPECT_EQ( CPUBefore.Flag.B, cpu.Flag.B );
-		EXPECT_EQ( CPUBefore.Flag.V, cpu.Flag.V );
+		CHECK_EQ( CPUBefore.Flag.C, cpu.Flag.C );
+		CHECK_EQ( CPUBefore.Flag.I, cpu.Flag.I );
+		CHECK_EQ( CPUBefore.Flag.D, cpu.Flag.D );
+		CHECK_EQ( CPUBefore.Flag.B, cpu.Flag.B );
+		CHECK_EQ( CPUBefore.Flag.V, cpu.Flag.V );
 	}
 };
 
@@ -42,10 +42,10 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementAZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x1 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x1 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -65,10 +65,10 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrement255 )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0x0 );	//NOTE: does this instruction actually wrap?
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0x0 );	//NOTE: does this instruction actually wrap?
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -88,10 +88,10 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0b10001001 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0b10001001 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -112,10 +112,10 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementAZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0x1 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0x1 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -135,10 +135,10 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrement255 )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0x0 );	//NOTE: does this instruction actually wrap?
-	EXPECT_TRUE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0x0 );	//NOTE: does this instruction actually wrap?
+	CHECK_TRUE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -158,10 +158,10 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0b10001001 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0b10001001 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -182,10 +182,10 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecementAZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0xFF );	//NOTE: Does this wrap?
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0xFF );	//NOTE: Does this wrap?
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -205,10 +205,10 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrement255 )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0xFE );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0xFE );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -228,10 +228,10 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrementANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.Y, 0b10001000 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.Y, 0b10001000 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -251,10 +251,10 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecementAZeroValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0xFF );	//NOTE: Does this wrap?
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0xFF );	//NOTE: Does this wrap?
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -274,10 +274,10 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrement255 )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0xFE );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0xFE );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -297,10 +297,10 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrementANegativeValue )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.X, 0b10001000 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_TRUE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.X, 0b10001000 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -321,10 +321,10 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPage )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0x56 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0x56 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -346,10 +346,10 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPageX )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0x56 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0x56 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -371,10 +371,10 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsolute )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0x56 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0x56 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -397,10 +397,10 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsoluteX )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0x56 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0x56 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -421,10 +421,10 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPage )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042], 0x58 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042], 0x58 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -446,10 +446,10 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPageX )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x0042 + 0x10], 0x58 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x0042 + 0x10], 0x58 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -471,10 +471,10 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsolute )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000], 0x58 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000], 0x58 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 
@@ -497,10 +497,10 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsoluteX )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[0x8000 + 0x10], 0x58 );
-	EXPECT_FALSE( cpu.Flag.Z );
-	EXPECT_FALSE( cpu.Flag.N );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( mem[0x8000 + 0x10], 0x58 );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
 	ExpectUnaffectedFlags( CPUCopy );
 }
 

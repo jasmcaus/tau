@@ -32,9 +32,9 @@ TEST_F( M6502BranchTests, BEQCanBranchForwardsWhenZeroIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQDoesNotBranchForwardsWhenZeroIsNotSet )
@@ -52,9 +52,9 @@ TEST_F( M6502BranchTests, BEQDoesNotBranchForwardsWhenZeroIsNotSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF02 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF02 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchForwardsIntoANewPageWhenZeroIsSet )
@@ -72,9 +72,9 @@ TEST_F( M6502BranchTests, BEQCanBranchForwardsIntoANewPageWhenZeroIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF00 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF00 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSet )
@@ -92,9 +92,9 @@ TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFFCC );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFFCC );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSetFromAssembleCode )
@@ -119,9 +119,9 @@ TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSetFromAssembleCode )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFFCC );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFFCC );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BNECanBranchForwardsWhenZeroIsNotSet )
@@ -139,9 +139,9 @@ TEST_F( M6502BranchTests, BNECanBranchForwardsWhenZeroIsNotSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 
@@ -160,9 +160,9 @@ TEST_F( M6502BranchTests, BCSCanBranchForwardsWhenCarryFlagIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BCCCanBranchForwardsWhenCarryFlagIsNotSet )
@@ -180,9 +180,9 @@ TEST_F( M6502BranchTests, BCCCanBranchForwardsWhenCarryFlagIsNotSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BMICanBranchForwardsWhenNegativeFlagIsSet )
@@ -200,9 +200,9 @@ TEST_F( M6502BranchTests, BMICanBranchForwardsWhenNegativeFlagIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BPLCanBranchForwardsWhenCarryNegativeIsNotSet )
@@ -220,9 +220,9 @@ TEST_F( M6502BranchTests, BPLCanBranchForwardsWhenCarryNegativeIsNotSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BVSCanBranchForwardsWhenOverflowFlagIsSet )
@@ -240,9 +240,9 @@ TEST_F( M6502BranchTests, BVSCanBranchForwardsWhenOverflowFlagIsSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BVCCanBranchForwardsWhenOverflowNegativeIsNotSet )
@@ -260,7 +260,7 @@ TEST_F( M6502BranchTests, BVCCanBranchForwardsWhenOverflowNegativeIsNotSet )
 	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.PC, 0xFF03 );
-	EXPECT_EQ( cpu.PS, CPUCopy.PS );
+	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
+	CHECK_EQ( cpu.PC, 0xFF03 );
+	CHECK_EQ( cpu.PS, CPUCopy.PS );
 }
