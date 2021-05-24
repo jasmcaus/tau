@@ -36,7 +36,7 @@ jobs:
 
       - name: Test
         run: |
-          cd build/test/ ; dir; ./MuonInternalTests
+          cd build/test/InternalTests/ ; dir; ./MuonInternalTests
 
 
   # CMAKE_SYSTEM_VERSION on `windows-2016` _does not_ have version "10.0.18362.0" and hence defaults to a older, but 
@@ -69,7 +69,7 @@ jobs:
         cmake --build build --config ${{ matrix.build_type }} --parallel 10
     - name: Test
       run: |
-        cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+        cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
 
   MSVC2017_latest:
@@ -85,7 +85,7 @@ jobs:
         cmake --build build --config Release --parallel 10
     - name: Test
       run: |
-        cd build/test/Release ; dir; ./MuonInternalTests
+        cd build/test/InternalTests/Release ; dir; ./MuonInternalTests
 
 
   MSVC2019:
@@ -107,7 +107,7 @@ jobs:
 
     - name: Test
       run: |
-        cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+        cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
 
   MSVC2019_latest:
@@ -125,7 +125,7 @@ jobs:
 
     - name: Test
       run: |
-        cd build/test/Release ; dir; ./MuonInternalTests
+        cd build/test/InternalTests/Release ; dir; ./MuonInternalTests
 
 
   Clang-cl-11:
@@ -147,7 +147,7 @@ jobs:
 
       - name: Test
         run: |
-          cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+          cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
 
   
   # Clang:
@@ -173,4 +173,4 @@ jobs:
 
   #     - name: Test
   #       run: |
-  #         cd build/test/ ; dir; ./MuonInternalTests
+  #         cd build/test/InternalTests/ ; dir; ./MuonInternalTests

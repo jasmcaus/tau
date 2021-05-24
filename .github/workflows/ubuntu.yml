@@ -33,7 +33,7 @@ jobs:
 
       - name: Test
         run: |
-          cd build/test/ ; dir;  ./MuonInternalTests
+          cd build/test/InternalTests ; dir;  ./MuonInternalTests
 
 
   Clang:
@@ -58,4 +58,4 @@ jobs:
       
       - name: Test
         run: |
-          cd build/test/ ; dir;  ./MuonInternalTests
+          cd build/test/InternalTests ; dir;  ./MuonInternalTests

@@ -31,4 +31,4 @@ jobs:
 
       - name: Test
         run: | 
-          cd build/test && ./MuonInternalTests
+          cd build/test/InternalTests && ./MuonInternalTests
