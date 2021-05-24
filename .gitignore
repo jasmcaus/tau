@@ -9,7 +9,6 @@ build/*
 *.o
 *.obj
 .vscode/*
-test.c 
 
 # Precompiled Headers
 *.gch
