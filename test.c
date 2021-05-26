@@ -44,9 +44,9 @@
 #include <test.h>
 
 TEST(Hello, Hello) {
-    CHECK_EQ(1, 2);
+    CHECK_EQ(3, 2);
 }
 
 TEST(Hello, Hello2) {
-    CHECK_EQ(2, 2);
+    CHECK_EQ(4, 2);
 }

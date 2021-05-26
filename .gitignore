@@ -1,8 +1,9 @@
 # Prerequisites
 *.d
 script.py
-Makefile
+Makefile4
 build/*
+./test.h
 # Compiled Object files
 *.slo
 *.lo
