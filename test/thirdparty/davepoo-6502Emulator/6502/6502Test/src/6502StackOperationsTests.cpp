@@ -1,7 +1,7 @@
 #include <Muon/Muon.h>
 #include "m6502.h"
 
-class M6502StackOperationsTests : public testing::Test
+struct M6502StackOperationsTests
 {
 public:	
 	m6502::Mem mem;

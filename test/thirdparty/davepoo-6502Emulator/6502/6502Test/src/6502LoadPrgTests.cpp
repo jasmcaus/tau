@@ -21,7 +21,7 @@ static m6502::Byte TestPrg[] = {
 
 static const m6502::u32 NumBytesInPrg = 14;
 
-class M6502LoadPrgTests : public testing::Test
+struct M6502LoadPrgTests
 {
 public:	
 	m6502::Mem mem;

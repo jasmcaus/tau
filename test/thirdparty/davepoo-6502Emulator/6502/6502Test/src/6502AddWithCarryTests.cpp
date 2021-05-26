@@ -1,20 +1,17 @@
 #include <Muon/Muon.h>
 #include "m6502.h"
 
-class M6502AddSubWithCarryTests : public testing::Test
-{
+
+TEST_F_SETUP(M6502AddSubWithCarryTests) {
+	muon->cpu.Reset( mem );
+}
+
+TEST_F_TEARDOWN(M6502AddSubWithCarryTests){}
+
+struct M6502AddSubWithCarryTests {
 public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
-
-	virtual void SetUp()
-	{
-		cpu.Reset( mem );
-	}
-
-	virtual void TearDown()
-	{
-	}
 
 	void ExpectUnaffectedRegisters( m6502::CPU CPUBefore )
 	{
@@ -36,7 +33,7 @@ public:
 		bool ExpectV;
 	};
 
-	enum class EOperation
+	enum struct EOperation
 	{
 		Add, Subtract
 	};

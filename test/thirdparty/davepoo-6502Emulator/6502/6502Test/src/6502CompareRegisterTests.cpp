@@ -1,7 +1,7 @@
 #include <Muon/Muon.h>
 #include "m6502.h"
 
-class M6502CompareRegisterTests : public testing::Test
+struct M6502CompareRegisterTests
 {
 public:
 	m6502::Mem mem;
@@ -78,7 +78,7 @@ public:
 		return Test;
 	}
 
-	enum class ERegister
+	enum struct ERegister
 	{
 		A, X, Y
 	};

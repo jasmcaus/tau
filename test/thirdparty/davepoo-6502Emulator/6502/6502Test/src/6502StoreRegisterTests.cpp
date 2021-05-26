@@ -14,7 +14,7 @@ static void VerfifyUnmodifiedFlagsFromStoreRegister(
 	CHECK_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
 
-class M6502StoreRegisterTests : public testing::Test
+struct M6502StoreRegisterTests
 {
 public:	
 	m6502::Mem mem;

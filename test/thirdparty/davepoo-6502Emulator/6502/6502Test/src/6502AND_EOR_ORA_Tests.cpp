@@ -1,7 +1,7 @@
 #include <Muon/Muon.h>
 #include "m6502.h"
 
-class M6502AndEorOraBitTests : public testing::Test
+struct M6502AndEorOraBitTests
 {
 public:	
 	m6502::Mem mem;
@@ -27,7 +27,7 @@ public:
 		CHECK_EQ( cpu.Flag.V, CPUCopy.Flag.V );
 	}
 
-	enum class ELogicalOp
+	enum struct ELogicalOp
 	{
 		And, Eor, Or
 	};
