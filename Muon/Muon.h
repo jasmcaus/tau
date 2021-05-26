@@ -154,28 +154,9 @@ static MUON_Ll muon_stats_num_failed_testcases = 0;
 // static MUON_bool checkIsInsideTestSuite = MUON_false;
 // static MUON_bool hasCurrentTestFailed = MUON_false;
 
-typedef struct {
-    volatile int checkIsInsideTestSuite;
-    volatile int hasCurrentTestFailed;
-} MuonContext_s;
+volatile int checkIsInsideTestSuite;
+volatile int hasCurrentTestFailed;
 
-static MuonContext_s MuonContext = {0, 0};
-
-static int get_checkIsInsideTestSuite() {
-    return MuonContext.checkIsInsideTestSuite;
-}
-
-static void set_checkIsInsideTestSuite(int n) {
-    MuonContext.checkIsInsideTestSuite = n;
-}
-
-static int get_hasCurrentTestFailed() {
-    return MuonContext.hasCurrentTestFailed;
-}
-
-static void set_hasCurrentTestFailed(int n) {
-    MuonContext.hasCurrentTestFailed = n;
-}
 
 static void failIfInsideTestSuite();
 // This function is called from within a macro in the format {CHECK|REQUIRE)_*
@@ -183,15 +164,9 @@ static void failIfInsideTestSuite();
 // appropriately - fail the current test suite and carry on with the other checks (or move on to the next
 // suite in the case of a REQUIRE)
 static void failIfInsideTestSuite() {
-    printf("BEFORE FAILIFINSIDETESTSUITE:\n");
-    printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); 
-    printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); 
-    if(get_checkIsInsideTestSuite() == 1) {
-        set_hasCurrentTestFailed(1);
-    }
-    printf("AFTER FAILIFINSIDETESTSUITE:\n");
-    printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); 
-    printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); 
+    if(checkIsInsideTestSuite == 1) {
+        hasCurrentTestFailed = 1;
+    } 
 }
 
 // This is necessary to have here due to the way C handles global variables.
@@ -536,7 +511,7 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
 #if defined(MUON_CAN_USE_OVERLOADABLES)
     #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
         do {                                                                  \
-        printf("    __MUON__CHECK = %d\n", MuonContext.checkIsInsideTestSuite); \
+        printf("    __MUON__CHECK = %d\n", checkIsInsideTestSuite); \
             if(!((actual)cond(expected))) {                                   \
                 MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
                 muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
@@ -552,12 +527,12 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
                 MUON_OVERLOAD_PRINTER(expected);                              \
                 MUON_PRINTF("\n");                                            \
                 printf("BEFORE CHECK:\n"); \
-                printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); \
-                printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); \
+                printf("    checkIsInsideTestSuite = %d\n", checkIsInsideTestSuite); \
+                printf("    hasCurrentTestFailed = %d\n", hasCurrentTestFailed); \
                 failIfInsideTestSuite();                                      \
                 printf("AFTER CHECK:\n"); \
-                printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); \
-                printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); \
+                printf("    checkIsInsideTestSuite = %d\n", checkIsInsideTestSuite); \
+                printf("    hasCurrentTestFailed = %d\n", hasCurrentTestFailed); \
             }                                                                 \
         }                                                                     \
         while(0)
@@ -622,9 +597,9 @@ static int muon_cleanup() {
 static void muon_run_tests() {
     // Run tests
     for(MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++) {
-        set_checkIsInsideTestSuite(1); 
-        set_hasCurrentTestFailed(0);
-        printf("MuonContext.checkIsInsideTestSuite = %d\n", get_checkIsInsideTestSuite());
+        checkIsInsideTestSuite = 1; 
+        hasCurrentTestFailed = 0;
+        printf("checkIsInsideTestSuite = %d\n", checkIsInsideTestSuite);
 
         muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
         muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", muon_test_state.tests[i].name);
@@ -632,11 +607,11 @@ static void muon_run_tests() {
         // Start the timer
         double start = muon_clock();
 
-        printf("BEFORE =============== %d\n", MuonContext.hasCurrentTestFailed);
+        printf("BEFORE =============== %d\n", hasCurrentTestFailed);
         // The actual test
         muon_test_state.tests[i].func();
 
-        printf("AFTER =============== %d\n", MuonContext.hasCurrentTestFailed);
+        printf("AFTER =============== %d\n", hasCurrentTestFailed);
 
         // Stop the timer
         double duration = muon_clock() - start;

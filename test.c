@@ -42,3 +42,11 @@
 // // }
 
 #include <test.h>
+
+TEST(Hello, Hello) {
+    CHECK_EQ(1, 2);
+}
+
+TEST(Hello, Hello2) {
+    CHECK_EQ(2, 2);
+}
