@@ -41,9 +41,4 @@
 // //     create(10, 10);
 // // }
 
-
-#include <stdio.h>
-
-int main() {
-    printf("%s HELLO! %s", "\033[1;34m", "\033[0m"); // Reset the colour \033[1;34m
-}
+#include <test.h>

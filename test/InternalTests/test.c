@@ -144,7 +144,7 @@
 // }
 
 TEST(c11, CHECK_GT) { 
-    CHECK_GT(0, 1); 
+    CHECK_EQ(0, 1); 
 }
 
 // TEST(c11, CHECK_GE) {

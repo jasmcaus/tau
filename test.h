@@ -1,87 +1,11 @@
-/*
-|  \/  | |  | |/ __ \| \ | |
-| \  / | |  | | |  | |  \| |    Muon - The Micro Testing Framework for C/C++
-| |\/| | |  | | |  | | . ` |    Languages: C, and C++
-| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Muon
-|_|  |_|\____/ \____/|_| \_|
-
-Licensed under the MIT License <http://opensource.org/licenses/MIT>
-SPDX-License-Identifier: MIT
-Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
-*/
-
-#ifndef MUON_TEST_H_
-#define MUON_TEST_H_
+#pragma once 
 
 #include <Muon/Types.h>
 #include <Muon/Misc.h>
-
-#ifdef _MSC_VER
-    // Disable warning about not inlining 'inline' functions.
-    #pragma warning(disable : 4710)
-    
-    // Disable warning about inlining functions that are not marked 'inline'.
-    #pragma warning(disable : 4711)
-
-    // No function prototype given: converting '()' to '(void)'
-    #pragma warning(disable : 4255)
-
-    // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
-    #pragma warning(disable : 4668)
-
-    // In multi-platform code like ours, we cannot use the non-standard "safe" functions from 
-    // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
-    #pragma warning(disable: 4996)
-
-    // warning C4090: '=': different 'const' qualifiers
-    #pragma warning(disable : 4090)
-
-    // io.h contains definitions for some structures with natural padding. This is uninteresting, but for some reason, 
-    // MSVC's behaviour is to warn about including this system header. That *is* interesting
-    #pragma warning(disable : 4820)
-
-    #pragma warning(push, 1)
-#endif // _MSC_VER
-
-#ifdef __clang__
-    _Pragma("clang diagnostic push")                                             
-    _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"") 
-    _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     
-    _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    
-    _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")  
-    _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
-    _Pragma("clang diagnostic ignored \"-Wreserved-id-macro\"")
-#endif // __clang
-
-/**********************
- *** Implementation ***
- **********************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
-#if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
-    #define MUON_UNIX_   1
-    #include <errno.h>
-    #include <libgen.h>
-    #include <unistd.h>
-    #include <sys/types.h>
-    #include <sys/wait.h>
-    #include <signal.h>
-    #include <time.h>
-
-    #if defined(CLOCK_PROCESS_CPUTIME_ID) && defined(CLOCK_MONOTONIC)
-        #define MUON_HAS_POSIX_TIMER_    1
-    #endif // CLOCK_PROCESS_CPUTIME_ID
-#endif // unix
-
-#if defined(_gnu_linux_) || defined(__linux__)
-    #define MUON_LINUX_      1
-    #include <fcntl.h>
-    #include <sys/stat.h>
-#endif // _gnu_linux_
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define MUON_WIN_        1
@@ -91,122 +15,12 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #pragma warning(pop)
 #endif // _WIN32
 
-#ifdef __cplusplus
-    #include <exception>
-#endif // __cplusplus
-
-#ifdef __has_include
-    #if __has_include(<valgrind.h>)
-        #include <valgrind.h>
-    #endif // __has_include(<valgrind.h>)
-#endif // __has_include
-
-#ifdef __cplusplus
-    #define MUON_C_FUNC extern "C"
-    #define MUON_EXTERN extern "C"
-#else
-    #define MUON_C_FUNC
-    #define MUON_EXTERN    extern
-#endif // __cplusplus
-
 // Enable the use of the non-standard keyword __attribute__ to silence warnings under some compilers
 #if defined(__GNUC__) || defined(__clang__)
     #define MUON_ATTRIBUTE_(attr)    __attribute__((attr))
 #else
     #define MUON_ATTRIBUTE_(attr)
 #endif // __GNUC__
-
-#ifdef __cplusplus
-    // On C++, default to its polymorphism capabilities
-    #define MUON_OVERLOADABLE
-#elif defined(__clang__)
-    // If we're still in C, use the __attribute__ keyword for Clang
-    #define MUON_OVERLOADABLE   __attribute__((overloadable))
-#endif // __cplusplus
-
-static MUON_UInt64 muon_stats_total_test_suites = 0;
-static MUON_UInt64 muon_stats_tests_ran = 0;
-static MUON_UInt64 muon_stats_tests_failed = 0;
-static MUON_UInt64 muon_stats_skipped_tests = 0; 
-
-// Overridden in `muon_main` if the cmdline option `--no-color` is passed
-static int muon_should_colourize_output = 1;
-static int muon_disable_summary = 0; 
-
-static char* muon_argv0_ = MUON_NULL;
-static const char* filter = MUON_NULL;
-
-static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
-static MUON_Ll muon_stats_num_failed_testcases = 0;
-
-// This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
-// a Test Suite. Muon supports both - so we need to handle this
-// We could have determined this somehow from within a function, but this is cleaner a cleaner approach
-// (which is the aim on Muon).
-// 
-// Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the 
-// CHECKs and REQUIREs will do their thing and return the appropriate result. 
-// If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
-// resets it back to false so that this same process occurs for the rest of the checks.
-// static int checkIsInsideTestSuite = 0; 
-// static int hasCurrentTestFailed = 0;
-
-// static MUON_bool checkIsInsideTestSuite = MUON_false;
-// static MUON_bool hasCurrentTestFailed = MUON_false;
-
-typedef struct {
-    volatile int checkIsInsideTestSuite;
-    volatile int hasCurrentTestFailed;
-} MuonContext_s;
-
-static MuonContext_s MuonContext = {0, 0};
-
-static int get_checkIsInsideTestSuite() {
-    return MuonContext.checkIsInsideTestSuite;
-}
-
-static void set_checkIsInsideTestSuite(int n) {
-    MuonContext.checkIsInsideTestSuite = n;
-}
-
-static int get_hasCurrentTestFailed() {
-    return MuonContext.hasCurrentTestFailed;
-}
-
-static void set_hasCurrentTestFailed(int n) {
-    MuonContext.hasCurrentTestFailed = n;
-}
-
-static void failIfInsideTestSuite();
-// This function is called from within a macro in the format {CHECK|REQUIRE)_*
-// If we are inside a test suite _and_ a check fails, we need to be able to signal to Muon to handle this
-// appropriately - fail the current test suite and carry on with the other checks (or move on to the next
-// suite in the case of a REQUIRE)
-static void failIfInsideTestSuite() {
-    printf("BEFORE FAILIFINSIDETESTSUITE:\n");
-    printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); 
-    printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); 
-    if(get_checkIsInsideTestSuite() == 1) {
-        set_hasCurrentTestFailed(1);
-    }
-    printf("AFTER FAILIFINSIDETESTSUITE:\n");
-    printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); 
-    printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); 
-}
-
-// This is necessary to have here due to the way C handles global variables.
-// If these vars were set in `muon_run_tests()`, the values would affect the local scope only, 
-// whareas we need to have a global lookup.
-// As much as I hate having global variables spread around the place, it is the neatest way I know 
-// to decide if a CHECK|REQUIRE is called from within a test suite.
-// static void insideTestSuite();
-// static void insideTestSuite() {
-//     checkIsInsideTestSuite = 1; 
-//     hasCurrentTestFailed = 0;
-// }
-
-// extern to the global state muon needs to execute
-MUON_EXTERN struct muon_test_state_s muon_test_state;
 
 #if defined(_MSC_VER)
     #ifndef MUON_USE_OLD_QPC
@@ -317,6 +131,46 @@ static void muon_clock_print_duration(double nanoseconds_duration) {
         printf("%.2lfs", nanoseconds_duration/1000000000);
 }
 
+static MUON_UInt64 muon_stats_total_test_suites = 0;
+static MUON_UInt64 muon_stats_tests_ran = 0;
+static MUON_UInt64 muon_stats_tests_failed = 0;
+static MUON_UInt64 muon_stats_skipped_tests = 0; 
+
+// Overridden in `muon_main` if the cmdline option `--no-color` is passed
+static int muon_should_colourize_output = 1;
+static int muon_disable_summary = 0; 
+
+static char* muon_argv0_ = MUON_NULL;
+static const char* filter = MUON_NULL;
+
+static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
+static MUON_Ll muon_stats_num_failed_testcases = 0;
+
+static int hasCurrentTestFailed = 0;
+static int checkIsInsideTestSuite = 0;
+
+typedef void (*muon_testsuite_t)();
+struct muon_test_s {
+    muon_testsuite_t func;
+    char* name;
+};
+
+struct muon_test_state_s {
+    struct muon_test_s* tests;
+    int num_test_suites;
+};
+
+static struct muon_test_state_s mt = {0, 0};
+
+static inline void* muon_realloc(void* const ptr, int new_size) {
+    void* const new_ptr = realloc(ptr, new_size);
+
+    if(new_ptr == NULL)
+        free(new_ptr);
+
+    return new_ptr;
+}
+
 // MUON_TEST_INITIALIZER
 #if defined(_MSC_VER)
     #if defined(_WIN64)
@@ -336,27 +190,6 @@ static void muon_clock_print_duration(double nanoseconds_duration) {
         static void f(void)     __attribute__((constructor));   \
         static void f(void)
 #endif // _MSC_VER
-
-
-static inline void* muon_realloc(void* const ptr, MUON_Ll new_size) {
-    void* const new_ptr = realloc(ptr, new_size);
-
-    if(new_ptr == MUON_NULL)
-        free(new_ptr);
-
-    return new_ptr;
-}
-
-typedef void (*muon_testsuite_t)();
-struct muon_test_s {
-    muon_testsuite_t func;
-    char* name;
-};
-
-struct muon_test_state_s {
-    struct muon_test_s* tests;
-    MUON_Ll num_test_suites;
-};
 
 
 #if defined(_MSC_VER)
@@ -460,7 +293,6 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
 #define MUON_PRINTF(...)                                 \
     printf(__VA_ARGS__)
 
-
 #ifdef _MSC_VER
     #define MUON_SNPRINTF(BUFFER, N, ...)   _snprintf_s(BUFFER, N, N, __VA_ARGS__)
 #else
@@ -531,117 +363,85 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
         MUON_PRINTF("If you think this was an error, please file an issue on Muon's Github repo.")
 #endif // MUON_OVERLOADABLE
 
-// ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
-// For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
-#if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
-        do {                                                                  \
-        printf("    __MUON__CHECK = %d\n", MuonContext.checkIsInsideTestSuite); \
-            if(!((actual)cond(expected))) {                                   \
-                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
-                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
-                MUON_PRINTF("  Expected : ");                                 \
-                MUON_OVERLOAD_PRINTER(actual);                                \
-                printf(" %s ", #cond);                                        \
-                MUON_OVERLOAD_PRINTER(expected);                              \
-                MUON_PRINTF("\n");                                            \
-                                                                              \
-                MUON_PRINTF("    Actual : ");                                 \
-                MUON_OVERLOAD_PRINTER(actual);                                \
-                printf(" %s ", #ifCondFailsThenPrint);                        \
-                MUON_OVERLOAD_PRINTER(expected);                              \
-                MUON_PRINTF("\n");                                            \
-                printf("BEFORE CHECK:\n"); \
-                printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); \
-                printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); \
-                failIfInsideTestSuite();                                      \
-                printf("AFTER CHECK:\n"); \
-                printf("    checkIsInsideTestSuite = %d\n", MuonContext.checkIsInsideTestSuite); \
-                printf("    hasCurrentTestFailed = %d\n", MuonContext.hasCurrentTestFailed); \
-            }                                                                 \
-        }                                                                     \
-        while(0)
-
-// MUON_OVERLOAD_PRINTER does not work on some compilers
-#else
-    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
-        do {                                                                  \
-            if(!((actual)cond(expected))) {                                   \
-                failIfInsideTestSuite();                                      \
-                MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
-                muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
-                MUON_PRINTF("  Expected : ");                                 \
-                printf(#actual);                                              \
-                printf(" %s ", #cond);                                        \
-                printf(#expected);                                            \
-                MUON_PRINTF("\n");                                            \
-                                                                              \
-                MUON_PRINTF("    Actual : ");                                 \
-                printf(#actual);                                              \
-                printf(" %s ", #ifCondFailsThenPrint);                        \
-                printf(#expected);                                            \
-                MUON_PRINTF("\n");                                            \
-            }                                                                 \
-        }                                                                     \
-        while(0)
-#endif // MUON_CAN_USE_OVERLOADABLES
-#define CHECK_EQ(actual, expected)     __MUONCHECK__(actual, expected, ==, !=)
-
-
 #define TEST(TESTSUITE, TESTNAME)                                                       \
-    MUON_EXTERN struct muon_test_state_s muon_test_state;                                         \
-    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                    \
+    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                   \
     MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
-        const MUON_Ll index = muon_test_state.num_test_suites++;                                   \
+        const MUON_Ll index = mt.num_test_suites++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
         const MUON_Ll name_size = strlen(name_part) + 1;                                \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
-        muon_test_state.tests = MUON_PTRCAST(                                                \
-                                    struct muon_test_s* ,                                                       \
-                                    muon_realloc(MUON_PTRCAST(void* , muon_test_state.tests), \
+        mt.tests = MUON_PTRCAST(struct muon_test_s* ,                                                       \
+                                    muon_realloc(MUON_PTRCAST(void* , mt.tests), \
                                                 sizeof(struct muon_test_s) *             \
-                                                    muon_test_state.num_test_suites));       \
-        muon_test_state.tests[index].func = &_MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME;                  \
-        muon_test_state.tests[index].name = name;                                            \
+                                                    mt.num_test_suites));       \
+        mt.tests[index].func = &_MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME;                  \
+        mt.tests[index].name = name;                                            \
         MUON_SNPRINTF(name, name_size, "%s", name_part);                                \
-    }                                                                                   \
+    }       \
     void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME()
 
-static int muon_cleanup() {
-    for (MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++)
-        free(MUON_PTRCAST(void* , muon_test_state.tests[i].name));
+// ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
+// For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
+#define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
+    do {                                                                  \
+        muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "    INSIDE __MUONCHECK__ = %d\n", checkIsInsideTestSuite); \
+        if(!((actual)cond(expected))) {                                   \
+            MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
+            MUON_PRINTF("  Expected : ");                                 \
+            MUON_OVERLOAD_PRINTER(actual);                                \
+            printf(" %s ", #cond);                                        \
+            MUON_OVERLOAD_PRINTER(expected);                              \
+            MUON_PRINTF("\n");                                            \
+                                                                            \
+            MUON_PRINTF("    Actual : ");                                 \
+            MUON_OVERLOAD_PRINTER(actual);                                \
+            printf(" %s ", #ifCondFailsThenPrint);                        \
+            MUON_OVERLOAD_PRINTER(expected);                              \
+            MUON_PRINTF("\n");                                            \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "        BEFORE CHECK:\n"); \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "            checkIsInsideTestSuite = %d\n", checkIsInsideTestSuite); \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "            hasCurrentTestFailed = %d\n", hasCurrentTestFailed); \
+            failIfInsideTestSuite();                                      \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "        AFTER CHECK:\n"); \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "            checkIsInsideTestSuite = %d\n", checkIsInsideTestSuite); \
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "            hasCurrentTestFailed = %d\n", hasCurrentTestFailed); \
+        }                                                                 \
+    }                                                                     \
+    while(0)
 
-    free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
-    free(MUON_PTRCAST(void* , muon_test_state.tests));
+#define CHECK_EQ(actual, expected)     __MUONCHECK__(actual, expected, ==, !=)
 
-    return MUON_CAST(int, muon_stats_tests_failed);
+
+static void failIfInsideTestSuite() {
+    if(checkIsInsideTestSuite == 1) {
+        muon_coloured_printf_(MUON_COLOUR_BRIGHTYELLOW_, "INSIDE TEST SUITE\n");
+        hasCurrentTestFailed = 1;
+    }
 }
 
-// Triggers and runs all unit tests
-// static void muon_run_tests(MUON_Ll* muon_stats_failed_testcases, MUON_Ll* muon_stats_num_failed_testcases) {
-static void muon_run_tests() {
-    // Run tests
-    for(MUON_Ll i = 0; i < muon_test_state.num_test_suites; i++) {
-        set_checkIsInsideTestSuite(1); 
-        set_hasCurrentTestFailed(0);
-        printf("MuonContext.checkIsInsideTestSuite = %d\n", get_checkIsInsideTestSuite());
+static void run_all_tests() {
+    for(int i=0; i<mt.num_test_suites; i++) {
+        hasCurrentTestFailed = 0;
+        checkIsInsideTestSuite = 1;
 
         muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
-        muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", muon_test_state.tests[i].name);
+        muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s\n", mt.tests[i].name);
 
         // Start the timer
         double start = muon_clock();
 
-        printf("BEFORE =============== %d\n", MuonContext.hasCurrentTestFailed);
-        // The actual test
-        muon_test_state.tests[i].func();
-
-        printf("AFTER =============== %d\n", MuonContext.hasCurrentTestFailed);
+        mt.tests[i].func();
 
         // Stop the timer
         double duration = muon_clock() - start;
-        
-        if(get_hasCurrentTestFailed() == 1) {
+
+        // if(hasCurrentTestFailed == 1) {
+        //     printf("TEST FAILED\n");
+        // } else {
+        //     printf("TEST DID NOT FAIL\n");
+        // }
+        if(hasCurrentTestFailed == 1) {
             const MUON_Ll failed_testcase_index = muon_stats_num_failed_testcases++;
             muon_stats_failed_testcases = MUON_PTRCAST(MUON_Ll*, 
                                             muon_realloc(MUON_PTRCAST(void* , muon_stats_failed_testcases), 
@@ -649,24 +449,33 @@ static void muon_run_tests() {
             muon_stats_failed_testcases[failed_testcase_index] = i;
             muon_stats_tests_failed++;
             muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
-            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_test_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", mt.tests[i].name);
             muon_clock_print_duration(duration);
             printf(")\n");
         } else {
             muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[       OK ] ");
-            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", muon_test_state.tests[i].name);
+            muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%s (", mt.tests[i].name);
             muon_clock_print_duration(duration);
             printf(")\n");
         }
     }
-
     muon_coloured_printf_(MUON_COLOUR_BRIGHTGREEN_, "[==========] ");
     muon_coloured_printf_(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muon_stats_tests_ran);
 }
 
+static int muon_cleanup() {
+    for (MUON_Ll i = 0; i < mt.num_test_suites; i++)
+        free(MUON_PTRCAST(void* , mt.tests[i].name));
+
+    free(MUON_PTRCAST(void* , muon_stats_failed_testcases));
+    free(MUON_PTRCAST(void* , mt.tests));
+
+    return MUON_CAST(int, muon_stats_tests_failed);
+}
+
 static inline int muon_main(int argc, char** argv);
 inline int muon_main(int argc, char** argv) {
-    muon_stats_total_test_suites = MUON_CAST(MUON_UInt64, muon_test_state.num_test_suites);
+    muon_stats_total_test_suites = MUON_CAST(MUON_UInt64, mt.num_test_suites);
     muon_argv0_ = argv[0];
 
     muon_stats_tests_ran = muon_stats_total_test_suites - muon_stats_skipped_tests;
@@ -677,8 +486,9 @@ inline int muon_main(int argc, char** argv) {
 
     // Start the entire Test Session timer
     double start = muon_clock();
+
     // Run tests
-    muon_run_tests();
+    run_all_tests();
 
     // End the entire Test Session timer
     double duration = muon_clock() - start;
@@ -703,7 +513,7 @@ inline int muon_main(int argc, char** argv) {
         printf("\n");
         
         for (MUON_Ll i = 0; i < muon_stats_num_failed_testcases; i++) {
-            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", muon_test_state.tests[muon_stats_failed_testcases[i]].name);
+            muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", mt.tests[muon_stats_failed_testcases[i]].name);
         }
     } else {
         MUON_UInt64 total_tests_passed = muon_stats_tests_ran - muon_stats_tests_failed;
@@ -716,26 +526,8 @@ inline int muon_main(int argc, char** argv) {
     return muon_cleanup();
 }
 
-
-// If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
-#define MUON_NO_MAIN()                                                          \
-    struct muon_test_state_s muon_test_state = {0, 0};
-
-// Define a main() function to call into muon.h and start executing tests.
-#define MUON_MAIN()                                                             \
-    /* Define the global struct that will hold the data we need to run Muon. */ \
-    struct muon_test_state_s muon_test_state = {0, 0};                                 \
-                                                                                \
-    int main(int argc, char** argv) {                                           \
-        return muon_main(argc, argv);                                           \
-    }
-
-#ifdef __clang__
-     _Pragma("clang diagnostic pop")
-#endif // __clang__
-
-#ifdef _MSC_VER
-    #pragma warning(pop)
-#endif // _MSC_VER
-
-#endif // MUON_TEST_H_
+static void change(int argc, char** argv) {
+    printf("BEFORE =============== %d\n", hasCurrentTestFailed);
+    muon_main(argc, argv);
+    printf("AFTER ================ %d\n", hasCurrentTestFailed);
+}
