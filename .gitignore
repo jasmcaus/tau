@@ -3,7 +3,9 @@
 script.py
 Makefile4
 build/*
-./test.h
+/test.h
+/test.c
+
 # Compiled Object files
 *.slo
 *.lo
