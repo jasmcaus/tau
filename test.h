@@ -1,11 +1,73 @@
 #pragma once 
 
+#ifdef _MSC_VER
+    // Disable warning about not inlining 'inline' functions.
+    #pragma warning(disable : 4710)
+    
+    // Disable warning about inlining functions that are not marked 'inline'.
+    #pragma warning(disable : 4711)
+
+    // No function prototype given: converting '()' to '(void)'
+    #pragma warning(disable : 4255)
+
+    // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
+    #pragma warning(disable : 4668)
+
+    // In multi-platform code like ours, we cannot use the non-standard "safe" functions from 
+    // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
+    #pragma warning(disable: 4996)
+
+    // warning C4090: '=': different 'const' qualifiers
+    #pragma warning(disable : 4090)
+
+    // io.h contains definitions for some structures with natural padding. This is uninteresting, but for some reason, 
+    // MSVC's behaviour is to warn about including this system header. That *is* interesting
+    #pragma warning(disable : 4820)
+
+    #pragma warning(push, 1)
+#endif // _MSC_VER
+
+#ifdef __clang__
+    _Pragma("clang diagnostic push")                                             
+    _Pragma("clang diagnostic ignored \"-Wdisabled-macro-expansion\"") 
+    _Pragma("clang diagnostic ignored \"-Wlanguage-extension-token\"")     
+    _Pragma("clang diagnostic ignored \"-Wc++98-compat-pedantic\"")    
+    _Pragma("clang diagnostic ignored \"-Wfloat-equal\"")  
+    _Pragma("clang diagnostic ignored \"-Wmissing-variable-declarations\"")
+    _Pragma("clang diagnostic ignored \"-Wreserved-id-macro\"")
+#endif // __clang
+
+/**********************
+ *** Implementation ***
+ **********************/
+
 #include <Muon/Types.h>
 #include <Muon/Misc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
+#if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
+    #define MUON_UNIX_   1
+    #include <errno.h>
+    #include <libgen.h>
+    #include <unistd.h>
+    #include <sys/types.h>
+    #include <sys/wait.h>
+    #include <signal.h>
+    #include <time.h>
+
+    #if defined(CLOCK_PROCESS_CPUTIME_ID) && defined(CLOCK_MONOTONIC)
+        #define MUON_HAS_POSIX_TIMER_    1
+    #endif // CLOCK_PROCESS_CPUTIME_ID
+#endif // unix
+
+#if defined(_gnu_linux_) || defined(__linux__)
+    #define MUON_LINUX_      1
+    #include <fcntl.h>
+    #include <sys/stat.h>
+#endif // _gnu_linux_
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define MUON_WIN_        1
@@ -15,12 +77,38 @@
     #pragma warning(pop)
 #endif // _WIN32
 
+#ifdef __cplusplus
+    #include <exception>
+#endif // __cplusplus
+
+#ifdef __has_include
+    #if __has_include(<valgrind.h>)
+        #include <valgrind.h>
+    #endif // __has_include(<valgrind.h>)
+#endif // __has_include
+
+#ifdef __cplusplus
+    #define MUON_C_FUNC extern "C"
+    #define MUON_EXTERN extern "C"
+#else
+    #define MUON_C_FUNC
+    #define MUON_EXTERN    extern
+#endif // __cplusplus
+
 // Enable the use of the non-standard keyword __attribute__ to silence warnings under some compilers
 #if defined(__GNUC__) || defined(__clang__)
     #define MUON_ATTRIBUTE_(attr)    __attribute__((attr))
 #else
     #define MUON_ATTRIBUTE_(attr)
 #endif // __GNUC__
+
+#ifdef __cplusplus
+    // On C++, default to its polymorphism capabilities
+    #define MUON_OVERLOADABLE
+#elif defined(__clang__)
+    // If we're still in C, use the __attribute__ keyword for Clang
+    #define MUON_OVERLOADABLE   __attribute__((overloadable))
+#endif // __cplusplus
 
 #if defined(_MSC_VER)
     #ifndef MUON_USE_OLD_QPC
@@ -146,8 +234,24 @@ static const char* filter = MUON_NULL;
 static MUON_Ll* muon_stats_failed_testcases = MUON_NULL; 
 static MUON_Ll muon_stats_num_failed_testcases = 0;
 
+// This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
+// a Test Suite. Muon supports both - so we need to handle this
+// We could have determined this somehow from within a function, but this is cleaner a cleaner approach
+// (which is the aim on Muon).
+// 
+// Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the 
+// CHECKs and REQUIREs will do their thing and return the appropriate result. 
+// If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
+// resets it back to false so that this same process occurs for the rest of the checks.
 static int hasCurrentTestFailed = 0;
 static int checkIsInsideTestSuite = 0;
+
+static void failIfInsideTestSuite() {
+    if(checkIsInsideTestSuite == 1) {
+        printf("INSIDE TEST SUITE\n");
+        hasCurrentTestFailed = 1;
+    }
+}
 
 typedef void (*muon_testsuite_t)();
 struct muon_test_s {
@@ -160,7 +264,8 @@ struct muon_test_state_s {
     int num_test_suites;
 };
 
-static struct muon_test_state_s mt = {0, 0};
+// extern to the global state muon needs to execute
+MUON_EXTERN struct muon_test_state_s mt;
 
 static inline void* muon_realloc(void* const ptr, int new_size) {
     void* const new_ptr = realloc(ptr, new_size);
@@ -289,7 +394,6 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
 #endif // MUON_UNIX_
 }
 
-
 #define MUON_PRINTF(...)                                 \
     printf(__VA_ARGS__)
 
@@ -384,7 +488,6 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint)       \
     do {                                                                  \
-        muon_coloured_printf_(MUON_COLOUR_BRIGHTCYAN_, "    INSIDE __MUONCHECK__ = %d\n", checkIsInsideTestSuite); \
         if(!((actual)cond(expected))) {                                   \
             MUON_PRINTF("%s:%u: ", __FILE__, __LINE__);                   \
             muon_coloured_printf_(MUON_COLOUR_BRIGHTRED_, "FAILED\n");\
@@ -393,7 +496,7 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
             printf(" %s ", #cond);                                        \
             MUON_OVERLOAD_PRINTER(expected);                              \
             MUON_PRINTF("\n");                                            \
-                                                                            \
+                                                                          \
             MUON_PRINTF("    Actual : ");                                 \
             MUON_OVERLOAD_PRINTER(actual);                                \
             printf(" %s ", #ifCondFailsThenPrint);                        \
@@ -412,13 +515,6 @@ muon_coloured_printf_(int colour, const char* fmt, ...) {
 
 #define CHECK_EQ(actual, expected)     __MUONCHECK__(actual, expected, ==, !=)
 
-
-static void failIfInsideTestSuite() {
-    if(checkIsInsideTestSuite == 1) {
-        muon_coloured_printf_(MUON_COLOUR_BRIGHTYELLOW_, "INSIDE TEST SUITE\n");
-        hasCurrentTestFailed = 1;
-    }
-}
 
 static void run_all_tests() {
     for(int i=0; i<mt.num_test_suites; i++) {
@@ -531,3 +627,24 @@ static void change(int argc, char** argv) {
     muon_main(argc, argv);
     printf("AFTER ================ %d\n", hasCurrentTestFailed);
 }
+
+// If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
+#define MUON_NO_MAIN()                                                          \
+    struct muon_test_state_s mt = {0, 0};
+
+// Define a main() function to call into muon.h and start executing tests.
+#define MUON_MAIN()                                                             \
+    /* Define the global struct that will hold the data we need to run Muon. */ \
+    struct muon_test_state_s mt = {0, 0};                                 \
+                                                                                \
+    int main(int argc, char** argv) {                                           \
+        return muon_main(argc, argv);                                           \
+    }
+
+#ifdef __clang__
+     _Pragma("clang diagnostic pop")
+#endif // __clang__
+
+#ifdef _MSC_VER
+    #pragma warning(pop)
+#endif // _MSC_VER
