@@ -144,7 +144,7 @@ TEST(c11, CHECK_LE) {
 }
 
 TEST(c11, CHECK_GT) { 
-    CHECK_GT(0, 1); 
+    CHECK_GT(3, 1); 
 }
 
 TEST(c11, CHECK_GE) {
