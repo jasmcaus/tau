@@ -152,7 +152,9 @@ if(NOT MSVC)
 # For MSVC 
 else()
     string(APPEND CMAKE_C_FLAGS " /std:c11")
-    string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
+    # MSVC complains that this isn't a valid cmdline option.
+    # Am I going wrong here, somehow?
+    # string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
 
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")

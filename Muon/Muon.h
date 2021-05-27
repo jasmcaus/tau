@@ -1286,20 +1286,21 @@ inline int muon_main(int argc, char** argv) {
     compilation project (all testing source files).
     See: https://stackoverflow.com/questions/1856599/when-to-use-static-keyword-before-global-variables
 */
+#define MUON_ONLY_GLOBALS()                       \
+    volatile int checkIsInsideTestSuite = 0;      \
+    volatile int hasCurrentTestFailed = 0;        \
+    MUON_UInt64 muonStatsNumWarnings = 0;
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define MUON_NO_MAIN()                                        \
     struct muonTestStateStruct muonTestContext = {0, 0, 0};   \
-    volatile int checkIsInsideTestSuite;                      \
-    volatile int hasCurrentTestFailed;
+    MUON_ONLY_GLOBALS()
 
 // Define a main() function to call into muon.h and start executing tests.
 #define MUON_MAIN()                                                             \
     /* Define the global struct that will hold the data we need to run Muon. */ \
     struct muonTestStateStruct muonTestContext = {0, 0, 0};                     \
-    volatile int checkIsInsideTestSuite = 0;                                    \
-    volatile int hasCurrentTestFailed = 0;                                      \
-    MUON_UInt64 muonStatsNumWarnings = 0;                                       \
+    MUON_ONLY_GLOBALS()                                                         \
                                                                                 \
     int main(int argc, char** argv) {                                           \
         return muon_main(argc, argv);                                           \

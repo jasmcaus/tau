@@ -1,4 +1,9 @@
 #include <Muon/Muon.h>
+// Only MSVC seems to complain about this
+// Most likely because we're trying to cross-compile with `main.c` and `test.cpp`
+#ifdef _MSC_VER
+    MUON_ONLY_GLOBALS()
+#endif // _MSC_VER
 
 TEST(cpp, REQUIRE_EQ) { 
     REQUIRE_EQ(1, 1); 

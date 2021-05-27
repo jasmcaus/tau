@@ -41,7 +41,7 @@ cmakemsvc:
 	cmake --build build
 	echo --------------------------------------------
 	echo --------------------------------------------
-	cd build/test/Debug && MuonInternalTests
+	cd build/test/InternalTests/Debug && MuonInternalTests
 .PHONY: cmakemsvc
 
 cmakeclean:
