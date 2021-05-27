@@ -962,9 +962,8 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
         } 
 
         // Only failed output
-        else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput))) {
+        else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput)) == 0) {
             muonDisplayOnlyFailedOutput = 1;
-            printf("------------------------ muonDisplayOnlyFailedOutput = %d\n", muonDisplayOnlyFailedOutput);
         }
 
         // Filter tests
@@ -983,9 +982,8 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
         }
 
         // Disable colouring
-        else if(strncmp(argv[i], colourStr, strlen(colourStr))) {            
+        else if(strncmp(argv[i], colourStr, strlen(colourStr)) == 0) {            
             muonShouldColourizeOutput = 0;
-            printf("------------------------ muonShouldColourizeOutput = %d\n", muonShouldColourizeOutput);
         }
 
         // Disable Summary
@@ -1019,8 +1017,6 @@ static int muonCleanup() {
 // static void muonRunTests(MUON_Ull* muonStatsFailedTestSuites, MUON_Ull* muonStatsNumFailedTestSuites) {
 static void muonRunTests() {
     // Run tests
-    printf("---------------- INSIDE muonShouldColourizeOutput = %d\n", muonShouldColourizeOutput);
-    printf("---------------- INSIDE muonDisplayOnlyFailedOutput = %d\n", muonDisplayOnlyFailedOutput);
     for(MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
         checkIsInsideTestSuite = 1; 
         hasCurrentTestFailed = 0;
