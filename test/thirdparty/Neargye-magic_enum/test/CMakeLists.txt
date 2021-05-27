@@ -21,9 +21,12 @@ endif()
 function(make_test src target std)
     add_executable(${target} ${src})
     target_compile_options(${target} PRIVATE ${OPTIONS})
+
     target_include_directories(${target} PRIVATE 3rdparty/Catch2/include)
+
     target_link_libraries(${target} PRIVATE ${CMAKE_PROJECT_NAME})
     set_target_properties(${target} PROPERTIES CXX_EXTENSIONS OFF)
+    
     if(std)
         if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
             target_compile_options(${target} PRIVATE /std:${std})
