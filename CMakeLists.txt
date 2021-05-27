@@ -87,6 +87,9 @@ endif()
 # A (more or less comprehensive) list is here: https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html
 
 if(NOT MSVC)
+    message("--------- CMAKE_C_COMPILER_ID   = ${CMAKE_C_COMPILER_ID}")
+    message("--------- CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
+
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         string(APPEND CMAKE_C_FLAGS " -std=gnu11")
     else()
@@ -143,9 +146,12 @@ if(NOT MSVC)
             string(APPEND COMPILE_FLAGS " -Werror")   
         endif()
     endif(WERROR)
-    
+
 # For MSVC 
 else()
+    message("--------- CMAKE_C_COMPILER_ID   = ${CMAKE_C_COMPILER_ID}")
+    message("--------- CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
+    
     string(APPEND CMAKE_C_FLAGS " /std:c11")
     string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
 
