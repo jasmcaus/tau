@@ -136,7 +136,7 @@ struct muonTestSuiteStruct {
 
 struct muonTestStateStruct {
     struct muonTestSuiteStruct* tests;
-    MUON_Ll numTestSuites;
+    MUON_Ull numTestSuites;
     FILE* foutput;
 };
 
@@ -144,8 +144,8 @@ static MUON_UInt64 muonStatsTotalTestSuites = 0;
 static MUON_UInt64 muonStatsTestsRan = 0;
 static MUON_UInt64 muonStatsNumTestsFailed = 0;
 static MUON_UInt64 muonStatsSkippedTests = 0; 
-static MUON_Ll* muonStatsFailedTestSuites = MUON_NULL; 
-static MUON_Ll muonStatsNumFailedTestSuites = 0;
+static MUON_Ull* muonStatsFailedTestSuites = MUON_NULL; 
+static MUON_Ull muonStatsNumFailedTestSuites = 0;
 
 // Overridden in `muon_main` if the cmdline option `--no-color` is passed
 static MUON_bool muonShouldColourizeOutput = MUON_true;
@@ -311,7 +311,7 @@ static void muonClockPrintDuration(double nanoseconds_duration) {
 #endif // _MSC_VER
 
 
-static inline void* muon_realloc(void* const ptr, MUON_Ll new_size) {
+static inline void* muon_realloc(void* const ptr, MUON_Ull new_size) {
     void* const new_ptr = realloc(ptr, new_size);
 
     if(new_ptr == MUON_NULL)
@@ -477,7 +477,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                                 double : "%f",                        \
                                 long double : "%Lf",                  \
                                 default : _Generic((val - val),       \
-                                MUON_Ll : "%p",                       \
+                                MUON_Ull : "%p",                       \
                                 default : "undef")),                  \
                     (val))
 #else
@@ -780,9 +780,9 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     MUON_EXTERN struct muonTestStateStruct muonTestContext;                                         \
     static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                    \
     MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
-        const MUON_Ll index = muonTestContext.numTestSuites++;                                   \
+        const MUON_Ull index = muonTestContext.numTestSuites++;                                   \
         const char* name_part = #TESTSUITE "." #TESTNAME;                               \
-        const MUON_Ll name_size = strlen(name_part) + 1;                                \
+        const MUON_Ull name_size = strlen(name_part) + 1;                                \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                           \
         muonTestContext.tests = MUON_PTRCAST(                                                \
                                     struct muonTestSuiteStruct* ,                                                       \
@@ -817,9 +817,9 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         muon_f_teardown_##FIXTURE(&fixture);                        \
     }                                                                            \
     MUON_TEST_INITIALIZER(muon_register_##FIXTURE##_##NAME) {                       \
-        const MUON_Ll index = muonTestContext.numTestSuites++;                           \
+        const MUON_Ull index = muonTestContext.numTestSuites++;                           \
         const char* name_part = #FIXTURE "." #NAME;                                \
-        const MUON_Ll name_size = strlen(name_part) + 1;                            \
+        const MUON_Ull name_size = strlen(name_part) + 1;                            \
         char* name = MUON_PTRCAST(char* , malloc(name_size));                    \
         muonTestContext.tests = MUON_PTRCAST(                                        \
                                     struct muonTestSuiteStruct*,                                           \
@@ -944,7 +944,7 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
 #endif // MUON_UNIX_
 
     // loop through all arguments looking for our options
-    for(MUON_Ll i = 1; i < MUON_CAST(MUON_Ll, argc); i++) {
+    for(MUON_Ull i = 1; i < MUON_CAST(MUON_Ull, argc); i++) {
         /* Informational switches */
         const char* helpStr = "--help";
         const char* listStr = "--list";
@@ -1001,7 +1001,7 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
 }
 
 static int muonCleanup() {
-    for (MUON_Ll i = 0; i < muonTestContext.numTestSuites; i++)
+    for (MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++)
         free(MUON_PTRCAST(void* , muonTestContext.tests[i].name));
 
     free(MUON_PTRCAST(void* , muonStatsFailedTestSuites));
@@ -1014,10 +1014,10 @@ static int muonCleanup() {
 }
 
 // Triggers and runs all unit tests
-// static void muonRunTests(MUON_Ll* muonStatsFailedTestSuites, MUON_Ll* muonStatsNumFailedTestSuites) {
+// static void muonRunTests(MUON_Ull* muonStatsFailedTestSuites, MUON_Ull* muonStatsNumFailedTestSuites) {
 static void muonRunTests() {
     // Run tests
-    for(MUON_Ll i = 0; i < muonTestContext.numTestSuites; i++) {
+    for(MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
         checkIsInsideTestSuite = 1; 
         hasCurrentTestFailed = 0;
 
@@ -1045,10 +1045,10 @@ static void muonRunTests() {
             fprintf(muonTestContext.foutput, "</testcase>\n");
 
         if(hasCurrentTestFailed == 1) {
-            const MUON_Ll failed_testcase_index = muonStatsNumFailedTestSuites++;
-            muonStatsFailedTestSuites = MUON_PTRCAST(MUON_Ll*, 
+            const MUON_Ull failed_testcase_index = muonStatsNumFailedTestSuites++;
+            muonStatsFailedTestSuites = MUON_PTRCAST(MUON_Ull*, 
                                             muon_realloc(MUON_PTRCAST(void* , muonStatsFailedTestSuites), 
-                                                          sizeof(MUON_Ll) * muonStatsNumFailedTestSuites));
+                                                          sizeof(MUON_Ull) * muonStatsNumFailedTestSuites));
             muonStatsFailedTestSuites[failed_testcase_index] = i;
             muonStatsNumTestsFailed++;
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
@@ -1080,7 +1080,7 @@ inline int muon_main(int argc, char** argv) {
     if(!wasCmdLineReadSuccessful) 
         return muonCleanup();
 
-    for (MUON_Ll i = 0; i < muonTestContext.numTestSuites; i++) {
+    for (MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
         if(muonShouldFilterTest(filter, muonTestContext.tests[i].name))
             muonStatsSkippedTests++;
     }
@@ -1126,7 +1126,7 @@ inline int muon_main(int argc, char** argv) {
         muonClockPrintDuration(duration);
         printf("\n");
         
-        for (MUON_Ll i = 0; i < muonStatsNumFailedTestSuites; i++) {
+        for (MUON_Ull i = 0; i < muonStatsNumFailedTestSuites; i++) {
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", muonTestContext.tests[muonStatsFailedTestSuites[i]].name);
         }
     } else {
