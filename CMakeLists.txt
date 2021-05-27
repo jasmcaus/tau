@@ -127,6 +127,7 @@ if(NOT MSVC)
         string(APPEND COMPILE_FLAGS " -Wno-uninitialized")
         string(APPEND COMPILE_FLAGS " -Wno-unused-const-variable")
         string(APPEND COMPILE_FLAGS " -Wno-newline-eof")
+        message("--------- COMPILE_FLAGS = ${COMPILE_FLAGS}")
     else()
         string(APPEND COMPILE_FLAGS " -fPIC")
         string(APPEND COMPILE_FLAGS " -Wno-discarded-qualifiers")
@@ -151,7 +152,7 @@ if(NOT MSVC)
 else()
     message("--------- CMAKE_C_COMPILER_ID   = ${CMAKE_C_COMPILER_ID}")
     message("--------- CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
-    
+
     string(APPEND CMAKE_C_FLAGS " /std:c11")
     string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
 
