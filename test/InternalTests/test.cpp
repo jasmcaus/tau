@@ -328,11 +328,10 @@ TEST(cpp11, Long) {
     REQUIRE_NE(a, b);
 }
 
-TEST(cpp11, ULong) {
 TEST(cpp11, WOOOOOOOOOOOOOOOO) {
     unsigned long a = 1;
     unsigned long b = 2;
-    CHECK_NE(a, a);
+    CHECK_NE(a, b);
     REQUIRE_NE(a, b);
 }
 

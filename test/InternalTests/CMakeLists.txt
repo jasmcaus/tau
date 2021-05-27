@@ -4,7 +4,7 @@ add_executable(
     ${MUON_INTERNALTESTS}
     main.c 
     test.c
-    # test.cpp
+    test.cpp
 )
 
 target_include_directories(
