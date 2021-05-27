@@ -122,6 +122,11 @@ if(NOT MSVC)
     string(APPEND COMPILE_FLAGS " -Wno-error=deprecated-declarations")
 
     if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        # A hack for Clang on Ubuntu
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            string(APPEND CMAKE_CXX_FLAGS " -fPIE")
+        endif() 
+
         string(APPEND COMPILE_FLAGS " -fPIE")
         string(APPEND COMPILE_FLAGS " -Wno-ignored-qualifiers")
         string(APPEND COMPILE_FLAGS " -Wno-uninitialized")
