@@ -162,23 +162,27 @@ static int muonDisplayOnlyFailedOutput = 0;
 static char* muon_argv0_ = MUON_NULL;
 static const char* filter = MUON_NULL;
 
-// This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
-// a Test Suite. Muon supports both - so we need to handle this
-// We could have determined this somehow from within a function, but this is cleaner a cleaner approach
-// (which is the aim on Muon).
-// 
-// Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the 
-// CHECKs and REQUIREs will do their thing and return the appropriate result. 
-// If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
-// resets it back to false so that this same process occurs for the rest of the checks.
+/**
+    This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
+    a Test Suite. Muon supports both - so we need to handle this
+    We could have determined this somehow from within a function, but this is cleaner a cleaner approach
+    (which is the aim on Muon).
+
+    Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the 
+    CHECKs and REQUIREs will do their thing and return the appropriate result. 
+    If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
+    resets it back to false so that this same process occurs for the rest of the checks.
+*/
 extern volatile int checkIsInsideTestSuite;
 extern volatile int hasCurrentTestFailed;
 
+/**
+    This function is called from within a macro in the format {CHECK|REQUIRE)_*
+    If we are inside a test suite _and_ a check fails, we need to be able to signal to Muon to handle this
+    appropriately - fail the current test suite and carry on with the other checks (or move on to the next
+    suite in the case of a REQUIRE)
+*/
 static void failIfInsideTestSuite();
-// This function is called from within a macro in the format {CHECK|REQUIRE)_*
-// If we are inside a test suite _and_ a check fails, we need to be able to signal to Muon to handle this
-// appropriately - fail the current test suite and carry on with the other checks (or move on to the next
-// suite in the case of a REQUIRE)
 static void failIfInsideTestSuite() {
     if(checkIsInsideTestSuite== 1) {
         hasCurrentTestFailed = 1;
@@ -238,12 +242,14 @@ MUON_EXTERN struct muonTestStateStruct muonTestContext;
     #include <mach/mach_time.h>
 #endif // _MSC_VER
 
-// Muon Timer 
-// This method is useful in timing the execution of an Muon Test Suite
-// To use this, simply call this function before and after the particular code block you want to time, 
-// and their difference will give you the time (in seconds). 
-// NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
-// (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
+/**
+    Muon Timer 
+    This method is useful in timing the execution of an Muon Test Suite
+    To use this, simply call this function before and after the particular code block you want to time, 
+    and their difference will give you the time (in seconds). 
+    NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
+    (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
+*/
 static inline double muonClock() {
 #ifdef MUON_WIN_
     LARGE_INTEGER counter;
@@ -555,11 +561,11 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 #endif // MUON_CAN_USE_OVERLOADABLES
 
 
-//
-// #########################################
-//            Check Macros
-// #########################################
-//
+/**
+#########################################
+           Check Macros
+#########################################
+*/
 #define CHECK_EQ(actual, expected)     __MUONCHECK__(actual, expected, ==, !=, CHECK_EQ)
 #define CHECK_NE(actual, expected)     __MUONCHECK__(actual, expected, !=, ==, CHECK_NE)
 #define CHECK_LT(actual, expected)     __MUONCHECK__(actual, expected, <,  >,  CHECK_LT)
@@ -682,11 +688,11 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     }                                                                                            \
     while(0)                                                                    
 
-//
-// #########################################
-//            Assertion Macros
-// #########################################
-//
+/**
+#########################################
+           Assertion Macros
+#########################################
+*/
 
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
@@ -888,29 +894,29 @@ static void incrementWarnings() {
         if(1)
 #endif // __cplusplus
 
-//
-// #########################################
-//              Implementation
-// #########################################
-//
+/**
+#########################################
+             Implementation
+#########################################
+*/
 
-#define TEST(TESTSUITE, TESTNAME)                                                       \
-    MUON_EXTERN struct muonTestStateStruct muonTestContext;                             \
-    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                             \
-    MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                     \
-        const MUON_Ull index = muonTestContext.numTestSuites++;                         \
-        const char* namePart = #TESTSUITE "." #TESTNAME;                                \
-        const MUON_Ull nameSize = strlen(namePart) + 1;                                 \
-        char* name = MUON_PTRCAST(char* , malloc(nameSize));                            \
-        muonTestContext.tests = MUON_PTRCAST(                                           \
-                                    struct muonTestSuiteStruct* ,                       \
-                                    muon_realloc(MUON_PTRCAST(void* , muonTestContext.tests), \
-                                                sizeof(struct muonTestSuiteStruct) *          \
-                                                    muonTestContext.numTestSuites));          \
-        muonTestContext.tests[index].func = &_MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME;        \
-        muonTestContext.tests[index].name = name;                                       \
-        MUON_SNPRINTF(name, nameSize, "%s", namePart);                                  \
-    }                                                                                   \
+#define TEST(TESTSUITE, TESTNAME)                                                               \
+    MUON_EXTERN struct muonTestStateStruct muonTestContext;                                     \
+    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                                     \
+    MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                             \
+        const MUON_Ull index = muonTestContext.numTestSuites++;                                 \
+        const char* namePart = #TESTSUITE "." #TESTNAME;                                        \
+        const MUON_Ull nameSize = strlen(namePart) + 1;                                         \
+        char* name = MUON_PTRCAST(char* , malloc(nameSize));                                    \
+        muonTestContext.tests = MUON_PTRCAST(                                                   \
+                                    struct muonTestSuiteStruct* ,                               \
+                                    muon_realloc(MUON_PTRCAST(void* , muonTestContext.tests),   \
+                                                sizeof(struct muonTestSuiteStruct) *            \
+                                                    muonTestContext.numTestSuites));            \
+        muonTestContext.tests[index].func = &_MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME;          \
+        muonTestContext.tests[index].name = name;                                               \
+        MUON_SNPRINTF(name, nameSize, "%s", namePart);                                          \
+    }                                                                                           \
     void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME()
 
 
@@ -1005,7 +1011,8 @@ MUON_WEAK int muonShouldFilterTest(const char* filter, const char* testcase) {
             }
         }
 
-        if((*filter_curr != MUON_NULLCHAR) || ((*testcase_curr == MUON_NULLCHAR) && ((filter == filter_curr) || (filter_curr[-1] != '*')))) {
+        if((*filter_curr != MUON_NULLCHAR) || ((*testcase_curr == MUON_NULLCHAR) && ((filter == filter_curr) || 
+            (filter_curr[-1] != '*')))) {
             // We have a mismatch
             return 1;
         }
@@ -1136,7 +1143,6 @@ static int muonCleanup() {
 }
 
 // Triggers and runs all unit tests
-// static void muonRunTests(MUON_Ull* muonStatsFailedTestSuites, MUON_Ull* muonStatsNumFailedTestSuites) {
 static void muonRunTests() {
     // Run tests
     for(MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
@@ -1266,6 +1272,20 @@ inline int muon_main(int argc, char** argv) {
     return muonCleanup();
 }
 
+/**
+    We need to declare these variables here because they're used in multiple translation units (if compiled 
+    as so).
+    For example, if test1.c(pp) #includes `Muon/Muon.h` and test2.c(pp) does the same, declaring the variables
+    static will only make them exist in the first translation unit the compiler sees. 
+    We can get around this by compiling only one file (eg. main.c(pp)) and including the other source files 
+    using `#include`, but this would be counter-productive.
+
+    If we used C++ as the base language for this project, we could have got around this problem using OOP
+    constructs, but C++ is not (and should not) be the language this project is written in. 
+    With C, the best (and closest) thing we have are global variables that persists through the _entire_
+    compilation project (all testing source files).
+    See: https://stackoverflow.com/questions/1856599/when-to-use-static-keyword-before-global-variables
+*/
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define MUON_NO_MAIN()                                        \
