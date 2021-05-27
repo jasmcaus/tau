@@ -91,6 +91,12 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #include <exception>
 #endif // __cplusplus
 
+#ifdef __cplusplus
+    #define MUON_ABORT  std::abort()
+#else 
+    #define MUON_ABORT  exit(1)
+#endif // __cplusplus
+
 #ifdef __has_include
     #if __has_include(<valgrind.h>)
         #include <valgrind.h>
@@ -491,62 +497,60 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint, checkName)  \
-        do {                                                                  \
-            if(!((actual)cond(expected))) {                                   \
-                muonPrintf("%s:%u: ", __FILE__, __LINE__);                    \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");       \
-                if(strchr(#actual, '(') != NULL || strchr(#expected, '(') != NULL) { \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : "); \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",  \
-                                                                #checkName, \
-                                                                #actual #cond #expected \
-                                                                ); \
-                } \
-                muonPrintf("  Expected : ");                                  \
-                MUON_OVERLOAD_PRINTER(actual);                                \
-                printf(" %s ", #cond);                                        \
-                MUON_OVERLOAD_PRINTER(expected);                              \
-                muonPrintf("\n");                                             \
-                                                                              \
-                muonPrintf("    Actual : ");                                  \
-                MUON_OVERLOAD_PRINTER(actual);                                \
-                printf(" %s ", #ifCondFailsThenPrint);                        \
-                MUON_OVERLOAD_PRINTER(expected);                              \
-                muonPrintf("\n");                                             \
-                failIfInsideTestSuite();                                      \
-            }                                                                 \
-        }                                                                     \
+    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint, checkName)              \
+        do {                                                                                    \
+            if(!((actual)cond(expected))) {                                                     \
+                muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
+                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                         \
+                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {  \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                  \
+                                                                #checkName,                     \
+                                                                #actual #cond #expected);       \
+                }                                                                               \
+                muonPrintf("  Expected : ");                                                    \
+                MUON_OVERLOAD_PRINTER(actual);                                                  \
+                printf(" %s ", #cond);                                                          \
+                MUON_OVERLOAD_PRINTER(expected);                                                \
+                muonPrintf("\n");                                                               \
+                                                                                                \
+                muonPrintf("    Actual : ");                                                    \
+                MUON_OVERLOAD_PRINTER(actual);                                                  \
+                printf(" %s ", #ifCondFailsThenPrint);                                          \
+                MUON_OVERLOAD_PRINTER(expected);                                                \
+                muonPrintf("\n");                                                               \
+                failIfInsideTestSuite();                                                        \
+            }                                                                                   \
+        }                                                                                       \
         while(0)
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint, checkName)       \
-        do {                                                                  \
-            if(!((actual)cond(expected))) {                                   \
-                failIfInsideTestSuite();                                      \
-                muonPrintf("%s:%u: ", __FILE__, __LINE__);                    \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");       \
-                if(strchr(#actual, '(') != NULL || strchr(#expected, '(') != NULL) { \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : "); \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",  \
-                                                                #checkName, \
-                                                                #actual #cond #expected \
-                                                                ); \
-                } \
-                muonPrintf("  Expected : ");                                  \
-                printf(#actual);                                              \
-                printf(" %s ", #cond);                                        \
-                printf(#expected);                                            \
-                muonPrintf("\n");                                             \
-                                                                              \
-                muonPrintf("    Actual : ");                                  \
-                printf(#actual);                                              \
-                printf(" %s ", #ifCondFailsThenPrint);                        \
-                printf(#expected);                                            \
-                muonPrintf("\n");                                             \
-            }                                                                 \
-        }                                                                     \
+    #define __MUONCHECK__(actual, expected, cond, ifCondFailsThenPrint, checkName)            \
+        do {                                                                                  \
+            if(!((actual)cond(expected))) {                                                   \
+                failIfInsideTestSuite();                                                      \
+                muonPrintf("%s:%u: ", __FILE__, __LINE__);                                    \
+                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                       \
+                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL)  \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                \
+                                                                #checkName,                   \
+                                                                #actual #cond #expected);     \
+                }                                                                             \
+                muonPrintf("  Expected : ");                                                  \
+                printf(#actual);                                                              \
+                printf(" %s ", #cond);                                                        \
+                printf(#expected);                                                            \
+                muonPrintf("\n");                                                             \
+                                                                                              \
+                muonPrintf("    Actual : ");                                                  \
+                printf(#actual);                                                              \
+                printf(" %s ", #ifCondFailsThenPrint);                                        \
+                printf(#expected);                                                            \
+                muonPrintf("\n");                                                             \
+            }                                                                                 \
+        }                                                                                     \
         while(0)
 #endif // MUON_CAN_USE_OVERLOADABLES
 
@@ -579,69 +583,103 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     }                                                                                  \
     while(0)
 
-#define CHECK_TRUE(cond)                                                      \
-    do {                                                                      \
-        if(!(cond)) {                                                         \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : true\n");                                \
-            muonPrintf("    Actual : false\n");                               \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
+#define CHECK_TRUE(cond)                                                            \
+    do {                                                                            \
+        if(!(cond)) {                                                               \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
+            if(strchr(#cond, '(') != MUON_NULL) {                                   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
+                                                                "CHECK_TRUE",       \
+                                                                #cond);             \
+                }                                                                   \
+            muonPrintf("  Expected : true\n");                                      \
+            muonPrintf("    Actual : false\n");                                     \
+            failIfInsideTestSuite();                                                \
+        }                                                                           \
     } while(0)
 
 
-#define CHECK_FALSE(cond)                                                     \
-    do {                                                                      \
-        if((cond)) {                                                          \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : false\n");                               \
-            muonPrintf("    Actual : true\n");                                \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
+#define CHECK_FALSE(cond)                                                           \
+    do {                                                                            \
+        if((cond)) {                                                                \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
+            if(strchr(#cond, '(') != MUON_NULL) {                                   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
+                                                                "CHECK_FALSE",      \
+                                                                #cond);             \
+                }                                                                   \
+            muonPrintf("  Expected : false\n");                                     \
+            muonPrintf("    Actual : true\n");                                      \
+            failIfInsideTestSuite();                                                \
+        }                                                                           \
     } while(0)
  
 
 // String Macros
-#define CHECK_STREQ(actual, expected)                                         \
-    do {                                                                      \
-        if(strcmp(actual, expected) != 0) {                                   \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : \"%s\" == \"%s\"\n", actual, expected);  \
-            muonPrintf("    Actual : not equal\n");                           \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
-    }                                                                         \
+#define CHECK_STREQ(actual, expected)                                                         \
+    do {                                                                                      \
+        if(strcmp(actual, expected) != 0) {                                                   \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                        \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                           \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {    \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",            \
+                                                                "CHECK_STREQ",                \
+                                                                #actual, #expected);          \
+                }                                                                             \
+            muonPrintf("  Expected : \"%s\" == \"%s\"\n", actual, expected);                  \
+            muonPrintf("    Actual : not equal\n");                                           \
+            failIfInsideTestSuite();                                                          \
+        }                                                                                     \
+    }                                                                                         \
     while(0)                                                                    
 
 // Compare two strings for no equality.
 // Fails the test if `actual` and `expected` are the same strings.
-#define CHECK_STRNEQ(actual, expected)                                        \
-    do {                                                                      \
-        if(strcmp(actual, expected) == 0) {                                   \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : \"%s\" != \"%s\"\n", actual, expected);  \
-            muonPrintf("    Actual : equal\n");                               \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
-  }                                                                           \
+#define CHECK_STRNEQ(actual, expected)                                                        \
+    do {                                                                                      \
+        if(strcmp(actual, expected) == 0) {                                                   \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                        \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                           \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL)  {   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",            \
+                                                                "CHECK_STRNEQ",               \
+                                                                #actual, #expected);          \
+                }                                                                             \
+            muonPrintf("  Expected : \"%s\" != \"%s\"\n", actual, expected);                  \
+            muonPrintf("    Actual : equal\n");                                               \
+            failIfInsideTestSuite();                                                          \
+        }                                                                                     \
+   }                                                                                          \
   while(0)                                                                    
 
 
-#define CHECK_STRNNEQ(actual, expected, n)                                                   \
-    do {                                                                                     \
-        if(strncmp(actual, expected, n) == 0) {                                              \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                       \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                          \
-            muonPrintf("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,     \
-                                                               MUON_CAST(int, n), expected); \
-            muonPrintf("    Actual : equal subtrings\n");                                    \
-            failIfInsideTestSuite();                                                         \
-        }                                                                                    \
-    }                                                                                        \
+#define CHECK_STRNNEQ(actual, expected, n)                                                       \
+    do {                                                                                         \
+        if(MUON_CAST(int, n) < 0) {                                                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");              \
+            MUON_ABORT;                                                                          \
+        }                                                                                        \
+        if(strncmp(actual, expected, n) == 0) {                                                  \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                           \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                              \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {       \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s, %s)\n",            \
+                                                                "CHECK_STRNNEQ",                 \
+                                                                #actual, #expected, #n);         \
+                }                                                                                \
+            muonPrintf("  Expected : \"%.*s\" != \"%.*s\"\n",  MUON_CAST(int, n), #actual,       \
+                                                               MUON_CAST(int, n), #expected);    \
+            muonPrintf("    Actual : equal subtrings\n");                                        \
+            failIfInsideTestSuite();                                                             \
+        }                                                                                        \
+    }                                                                                            \
     while(0)                                                                    
 
 //
@@ -658,7 +696,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
             if(!((actual)cond(expected))) {                                              \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                               \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                  \
-                if(strchr(#actual, '(') != NULL || strchr(#expected, '(') != NULL) {     \
+                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {\
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");        \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",           \
                                                                 #requireName,            \
@@ -688,7 +726,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
             if(!((actual)cond(expected))) {                                              \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                               \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                  \
-                if(strchr(#actual, '(') != NULL || strchr(#expected, '(') != NULL) {     \
+                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {\
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");        \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",           \
                                                                 #requireName,            \
@@ -735,68 +773,102 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     }                                                                            \
     while(0)
 
-#define REQUIRE_TRUE(cond)                                                    \
-    do {                                                                      \
-        if(!(cond)) {                                                         \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : true\n");                                \
-            muonPrintf("    Actual : false\n");                               \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
+#define REQUIRE_TRUE(cond)                                                          \
+    do {                                                                            \
+        if(!(cond)) {                                                               \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
+            if(strchr(#cond, '(') != MUON_NULL) {                                   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
+                                                                "REQUIRE_TRUE",     \
+                                                                #cond);             \
+                }                                                                   \
+            muonPrintf("  Expected : true\n");                                      \
+            muonPrintf("    Actual : false\n");                                     \
+            failIfInsideTestSuite();                                                \
+        }                                                                           \
     } while(0)
 
 
-#define REQUIRE_FALSE(cond)                                                   \
-    do {                                                                      \
-        if((cond)) {                                                          \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : false\n");                               \
-            muonPrintf("    Actual : true\n");                                \
-            failIfInsideTestSuite();                                          \
-        }                                                                     \
+#define REQUIRE_FALSE(cond)                                                         \
+    do {                                                                            \
+        if((cond)) {                                                                \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
+            if(strchr(#cond, '(') != MUON_NULL) {                                   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
+                                                                "REQUIRE_FALSE",    \
+                                                                #cond);             \
+                }                                                                   \
+            muonPrintf("  Expected : false\n");                                     \
+            muonPrintf("    Actual : true\n");                                      \
+            failIfInsideTestSuite();                                                \
+        }                                                                           \
     } while(0)
 
-#define REQUIRE_STREQ(actual, expected)                                       \
-    do {                                                                      \
-        if(strcmp(actual, expected) != 0) {                                   \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : \"%s\" == \"%s\"\n", actual, expected);  \
-            muonPrintf("    Actual : not equal\n");                           \
-            failIfInsideTestSuite();                                          \
-            return;                                                           \
-        }                                                                     \
-    }                                                                         \
+#define REQUIRE_STREQ(actual, expected)                                                       \
+    do {                                                                                      \
+        if(strcmp(actual, expected) != 0) {                                                   \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                        \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                           \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {    \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",            \
+                                                                "REQUIRE_STREQ",              \
+                                                                #actual, #expected);          \
+                }                                                                             \
+            muonPrintf("  Expected : \"%s\" == \"%s\"\n", actual, expected);                  \
+            muonPrintf("    Actual : not equal\n");                                           \
+            failIfInsideTestSuite();                                                          \
+            return;                                                                           \
+        }                                                                                     \
+    }                                                                                         \
     while(0)                                                                    
 
-#define REQUIRE_STRNEQ(actual, expected)                                      \
-    do {                                                                      \
-        if(strcmp(actual, expected) == 0) {                                   \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                        \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");           \
-            muonPrintf("  Expected : \"%s\" != \"%s\"\n", actual, expected);  \
-            muonPrintf("    Actual : equal\n");                               \
-            failIfInsideTestSuite();                                          \
-            return;                                                           \
-        }                                                                     \
-    }                                                                         \
+#define REQUIRE_STRNEQ(actual, expected)                                                      \
+    do {                                                                                      \
+        if(strcmp(actual, expected) == 0) {                                                   \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                        \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                           \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {    \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",            \
+                                                                "REQUIRE_STRNEQ",             \
+                                                                #actual, #expected);          \
+                }                                                                             \
+            muonPrintf("  Expected : \"%s\" != \"%s\"\n", actual, expected);                  \
+            muonPrintf("    Actual : equal\n");                                               \
+            failIfInsideTestSuite();                                                          \
+            return;                                                                           \
+        }                                                                                     \
+    }                                                                                         \
     while(0)                                                                    
 
 
-#define REQUIRE_STRNNEQ(actual, expected, n)                                                 \
-    do {                                                                                     \
-        if(strncmp(actual, expected, n) == 0) {                                              \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                       \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                          \
-            muonPrintf("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,     \
-                                                               MUON_CAST(int, n), expected); \
-            muonPrintf("    Actual : equal subtrings\n");                                    \
-            failIfInsideTestSuite();                                                         \
-            return;                                                                          \
-        }                                                                                    \
-    }                                                                                        \
+#define REQUIRE_STRNNEQ(actual, expected, n)                                                     \
+    do {                                                                                         \
+        if(MUON_CAST(int, n) < 0) {                                                              \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");              \
+            MUON_ABORT;                                                                          \
+        }                                                                                        \
+        if(strncmp(actual, expected, n) == 0) {                                                  \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                           \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                              \
+            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {       \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s, %s)\n",            \
+                                                                "REQUIRE_STRNNEQ",               \
+                                                                #actual, #expected, #n);         \
+                }                                                                                \
+            muonPrintf("  Expected : \"%.*s\" != \"%.*s\"\n", MUON_CAST(int, n), actual,         \
+                                                               MUON_CAST(int, n), expected);     \
+            muonPrintf("    Actual : equal subtrings\n");                                        \
+            failIfInsideTestSuite();                                                             \
+            return;                                                                              \
+        }                                                                                        \
+    }                                                                                            \
     while(0)                                                                    
 
 static void incrementWarnings() {

@@ -39,7 +39,7 @@ TEST(cpp, REQUIRE_STRNNEQ1) {
 }
 
 TEST(cpp, REQUIRE_STRNNEQ2) { 
-    REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); 
+    REQUIRE_STRNNEQ("foo", "barfoo", strlen("foob")); 
 }
 
 
@@ -368,7 +368,7 @@ struct Stack {
 TEST_F_SETUP(Stack) {
     WARN(TESTING WARNING);
     muon->name = "Hello";
-    muon->age = 5;
+    muon->age = 4;
 }
 
 TEST_F_TEARDOWN(Stack) {
