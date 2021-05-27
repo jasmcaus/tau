@@ -148,9 +148,9 @@ static MUON_Ull* muonStatsFailedTestSuites = MUON_NULL;
 static MUON_Ull muonStatsNumFailedTestSuites = 0;
 
 // Overridden in `muon_main` if the cmdline option `--no-color` is passed
-static MUON_bool muonShouldColourizeOutput = MUON_true;
-static MUON_bool muonDisableSummary = MUON_false;
-static MUON_bool muonDisplayOnlyFailedOutput = MUON_false; 
+static int muonShouldColourizeOutput = 1;
+static int muonDisableSummary = 0;
+static int muonDisplayOnlyFailedOutput = 0; 
 
 static char* muon_argv0_ = MUON_NULL;
 static const char* filter = MUON_NULL;
@@ -963,7 +963,7 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
 
         // Only failed output
         else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput))) {
-            muonDisplayOnlyFailedOutput = MUON_true;
+            muonDisplayOnlyFailedOutput = 1;
         }
 
         // Filter tests
@@ -983,12 +983,12 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
 
         // Disable colouring
         else if(strncmp(argv[i], colourStr, strlen(colourStr))) {
-            muonShouldColourizeOutput = MUON_false;
+            muonShouldColourizeOutput = 0;
         }
 
         // Disable Summary
         else if(strncmp(argv[i], summaryStr, strlen(summaryStr))) {
-            muonDisableSummary = MUON_true;
+            muonDisableSummary = 1;
         }
 
         else {
