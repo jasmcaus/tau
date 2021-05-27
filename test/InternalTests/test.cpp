@@ -346,6 +346,12 @@ TEST(cpp11, Array) {
     CHECK_NE(cpp11, cpp11 + 1); 
 }
 
+TEST(cpp, Section) {
+    SECTION("#1") {
+        CHECK_NE(1, 2);
+    }
+}
+
 struct Stack {
     char* name; 
     int age;
@@ -355,13 +361,14 @@ struct Stack {
     }
 
     void test() {
-        CHECK_EQ(12, 15);
+        CHECK_EQ(12, 12);
     }
 };
 
 TEST_F_SETUP(Stack) {
+    WARN(TESTING WARNING);
     muon->name = "Hello";
-    muon->age = 4;
+    muon->age = 5;
 }
 
 TEST_F_TEARDOWN(Stack) {

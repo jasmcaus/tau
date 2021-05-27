@@ -87,9 +87,6 @@ endif()
 # A (more or less comprehensive) list is here: https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html
 
 if(NOT MSVC)
-    message("--------- CMAKE_C_COMPILER_ID   = ${CMAKE_C_COMPILER_ID}")
-    message("--------- CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
-
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         string(APPEND CMAKE_C_FLAGS " -std=gnu11")
     else()
@@ -132,7 +129,6 @@ if(NOT MSVC)
         string(APPEND COMPILE_FLAGS " -Wno-uninitialized")
         string(APPEND COMPILE_FLAGS " -Wno-unused-const-variable")
         string(APPEND COMPILE_FLAGS " -Wno-newline-eof")
-        message("--------- COMPILE_FLAGS = ${COMPILE_FLAGS}")
     else()
         string(APPEND COMPILE_FLAGS " -fPIC")
         string(APPEND COMPILE_FLAGS " -Wno-discarded-qualifiers")
@@ -155,9 +151,6 @@ if(NOT MSVC)
 
 # For MSVC 
 else()
-    message("--------- CMAKE_C_COMPILER_ID   = ${CMAKE_C_COMPILER_ID}")
-    message("--------- CMAKE_CXX_COMPILER_ID = ${CMAKE_CXX_COMPILER_ID}")
-
     string(APPEND CMAKE_C_FLAGS " /std:c11")
     string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
 
