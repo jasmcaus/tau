@@ -148,8 +148,9 @@ static MUON_Ll* muonStatsFailedTestSuites = MUON_NULL;
 static MUON_Ll muonStatsNumFailedTestSuites = 0;
 
 // Overridden in `muon_main` if the cmdline option `--no-color` is passed
-static int muonShouldColourizeOutput = 1;
-static int muonDisableSummary = 0; 
+static MUON_bool muonShouldColourizeOutput = MUON_true;
+static MUON_bool muonDisableSummary = MUON_false;
+static MUON_bool muonDisplayOnlyFailedOutput = MUON_false; 
 
 static char* muon_argv0_ = MUON_NULL;
 static const char* filter = MUON_NULL;
@@ -653,11 +654,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                 muonPrintf(" %s ", #ifCondFailsThenPrint);                   \
                 MUON_OVERLOAD_PRINTER(expected);                              \
                 muonPrintf("\n");                                            \
-                if(muonShouldColourizeOutput)  {  \
-                    failIfInsideTestSuite();    \
-                    /* Reset this back to false so that it can be used other checks */ \
-                    muonShouldColourizeOutput = 0; \
-                } \
+                failIfInsideTestSuite();    \
                 return;                                                       \
             }                                                                 \
         }                                                                     \
@@ -810,9 +807,8 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     static void muon_f_setup_##FIXTURE(struct FIXTURE*);                \
     static void muon_f_teardown_##FIXTURE(struct FIXTURE*);             \
     static void muon_run_##FIXTURE##_##NAME(struct FIXTURE*);           \
-    static void muon_f_##FIXTURE##_##NAME(MUON_Ll muon_index) {                 \
+    static void muon_f_##FIXTURE##_##NAME() {                 \
         struct FIXTURE fixture;                                                    \
-        (void)muon_index;                                                         \
         memset(&fixture, 0, sizeof(fixture));                                      \
         muon_f_setup_##FIXTURE(&fixture);                           \
         if (1!= 0) { return; }                                              \
@@ -959,10 +955,16 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
         const char* filterStr = "--filter=";
         const char* XUnitOutput = "--output=";
 
+        // Help
         if(strncmp(argv[i], helpStr, strlen(helpStr)) == 0) {
             muon_help_();
             return MUON_false;
         } 
+
+        // Only failed output
+        else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput))) {
+            muonDisplayOnlyFailedOutput = MUON_true;
+        }
 
         // Filter tests
         else if(strncmp(argv[i], filterStr, strlen(filterStr)) == 0)
@@ -987,11 +989,6 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
         // Disable Summary
         else if(strncmp(argv[i], summaryStr, strlen(summaryStr))) {
             muonDisableSummary = MUON_true;
-        }
-
-        // Only failed output
-        else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput))) {
-            #define MUON_ONLY_FAILED_OUTPUT     1
         }
 
         else {
@@ -1027,8 +1024,10 @@ static void muonRunTests() {
         if(muonShouldFilterTest(filter, muonTestContext.tests[i].name))
             continue;
 
-        muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
-        muonColouredPrintf(MUON_COLOUR_DEFAULT_, "%s\n", muonTestContext.tests[i].name);
+        if(!muonDisplayOnlyFailedOutput) {
+            muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
+            muonColouredPrintf(MUON_COLOUR_DEFAULT_, "%s\n", muonTestContext.tests[i].name);
+        }
 
         if(muonTestContext.foutput)
             fprintf(muonTestContext.foutput, "<testcase name=\"%s\">", muonTestContext.tests[i].name);
@@ -1057,13 +1056,14 @@ static void muonRunTests() {
             muonClockPrintDuration(duration);
             printf(")\n");
         } else {
-            muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "[       OK ] ");
-            muonColouredPrintf(MUON_COLOUR_DEFAULT_, "%s (", muonTestContext.tests[i].name);
-            muonClockPrintDuration(duration);
-            printf(")\n");
+            if(!muonDisplayOnlyFailedOutput) {
+                muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "[       OK ] ");
+                muonColouredPrintf(MUON_COLOUR_DEFAULT_, "%s (", muonTestContext.tests[i].name);
+                muonClockPrintDuration(duration);
+                printf(")\n");
+            }
         }
     }
-
     muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "[==========] ");
     muonColouredPrintf(MUON_COLOUR_DEFAULT_, "%" MUON_PRIu64 " test suites ran\n", muonStatsTestsRan);
 }
