@@ -1,3 +1,7 @@
+import os 
+import time 
+
+
 MAIN_TEXT = \
 """
 #include <Muon/Muon.h>
@@ -21,4 +25,12 @@ def write_meta(filename='16k_assertions_CHECK_EQ.c'):
     finally:
         a.close()
 
-write_meta()
+def timeexec():
+    st = time.time()
+    os.system('test.exe --failed-output-only')
+    end = time.time()
+    print(f"Took {end-st}s")
+
+if __name__ == '__main__':
+    # write_meta()
+    timeexec()
