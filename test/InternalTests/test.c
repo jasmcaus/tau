@@ -44,16 +44,16 @@ TEST(c, REQUIRE_STREQ) {
     REQUIRE_STREQ("foo", "foo"); 
 }
 
-TEST(c, REQUIRE_STRNE) { 
+TEST(c, REQUIRE_STRNEQ) { 
     REQUIRE_STRNEQ("foo", "bar"); 
 }
 
-TEST(c, REQUIRE_STRNEQ) { 
-    REQUIRE_STRNEQ("foo", "foobar"); 
+TEST(c, REQUIRE_STRNE) { 
+    REQUIRE_STRNE("foo", "foobar", strlen("foo")); 
 }
 
 TEST(c, REQUIRE_STRNNE) { 
-    REQUIRE_STRNNEQ("foo", "barfoo", strlen("foo")); 
+    REQUIRE_STRNNE("foo", "barfoo", strlen("foo")); 
 }
 
 TEST(c, CHECK_EQ1) { 
@@ -80,17 +80,21 @@ TEST(c, CHECK_GE) {
     CHECK_GE(2, 1);
 }
 
-TEST(c, CHECK_STREQ) { 
-    CHECK_STREQ("foo", "foo"); 
-}
+// TEST(c, CHECK_STREQ) { 
+//     CHECK_STREQ("foo", "foo"); 
+// }
 
-TEST(c, CHECK_STRNE) { 
-    CHECK_STRNEQ("foo", "food"); 
-}
+// TEST(c, CHECK_STRNEQ) { 
+//     CHECK_STRNEQ("foo", "food"); 
+// }
 
-TEST(c, CHECK_STRNNE) { 
-    CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); 
-}
+// TEST(c, CHECK_STRNE) { 
+//     CHECK_STRNE("foo", "barfoo", strlen("foo")); 
+// }
+
+// TEST(c, CHECK_STRNNE) { 
+//     CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); 
+// }
 
 TEST(c11, REQUIRE_EQ) { 
     REQUIRE_EQ(1, 1); 
