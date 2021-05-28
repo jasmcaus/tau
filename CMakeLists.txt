@@ -189,15 +189,15 @@ include(GNUInstallDirs)
 
 # ------ Options ------
 set(MUON_TARGET_NAME           ${PROJECT_NAME}Targets)
-set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.CMake)
+set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.cmake)
 
 set(MUON_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Muon)
 
 # CMake Configurations (from the ``CMake`` folder)
-set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.CMake.in)
-set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.CMake)
-set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.CMake.in)
-set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.CMake)
+set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
+set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
+set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
 set(CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
 set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
 set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)

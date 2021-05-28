@@ -1,6 +1,6 @@
 # Prerequisites
 *.d
-script.py
+/script.py
 Makefile4
 build/*
 /test.h
