@@ -500,10 +500,11 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         muonPrintf("If you think this was an error, please file an issue on Muon's Github repo.")
 #endif // MUON_OVERLOADABLE
 
+
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName)              \
+    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName, failOrAbort)   \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
@@ -525,17 +526,16 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                 printf(" %s ", #ifCondFailsThenPrint);                                          \
                 MUON_OVERLOAD_PRINTER(expected);                                                \
                 muonPrintf("\n");                                                               \
-                failIfInsideTestSuite();                                                        \
+                failOrAbort();                                                                  \
             }                                                                                   \
         }                                                                                       \
         while(0)
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName)            \
+    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName, failOrAbort)            \
         do {                                                                                  \
             if(!((actual)cond(expected))) {                                                   \
-                failIfInsideTestSuite();                                                      \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                    \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                       \
                 if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL)  \
@@ -555,12 +555,13 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                 printf(" %s ", #ifCondFailsThenPrint);                                        \
                 printf(#expected);                                                            \
                 muonPrintf("\n");                                                             \
+                failOrAbort();                                                                \
             }                                                                                 \
         }                                                                                     \
         while(0)
 #endif // MUON_CAN_USE_OVERLOADABLES
 
-#define __MUONCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName)                                                                                    \
+#define __MUONCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)                                                                                    \
     do {                                                                                      \
         if(strcmp(actual, expected) cond 0) {                                                 \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                                        \
@@ -573,13 +574,13 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                 }                                                                             \
             muonPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);      \
             muonPrintf("    Actual : %s\n", #actualPrint);                                           \
-            failIfInsideTestSuite();                                                          \
+            failOrAbort();                                                          \
             return;                                                                           \
         }                                                                                     \
     }                                                                                         \
     while(0)  
 
-#define __MUONCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName)                                                                                       \
+#define __MUONCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)                                                                                       \
     do {                                                                                         \
         if(MUON_CAST(int, n) < 0) {                                                              \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");              \
@@ -598,32 +599,43 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                                                               #ifCondFailsThenPrint,             \
                                                               MUON_CAST(int, n), expected);      \
             muonPrintf("    Actual : %s\n", #actualPrint);                                       \
-            failIfInsideTestSuite();                                                             \
+            failOrAbort();                                                             \
             return;                                                                              \
         }                                                                                        \
     }                                                                                            \
     while(0)  
-
-// Whole-string checks
-#define CHECK_STREQ(actual, expected)   __MUONCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ)
-#define CHECK_STRNEQ(actual, expected)  __MUONCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ)
-
-// Substring Checks
-#define CHECK_STRNE(actual, expected, n)   __MUONCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE)
-#define CHECK_STRNNE(actual, expected, n)  __MUONCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE) 
-
 
 /**
 #########################################
            Check Macros
 #########################################
 */
-#define CHECK_EQ(actual, expected)     __MUONCMP__(actual, expected, ==, !=, CHECK_EQ)
-#define CHECK_NE(actual, expected)     __MUONCMP__(actual, expected, !=, ==, CHECK_NE)
-#define CHECK_LT(actual, expected)     __MUONCMP__(actual, expected, <,  >,  CHECK_LT)
-#define CHECK_LE(actual, expected)     __MUONCMP__(actual, expected, <=, >=, CHECK_LE)
-#define CHECK_GT(actual, expected)     __MUONCMP__(actual, expected, >,  <,  CHECK_GT)
-#define CHECK_GE(actual, expected)     __MUONCMP__(actual, expected, >=, <=, CHECK_GE)
+#define CHECK_EQ(actual, expected)     __MUONCMP__(actual, expected, ==, !=, CHECK_EQ, failIfInsideTestSuite)
+#define CHECK_NE(actual, expected)     __MUONCMP__(actual, expected, !=, ==, CHECK_NE, failIfInsideTestSuite)
+#define CHECK_LT(actual, expected)     __MUONCMP__(actual, expected, <,  >,  CHECK_LT, failIfInsideTestSuite)
+#define CHECK_LE(actual, expected)     __MUONCMP__(actual, expected, <=, >=, CHECK_LE, failIfInsideTestSuite)
+#define CHECK_GT(actual, expected)     __MUONCMP__(actual, expected, >,  <,  CHECK_GT, failIfInsideTestSuite)
+#define CHECK_GE(actual, expected)     __MUONCMP__(actual, expected, >=, <=, CHECK_GE, failIfInsideTestSuite)
+
+#define REQUIRE_EQ(actual, expected)   __MUONCMP__(actual, expected, ==, !=, REQUIRE_EQ, abortIfInsideTestSuite)
+#define REQUIRE_NE(actual, expected)   __MUONCMP__(actual, expected, !=, ==, REQUIRE_NE, abortIfInsideTestSuite)
+#define REQUIRE_LT(actual, expected)   __MUONCMP__(actual, expected, <,  >,  REQUIRE_LT, abortIfInsideTestSuite)
+#define REQUIRE_LE(actual, expected)   __MUONCMP__(actual, expected, <=, >=, REQUIRE_LE, abortIfInsideTestSuite)
+#define REQUIRE_GT(actual, expected)   __MUONCMP__(actual, expected, >,  <,  REQUIRE_GT, abortIfInsideTestSuite)
+#define REQUIRE_GE(actual, expected)   __MUONCMP__(actual, expected, >=, <=, REQUIRE_GE, abortIfInsideTestSuite)
+
+// Whole-string checks
+#define CHECK_STREQ(actual, expected)     __MUONCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, failIfInsideTestSuite)
+#define CHECK_STRNEQ(actual, expected)    __MUONCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, failIfInsideTestSuite)
+#define REQUIRE_STREQ(actual, expected)   __MUONCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, abortIfInsideTestSuite)
+#define REQUIRE_STRNEQ(actual, expected)  __MUONCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNEQ, abortIfInsideTestSuite)
+
+// Substring Checks
+#define CHECK_STRNE(actual, expected, n)     __MUONCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE, failIfInsideTestSuite)
+#define CHECK_STRNNE(actual, expected, n)    __MUONCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, failIfInsideTestSuite) 
+#define REQUIRE_STRNE(actual, expected, n)   __MUONCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, abortIfInsideTestSuite)
+#define REQUIRE_STRNNE(actual, expected, n)  __MUONCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, abortIfInsideTestSuite)
+
 
 #define CHECK(cond, ...)                                                               \
     do {                                                                               \
@@ -682,21 +694,6 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
            Assertion Macros
 #########################################
 */
-
-#define REQUIRE_EQ(actual, expected)     __MUONREQUIRE__(actual, expected, ==, !=, REQUIRE_EQ)
-#define REQUIRE_NE(actual, expected)     __MUONREQUIRE__(actual, expected, !=, ==, REQUIRE_NE)
-#define REQUIRE_LT(actual, expected)     __MUONREQUIRE__(actual, expected, <,  >,  REQUIRE_LT)
-#define REQUIRE_LE(actual, expected)     __MUONREQUIRE__(actual, expected, <=, >=, REQUIRE_LE)
-#define REQUIRE_GT(actual, expected)     __MUONREQUIRE__(actual, expected, >,  <,  REQUIRE_GT)
-#define REQUIRE_GE(actual, expected)     __MUONREQUIRE__(actual, expected, >=, <=, REQUIRE_GE)
-
-// Whole-string checks
-#define REQUIRE_STREQ(actual, expected)   __MUONREQUIRE_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ)
-#define REQUIRE_STRNEQ(actual, expected)  __MUONREQUIRE_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNEQ)
-
-// Substring Checks
-#define REQUIRE_STRNE(actual, expected, n)   __MUONREQUIRE_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE)
-#define REQUIRE_STRNNE(actual, expected, n)  __MUONREQUIRE_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE)
 
 
 #define REQUIRE(cond, ...)                                                       \
