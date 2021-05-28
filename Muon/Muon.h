@@ -126,7 +126,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #define MUON_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__cplusplus)
     #define MUON_WEAK     inline
     #define MUON_UNUSED
 #else
