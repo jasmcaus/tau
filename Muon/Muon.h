@@ -702,7 +702,6 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     }                                                                            \
     while(0)
 
-                                         
 
 static void incrementWarnings() {
     muonStatsNumWarnings++;
@@ -715,10 +714,18 @@ static void incrementWarnings() {
 #ifdef __cplusplus
     #define SECTION(...)    \
         if(1)
+    #define STATIC_REQUIRE(...) \
+        static_assert(__VA_ARGS__, #__VA_ARGS__)
+    #define STATIC_REQUIRE_FALSE(...) \
+        static_assert(!(__VA_ARGS__), "!(" #__VA_ARGS__ ")")
 #else 
     #define SECTION(...)    \
         WARN(Using "SECTION" in C results in limited diagnostics.); \
         if(1)
+    #define STATIC_REQUIRE(...) \
+        WARN(Usage of "STATIC_REQUIRE" is not supported in C source files.)
+    #define STATIC_REQUIRE_FALSE(...) \
+        WARN(Usage of "STATIC_REQUIRE_FALSE" is not supported in C source files.)
 #endif // __cplusplus
 
 /**
