@@ -24,6 +24,15 @@ def generate_random_string(n=None):
 def generate_random_num():
     return random.randint(1, 100000)
 
+def generated_random_string_data():
+    a = open('random_generated_strings.txt', 'w')
+    try:
+        for _ in range(2000):
+            rand1 = generate_random_string()
+            rand2 = generate_random_string()
+            a.write(f'{rand1}, {rand2}\n')
+    finally:
+        a.close()
 
 # Begin with the String Macros
 def test_string_macros(lang: str, filename: str ='test_string_macros'):
@@ -141,7 +150,7 @@ def test_assertion_macros(lang: str, filename: str ='test_assertion_macros'):
         for _ in range(1200):
             rand_num1 = generate_random_num()
             rand_num2 = generate_random_num()
-            
+
             if rand_num1 < rand_num1:
                 a.write(ASSERTION_MACROS_TEXT % {
                             'macro': 'CHECK_LT',
@@ -206,6 +215,7 @@ def test_assertion_macros(lang: str, filename: str ='test_assertion_macros'):
 
 if __name__ == '__main__':
     languages = ['c', 'cpp']
-    for i in languages:
-        test_string_macros(str(i))
-        test_assertion_macros(str(i))
+    generated_random_string_data()
+    # for i in languages:
+    #     test_string_macros(str(i))
+    #     test_assertion_macros(str(i))
