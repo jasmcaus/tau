@@ -5,22 +5,24 @@ r"""
 """
 
 import random
+random.seed(3)
 
 INCLUDE_THIS_BEFORE_EACH_FILE = "#include <Muon/Muon.h>\n\n"
 
-TEST_SUITE_BEGIN = "TEST(gen_tests_%(lang)s, %(macro)s) {\n"
+TEST_SUITE_BEGIN = "TEST(gen_tests_%(lang)s, STRING_ASSERTIONS_%(macro)s) {\n"
 TEST_SUITE_END = "}\n\n"
 
-STRING_MACROS_TEXT = """    %(macro)s("%(str1)s", "%(str2)s");\n"""
-NSTRING_MACROS_TEXT = """   %(macro)s("%(str1)s", "%(str2)s");\n"""
-
-
-def generate_random_string():
+def generate_random_string(n=None):
     # Any random number between 2 and 100
-    n = random.randint(2, 100)
+    if n is None:
+        n = 100
+    n = random.randint(2, n)
 
-    choices = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$&()*+,-.:;<=>?@^_{`~{|}'
+    choices = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$&()*+,-.:;<=>@^_{`~{|}'
     return ''.join(random.choice(choices) for i in range(n))
+
+def generate_random_num():
+    return random.randint(1, 100000)
 
 
 # Begin with the String Macros
@@ -34,6 +36,9 @@ def test_string_macros(lang: str, filename: str ='test_string_macros'):
     filename = filename + '.' + lang
     print(f'[INFO] Writing {filename}')
 
+    STRING_MACROS_TEXT = """    %(macro)s("%(str1)s", "%(str2)s");\n"""
+    NSTRING_MACROS_TEXT = """   %(macro)s("%(str1)s", "%(str2)s", %(n)s);\n"""
+
     STRING_EQUAL_MACROS = ['CHECK_STREQ', 'REQUIRE_STREQ' ]
     STRING_UNEQUAL_MACROS = ['CHECK_STRNEQ', 'REQUIRE_STRNEQ']
     NSTRING_EQUAL_MACROS = ['CHECK_STRNE', 'REQUIRE_STRNE']
@@ -46,26 +51,161 @@ def test_string_macros(lang: str, filename: str ='test_string_macros'):
         a.write(INCLUDE_THIS_BEFORE_EACH_FILE)
         
         for macro in STRING_EQUAL_MACROS:
-            a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : "STR_EQUAL_" + macro})
+            a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : macro})
             
             # Do 100 tests for each macro
-            for i in range(100):
+            for i in range(150):
                 # Get a random string
                 rand_str = generate_random_string()
-
                 a.write(STRING_MACROS_TEXT % {
                             'macro': macro,
                             'str1': rand_str,
                             'str2': rand_str,
                         })
+            a.write(TEST_SUITE_END)
+        
+        for macro in STRING_UNEQUAL_MACROS:
+            a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : macro})
             
+            # Do 100 tests for each macro
+            for i in range(150):
+                # Get a random string
+                rand_str1 = generate_random_string()
+                rand_str2 = generate_random_string()
+                a.write(STRING_MACROS_TEXT % {
+                            'macro': macro,
+                            'str1': rand_str1,
+                            'str2': rand_str2,
+                        })
+            a.write(TEST_SUITE_END)
+        
+        for macro in NSTRING_EQUAL_MACROS:
+            a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : macro})
+            
+            # Do 100 tests for each macro
+            for i in range(150):
+                # Get a random string
+                rand_str1 = generate_random_string()
+                # Append maybe 20 characters to `rand_str`
+                rand_str2 = rand_str1 + generate_random_string(20)
+                a.write(NSTRING_MACROS_TEXT % {
+                            'macro': macro,
+                            'str1': rand_str1,
+                            'str2': rand_str2,
+                            'n': len(rand_str1)
+                        })
+            a.write(TEST_SUITE_END)
+        
+        for macro in NSTRING_UNEQUAL_MACROS:
+            a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : macro})
+            
+            # Do 100 tests for each macro
+            for i in range(150):
+                # Get a random string (should ideally be unequal)
+                rand_str1 = generate_random_string()
+                rand_str2 = generate_random_string()
+
+                a.write(NSTRING_MACROS_TEXT % {
+                            'macro': macro,
+                            'str1': rand_str1,
+                            'str2': rand_str2,
+                            'n': len(rand_str1)
+                        })
             a.write(TEST_SUITE_END)
 
     finally:
         a.close()
 
+def test_assertion_macros(lang: str, filename: str ='test_assertion_macros'):
+    if filename.endswith('.c'):
+        filename = filename[:-2]
+    if filename.endswith('.cpp'):
+        filename = filename[:-3]
+    
+    # Add the language extension
+    filename = filename + '.' + lang
+    print(f'[INFO] Writing {filename}')
+
+    ASSERTION_MACROS_TEXT = """    %(macro)s(%(num1)s, %(num2)s);\n"""
+    ASSERTION_MACROS = [
+        'CHECK_EQ', 'CHECK_NE', 'CHECK_LT', 'CHECK_LE', 'CHECK_GT', 'CHECK_GE', 
+        'REQUIRE_EQ', 'REQUIRE_NE', 'REQUIRE_LT', 'REQUIRE_LE', 'REQUIRE_GT', 'REQUIRE_GE'
+    ]
+
+    # Open a file to write
+    a = open(filename, 'w')
+
+    try:
+        a.write(INCLUDE_THIS_BEFORE_EACH_FILE)
+        a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : 'ASSERTION_MACROS'})
+        for _ in range(1200):
+            rand_num1 = generate_random_num()
+            rand_num2 = generate_random_num()
+            
+            if rand_num1 < rand_num1:
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'CHECK_LT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'REQUIRE_LT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+
+            elif rand_num1 > rand_num2:
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'CHECK_GT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'REQUIRE_GT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+
+            elif rand_num1 == rand_num2:
+                # We write to *_EQ, *_LE, *_GE
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'CHECK_EQ',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'CHECK_LE',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'CHECK_GT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'REQUIRE_EQ',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'REQUIRE_LE',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+                a.write(ASSERTION_MACROS_TEXT % {
+                            'macro': 'REQUIRE_GT',
+                            'num1': str(rand_num1),
+                            'num2': str(rand_num2),
+                        })
+
+        a.write(TEST_SUITE_END)
+    finally:
+        a.close()
+    
 
 if __name__ == '__main__':
     languages = ['c', 'cpp']
     for i in languages:
         test_string_macros(str(i))
+        test_assertion_macros(str(i))
