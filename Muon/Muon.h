@@ -515,7 +515,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName, failOrAbort)   \
+    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, macroName, failOrAbort)   \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
@@ -523,7 +523,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                 if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {  \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                  \
-                                                                #checkName,                     \
+                                                                #macroName,                     \
                                                                 #actual #cond #expected);       \
                 }                                                                               \
                 muonPrintf("  Expected : ");                                                    \
@@ -544,15 +544,15 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, checkName, failOrAbort)            \
+    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, macroName, failOrAbort)            \
         do {                                                                                  \
             if(!((actual)cond(expected))) {                                                   \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                    \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                       \
-                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL)  \
+                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) { \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");             \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                \
-                                                                #checkName,                   \
+                                                                #macroName,                   \
                                                                 #actual #cond #expected);     \
                 }                                                                             \
                 muonPrintf("  Expected : ");                                                  \
