@@ -10,7 +10,7 @@ None! Muon is header-only, so simply include it in your project.
 #include <Muon/Muon.h>
 ```
 
-To build Muon with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Muon/blob/dev/docs/cmake-quickstart.md).
+To build Muon with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Muon/blob/dev/docs/CMake-quickstart.md).
 
 ## Basic Concepts
 When using Muon, you begin by writing `assertions`, which are statements that check if a condition is true. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 

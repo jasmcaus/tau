@@ -57,7 +57,7 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Muon provides [here](https://github.com/jasmcaus/Muon/blob/dev/docs/cmake-quickstart.md). 
+You can read more about the assertions that Muon provides [here](https://github.com/jasmcaus/Muon/blob/dev/docs/CMake-quickstart.md). 
 
 To build the code, add the following to the end of your `CMakeLists.txt` file:
 ```cmake

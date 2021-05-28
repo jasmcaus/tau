@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
+CMake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 set(MUON_VERSION 1.0.0)
 
@@ -51,7 +51,7 @@ endif()
 
 if (POLICY CMP0077)
     # Allow CMake 3.13+ to override options when using FetchContent/add_subdirectory.
-    cmake_policy(SET CMP0077 NEW)
+    CMake_policy(SET CMP0077 NEW)
 endif()
 
 
@@ -61,7 +61,7 @@ option(MUON_USE_CI "Enable CI Build Targets" OFF)
 option(MUON_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
 if(MUON_USE_CI)
-    include(cmake/CI.cmake)
+    include(CMake/CI.CMake)
 endif()
 
 
@@ -189,17 +189,17 @@ include(GNUInstallDirs)
 
 # ------ Options ------
 set(MUON_TARGET_NAME           ${PROJECT_NAME}Targets)
-set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.cmake)
+set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.CMake)
 
 set(MUON_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Muon)
 
-# CMake Configurations (from the ``cmake`` folder)
-set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in)
-set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
-set(CMAKE_CONFIGS_INSTALL_DIR   "lib/cmake/${PROJECT_NAME}" CACHE INTERNAL "")
-set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in)
+# CMake Configurations (from the ``CMake`` folder)
+set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.CMake.in)
+set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.CMake)
+set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.CMake.in)
+set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.CMake)
+set(CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
+set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
 set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
 
 
@@ -249,13 +249,13 @@ include(CMakePackageConfigHelpers)
 # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
 # architecture-independent
 
-# ConfigVersion.cmake.in --> MuonConfigVersion.cmake
+# ConfigVersion.CMake.in --> MuonConfigVersion.CMake
 configure_file(
     ${CMAKE_CONFIGVERSION_IN}
     ${CMAKE_CONFIGVERSION}
     @ONLY
 )
-# config.cmake.in --> MuonConfig.cmake
+# config.CMake.in --> MuonConfig.CMake
 configure_file(
     ${CMAKE_CONFIG_IN}
     ${CMAKE_CONFIG}
@@ -272,10 +272,10 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
 
-# Move MuonConfig.cmake and MuonConfigVersion.cmake  ---> lib/cmake/Muon/...
+# Move MuonConfig.CMake and MuonConfigVersion.CMake  ---> lib/CMake/Muon/...
 install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake" 
-    DESTINATION "lib/cmake/${PROJECT_NAME}"
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.CMake" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.CMake" 
+    DESTINATION "lib/CMake/${PROJECT_NAME}"
 )
 
 # ./include --> include
@@ -285,7 +285,7 @@ install(
 )
 
 
-# Export MuonTargets from MuonTargets.cmake
+# Export MuonTargets from MuonTargets.CMake
 export(
     TARGETS ${PROJECT_NAME}
     FILE ${MUON_TARGETS_CMAKE}
@@ -293,7 +293,7 @@ export(
 
 install(
     EXPORT ${MUON_TARGET_NAME}
-    DESTINATION lib/cmake/${PROJECT_NAME}
+    DESTINATION lib/CMake/${PROJECT_NAME}
 )
 
 # install(
