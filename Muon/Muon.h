@@ -175,6 +175,7 @@ static const char* filter = MUON_NULL;
 */
 extern volatile int checkIsInsideTestSuite;
 extern volatile int hasCurrentTestFailed;
+extern volatile int shouldFailTest;
 extern volatile int shouldAbortTest;
 
 /**
