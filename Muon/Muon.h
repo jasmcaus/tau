@@ -200,6 +200,10 @@ static void abortIfInsideTestSuite() {
     }
 }
 
+static void incrementWarnings() {
+    muonStatsNumWarnings++;
+}
+
 // extern to the global state muon needs to execute
 MUON_EXTERN struct muonTestStateStruct muonTestContext;
 
@@ -634,12 +638,6 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         }                                                                           \
     } while(0)
 
-#define CHECK_TRUE(cond)    __MUONCMP_TF(cond, false, true, , CHECK_TRUE, failIfInsideTestSuite)
-#define CHECK_FALSE(cond)   __MUONCMP_TF(cond, true, false, !, CHECK_FALSE, failIfInsideTestSuite)
-
-#define REQUIRE_TRUE(cond)    __MUONCMP_TF(cond, false, true, , REQUIRE_TRUE, abortIfInsideTestSuite)
-#define REQUIRE_FALSE(cond)   __MUONCMP_TF(cond, true, false, !, REQUIRE_FALSE, abortIfInsideTestSuite)
-
 /**
 ############################################
           {CHECK|REQUIRE} Macros
@@ -671,6 +669,12 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 #define REQUIRE_STRNE(actual, expected, n)   __MUONCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, abortIfInsideTestSuite)
 #define REQUIRE_STRNNE(actual, expected, n)  __MUONCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, abortIfInsideTestSuite)
 
+#define CHECK_TRUE(cond)      __MUONCMP_TF(cond, false, true, , CHECK_TRUE, failIfInsideTestSuite)
+#define CHECK_FALSE(cond)     __MUONCMP_TF(cond, true, false, !, CHECK_FALSE, failIfInsideTestSuite)
+
+#define REQUIRE_TRUE(cond)    __MUONCMP_TF(cond, false, true, , REQUIRE_TRUE, abortIfInsideTestSuite)
+#define REQUIRE_FALSE(cond)   __MUONCMP_TF(cond, true, false, !, REQUIRE_FALSE, abortIfInsideTestSuite)
+
 
 #define CHECK(cond, ...)                                                               \
     do {                                                                               \
@@ -701,11 +705,6 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         }                                                                        \
     }                                                                            \
     while(0)
-
-
-static void incrementWarnings() {
-    muonStatsNumWarnings++;
-}
 
 #define WARN(msg)                                                        \
     incrementWarnings();                                                 \
