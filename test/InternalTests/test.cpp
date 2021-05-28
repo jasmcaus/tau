@@ -257,8 +257,12 @@ TEST(cpp11, CHECK_STRNEQ) {
     CHECK_STRNEQ("foo", "bar"); 
 }
 
-TEST(cpp11, CHECK_STRNNEQ) { 
-    CHECK_STRNNEQ("foo", "barfoo", strlen("foo")); 
+TEST(cpp11, CHECK_STRNE) { 
+    CHECK_STRNE("foo", "foo", strlen("foo")); 
+}
+
+TEST(cpp11, CHECK_STRNNE) { 
+    CHECK_STRNNE("foo", "barfoo", strlen("foo")); 
 }
 
 TEST(cpp11, no_double_eval) {
