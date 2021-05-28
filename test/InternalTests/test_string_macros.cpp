@@ -1,4 +1,9 @@
 #include <Muon/Muon.h>
+// // Only MSVC seems to complain about this
+// // Most likely because we're trying to cross-compile with `main.c` and `test.cpp`
+// #ifdef _MSC_VER
+//     MUON_ONLY_GLOBALS()
+// #endif // _MSC_VER
 
 TEST(gen_tests_cpp, STRING_ASSERTIONS_CHECK_STREQ) {
     CHECK_STREQ("=85=YCJqFMz6wR1rFf;^#)=`(#X!<N:{^$QK.R~IbdiJdd>n|Pe^O_7KxDukFXpZ82l27di+s6So9OcX_IL,{{m3=", "=85=YCJqFMz6wR1rFf;^#)=`(#X!<N:{^$QK.R~IbdiJdd>n|Pe^O_7KxDukFXpZ82l27di+s6So9OcX_IL,{{m3=");
