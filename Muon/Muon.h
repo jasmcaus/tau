@@ -175,6 +175,7 @@ static const char* filter = MUON_NULL;
 */
 extern volatile int checkIsInsideTestSuite;
 extern volatile int hasCurrentTestFailed;
+extern volatile int shouldAbortTest;
 
 /**
     This function is called from within a macro in the format {CHECK|REQUIRE)_*
@@ -186,6 +187,15 @@ static void failIfInsideTestSuite();
 static void failIfInsideTestSuite() {
     if(checkIsInsideTestSuite== 1) {
         hasCurrentTestFailed = 1;
+        shouldFailTest = 1;
+    }
+}
+
+static void abortIfInsideTestSuite();
+static void abortIfInsideTestSuite() {
+    if(checkIsInsideTestSuite== 1) {
+        hasCurrentTestFailed = 1;
+        shouldAbortTest = 1;
     }
 }
 
@@ -1157,7 +1167,9 @@ inline int muon_main(int argc, char** argv) {
 */
 #define MUON_ONLY_GLOBALS()                       \
     volatile int checkIsInsideTestSuite = 0;      \
-    volatile int hasCurrentTestFailed = 0;        \
+    volatile int hasCurrentTestFailed = 0;              \
+    volatile int shouldFailTest = 0;             \
+    volatile int shouldAbortTest = 0;             \
     MUON_UInt64 muonStatsNumWarnings = 0;
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
