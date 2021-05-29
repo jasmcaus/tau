@@ -1,10 +1,17 @@
-# Muon
+<div align="center">
+
+<h1>Muon</h1>
+
+---
+
 [![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
 [![License](https://img.shields.io/github/license/jasmcaus/Muon?label=license)][license]
 [![Twitter](https://img.shields.io/twitter/follow/jasmcaus.svg?style=flatl&label=Follow&logo=twitter&logoColor=white&color=1da1f2)][twitter-badge]
 [![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Muon/releases)
 [![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
+
+</div>
 
 A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
 code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
