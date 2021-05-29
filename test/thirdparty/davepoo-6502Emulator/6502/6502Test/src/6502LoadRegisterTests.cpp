@@ -1,8 +1,7 @@
 #include <Muon/Muon.h>
 #include "m6502.h"
 
-struct M6502LoadRegisterTests
-{
+struct M6502LoadRegisterTests {
 public:	
 	m6502::Mem mem;
 	m6502::CPU cpu;
@@ -42,14 +41,13 @@ public:
 	void TestLoadRegisterAbsoluteXWhenCrossingPage(
 		m6502::Byte OpcodeToTest,
 		m6502::Byte m6502::CPU::*RegisterToTest );
-};
+}; // M6502LoadRegisterTests
 
 TEST_F_SETUP(M6502LoadRegisterTests) {
 	muon->cpu.Reset( muon->mem );
 }
 
 TEST_F_TEARDOWN(M6502LoadRegisterTests){}
-
 
 static void VerfifyUnmodifiedFlagsFromLoadRegister( 
 	const m6502::CPU& cpu, 
@@ -97,19 +95,19 @@ void M6502LoadRegisterTests::TestLoadRegisterImmediate(
 {
 	// given:
 	using namespace m6502;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x84;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x84;
 
 	//when:
-	CPU CPUCopy = muon->cpu;
-	s32 CyclesUsed = muon->cpu.Execute( 2, muon->mem );
+	CPU CPUCopy = cpu;
+	s32 CyclesUsed = cpu.Execute( 2, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x84 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x84 ); 
 	CHECK_EQ( CyclesUsed, 2 );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_TRUE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_TRUE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAImmediateCanLoadAValueIntoTheARegister )
@@ -136,20 +134,20 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPage(
 {
 	// given:
 	using namespace m6502;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0042] = 0x37;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x42;
+	mem[0x0042] = 0x37;
 
 	//when:
-	CPU CPUCopy = muon->cpu;
-	s32 CyclesUsed = muon->cpu.Execute( 3, muon->mem );
+	CPU CPUCopy = cpu;
+	s32 CyclesUsed = cpu.Execute( 3, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, 3 );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAZeroPageCanLoadAValueIntoTheARegister )
@@ -185,7 +183,7 @@ TEST_F( M6502LoadRegisterTests, LDAImmediateCanAffectTheZeroFlag )
 	//then:
 	CHECK_TRUE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterZeroPageX(
@@ -194,21 +192,21 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPageX(
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.X = 5;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0047] = 0x37;
-	CPU CPUCopy = muon->cpu;
+	cpu.X = 5;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x42;
+	mem[0x0047] = 0x37;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( 4, muon->mem );
+	s32 CyclesUsed = cpu.Execute( 4, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, 4 );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterZeroPageY(
@@ -217,21 +215,21 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPageY(
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Y = 5;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0047] = 0x37;
-	CPU CPUCopy = muon->cpu;
+	cpu.Y = 5;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x42;
+	mem[0x0047] = 0x37;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( 4, muon->mem );
+	s32 CyclesUsed = cpu.Execute( 4, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, 4 );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAZeroPageXCanLoadAValueIntoTheARegister )
@@ -270,7 +268,7 @@ TEST_F( M6502LoadRegisterTests, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItW
 	CHECK_EQ( CyclesUsed, 4 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsolute(
@@ -278,24 +276,24 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsolute(
 	m6502::Byte m6502::CPU::*RegisterToTest )
 {
 	// given:
-	muon->cpu.Flag.Z = muon->cpu.Flag.N = true;
+	cpu.Flag.Z = cpu.Flag.N = true;
 	using namespace m6502;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x80;
-	muon->mem[0xFFFE] = 0x44;	//0x4480
-	muon->mem[0x4480] = 0x37;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x80;
+	mem[0xFFFE] = 0x44;	//0x4480
+	mem[0x4480] = 0x37;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteCanLoadAValueIntoTheARegister )
@@ -321,25 +319,25 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteX(
 	m6502::Byte m6502::CPU::*RegisterToTest )
 {
 	// given:
-	muon->cpu.Flag.Z = muon->cpu.Flag.N = true;
+	cpu.Flag.Z = cpu.Flag.N = true;
 	using namespace m6502;
-	muon->cpu.X = 1;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x80;
-	muon->mem[0xFFFE] = 0x44;	//0x4480
-	muon->mem[0x4481] = 0x37;
+	cpu.X = 1;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x80;
+	mem[0xFFFE] = 0x44;	//0x4480
+	mem[0x4481] = 0x37;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsoluteY(
@@ -348,24 +346,24 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteY(
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.Z = muon->cpu.Flag.N = true;
-	muon->cpu.Y = 1;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0x80;
-	muon->mem[0xFFFE] = 0x44;	//0x4480
-	muon->mem[0x4481] = 0x37;
+	cpu.Flag.Z = cpu.Flag.N = true;
+	cpu.Y = 1;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0x80;
+	mem[0xFFFE] = 0x44;	//0x4480
+	mem[0x4481] = 0x37;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteXCanLoadAValueIntoTheARegister )
@@ -392,23 +390,23 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteXWhenCrossingPage(
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.X = 0x1;
-	muon->mem[0xFFFC] = OpcodeToTest;
-	muon->mem[0xFFFD] = 0xFF;
-	muon->mem[0xFFFE] = 0x44;	//0x44FF
-	muon->mem[0x4500] = 0x37;	//0x44FF+0x1 crosses page boundary!
+	cpu.X = 0x1;
+	mem[0xFFFC] = OpcodeToTest;
+	mem[0xFFFD] = 0xFF;
+	mem[0xFFFE] = 0x44;	//0x44FF
+	mem[0x4500] = 0x37;	//0x44FF+0x1 crosses page boundary!
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.*RegisterToTest, 0x37 );
+	CHECK_EQ( cpu.*RegisterToTest, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( cpu.Flag.Z );
+	CHECK_FALSE( cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary )
@@ -451,7 +449,7 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteYWhenCrossingPage(
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
 	CHECK_FALSE( cpu.Flag.Z );
 	CHECK_FALSE( cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary )
@@ -488,7 +486,7 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectXCanLoadAValueIntoTheARegister )
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegister )
@@ -513,7 +511,7 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegister )
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesAPage )
@@ -537,5 +535,5 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItC
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
 }

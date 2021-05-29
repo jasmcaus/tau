@@ -43,7 +43,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementAZeroValue )
 	CHECK_EQ( muon->cpu.X, 0x1 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INXCanIncrement255 )
@@ -66,7 +66,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrement255 )
 	CHECK_EQ( muon->cpu.X, 0x0 );	//NOTE: does this instruction actually wrap?
 	CHECK_TRUE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INXCanIncrementANegativeValue )
@@ -89,7 +89,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementANegativeValue )
 	CHECK_EQ( muon->cpu.X, 0b10001001 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 
@@ -113,7 +113,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementAZeroValue )
 	CHECK_EQ( muon->cpu.Y, 0x1 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INYCanIncrement255 )
@@ -136,7 +136,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrement255 )
 	CHECK_EQ( muon->cpu.Y, 0x0 );	//NOTE: does this instruction actually wrap?
 	CHECK_TRUE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INYCanIncrementANegativeValue )
@@ -159,7 +159,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementANegativeValue )
 	CHECK_EQ( muon->cpu.Y, 0b10001001 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 
@@ -183,7 +183,7 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecementAZeroValue )
 	CHECK_EQ( muon->cpu.Y, 0xFF );	//NOTE: Does this wrap?
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEYCanDecrement255 )
@@ -206,7 +206,7 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrement255 )
 	CHECK_EQ( muon->cpu.Y, 0xFE );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEYCanDecrementANegativeValue )
@@ -229,7 +229,7 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrementANegativeValue )
 	CHECK_EQ( muon->cpu.Y, 0b10001000 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecementAZeroValue )
@@ -252,7 +252,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecementAZeroValue )
 	CHECK_EQ( muon->cpu.X, 0xFF );	//NOTE: Does this wrap?
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecrement255 )
@@ -275,7 +275,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrement255 )
 	CHECK_EQ( muon->cpu.X, 0xFE );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecrementANegativeValue )
@@ -298,7 +298,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrementANegativeValue )
 	CHECK_EQ( muon->cpu.X, 0b10001000 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_TRUE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPage )
@@ -322,7 +322,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPage )
 	CHECK_EQ( muon->mem[0x0042], 0x56 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPageX )
@@ -347,7 +347,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPageX )
 	CHECK_EQ( muon->mem[0x0042 + 0x10], 0x56 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsolute )
@@ -372,7 +372,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsolute )
 	CHECK_EQ( muon->mem[0x8000], 0x56 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsoluteX )
@@ -398,7 +398,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsoluteX )
 	CHECK_EQ( muon->mem[0x8000 + 0x10], 0x56 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPage )
@@ -422,7 +422,7 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPage )
 	CHECK_EQ( muon->mem[0x0042], 0x58 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPageX )
@@ -447,7 +447,7 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueInTheZeroPageX )
 	CHECK_EQ( muon->mem[0x0042 + 0x10], 0x58 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsolute )
@@ -472,7 +472,7 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsolute )
 	CHECK_EQ( muon->mem[0x8000], 0x58 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsoluteX )
@@ -498,7 +498,7 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsoluteX )
 	CHECK_EQ( muon->mem[0x8000 + 0x10], 0x58 );
 	CHECK_FALSE( muon->cpu.Flag.Z );
 	CHECK_FALSE( muon->cpu.Flag.N );
-	ExpectUnaffectedFlags( CPUCopy );
+	muon->ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, TestLoadAProgramThatCanIncMemory )
