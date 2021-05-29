@@ -1223,4 +1223,3 @@ TEST(gen_tests_c, STRING_ASSERTIONS_REQUIRE_STRNNE) {
    REQUIRE_STRNNE("g`anE4qvq$@WLeO{P#9PkF|iu7@FaH`7y0{({{Wgml*oGVd+_1(DRj#_Uh~{H>-np0DnEBFTn!EuA<0j.cN5DeC_0W", "aakFNK-Drz7pI)FME_`-{BCvIjhx8k,efzEqb&*L-tYV4:(gDoppRI&2qO|_D+9w^oynDFLO1PRTDhgW>!5n{#7J;36>;7vy", 90);
    REQUIRE_STRNNE("7vX5~w{ly-flKc21V@B(ajvGBg$W6#lV-tF:b{ggFvXBw+#I&39HORFHrQS1l^0WE53Cob~=3S", ".}~3NmQvYE", 74);
 }
-

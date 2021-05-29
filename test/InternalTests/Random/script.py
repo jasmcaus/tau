@@ -30,7 +30,7 @@ def generated_random_string_data():
         for _ in range(2000):
             rand1 = generate_random_string()
             rand2 = generate_random_string()
-            a.write(f'{rand1}, {rand2}\n')
+            a.write(f'"{rand1}", "{rand2}"\n')
     finally:
         a.close()
 
@@ -216,6 +216,7 @@ def test_assertion_macros(lang: str, filename: str ='test_assertion_macros'):
 if __name__ == '__main__':
     languages = ['c', 'cpp']
     generated_random_string_data()
+
     # for i in languages:
     #     test_string_macros(str(i))
     #     test_assertion_macros(str(i))
