@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: CMake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On  -DMUON_BUILDTHIRDPARTYTESTS=On
         
       - name: Build
         run: cmake --build build --config=${{ matrix.build_type }} --parallel 10
