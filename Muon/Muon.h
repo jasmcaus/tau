@@ -621,7 +621,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     while(0)  
 
 
-#define __MUONCMP_TF(cond, actual, negateSign, expected, macroName, failOrAbort)    \
+#define __MUONCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)    \
     do {                                                                            \
         if(!(cond)) {                                                               \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
@@ -632,7 +632,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
-            muonPrintf("  Expected : %ss\n", #expected);                            \
+            muonPrintf("  Expected : %s\n", #expected);                            \
             muonPrintf("    Actual : %s\n", #actual);                               \
             failOrAbort();                                                          \
         }                                                                           \
@@ -669,11 +669,13 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 #define REQUIRE_STRNE(actual, expected, n)   __MUONCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, abortIfInsideTestSuite)
 #define REQUIRE_STRNNE(actual, expected, n)  __MUONCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, abortIfInsideTestSuite)
 
-#define CHECK_TRUE(cond)      __MUONCMP_TF(cond, false, true, , CHECK_TRUE, failIfInsideTestSuite)
-#define CHECK_FALSE(cond)     __MUONCMP_TF(cond, true, false, !, CHECK_FALSE, failIfInsideTestSuite)
+// Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
+// Do not remove it
+#define CHECK_TRUE(cond)      __MUONCMP_TF(cond, false, true, !, CHECK_TRUE, failIfInsideTestSuite)
+#define CHECK_FALSE(cond)     __MUONCMP_TF(cond, true, false, , CHECK_FALSE, failIfInsideTestSuite)
 
-#define REQUIRE_TRUE(cond)    __MUONCMP_TF(cond, false, true, , REQUIRE_TRUE, abortIfInsideTestSuite)
-#define REQUIRE_FALSE(cond)   __MUONCMP_TF(cond, true, false, !, REQUIRE_FALSE, abortIfInsideTestSuite)
+#define REQUIRE_TRUE(cond)    __MUONCMP_TF(cond, false, true, !, REQUIRE_TRUE, abortIfInsideTestSuite)
+#define REQUIRE_FALSE(cond)   __MUONCMP_TF(cond, true, false, , REQUIRE_FALSE, abortIfInsideTestSuite)
 
 
 #define CHECK(cond, ...)                                                               \
