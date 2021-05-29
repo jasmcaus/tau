@@ -156,6 +156,9 @@ else()
     # Am I going wrong here, somehow?
     # string(APPEND CMAKE_CXX_FLAGS " /std:c++11")
 
+    # Build in parallel
+    string(APPEND COMPILE_FLAGS " /m:4")
+
     # Optimizations
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         string(APPEND COMPILE_FLAGS " /O2")

@@ -1,5 +1,15 @@
 #include "Muon/Muon.h"
 
+TEST(c, CHECK_TF) {
+    CHECK_FALSE(0);
+    CHECK_TRUE(1);
+}
+
+TEST(c, REQUIRE_TF) {
+    REQUIRE_FALSE(0);
+    REQUIRE_TRUE(1);
+}
+
 TEST(c, MemAlloc) {
     void* mem;
     

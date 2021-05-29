@@ -12,11 +12,13 @@ include(CTest)
 enable_testing()
 
 # ------ Internal Tests  ------
-if(MUON_BUILDINTERNALTESTS)
-    add_subdirectory(InternalTests)
-endif() # MUON_BUILDINTERNALTESTS
+# if(MUON_BUILDINTERNALTESTS)
+#     message("------- [INFO] Building Internal Tests")
+#     add_subdirectory(InternalTests)
+# endif() # MUON_BUILDINTERNALTESTS
 
 # ------ Third-Party Tests  ------
 # if(MUON_BUILDTHIRDPARTYTESTS)
+    message("------- [INFO] Building ThirdParty Tests")
     add_subdirectory(thirdparty)
 # endif() # MUON_BUILDTHIRDPARTYTESTS
