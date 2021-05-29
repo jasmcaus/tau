@@ -80,10 +80,10 @@ test. This allows tests to be grouped for convenience.
 Muon provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these 
 assertions fail, Muon prints the source code location (file + line number) along with a failure message. 
 
-`ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to 
+`ASSERT`s generate *fatal* failures - the test suite will cease its execution and move on to the next test suite to 
 run. 
 
-`CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further 
+`CHECK`s generate *non-fatal* failures - the remainder of the test suite will still execute, allowing for further 
 checks to run. 
 
 Read [the Primer](https://github.com/jasmcaus/Muon/blob/dev/docs/muon-primer.md) for more details, including the 
