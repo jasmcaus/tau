@@ -9,8 +9,8 @@ add_executable(
     # Muon's Death Tests
     DeathTests/test_string_macros.c
     DeathTests/test_string_macros.cpp
-    DeathTests/test_assertion_macros.c
-    DeathTests/test_assertion_macros.cpp
+    # DeathTests/test_assertion_macros.c
+    # DeathTests/test_assertion_macros.cpp
 )
 
 target_include_directories(

@@ -7,15 +7,6 @@ public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 
-	virtual void SetUp()
-	{
-		cpu.Reset( mem );
-	}
-
-	virtual void TearDown()
-	{
-	}
-
 	void ExpectUnaffectedRegisters( m6502::CPU CPUBefore )
 	{
 		CHECK_EQ( CPUBefore.Flag.I, cpu.Flag.I );
@@ -360,6 +351,12 @@ public:
 };
 
 //-- Immediate
+
+TEST_F_SETUP(M6502CompareRegisterTests) {
+	muon->cpu.Reset( muon->mem );
+}
+
+TEST_F_TEARDOWN(M6502CompareRegisterTests){}
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareTwoIdenticalValues  )
 {
@@ -743,13 +740,13 @@ TEST_F( M6502CompareRegisterTests, LoopTest )
 	Byte TestPrg[] = { 0x0,0x10,0xA9,0x00,0x18,0x69,0x08,0xC9,0x18,0xD0,0xFA,0xA2,0x14 };
 
 	// when:
-	Word StartAddress = cpu.LoadPrg( TestPrg, sizeof( TestPrg ), mem );
-	cpu.PC = StartAddress;
+	Word StartAddress = muon->cpu.LoadPrg( TestPrg, sizeof( TestPrg ), muon->mem );
+	muon->cpu.PC = StartAddress;
 
 	//then:
 	for ( m6502::s32 Clock = 1000; Clock > 0; )
 	{
-		Clock -= cpu.Execute( 1, mem );
+		Clock -= muon->cpu.Execute( 1, muon->mem );
 	}
 }
 #endif
