@@ -94,13 +94,32 @@ macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
 
 
+
+# Contributing
+We appreciate all contributions, feedback and issues. If you plan to contribute new features, utility functions, or extensions to the core, please go through our [Contribution Guidelines][contributing].
+
+To contribute, start working through the `Muon` codebase, read the [Documentation][docs], navigate to the [Issues][issues] tab and start looking through interesting issues. 
+
+
+# Asking for help
+If you have any questions, please:
+1. [Read the docs][docs].
+2. [Look it up in our Github Discussions (or add a new question)][discussions].
+2. [Search through the issues][issues].
+
+
 # Who uses Muon?
 In addition to several of my personal projects, Muon is also used in the following notable projects:
 * The [Hazel](https://github.com/HazelLang/Hazel) Programming Language
 
 
 # License 
-This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the MIT License.
+This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the [MIT License](LICENSE).
+
+[contributing]: https://github.com/jasmcaus/Muon/blob/dev/.github/CONTRIBUTING.md
+[docs]: https://github.com/jasmcaus/Muon/blob/dev/docs
+[discussions]: https://github.com/jasmcaus/Muon/discussions
+[issues]: https://github.com/jasmcaus/Muon/issues
 
 [twitter-badge]: https://twitter.com/jasmcaus
 [license]: https://github.com/jasmcaus/Muon/blob/dev/LICENSE
