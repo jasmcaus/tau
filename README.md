@@ -1,7 +1,8 @@
 # Muon
 [![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/jasmcaus/Muon?label=license)][license]
+[![Twitter](https://img.shields.io/twitter/follow/jasmcaus.svg?style=flatl&label=Follow&logo=twitter&logoColor=white&color=1da1f2)][twitter-badge]
 [![Download](https://img.shields.io/badge/download%20%20-link-blue.svg)](https://github.com/jasmcaus/Muon/releases)
 
 A Micro Unit Testing Framework for C11/C++14 onwards. It's tiny - about 1k lines of code. This framework is a *much* simpler and lighter alternative to Google Test, making it suitable for on-to-go testing. 
@@ -15,7 +16,7 @@ Muon is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of 
 * Gtest-like Assertion Macros
 * Test Fixtures 
 
-## Installation
+# Installation
 None! Muon is header-only, so simply include it in your project. 
 ```c
 #include <Muon/Muon.h>
@@ -30,7 +31,7 @@ Muon provides several variants of Assertion Macros for us - `CHECK`s which are *
 In Muon, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
 
 
-## Prerequistes
+# Prerequistes
 To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Muon to set up all your tests:
 ```c
 MUON_MAIN() // IMPORTANT: No semicolon at the end 
@@ -40,6 +41,7 @@ This defines a main function, so if you write a `main()` function ***and*** decl
 If you must write a `main()` function, add `MUON_NO_MAIN()` instead - this does not define a main function, but sets up any variables/methods that Muon needs to run properly.
 
 
+# Getting Started
 ## Defining a Test Suite
 To define a test suite, simply do the following:
 ```c
@@ -82,7 +84,7 @@ TEST(foo, bar2) {
 ```
 
 
-## Supported Platforms
+# Supported Platforms
 Muon supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Muon's source code is officially supported on the following platforms. If you notice any problems on your platform, please file an issue on the [Muon Github Issue Tracker](https://github/jasmcaus/Muon/issues). PRs with fixes are welcome! 
 
 Operating Systems          | Compilers       
@@ -92,10 +94,13 @@ macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
 
 
-## Who uses Muon?
+# Who uses Muon?
 In addition to several of my personal projects, Muon is also used in the following notable projects:
 * The [Hazel](https://github.com/HazelLang/Hazel) Programming Language
 
 
-## License 
+# License 
 This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the MIT License.
+
+[twitter-badge]: https://twitter.com/jasmcaus
+[license]: https://github.com/jasmcaus/Muon/blob/dev/LICENSE
