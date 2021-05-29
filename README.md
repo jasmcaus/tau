@@ -2,8 +2,6 @@
 
 <h1>Muon</h1>
 
----
-
 [![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
 [![License](https://img.shields.io/github/license/jasmcaus/Muon?label=license)][license]
