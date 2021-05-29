@@ -623,7 +623,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 
 #define __MUONCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)    \
     do {                                                                            \
-        if(!(cond)) {                                                               \
+        if(negateSign(cond)) {                                                               \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
             if(strchr(#cond, '(') != MUON_NULL) {                                   \
