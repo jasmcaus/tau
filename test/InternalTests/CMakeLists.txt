@@ -7,10 +7,10 @@ add_executable(
     test.cpp
 
     # Muon's Death Tests
-    Random/test_string_macros.c
-    Random/test_string_macros.cpp
-    Random/test_assertion_macros.c
-    Random/test_assertion_macros.cpp
+    DeathTests/test_string_macros.c
+    DeathTests/test_string_macros.cpp
+    DeathTests/test_assertion_macros.c
+    DeathTests/test_assertion_macros.cpp
 )
 
 target_include_directories(
