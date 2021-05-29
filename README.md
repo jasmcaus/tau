@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/jasmcaus/Muon?label=license)][license]
 [![Twitter](https://img.shields.io/twitter/follow/jasmcaus.svg?style=flatl&label=Follow&logo=twitter&logoColor=white&color=1da1f2)][twitter-badge]
 [![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Muon/releases)
-[![Docs](https://img.shields.io/badge/docs%20%20-online-green.svg)][docs]
+[![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
 
 A Micro Unit Testing Framework for C11/C++14 onwards. It's tiny - about 1k lines of code. This framework is a *much* simpler and lighter alternative to Google Test, making it suitable for on-to-go testing. 
 
