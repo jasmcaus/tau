@@ -6,9 +6,12 @@
 [![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Muon/releases)
 [![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
 
-A Micro Unit Testing Framework for C11/C++14 onwards. It's tiny - about 1k lines of code. This framework is a *much* simpler and lighter alternative to Google Test, making it suitable for on-to-go testing. 
+A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like Google Test, & Catch2, making it suitable for on-to-go testing. 
 
-Muon is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of the C/C++ Standard Library, although active development happens in the [Hazel Programming Language](https://github.com/HazelLang/Hazel) repository and changes are subsequently reflected in the [`CSTL`](https://github.com/jasmcaus/CSTL) repo.
+I initially wrote Muon to be a unit testing framework for C; however, initial results showed promise of compiling with (and testing) C++ code. While Muon doesn't currently support mocking, or a way to test for exceptions in C++, its limitations
+are in fact its biggest strength - you get *negligible* overhead for the sacrifice of a few constructs.
+
+If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus), [Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support if greatly appreciated 😊.
 
 ## Features
 * *Ultra-light* (~1k lines of code)
