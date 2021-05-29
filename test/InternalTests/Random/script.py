@@ -21,9 +21,6 @@ def generate_random_string(n=None):
     choices = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$&()*+,-.:;<=>@^_{`~{|}'
     return ''.join(random.choice(choices) for i in range(n))
 
-def generate_random_num():
-    return random.randint(1, 100000)
-
 def generated_random_string_data():
     a = open('random_generated_strings.txt', 'w')
     try:
@@ -143,70 +140,42 @@ def test_assertion_macros(lang: str, filename: str ='test_assertion_macros'):
 
     # Open a file to write
     a = open(filename, 'w')
+    intdata = open('random_integers.txt', 'r').readlines()
 
     try:
         a.write(INCLUDE_THIS_BEFORE_EACH_FILE)
         a.write(TEST_SUITE_BEGIN % {'lang': lang, 'macro' : 'ASSERTION_MACROS'})
-        for _ in range(1200):
-            rand_num1 = generate_random_num()
-            rand_num2 = generate_random_num()
 
-            if rand_num1 < rand_num1:
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'CHECK_LT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'REQUIRE_LT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
+        for line in intdata:
+            line = line.strip().strip('\n').split(',')
+            line[1] = line[1].strip()
 
-            elif rand_num1 > rand_num2:
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'CHECK_GT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'REQUIRE_GT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
+            num1 = int(line[0])
+            num2 = int(line[1])
 
-            elif rand_num1 == rand_num2:
-                # We write to *_EQ, *_LE, *_GE
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'CHECK_EQ',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'CHECK_LE',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'CHECK_GT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'REQUIRE_EQ',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'REQUIRE_LE',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
-                a.write(ASSERTION_MACROS_TEXT % {
-                            'macro': 'REQUIRE_GT',
-                            'num1': str(rand_num1),
-                            'num2': str(rand_num2),
-                        })
+            if num1 < num2:
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_LT','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_LT','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_GT','num1': str(num2),'num2': str(num1)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_GT','num1': str(num2),'num2': str(num1)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_LE','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_LE','num1': str(num1),'num2': str(num2)})
+
+            elif num1 > num2:
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_GT','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_GT','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_LT','num1': str(num2),'num2': str(num1)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_LT','num1': str(num2),'num2': str(num1)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_GE','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_GE','num1': str(num1),'num2': str(num2)})
+
+            elif num1 == num2:
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_EQ','num1': str(num1),'num2': str(num2),})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_EQ','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_GE','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_GE','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'CHECK_LE','num1': str(num1),'num2': str(num2)})
+                a.write(ASSERTION_MACROS_TEXT % {'macro': 'REQUIRE_LE','num1': str(num1),'num2': str(num2)})
 
         a.write(TEST_SUITE_END)
     finally:
@@ -217,6 +186,6 @@ if __name__ == '__main__':
     languages = ['c', 'cpp']
     generated_random_string_data()
 
-    # for i in languages:
-    #     test_string_macros(str(i))
-    #     test_assertion_macros(str(i))
+    for i in languages:
+        # test_string_macros(str(i))
+        test_assertion_macros(str(i))
