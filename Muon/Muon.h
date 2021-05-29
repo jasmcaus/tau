@@ -1090,12 +1090,12 @@ inline int muon_main(int argc, char** argv) {
 
         printf("    Total test suites:          %" MUON_PRIu64 "\n", muonStatsTotalTestSuites);
         printf("    Total suites run:           %" MUON_PRIu64 "\n", muonStatsTestsRan);
-        printf("    Total suites skipped:       %" MUON_PRIu64 "\n", muonStatsSkippedTests);
         printf("    Total warnings generated:   %" MUON_PRIu64 "\n", muonStatsNumWarnings);
+        printf("    Total suites skipped:       %" MUON_PRIu64 "\n", muonStatsSkippedTests);
         printf("    Total suites failed:        %" MUON_PRIu64 "\n", muonStatsNumTestsFailed);
     }
 
-    if(muonStatsNumTestsFailed != 0) {
+    if(muonStatsNumTestsFailed > 0) {
         muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED: ");
         printf("%" MUON_PRIu64 " failed, %" MUON_PRIu64 " passed in ", muonStatsNumTestsFailed, muonStatsTestsRan - muonStatsNumTestsFailed);
         muonClockPrintDuration(duration);
@@ -1104,13 +1104,18 @@ inline int muon_main(int argc, char** argv) {
         for (MUON_Ull i = 0; i < muonStatsNumFailedTestSuites; i++) {
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", muonTestContext.tests[muonStatsFailedTestSuites[i]].name);
         }
-    } else {
+    } else if(muonStatsNumTestsFailed == 0 && muonStatsTotalTestSuites > 0) {
         MUON_UInt64 total_tests_passed = muonStatsTestsRan - muonStatsNumTestsFailed;
         muonColouredPrintf(MUON_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" MUON_PRIu64 " test suites passed in ", total_tests_passed);
         muonClockPrintDuration(duration);
         printf("\n");
+    } else {
+        muonColouredPrintf(MUON_COLOUR_BRIGHTYELLOW_, "WARNING: ");
+        printf("No test suites were found. If you think this was an error, please file an issue on Muon's Github repo.");
+        printf("\n");
     }
+
 
     if(muonTestContext.foutput)
         fprintf(muonTestContext.foutput, "</testsuite>\n</testsuites>\n");
