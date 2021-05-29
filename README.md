@@ -6,19 +6,26 @@
 [![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Muon/releases)
 [![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
 
-A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like Google Test, & Catch2, making it suitable for on-to-go testing. 
+A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
+code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
+Google Test, & Catch2, making it suitable for on-to-go testing. 
 
-I initially wrote Muon to be a unit testing framework for C; however, initial results showed promise of compiling with (and testing) C++ code. While Muon doesn't currently support mocking, or a way to test for exceptions in C++, its limitations
-are in fact its biggest strength - you get *negligible* overhead for the sacrifice of a few constructs.
+I initially wrote Muon to be a unit testing framework for C; however, initial results showed great promise of 
+compiling with (and testing) C++ code. While Muon doesn't currently support mocking, or a way to test for exceptions
+in C++, its limitations are in fact its biggest strength - you get *negligible* overhead for the sacrifice of a few
+constructs.
 
-If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus), [Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support if greatly appreciated 😊.
+If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
+[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support if greatly appreciated 😊.
+
 
 ## Features
 * *Ultra-light* (~1k lines of code)
-* Can test both C and C++ projects with equal performance
+* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/Muon/blob/dev/test/thirdparty))
 * [Blazing Fast Assertions](https://github.com/jasmcaus/Muon/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
 * Test Fixtures 
+
 
 # Installation
 None! Muon is header-only, so simply include it in your project. 
@@ -30,19 +37,25 @@ To build Muon with CMake, read through the [CMake Quickstart Guide](https://gith
 
 
 ## Basic Concepts
-Muon provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 
+Muon provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s 
+which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. 
+Unless the latter takes place, the program continues normally. 
 
-In Muon, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
+In Muon, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should 
+ideally reflect the structure of your tested code. 
 
 
 # Prerequistes
-To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Muon to set up all your tests:
+To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Muon to set up 
+all your tests:
 ```c
 MUON_MAIN() // IMPORTANT: No semicolon at the end 
 ```
-This defines a main function, so if you write a `main()` function ***and*** declare `MUON_MAIN()`, your compiler will throw a `redeclaration of main` error. 
+This defines a main function, so if you write a `main()` function ***and*** declare `MUON_MAIN()`, your compiler will
+throw a `redeclaration of main` error. 
 
-If you must write a `main()` function, add `MUON_NO_MAIN()` instead - this does not define a main function, but sets up any variables/methods that Muon needs to run properly.
+If you must write a `main()` function, add `MUON_NO_MAIN()` instead - this does not define a main function, but sets 
+up any variables/methods that Muon needs to run properly.
 
 
 # Getting Started
@@ -54,16 +67,22 @@ TEST(TestSuiteName, TestName) {
     ... rest of the test body ...
 }
 ```
-The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the test. This allows tests to be grouped for convenience. 
+The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the 
+test. This allows tests to be grouped for convenience. 
 
 
 ## Testing Macros
-Muon provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these assertions fail, Muon prints the source code location (file + line number) along with a failure message. 
+Muon provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these 
+assertions fail, Muon prints the source code location (file + line number) along with a failure message. 
 
-`ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to run. 
-`CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further checks to run. 
+`ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to 
+run. 
 
-Read [the Primer](https://github.com/jasmcaus/Muon/blob/dev/docs/muon-primer.md) for more details, including the other testing macros Muon provides you with.
+`CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further 
+checks to run. 
+
+Read [the Primer](https://github.com/jasmcaus/Muon/blob/dev/docs/muon-primer.md) for more details, including the 
+other testing macros Muon provides you with.
 
 
 ## Example Usage
@@ -89,7 +108,9 @@ TEST(foo, bar2) {
 
 
 # Supported Platforms
-Muon supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Muon's source code is officially supported on the following platforms. If you notice any problems on your platform, please file an issue on the [Muon Github Issue Tracker][issues]. PRs with fixes are welcome! 
+Muon supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Muon's source
+code is officially supported on the following platforms. If you notice any problems on your platform, please 
+file an issue on the [Muon Github Issue Tracker][issues]. PRs with fixes are welcome! 
 
 Operating Systems          | Compilers       
 -------------------------- | -------------------------- 
@@ -99,9 +120,11 @@ Windows                    | MSVC 2017+
 
 
 # Contributing
-We appreciate all contributions, feedback and issues. If you plan to contribute new features, utility functions, or extensions to the core, please go through our [Contribution Guidelines][contributing].
+We appreciate all contributions, feedback and issues. If you plan to contribute new features, utility functions,
+or extensions to the core, please go through our [Contribution Guidelines][contributing].
 
-To contribute, start working through the `Muon` codebase, read the [Documentation][docs], navigate to the [Issues][issues] tab and start looking through interesting issues. 
+To contribute, start working through the `Muon` codebase, read the [Documentation][docs], navigate to the 
+[Issues][issues] tab and start looking through interesting issues. 
 
 
 # Asking for help
