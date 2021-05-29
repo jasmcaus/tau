@@ -1,8 +1,19 @@
 # Muon
+[![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Download](https://img.shields.io/badge/download%20%20-link-blue.svg)](https://github.com/jasmcaus/Muon/releases)
+
 A Micro Unit Testing Framework for C11/C++14 onwards. It's tiny - about 1k lines of code. This framework is a *much* simpler and lighter alternative to Google Test, making it suitable for on-to-go testing. 
 
 Muon is part of [`CSTL`](https://github.com/jasmcaus/CSTL), a neater rewrite of the C/C++ Standard Library, although active development happens in the [Hazel Programming Language](https://github.com/HazelLang/Hazel) repository and changes are subsequently reflected in the [`CSTL`](https://github.com/jasmcaus/CSTL) repo.
 
+## Features
+* *Ultra-light* (~1k lines of code)
+* Can test both C and C++ projects with equal performance
+* [Blazing Fast Assertions](https://github.com/jasmcaus/Muon/blob/dev/benchmarks)
+* Gtest-like Assertion Macros
+* Test Fixtures 
 
 ## Installation
 None! Muon is header-only, so simply include it in your project. 
@@ -12,8 +23,9 @@ None! Muon is header-only, so simply include it in your project.
 
 To build Muon with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Muon/blob/dev/docs/CMake-quickstart.md).
 
+
 ## Basic Concepts
-When using Muon, you begin by writing `assertions`, which are statements that check if a condition is true. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 
+Muon provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. Unless the latter takes place, the program continues normally. 
 
 In Muon, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should ideally reflect the structure of your tested code. 
 
@@ -23,14 +35,16 @@ To begin, you **must** include the following in *any* (but only one) C/C++ file.
 ```c
 MUON_MAIN() // IMPORTANT: No semicolon at the end 
 ```
-This defines a main function, so if you write a main function ***and*** declare `MUON_MAIN()`, your compiler will throw a `redeclaration of main` error.
+This defines a main function, so if you write a `main()` function ***and*** declare `MUON_MAIN()`, your compiler will throw a `redeclaration of main` error. 
+
+If you must write a `main()` function, add `MUON_NO_MAIN()` instead - this does not define a main function, but sets up any variables/methods that Muon needs to run properly.
 
 
 ## Defining a Test Suite
 To define a test suite, simply do the following:
 ```c
 TEST(TestSuiteName, TestName) {
-    CHECK(1); // fails if false
+    CHECK(1); // does not fail
     ... rest of the test body ...
 }
 ```
@@ -43,55 +57,14 @@ Muon provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These r
 `ASSERT`s generate *fatal* failures - the test case will cease its execution and move on to the next test case to run. 
 `CHECK`s generate *non-fatal* failures - the remainder of the test case will still execute, allowing for further checks to run. 
 
-We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to continue when the assertion in question fails. 
-
-### Adding Custom Failure Messages
-We highly recommend you add a custom failure message for your macros - it makes it easier to track down bugs. `Invalid Type ID:` is much more useful than `FAILED`, which is what Muon prints by default.
-
-To do this, simply do the following:
-```C
-CHECK(i == 42, "Expected i to be 32");
-```
-
-
-## A List of Avaliable Testing Macros
-### a. Basic Assertions
-These assertions perform basic true/false condition checking. 
-
-Fatal assertion             | Nonfatal assertion         | Checks
---------------------------  | -------------------------- | --------------------
-`REQUIRE(condition);`  | `CHECK(condition);`  | `condition` is true
-`REQUIRE(!condition);` | `CHECK(!condition);` | `condition` is false
-
-### b. Binary Comparisons
-For a majority of your tests, `REQUIRE` and `CHECK` will suffice. However, Muon provides GTest-like Binary Comparisons. Both achieve the same purpose - we recommend `REQUIRE` and `CHECK` as they provide readable comparison checks. 
-
-For user-defined types in a C++ codebase, we recommend using these Binary Comparisons (they don't require you to overload the `==`, `<=`... operators).
-
-Fatal assertion          | Nonfatal assertion       | Checks
------------------------- | ------------------------ | --------------
-`REQUIRE_EQ(x, y);` | `CHECK_EQ(x, y);`  | `x == y`
-`REQUIRE_NE(x, y);` | `CHECK_NE(x, y);`  | `x != y`
-`REQUIRE_LT(x, y);` | `CHECK_LT(x, y);`  | `x < y`
-`REQUIRE_LE(x, y);` | `CHECK_LE(x, y);`  | `x <= y`
-`REQUIRE_GT(x, y);` | `CHECK_GT(x, y);`  | `x > y`
-`REQUIRE_GE(x, y);` | `CHECK_GE(x, y);`  | `x >= y`
-
-### c. String Comparisons
-These macros compare two ***C-strings***. 
-
-| Fatal assertion                | Nonfatal assertion             | Checks                                                 |
-| --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `REQUIRE_STREQ(str1,str2);`     | `CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
-| `REQUIRE_STRNEQ(str1,str2);`     | `CHECK_STRNEQ(str1,str2);`     | the two C strings have different contents 		     |
-| `REQUIRE_STRNNEQ(str1,str2);` | `CHECK_STRNNEQ(str1,str2);` | the two C strings have the same content, upto the length of str1   |
+Read [the Primer](https://github.com/jasmcaus/Muon/blob/dev/docs/muon-primer.md) for more details, including the other testing macros Muon provides you with.
 
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
 #include <Muon/Muon.h>
-MUON_MAIN() // sets up Muon 
+MUON_MAIN() // sets up Muon (+ main function)
 
 TEST(foo, bar1) {
     int a = 42; 
@@ -104,7 +77,7 @@ TEST(foo, bar2) {
     char* a = "foo";
     char* b = "foobar";
     REQUIRE_STREQ(a, a); // pass :)
-    REQUIRE_STREQ(a, b); // fail - Test suite aborted :(
+    REQUIRE_STREQ(a, b); // fail - Test suite aborted
 }
 ```
 
@@ -117,6 +90,12 @@ Operating Systems          | Compilers
 Linux                      | gcc 5.0+ 
 macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
+
+
+## Who uses Muon?
+In addition to several of my personal projects, Muon is also used in the following notable projects:
+* The [Hazel](https://github.com/HazelLang/Hazel) Programming Language
+
 
 ## License 
 This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the MIT License.
