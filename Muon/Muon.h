@@ -794,8 +794,8 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     static void __MUON_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* muon)
 
 
-MUON_WEAK int muonShouldFilterTest(const char* filter, const char* testcase);
-MUON_WEAK int muonShouldFilterTest(const char* filter, const char* testcase) {
+static int muonShouldFilterTest(const char* filter, const char* testcase);
+static int muonShouldFilterTest(const char* filter, const char* testcase) {
     if(filter) {
         const char* filter_curr = filter;
         const char* testcase_curr = testcase;
