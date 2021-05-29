@@ -623,7 +623,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 
 #define __MUONCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)    \
     do {                                                                            \
-        if(negateSign(cond)) {                                                               \
+        if(negateSign(cond)) {                                                      \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
             if(strchr(#cond, '(') != MUON_NULL) {                                   \
@@ -677,36 +677,47 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 #define REQUIRE_TRUE(cond)    __MUONCMP_TF(cond, false, true, !, REQUIRE_TRUE, abortIfInsideTestSuite)
 #define REQUIRE_FALSE(cond)   __MUONCMP_TF(cond, true, false, , REQUIRE_FALSE, abortIfInsideTestSuite)
 
+#define __MUONCHECKREQUIRE__(cond, failOrAbort, macroName, ...)                                \
+    do {                                                                                       \
+        if(!(cond)) {                                                                          \
+            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                         \
+            if((sizeof(char[]){__VA_ARGS__}) <= 1)                                             \
+                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED");                          \
+            else                                                                               \
+                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, __VA_ARGS__);                       \
+            printf("\n");                                                                      \
+            printf("The following assertion failed: \n");                                      \
+            muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);  \
+            failOrAbort();                                                                     \
+        }                                                                                      \
+    }                                                                                          \
+    while(0)
 
-#define CHECK(cond, ...)                                                               \
-    do {                                                                               \
-        if(!(cond)) {                                                                  \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                 \
-            if((sizeof(char[]){__VA_ARGS__}) <= 1)                                     \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED");                  \
-            else                                                                       \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, __VA_ARGS__);               \
-            printf("\n");                                                              \
-            muonColouredPrintf(MUON_COLOUR_YELLOW_, "The following check failed: \n"); \
-            muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "   CHECK( %s )\n", #cond);    \
-            failIfInsideTestSuite();                                                   \
-        }                                                                              \
-    }                                                                                  \
-    while(0)
-                                                     
-#define REQUIRE(cond, ...)                                                       \
-    do {                                                                         \
-        if(!(cond)) {                                                            \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                           \
-            if((sizeof(char[]){__VA_ARGS__}) <= 1)                               \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED");            \
-            else                                                                 \
-                muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, __VA_ARGS__);         \
-            printf("\n");                                                        \
-            abortIfInsideTestSuite();                                            \
-        }                                                                        \
-    }                                                                            \
-    while(0)
+// This is a little hack that allows a form of "polymorphism" to a macro - it allows a user to optionally pass
+// an extra argument to a macro in {CHECK|REQUIRE}. 
+// The first argument is always the condition to check/assert. If this condition fails, by default a `FAILED`
+// message is sent to STDOUT. If a second argument is passed to the macro (a string), this will be outputted
+// instead.
+// 
+// The MACRO_CHOOSER uses the list of arguments twice, first to form the name of the helper macro, and then to
+// pass the arguments to that helper macro. It uses a standard trick to count the number of arguments to a macro.
+//
+// Neat hack from:
+// https://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros
+// and: https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments
+#define GET_3RD_ARG(arg1, arg2, arg3, ...)   arg3
+
+#define CHECK_1_ARGS(cond)              __MUONCHECKREQUIRE__(cond, failIfInsideTestSuite, CHECK, "FAILED")
+#define CHECK_2_ARGS(cond, message)     __MUONCHECKREQUIRE__(cond, failIfInsideTestSuite, CHECK, message)
+#define CHECK_MACRO_CHOOSER(...)        GET_3RD_ARG(__VA_ARGS__, CHECK_2_ARGS, CHECK_1_ARGS, )
+
+#define REQUIRE_1_ARGS(cond)            __MUONCHECKREQUIRE__(cond, abortIfInsideTestSuite, REQUIRE, "FAILED")
+#define REQUIRE_2_ARGS(cond, message)   __MUONCHECKREQUIRE__(cond, abortIfInsideTestSuite, REQUIRE, message)
+#define REQUIRE_MACRO_CHOOSER(...)      GET_3RD_ARG(__VA_ARGS__, REQUIRE_2_ARGS, REQUIRE_1_ARGS, )
+
+#define CHECK(...)    CHECK_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define REQUIRE(...)    REQUIRE_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
 
 #define WARN(msg)                                                        \
     incrementWarnings();                                                 \
