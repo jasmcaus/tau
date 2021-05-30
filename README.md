@@ -13,12 +13,12 @@
 
 A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
 code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
-Google Test, & Catch2, making it suitable for on-to-go testing. 
+Google Test, & Catch2, making it suitable for on-to-go testing (embedded developers will especially love us!).
 
 I initially wrote Muon to be a unit testing framework for C; however, initial results showed great promise of 
 compiling with (and testing) C++ code. While Muon doesn't currently support mocking, or a way to test for exceptions
-in C++, its limitations are in fact its biggest strength - you get *negligible* overhead for the sacrifice of a few
-constructs.
+in C++, its limitations are in fact its biggest strength - you get *negligible* overhead & fast compilation speeds 
+for the sacrifice of a few constructs.
 
 If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
 [Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support is greatly appreciated 😊.
