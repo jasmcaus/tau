@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.7)
 
-project( MUON_ThirdPartyTests_M6502Emulator )
+project( MuonThirdPartyTests_6502Emulator )
 
-set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DM6502_DEBUG" )	#so we can add the DEBUG preprocessor define and other flags to stay in debug mode - see https://cmake.org/Wiki/CMake_Useful_Variables#Compilers_and_Tools
-set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DM6502_DEBUG" )
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DM6502_DEBUG")	
+#so we can add the DEBUG preprocessor define and other flags to stay in debug mode - see https://cmake.org/Wiki/CMake_Useful_Variables#Compilers_and_Tools
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DM6502_DEBUG")
 
 
 # source for the test executable
-set (MUON_ThirdPartyTests_M6502_SOURCES
+set (MuonThirdPartyTests_6502_SOURCES
 	"src/main_6502.cpp"
 	"src/6502LoadRegisterTests.cpp"
 	"src/6502StoreRegisterTests.cpp"
@@ -23,18 +24,18 @@ set (MUON_ThirdPartyTests_M6502_SOURCES
 	"src/6502CompareRegisterTests.cpp"
 	"src/6502ShiftsTests.cpp"
 	"src/6502SystemFunctionsTests.cpp"
-	)
+)
 		
-source_group("src" FILES ${MUON_ThirdPartyTests_M6502_SOURCES})
+source_group("src" FILES ${MuonThirdPartyTests_6502_SOURCES})
 		
-add_executable(MUON_ThirdPartyTests_M6502Test ${MUON_ThirdPartyTests_M6502_SOURCES})
-add_dependencies( MUON_ThirdPartyTests_M6502Test MUON_ThirdPartyTests_M6502Lib )
+add_executable(MuonThirdPartyTests_6502 ${MuonThirdPartyTests_6502_SOURCES})
+add_dependencies( MuonThirdPartyTests_6502 MuonThirdPartyTests_6502Lib )
 
 install(
-	TARGETS MUON_ThirdPartyTests_M6502Test
+	TARGETS MuonThirdPartyTests_6502
 	RUNTIME DESTINATION ${MUON_BIN_DIR}
 )
 
-target_link_libraries(MUON_ThirdPartyTests_M6502Test MUON_ThirdPartyTests_M6502Lib)
-target_link_libraries(MUON_ThirdPartyTests_M6502Test Muon)
+target_link_libraries(MuonThirdPartyTests_6502 MuonThirdPartyTests_6502Lib)
+target_link_libraries(MuonThirdPartyTests_6502 Muon)
 
