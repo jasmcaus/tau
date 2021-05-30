@@ -29,6 +29,10 @@ jobs:
       - name: Build
         run: cmake --build build --config=${{ matrix.build_type }} --parallel 10
 
-      - name: Test
+      - name: Test (Internal)
         run: | 
-          cd build/test/InternalTests && ./MuonInternalTests
+          cd build/bin && ./MuonInternalTests
+      
+      - name: Test (ThirdParty)
+        run: |
+          cd build/bin && ./MuonThirdPartyTests_6502

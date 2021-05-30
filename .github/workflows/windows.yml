@@ -34,9 +34,13 @@ jobs:
         run: |
           cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
-      - name: Test
+      - name: Test (Internal)
+        run: | 
+          cd build/bin/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+        
+      - name: Test (ThirdParty)
         run: |
-          cd build/test/InternalTests/ ; dir; ./MuonInternalTests
+          cd build/bin/${{ matrix.build_type }} ; dir; ./MuonThirdPartyTests_6502
 
 
   # CMAKE_SYSTEM_VERSION on `windows-2016` _does not_ have version "10.0.18362.0" and hence defaults to a older, but 
@@ -59,6 +63,7 @@ jobs:
       if: matrix.build_type == 'Release' && matrix.architecture != 'x64'
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -A ${{ matrix.architecture }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On -DMUON_BUILDTHIRDPARTYTESTS=On -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+
     - name: CMake (Default Configs)
       if: matrix.build_type != 'Release'
       run: |
@@ -67,9 +72,14 @@ jobs:
     - name: Build
       run: |
         cmake --build build --config ${{ matrix.build_type }} --parallel 10
-    - name: Test
+
+    - name: Test (Internal)
+      run: | 
+        cd build/bin/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+      
+    - name: Test (ThirdParty)
       run: |
-        cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+        cd build/bin/${{ matrix.build_type }} ; dir; ./MuonThirdPartyTests_6502
 
 
   MSVC2017_latest:
@@ -80,12 +90,18 @@ jobs:
     - name: CMake
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DMUON_BUILDINTERNALTESTS=On -DMUON_BUILDTHIRDPARTYTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4" -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+
     - name: Build
       run: |
         cmake --build build --config Release --parallel 10
-    - name: Test
+    
+    - name: Test (Internal)
+      run: | 
+        cd build/bin/Release ; dir; ./MuonInternalTests
+      
+    - name: Test (ThirdParty)
       run: |
-        cd build/test/InternalTests/Release ; dir; ./MuonInternalTests
+        cd build/bin/Release ; dir; ./MuonThirdPartyTests_6502
 
 
   MSVC2019:
@@ -105,9 +121,13 @@ jobs:
       run: |
         cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
-    - name: Test
+    - name: Test (Internal)
+      run: | 
+        cd build/bin/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+      
+    - name: Test (ThirdParty)
       run: |
-        cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+        cd build/bin/${{ matrix.build_type }} ; dir; ./MuonThirdPartyTests_6502
 
 
   MSVC2019_latest:
@@ -123,9 +143,13 @@ jobs:
       run: |
         cmake --build build --config Release --parallel 10
 
-    - name: Test
+    - name: Test (Internal)
+      run: | 
+        cd build/bin/Release ; dir; ./MuonInternalTests
+      
+    - name: Test (ThirdParty)
       run: |
-        cd build/test/InternalTests/Release ; dir; ./MuonInternalTests
+        cd build/bin/Release ; dir; ./MuonThirdPartyTests_6502
 
 
   Clang-cl-11:
@@ -145,9 +169,13 @@ jobs:
         run: |
           cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
-      - name: Test
+      - name: Test (Internal)
+        run: | 
+          cd build/bin/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+      
+      - name: Test (ThirdParty)
         run: |
-          cd build/test/InternalTests/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+          cd build/bin/${{ matrix.build_type }} ; dir; ./MuonThirdPartyTests_6502
 
   
   # Clang:
@@ -169,8 +197,12 @@ jobs:
 
   #     - name: Build
   #       run: |
-  #         cmake --build build --parallel 10
+        #   cmake --build build --parallel 10
 
-  #     - name: Test
-  #       run: |
-  #         cd build/test/InternalTests/ ; dir; ./MuonInternalTests
+      # - name: Test (Internal)
+      #   run: | 
+      #     cd build/bin/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+      
+      # - name: Test (ThirdParty)
+      #   run: |
+      #     cd build/bin/${{ matrix.build_type }} ; dir; ./MuonThirdPartyTests_6502
