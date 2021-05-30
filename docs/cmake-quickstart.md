@@ -19,7 +19,7 @@ Next, you'll need to tell CMake that you want Muon as a dependency. You can do t
 
 Inside the CMakeLists.txt, add the following contents:
 ```cmake
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 project(DemoProject) # name this to whatever you'd like 
 
 # Muon requires at least C11/C++11
