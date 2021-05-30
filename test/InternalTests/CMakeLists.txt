@@ -8,8 +8,10 @@ add_executable(
     # Muon's Death Tests
     DeathTests/test_string_macros.c
     DeathTests/test_string_macros.cpp
-    DeathTests/test_assertion_macros.c
-    DeathTests/test_assertion_macros.cpp
+    DeathTests/test_assertion_macros_1.c
+    DeathTests/test_assertion_macros_2.c
+    DeathTests/test_assertion_macros_1.cpp
+    DeathTests/test_assertion_macros_2.cpp
 )
 
 install(
