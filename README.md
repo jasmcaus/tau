@@ -21,7 +21,7 @@ in C++, its limitations are in fact its biggest strength - you get *negligible* 
 constructs.
 
 If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
-[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support if greatly appreciated 😊.
+[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support is greatly appreciated 😊.
 
 
 ## Features
