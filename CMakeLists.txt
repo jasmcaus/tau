@@ -253,73 +253,78 @@ target_include_directories(
 
 
 # ------ Installations ------
-## Installation header files, generate and install CMake config files for find_package()
-include(CMakePackageConfigHelpers)
+# Only perform the installation if Muon is built as the main project (i.e not included as an external project, 
+# or a subdirectory) or destinations might break.
+if(IS_MAIN_PROJECT)
+    ## Installation header files, generate and install CMake config files for find_package()
+    include(CMakePackageConfigHelpers)
 
-# We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
-# architecture-independent
+    # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
+    # architecture-independent
 
-# ConfigVersion.CMake.in --> MuonConfigVersion.CMake
-configure_file(
-    ${MUON_CMAKE_CONFIGVERSION_IN}
-    ${MUON_CMAKE_CONFIGVERSION}
-    @ONLY
-)
-# config.CMake.in --> MuonConfig.CMake
-configure_file(
-    ${MUON_CMAKE_CONFIG_IN}
-    ${MUON_CMAKE_CONFIG}
-    @ONLY
-)
-# Install a pkg-config file, so other tools can find this.
-configure_file(
-    ${MUON_CMAKE_PKGCONFIG_IN}
-    ${MUON_CMAKE_PKGCONFIG}
-)
-# Install the pkg-config file to lib/pkgconfig
-install(
-    FILES ${MUON_CMAKE_PKGCONFIG}
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
-)
+    # ConfigVersion.CMake.in --> MuonConfigVersion.CMake
+    configure_file(
+        ${MUON_CMAKE_CONFIGVERSION_IN}
+        ${MUON_CMAKE_CONFIGVERSION}
+        @ONLY
+    )
+    # config.CMake.in --> MuonConfig.CMake
+    configure_file(
+        ${MUON_CMAKE_CONFIG_IN}
+        ${MUON_CMAKE_CONFIG}
+        @ONLY
+    )
+    # Install a pkg-config file, so other tools can find this.
+    configure_file(
+        ${MUON_CMAKE_PKGCONFIG_IN}
+        ${MUON_CMAKE_PKGCONFIG}
+    )
+    # Install the pkg-config file to lib/pkgconfig
+    install(
+        FILES ${MUON_CMAKE_PKGCONFIG}
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+    )
 
-# Move MuonConfig.CMake and MuonConfigVersion.CMake  ---> lib/CMake/Muon/...
-install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/MuonConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/MuonConfigVersion.CMake" 
-    DESTINATION "lib/CMake/Muon"
-)
+    # Move MuonConfig.CMake and MuonConfigVersion.CMake  ---> lib/CMake/Muon/...
+    install(
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/MuonConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/MuonConfigVersion.CMake" 
+        DESTINATION "lib/CMake/Muon"
+    )
 
-# ./include --> include
-install(
-    DIRECTORY ${MUON_HEADERS_INCLUDE_DIR}
-    DESTINATION Muon
-)
+    # ./include --> include
+    install(
+        DIRECTORY ${MUON_HEADERS_INCLUDE_DIR}
+        DESTINATION Muon
+    )
 
 
-# Export MuonTargets from MuonTargets.CMake
-export(
-    TARGETS Muon
-    FILE ${MUON_TARGETS_CMAKE}
-)
+    # Export MuonTargets from MuonTargets.CMake
+    export(
+        TARGETS Muon
+        FILE ${MUON_TARGETS_CMAKE}
+    )
 
-install(
-    EXPORT ${MUON_TARGET_NAME}
-    DESTINATION lib/CMake/Muon
-)
+    install(
+        EXPORT ${MUON_TARGET_NAME}
+        DESTINATION lib/CMake/Muon
+    )
+endif() # IS_MAIN_PROJECT
 
 # install(
 #     TARGETS Muon
 #     EXPORT "${MUON_TARGET_NAME}Targets"
 #     INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR}
 # )
-install(TARGETS Muon
-        EXPORT ${MUON_TARGET_NAME}
-        ARCHIVE DESTINATION "lib"
-        LIBRARY DESTINATION "lib"
-        RUNTIME DESTINATION "bin"
-        ## This results in an ``INTERFACE_INCLUDE_DIRECTORIES`` property contains path ... which is prefixed in the source 
-        ## directory. 
-        ## There may be something I'm missing out - if you know how to fix this, please send in a PR :)
-        # INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR)
+install(
+    TARGETS Muon
+    EXPORT ${MUON_TARGET_NAME}
+    ARCHIVE DESTINATION "lib"
+    LIBRARY DESTINATION "lib"
+    RUNTIME DESTINATION "bin"
+    ## This results in an ``INTERFACE_INCLUDE_DIRECTORIES`` property contains path ... which is prefixed in the source 
+    ## directory. 
+    ## There may be something I'm missing out - if you know how to fix this, please send in a PR :)
+    # INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR)
 )
 
 # Header files are copied to the install directory
