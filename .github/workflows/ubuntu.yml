@@ -31,9 +31,13 @@ jobs:
         run: |
           cmake --build build --config=${{ matrix.build_type }}
 
-      - name: Test
+      - name: Test (Internal)
+        run: | 
+          cd build/bin ; dir; ./MuonInternalTests
+      
+      - name: Test (ThirdParty)
         run: |
-          cd build/test/InternalTests ; dir;  ./MuonInternalTests
+          cd build/bin ; dir; ./MuonThirdPartyTests_6502
 
 
   Clang:
