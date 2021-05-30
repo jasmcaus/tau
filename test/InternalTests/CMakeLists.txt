@@ -1,7 +1,6 @@
 # ------ Mhon's Internal Tests  ------
-set(MUON_INTERNALTESTS    "MuonInternalTests")
 add_executable(
-    ${MUON_INTERNALTESTS}
+    MuonInternalTests
     main.c
     test.c
     test.cpp
@@ -13,11 +12,16 @@ add_executable(
     DeathTests/test_assertion_macros.cpp
 )
 
+install(
+    TARGETS MuonInternalTests
+    RUNTIME DESTINATION ${MUON_BIN_DIR}
+)
+
 target_include_directories(
-    ${MUON_INTERNALTESTS} 
+    MuonInternalTests 
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # The Muon INTERFACE library
-target_link_libraries(${MUON_INTERNALTESTS} Muon)
+target_link_libraries(MuonInternalTests Muon)
