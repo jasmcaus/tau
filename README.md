@@ -20,9 +20,6 @@ compiling with (and testing) C++ code. While Muon doesn't currently support mock
 in C++, its limitations are in fact its biggest strength - you get *negligible* overhead & fast compilation speeds 
 for the sacrifice of a few constructs.
 
-If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
-[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support is greatly appreciated 😊.
-
 
 ## Features
 * *Ultra-light* (~1k lines of code)
@@ -145,6 +142,11 @@ If you have any questions, please:
 # Who uses Muon?
 In addition to several of my personal projects, Muon is also used in the following notable projects:
 * The [Hazel](https://github.com/HazelLang/Hazel) Programming Language
+
+
+# Supporting This Project
+If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
+[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support is greatly appreciated 😊.
 
 
 # License 
