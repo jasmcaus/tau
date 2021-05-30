@@ -29,10 +29,6 @@ jobs:
       - name: Build
         run: cmake --build build --config=${{ matrix.build_type }} --parallel 10
 
-      - name: Before Tests (Move Binaries)
-        run: |
-          mv build/test/thirdparty/6502Emulator/6502/6502Test/M6502Test.exe build/test/thirdparty/
-
       - name: Test
         run: | 
           cd build/test/InternalTests && ./MuonInternalTests
