@@ -191,19 +191,26 @@ endif()
 include(GNUInstallDirs)
 
 # ------ Options ------
+set(MUON_ROOT_DIR                    ${CMAKE_CURRENT_SOURCE_DIR})
+set(MUON_BIN_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+set(MUON_LIB_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${MUON_BIN_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${MUON_LIB_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${MUON_LIB_DIR})
+
 set(MUON_TARGET_NAME           ${PROJECT_NAME}Targets)
 set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.cmake)
 
 set(MUON_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Muon)
 
 # CMake Configurations (from the ``CMake`` folder)
-set(CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
-set(CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-set(CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
-set(CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
-set(CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
-set(CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
-set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
+set(MUON_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
+set(MUON_CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+set(MUON_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
+set(MUON_CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
+set(MUON_CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
+set(MUON_CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
+set(MUON_CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
 
 
 # ------ Main Build ------
@@ -213,27 +220,27 @@ set(CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-
 # Where Muon's .h files can be found.
 set(
     MUON_BUILD_INCLUDE_DIRS
-    "${${PROJECT_NAME}_SOURCE_DIR}/Muon"
-    "${${PROJECT_NAME}_SOURCE_DIR}"
+    "${MUON_ROOT_DIR}/Muon"
+    "${MUON_ROOT_DIR}"
 )
 include_directories(${MUON_BUILD_INCLUDE_DIRS})
 
 # Create the Muon Interface Library
 # Interfaces are best for header-only libraries
-add_library(${PROJECT_NAME} INTERFACE)
+add_library(Muon INTERFACE)
 # Add an alias so that Muon can be used with add_subdirectory
-add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(Muon::Muon ALIAS Muon)
 
 if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
-    target_compile_features(${PROJECT_NAME} INTERFACE c_range_for)
+    target_compile_features(Muon INTERFACE c_range_for)
 else()
-    target_compile_features(${PROJECT_NAME} INTERFACE c_std_11)
+    target_compile_features(Muon INTERFACE c_std_11)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${MUON_VERSION})
+set_target_properties(Muon PROPERTIES VERSION ${MUON_VERSION})
 
 target_include_directories(
-    ${PROJECT_NAME} 
+    Muon 
     INTERFACE 
     # If Muon is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
@@ -254,31 +261,31 @@ include(CMakePackageConfigHelpers)
 
 # ConfigVersion.CMake.in --> MuonConfigVersion.CMake
 configure_file(
-    ${CMAKE_CONFIGVERSION_IN}
-    ${CMAKE_CONFIGVERSION}
+    ${MUON_CMAKE_CONFIGVERSION_IN}
+    ${MUON_CMAKE_CONFIGVERSION}
     @ONLY
 )
 # config.CMake.in --> MuonConfig.CMake
 configure_file(
-    ${CMAKE_CONFIG_IN}
-    ${CMAKE_CONFIG}
+    ${MUON_CMAKE_CONFIG_IN}
+    ${MUON_CMAKE_CONFIG}
     @ONLY
 )
 # Install a pkg-config file, so other tools can find this.
 configure_file(
-    ${CMAKE_PKGCONFIG_IN}
-    ${CMAKE_PKGCONFIG}
+    ${MUON_CMAKE_PKGCONFIG_IN}
+    ${MUON_CMAKE_PKGCONFIG}
 )
 # Install the pkg-config file to lib/pkgconfig
 install(
-    FILES ${CMAKE_PKGCONFIG}
+    FILES ${MUON_CMAKE_PKGCONFIG}
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
 
 # Move MuonConfig.CMake and MuonConfigVersion.CMake  ---> lib/CMake/Muon/...
 install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.CMake" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.CMake" 
-    DESTINATION "lib/CMake/${PROJECT_NAME}"
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/MuonConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/MuonConfigVersion.CMake" 
+    DESTINATION "lib/CMake/Muon"
 )
 
 # ./include --> include
@@ -290,21 +297,21 @@ install(
 
 # Export MuonTargets from MuonTargets.CMake
 export(
-    TARGETS ${PROJECT_NAME}
+    TARGETS Muon
     FILE ${MUON_TARGETS_CMAKE}
 )
 
 install(
     EXPORT ${MUON_TARGET_NAME}
-    DESTINATION lib/CMake/${PROJECT_NAME}
+    DESTINATION lib/CMake/Muon
 )
 
 # install(
-#     TARGETS ${PROJECT_NAME}
+#     TARGETS Muon
 #     EXPORT "${MUON_TARGET_NAME}Targets"
 #     INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR}
 # )
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS Muon
         EXPORT ${MUON_TARGET_NAME}
         ARCHIVE DESTINATION "lib"
         LIBRARY DESTINATION "lib"
@@ -317,7 +324,7 @@ install(TARGETS ${PROJECT_NAME}
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Muon
     DESTINATION include
 )
 
