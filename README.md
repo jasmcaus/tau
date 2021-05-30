@@ -59,8 +59,11 @@ MUON_MAIN() // IMPORTANT: No semicolon at the end
 This defines a main function, so if you write a `main()` function ***and*** declare `MUON_MAIN()`, your compiler will
 throw a `redeclaration of main` error. 
 
-If you must write a `main()` function, add `MUON_NO_MAIN()` instead - this does not define a main function, but sets 
-up any variables/methods that Muon needs to run properly.
+If you must write a `main()` function, use the following instead:
+```c
+MUON_NO_MAIN()
+```
+This won't define a main function, but sets up any variables/methods that Muon needs to run properly.
 
 
 # Getting Started
