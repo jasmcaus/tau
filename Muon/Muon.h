@@ -454,7 +454,11 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 static inline int isDigit(char c) { return c >= '0' && c <= '9'; }
 // If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
 // This method signals whether this message should be printed
-static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isStringCmp) {
+// 
+// Note: the arguments are of type `char const*` as opposed to `char*`
+// This helps mitigate the ``warning: ISO C++ forbids converting a string constant to 'char*'``
+// See: https://stackoverflow.com/questions/20944784/why-is-conversion-from-string-constant-to-char-valid-in-c-but-invalid-in-c/20944858
+static inline int muonShouldDecomposeMacro(char const* actual, char const* expected, int isStringCmp) {
     // Signal that the macro can be further decomposed if either of the following symbols are present
     int dots = 0;
     int numActualDigits = 0;
@@ -619,9 +623,9 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
         if(strcmp(actual, expected) cond 0) {                                                                   \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                      \
+            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                              \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                               \
                                                                 #macroName,                                     \
                                                                 #actual, #expected);                            \
                 }                                                                                               \
@@ -644,7 +648,7 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
             if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                           \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                            \
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #n);                        \
                 }                                                                                               \
@@ -666,7 +670,7 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
             if(muonShouldDecomposeMacro(#actual, MUON_NULL, 0)) {                   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s )\n",      \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s )\n",       \
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
