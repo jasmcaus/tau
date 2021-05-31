@@ -552,7 +552,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
                                 long double : "%Lf",                  \
                                 default : _Generic((val - val),       \
                                 MUON_Ull : "%p",                      \
-                                default : "undef")),                  \
+                                default : "%s")),                     \
                     (val))
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
