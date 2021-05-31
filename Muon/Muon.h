@@ -484,9 +484,10 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
         }
     } 
     // Inside a string comparison, we search for common expression tokens like the following:
-    // '(', ')', '-
+    // '(', ')', '-'
     else {
-        if(strchr(actual, '(') != NULL || strchr(expected, '(') != NULL) {
+        if(strchr(actual, '(') != NULL || strchr(expected, '(') != NULL || 
+           actual[0] != '"' || expected[0] != '"' ) {
             return 1;
         }
     }
@@ -620,7 +621,7 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
             if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                      \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",                              \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                              \
                                                                 #macroName,                                     \
                                                                 #actual, #expected);                            \
                 }                                                                                               \
@@ -643,7 +644,7 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
             if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s, %s)\n",                           \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                           \
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #n);                        \
                 }                                                                                               \
@@ -665,7 +666,7 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
             if(muonShouldDecomposeMacro(#actual, MUON_NULL, 0)) {                   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s )\n",      \
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
