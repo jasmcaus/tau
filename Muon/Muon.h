@@ -451,6 +451,47 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     #define MUON_SNPRINTF(...)              snprintf(__VA_ARGS__)
 #endif // _MSC_VER
 
+static inline int isDigit(char c) { return c >= '0' && c <= '9'; }
+// If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
+// This method signals whether this message should be printed
+static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isStringCmp) {
+    // Signal that the macro can be further decomposed if either of the following symbols are present
+    int dots = 0;
+    int numActualDigits = 0;
+    int numExpectedDigits = 0;
+
+    // If not inside a string comparison, we will return `1` only if we determine that `actual` is a variable 
+    // name/expression (i.e for a value, we search through each character verifying that each is a digit
+    // - for floats, we allow a maximum of 1 '.' char)
+    if(!isStringCmp) {
+        for(int i=0; i < strlen(actual); i++) {
+            if(isDigit(actual[i])) { numActualDigits++; }
+            else if(actual[i] == '.') { 
+                dots++; 
+                if(dots > 1) { return 1; }
+            }
+            else { return 1; }
+        }
+        // Do the same for `expected`
+        dots = 0;
+        for(int i=0; i < strlen(expected); i++) {
+            if(isDigit(expected[i])) { numExpectedDigits++; }
+            else if(expected[i] == '.') { 
+                dots++; 
+                if(dots > 1) { return 1; }
+            }
+            else { return 1; }
+        }
+    } 
+    // Inside a string comparison, we search for common expression tokens like the following:
+    // '(', ')', '-
+    else {
+        if(strchr(actual, '(') != NULL || strchr(expected, '(') != NULL) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 #ifdef MUON_OVERLOADABLE
     #ifndef MUON_CAN_USE_OVERLOADABLES
@@ -519,27 +560,25 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, macroName, failOrAbort)   \
+    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)   \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                         \
-                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {  \
+                if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                           \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                  \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",              \
                                                                 #macroName,                     \
-                                                                #actual #cond #expected);       \
+                                                                #actual, #expected);            \
                 }                                                                               \
-                muonPrintf("  Expected : ");                                                    \
-                MUON_OVERLOAD_PRINTER(actual);                                                  \
-                printf(" %s ", #cond);                                                          \
+                muonPrintf("  Expected : %s", #actual);                                         \
+                printf(" %s ", #cond space);                                                          \
                 MUON_OVERLOAD_PRINTER(expected);                                                \
                 muonPrintf("\n");                                                               \
                                                                                                 \
-                muonPrintf("    Actual : ");                                                    \
-                MUON_OVERLOAD_PRINTER(actual);                                                  \
-                printf(" %s ", #ifCondFailsThenPrint);                                          \
-                MUON_OVERLOAD_PRINTER(expected);                                                \
+                muonPrintf("    Actual : %s", #actual);                                         \
+                printf(" == ");                                          \
+                MUON_OVERLOAD_PRINTER(actual);                                                \
                 muonPrintf("\n");                                                               \
                 failOrAbort();                                                                  \
             }                                                                                   \
@@ -548,26 +587,24 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCMP__(actual, expected, cond, ifCondFailsThenPrint, macroName, failOrAbort)           \
+    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)           \
         do {                                                                                            \
             if(!((actual)cond(expected))) {                                                             \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                              \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                 \
-                if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {          \
+                if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                                   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                       \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",                          \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                      \
                                                                 #macroName,                             \
-                                                                #actual #cond #expected);               \
+                                                                #actual, #expected);                    \
                 }                                                                                       \
-                muonPrintf("  Expected : ");                                                            \
-                printf(#actual);                                                                        \
-                printf(" %s ", #cond);                                                                  \
+                muonPrintf("  Expected : %s", #actual);                                                 \
+                printf(" %s ", #cond space);                                                                  \
                 printf(#expected);                                                                      \
                 muonPrintf("\n");                                                                       \
                                                                                                         \
-                muonPrintf("    Actual : ");                                                            \
-                printf(#actual);                                                                        \
-                printf(" %s ", #ifCondFailsThenPrint);                                                  \
+                muonPrintf("    Actual : %s", #actual);                                                 \
+                printf(" == ");                                                  \
                 printf(#expected);                                                                      \
                 muonPrintf("\n");                                                                       \
                 failOrAbort();                                                                          \
@@ -581,7 +618,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         if(strcmp(actual, expected) cond 0) {                                                                   \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {                      \
+            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                      \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s )\n",                              \
                                                                 #macroName,                                     \
@@ -604,7 +641,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         if(strncmp(actual, expected, n) cond 0) {                                                               \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(strchr(#actual, '(') != MUON_NULL || strchr(#expected, '(') != MUON_NULL) {                      \
+            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s, %s, %s)\n",                           \
                                                                 #macroName,                                     \
@@ -626,13 +663,13 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
         if(negateSign(cond)) {                                                      \
             muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
             muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                 \
-            if(strchr(#cond, '(') != MUON_NULL) {                                   \
+            if(muonShouldDecomposeMacro(#actual, MUON_NULL, 0)) {                   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s ( %s )\n",      \
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
-            muonPrintf("  Expected : %s\n", #expected);                            \
+            muonPrintf("  Expected : %s\n", #expected);                             \
             muonPrintf("    Actual : %s\n", #actual);                               \
             failOrAbort();                                                          \
         }                                                                           \
@@ -643,19 +680,19 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
           {CHECK|REQUIRE} Macros
 ############################################
 */
-#define CHECK_EQ(actual, expected)     __MUONCMP__(actual, expected, ==, !=, CHECK_EQ, failIfInsideTestSuite)
-#define CHECK_NE(actual, expected)     __MUONCMP__(actual, expected, !=, ==, CHECK_NE, failIfInsideTestSuite)
-#define CHECK_LT(actual, expected)     __MUONCMP__(actual, expected, <,  >,  CHECK_LT, failIfInsideTestSuite)
-#define CHECK_LE(actual, expected)     __MUONCMP__(actual, expected, <=, >=, CHECK_LE, failIfInsideTestSuite)
-#define CHECK_GT(actual, expected)     __MUONCMP__(actual, expected, >,  <,  CHECK_GT, failIfInsideTestSuite)
-#define CHECK_GE(actual, expected)     __MUONCMP__(actual, expected, >=, <=, CHECK_GE, failIfInsideTestSuite)
+#define CHECK_EQ(actual, expected)     __MUONCMP__(actual, expected, ==, "", CHECK_EQ, failIfInsideTestSuite)
+#define CHECK_NE(actual, expected)     __MUONCMP__(actual, expected, !=, "", CHECK_NE, failIfInsideTestSuite)
+#define CHECK_LT(actual, expected)     __MUONCMP__(actual, expected, < , " ", CHECK_LT, failIfInsideTestSuite)
+#define CHECK_LE(actual, expected)     __MUONCMP__(actual, expected, <=, "", CHECK_LE, failIfInsideTestSuite)
+#define CHECK_GT(actual, expected)     __MUONCMP__(actual, expected, > , " ", CHECK_GT, failIfInsideTestSuite)
+#define CHECK_GE(actual, expected)     __MUONCMP__(actual, expected, >=, "", CHECK_GE, failIfInsideTestSuite)
 
-#define REQUIRE_EQ(actual, expected)   __MUONCMP__(actual, expected, ==, !=, REQUIRE_EQ, abortIfInsideTestSuite)
-#define REQUIRE_NE(actual, expected)   __MUONCMP__(actual, expected, !=, ==, REQUIRE_NE, abortIfInsideTestSuite)
-#define REQUIRE_LT(actual, expected)   __MUONCMP__(actual, expected, <,  >,  REQUIRE_LT, abortIfInsideTestSuite)
-#define REQUIRE_LE(actual, expected)   __MUONCMP__(actual, expected, <=, >=, REQUIRE_LE, abortIfInsideTestSuite)
-#define REQUIRE_GT(actual, expected)   __MUONCMP__(actual, expected, >,  <,  REQUIRE_GT, abortIfInsideTestSuite)
-#define REQUIRE_GE(actual, expected)   __MUONCMP__(actual, expected, >=, <=, REQUIRE_GE, abortIfInsideTestSuite)
+#define REQUIRE_EQ(actual, expected)   __MUONCMP__(actual, expected, ==, "", REQUIRE_EQ, abortIfInsideTestSuite)
+#define REQUIRE_NE(actual, expected)   __MUONCMP__(actual, expected, !=, "", REQUIRE_NE, abortIfInsideTestSuite)
+#define REQUIRE_LT(actual, expected)   __MUONCMP__(actual, expected, < , " ", REQUIRE_LT, abortIfInsideTestSuite)
+#define REQUIRE_LE(actual, expected)   __MUONCMP__(actual, expected, <=, "", REQUIRE_LE, abortIfInsideTestSuite)
+#define REQUIRE_GT(actual, expected)   __MUONCMP__(actual, expected, > , " ", REQUIRE_GT, abortIfInsideTestSuite)
+#define REQUIRE_GE(actual, expected)   __MUONCMP__(actual, expected, >=, "", REQUIRE_GE, abortIfInsideTestSuite)
 
 // Whole-string checks
 #define CHECK_STREQ(actual, expected)     __MUONCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, failIfInsideTestSuite)
