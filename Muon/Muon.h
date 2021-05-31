@@ -451,7 +451,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     #define MUON_SNPRINTF(...)              snprintf(__VA_ARGS__)
 #endif // _MSC_VER
 
-static inline int isDigit(char c) { return c >= '0' && c <= '9'; }
+static inline int MUON_isDigit(char c) { return c >= '0' && c <= '9'; }
 // If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
 // This method signals whether this message should be printed
 // 
@@ -469,7 +469,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
     // - for floats, we allow a maximum of 1 '.' char)
     if(!isStringCmp) {
         for(int i=0; i < strlen(actual); i++) {
-            if(isDigit(actual[i])) { numActualDigits++; }
+            if(MUON_isDigit(actual[i])) { numActualDigits++; }
             else if(actual[i] == '.') { 
                 dots++; 
                 if(dots > 1) { return 1; }
@@ -479,7 +479,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         // Do the same for `expected`
         dots = 0;
         for(int i=0; i < strlen(expected); i++) {
-            if(isDigit(expected[i])) { numExpectedDigits++; }
+            if(MUON_isDigit(expected[i])) { numExpectedDigits++; }
             else if(expected[i] == '.') { 
                 dots++; 
                 if(dots > 1) { return 1; }
