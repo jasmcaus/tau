@@ -20,12 +20,15 @@ TEST(c, MemAlloc) {
     CHECK(mem != NULL, "Mem ideally should not be NULL");
 }
 
+int retu() {
+    return 10000000;
+}
 TEST(c, ForLoop) { 
     int count = 0;
     for(int i = 0; i<10000000; i++) {
-        count ++;
+        count++;
     }
-    REQUIRE_EQ(count, 10000000); 
+    REQUIRE_EQ(count, retu()); 
 }
 
 TEST(c, CHECK) { 

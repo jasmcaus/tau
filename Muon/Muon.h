@@ -560,25 +560,25 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(MUON_CAN_USE_OVERLOADABLES)
-    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)   \
+    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)                  \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                         \
                 if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                           \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",              \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",               \
                                                                 #macroName,                     \
                                                                 #actual, #expected);            \
                 }                                                                               \
                 muonPrintf("  Expected : %s", #actual);                                         \
-                printf(" %s ", #cond space);                                                          \
+                printf(" %s ", #cond space);                                                    \
                 MUON_OVERLOAD_PRINTER(expected);                                                \
                 muonPrintf("\n");                                                               \
                                                                                                 \
                 muonPrintf("    Actual : %s", #actual);                                         \
-                printf(" == ");                                          \
-                MUON_OVERLOAD_PRINTER(actual);                                                \
+                printf(" == ");                                                                 \
+                MUON_OVERLOAD_PRINTER(actual);                                                  \
                 muonPrintf("\n");                                                               \
                 failOrAbort();                                                                  \
             }                                                                                   \
@@ -587,24 +587,24 @@ static inline int muonShouldDecomposeMacro(char* actual, char* expected, int isS
 
 // MUON_OVERLOAD_PRINTER does not work on some compilers
 #else
-    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)           \
+    #define __MUONCMP__(actual, expected, cond, space, macroName, failOrAbort)                          \
         do {                                                                                            \
             if(!((actual)cond(expected))) {                                                             \
                 muonPrintf("%s:%u: ", __FILE__, __LINE__);                                              \
                 muonColouredPrintf(MUON_COLOUR_BRIGHTRED_, "FAILED\n");                                 \
                 if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                                   \
                     muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "  In macro : ");                       \
-                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                      \
+                    muonColouredPrintf(MUON_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                       \
                                                                 #macroName,                             \
                                                                 #actual, #expected);                    \
                 }                                                                                       \
                 muonPrintf("  Expected : %s", #actual);                                                 \
-                printf(" %s ", #cond space);                                                                  \
+                printf(" %s ", #cond space);                                                            \
                 printf(#expected);                                                                      \
                 muonPrintf("\n");                                                                       \
                                                                                                         \
                 muonPrintf("    Actual : %s", #actual);                                                 \
-                printf(" == ");                                                  \
+                printf(" == ");                                                                         \
                 printf(#expected);                                                                      \
                 muonPrintf("\n");                                                                       \
                 failOrAbort();                                                                          \
