@@ -62,7 +62,7 @@ TEST(c, REQUIRE_STRNEQ) {
 }
 
 TEST(c, REQUIRE_STRNE) { 
-    REQUIRE_STRNE("foo", "foobar", strlen("foo")); 
+    REQUIRE_STRNE("fooder", "foobar", strlen("foo")); 
 }
 
 TEST(c, REQUIRE_STRNNE) { 
