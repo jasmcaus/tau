@@ -20,5 +20,5 @@ endif() # MUON_BUILDINTERNALTESTS
 # ------ Third-Party Tests  ------
 if(MUON_BUILDTHIRDPARTYTESTS)
     message("------- [INFO] Building ThirdParty Tests")
-    add_subdirectory(thirdparty)
+    add_subdirectory(ThirdParty)
 endif() # MUON_BUILDTHIRDPARTYTESTS
