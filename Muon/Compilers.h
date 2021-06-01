@@ -39,137 +39,159 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #error Unknown Compiler (Muon currently supports only MSVC, GCC and Clang)
 #endif 
 
+// Disable Compiler Warnings
+// These are a big nuisance when compiling with external code
+#if defined(MUON_COMPILER_MSVC)
+    #define MUON_MSVC_SUPPRESS_WARNING_PUSH     __pragma(warning(push))
+    #define MUON_MSVC_SUPPRESS_WARNING(w)       __pragma(warning(disable : w))
+    #define MUON_MSVC_SUPPRESS_WARNING_POP      __pragma(warning(pop))
+#else
+    #define MUON_MSVC_SUPPRESS_WARNING_PUSH
+    #define MUON_MSVC_SUPPRESS_WARNING(w)
+    #define MUON_MSVC_SUPPRESS_WARNING_POP
+#endif // MUON_MSVC
+
+#if defined(MUON_COMPILER_CLANG)
+    #define PRAGMA_TO_STR(x)                    _Pragma(#x)
+    #define MUON_CLANG_SUPPRESS_WARNING_PUSH    _Pragma("clang diagnostic push")
+    #define MUON_CLANG_SUPPRESS_WARNING_POP     _Pragma("clang diagnostic pop")
+    #define MUON_CLANG_SUPPRESS_WARNING(w)      PRAGMA_TO_STR(clang diagnostic ignored w)
+#else
+    #define MUON_CLANG_SUPPRESS_WARNING_PUSH
+    #define MUON_CLANG_SUPPRESS_WARNING(w)
+    #define MUON_CLANG_SUPPRESS_WARNING_POP
+#endif // MUON_COMPILER_CLANG
+
+#if defined(MUON_COMPILER_GCC)
+    #define PRAGMA_TO_STR(x)                    _Pragma(#x)
+    #define MUON_GCC_SUPPRESS_WARNING_PUSH      _Pragma("GCC diagnostic push")
+    #define MUON_GCC_SUPPRESS_WARNING_POP       _Pragma("GCC diagnostic pop")
+    #define MUON_GCC_SUPPRESS_WARNING(w)        PRAGMA_TO_STR(GCC diagnostic ignored w)
+#else
+    #define MUON_GCC_SUPPRESS_WARNING_PUSH
+    #define MUON_GCC_SUPPRESS_WARNING(w)
+    #define MUON_GCC_SUPPRESS_WARNING_POP
+#endif // MUON_COMPILER_GCC
+
 
 #ifndef MUON_DISABLE_WARNINGS
-#define MUON_DISABLE_WARNINGS
-    #ifdef MUON_COMPILER_MSVC
-        // Conditional expression is constant
-        #pragma warning(disable : 4127)
-
-        // Assignment within conditional expression
-        #pragma warning(disable : 4706)
-
-        // Unreferenced inline function has been removed
-        #pragma warning(disable : 4514)
-        
-        // Function not inlined
-        #pragma warning(disable : 4710)
-        
-        // function 'x' selected for automatic inline expansion
-        #pragma warning(disable : 4711)
-
-        // No function prototype given: converting '()' to '(void)'
-        #pragma warning(disable : 4255)
-
-        // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
-        #pragma warning(disable : 4668)
-
-        // 'fprintf' : format string '' requires an argument of type 'unsigned __int64', but variadic argument 1 
-        // has type 'size_t'
-        #pragma warning(disable : 4777)
-
-        // https://stackoverflow.com/questions/39479163 what's the difference between 4018 and 4389
-        // signed/unsigned mismatch
-        #pragma warning(disable : 4388)
-
-        // expression' : signed/unsigned mismatch
-        #pragma warning(disable : 4018)
-
-        // Conversion from 'int' to 'unsigned long', signed/unsigned mismatch
-        #pragma warning(disable : 4365)
-
-        // format string expected in argument 'x' is not a string literal
-        #pragma warning(disable : 4774)
-
-        // 'var' : conversion from 'x' to 'y', possible loss of data
-        #pragma warning(disable : 4267)
-
-        // In multi-platform code like ours, we cannot use the non-standard "safe" functions from 
-        // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
-        #pragma warning(disable: 4996)
-
-        // warning C4090: '=': different 'const' qualifiers
-        #pragma warning(disable : 4090)
-
-        // io.h contains definitions for some structures with natural padding. This is uninteresting, but for 
-        // some reason, MSVC's behaviour is to warn about including this system header. That *is* interesting
-        #pragma warning(disable : 4820)
-
-        // Miscellaneous
-        #pragma warning(disble : 4061)
-        #pragma warning(disble : 4100)
-        #pragma warning(disble : 4201)
-        #pragma warning(disble : 5045)
-        #pragma warning(disble : 5105)
-
-        #pragma warning(push, 1)
-    #endif // MUON_COMPILER_MSVC
-
-    #ifdef MUON_COMPILER_CLANG
-        _Pragma("clang diagnostic push")                                             
-        _Pragma("clang diagnostic ignored "-Wdisabled-macro-expansion"") 
-        _Pragma("clang diagnostic ignored "-Wlanguage-extension-token"")     
-        _Pragma("clang diagnostic ignored "-Wc++98-compat"")
-        _Pragma("clang diagnostic ignored "-Wc++98-compat-pedantic"")
-        _Pragma("clang diagnostic ignored "-Wfloat-equal"")  
-        _Pragma("clang diagnostic ignored "-Wmissing-variable-declarations"")
-        _Pragma("clang diagnostic ignored "-Wreserved-id-macro"")
-        _Pragma("clang diagnostic ignored "-Wunknown-pragmas"")
-        _Pragma("clang diagnostic ignored "-Wstrict-overflow"")
-        _Pragma("clang diagnostic ignored "-Wstrict-aliasing"")
-        _Pragma("clang diagnostic ignored "-Wsign-compare"")
-        _Pragma("clang diagnostic ignored "-Wsign-conversion"")
-        _Pragma("clang diagnostic ignored "-Wunused-macros"")
-        _Pragma("clang diagnostic ignored "-Wunused-function"")
-        _Pragma("clang diagnostic ignored "-Wunused-variable"")
-        _Pragma("clang diagnostic ignored "-Wunused-result"")
-        _Pragma("clang diagnostic ignored "-Wunused-parameter"")
-        _Pragma("clang diagnostic ignored "-Wunused-local-typedefs"")
-        _Pragma("clang diagnostic ignored "-Wswitch"")
-        _Pragma("clang diagnostic ignored "-Wswitch-enum"")
-        _Pragma("clang diagnostic ignored "-Wswitch-default"")
-        _Pragma("clang diagnostic ignored "-Wformat"")
-        _Pragma("clang diagnostic ignored "-Wformat-extra-args"")
-        _Pragma("clang diagnostic ignored "-Wignored-qualifiers"")
-        _Pragma("clang diagnostic ignored "-Wuninitialized"")
-        _Pragma("clang diagnostic ignored "-Wunused-const-variable"")
-        _Pragma("clang diagnostic ignored "-Wnewline-eof"")
-        _Pragma("clang diagnostic ignored "-Wdeprecated-declarations"")
-    #endif // MUON_COMPILER_CLANG
-
-    #if defined(MUON_COMPILER_GCC)
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-        #pragma GCC diagnostic ignored "-Wpragmas"
-        #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-        #pragma GCC diagnostic ignored "-Wmultistatement-macros"
-        #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
-        #pragma GCC diagnostic ignored "-Wdisabled-macro-expansion" 
-        #pragma GCC diagnostic ignored "-Wlanguage-extension-token"     
-        #pragma GCC diagnostic ignored "-Wc++98-compat"
-        #pragma GCC diagnostic ignored "-Wc++98-compat-pedantic"
-        #pragma GCC diagnostic ignored "-Wfloat-equal"  
-        #pragma GCC diagnostic ignored "-Wmissing-variable-declarations"
-        #pragma GCC diagnostic ignored "-Wreserved-id-macro"
-        #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-        #pragma GCC diagnostic ignored "-Wstrict-overflow"
-        #pragma GCC diagnostic ignored "-Wstrict-aliasing"
-        #pragma GCC diagnostic ignored "-Wsign-compare"
-        #pragma GCC diagnostic ignored "-Wsign-conversion"
-        #pragma GCC diagnostic ignored "-Wunused-macros"
-        #pragma GCC diagnostic ignored "-Wunused-function"
-        #pragma GCC diagnostic ignored "-Wunused-variable"
-        #pragma GCC diagnostic ignored "-Wunused-result"
-        #pragma GCC diagnostic ignored "-Wunused-parameter"
-        #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-        #pragma GCC diagnostic ignored "-Wswitch"
-        #pragma GCC diagnostic ignored "-Wswitch-enum"
-        #pragma GCC diagnostic ignored "-Wswitch-default"
-        #pragma GCC diagnostic ignored "-Wformat"
-        #pragma GCC diagnostic ignored "-Wformat-extra-args"
-        #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    #endif // MUON_COMPILER_GCC
+#define MUON_DISABLE_WARNINGS                                                                        \
+    /* MSVC Warnings */                                                                              \
+    MUON_MSVC_SUPPRESS_WARNING_PUSH                                                                  \
+    /* Conditional expression is constant */                                                         \
+    MUON_MSVC_SUPPRESS_WARNING(4127)                                                                 \
+    /* Assignment within conditional expression */                                                   \
+    MUON_MSVC_SUPPRESS_WARNING(4706)                                                                 \
+    /* Unreferenced inline function has been removed */                                              \
+    MUON_MSVC_SUPPRESS_WARNING(4514)                                                                 \
+    /* Function not inlined*/                                                                        \
+    MUON_MSVC_SUPPRESS_WARNING(4710)                                                                 \
+    /* function 'x' selected for automatic inline expansion */                                       \
+    MUON_MSVC_SUPPRESS_WARNING(4711)                                                                 \
+    /* No function prototype given: converting '()' to '(void)' */                                   \
+    MUON_MSVC_SUPPRESS_WARNING(4255)                                                                 \
+    /* '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif' */   \
+    MUON_MSVC_SUPPRESS_WARNING(4668)                                                                 \
+    /* 'fprintf' : format string '' requires an argument of type 'unsigned __int64', but variadic */ \
+    /* argument 1 has type 'size_t' */                                                               \
+    MUON_MSVC_SUPPRESS_WARNING(4777)                                                                 \
+    /* https:/*stackoverflow.com/questions/39479163 - what's the difference between 4018 and 4389 */ \
+    /* signed/unsigned mismatch */                                                                   \
+    MUON_MSVC_SUPPRESS_WARNING(4388)                                                                 \
+    /* expression' : signed/unsigned mismatch */                                                     \
+    MUON_MSVC_SUPPRESS_WARNING(4018)                                                                 \
+    /* Conversion from 'int' to 'unsigned long', signed/unsigned mismatch */                         \
+    MUON_MSVC_SUPPRESS_WARNING(4365)                                                                 \
+    /* format string expected in argument 'x' is not a string literal */                             \
+    MUON_MSVC_SUPPRESS_WARNING(4774)                                                                 \
+    /* 'var' : conversion from 'x' to 'y', possible loss of data */                                  \
+    MUON_MSVC_SUPPRESS_WARNING(4267)                                                                 \
+    /* In multi-platform code, we cannot use the non-standard "safe" functions from */               \
+    /* Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf(). */                     \
+    MUON_MSVC_SUPPRESS_WARNING(4996)                                                                 \
+    /* warning C4090: '=': different 'const' qualifiers */                                           \
+    MUON_MSVC_SUPPRESS_WARNING(4090)                                                                 \
+    /* io.h contains definitions for some structures with natural padding. This is uninteresting, */ \
+    /* but for some reason, MSVC's behaviour is to warn about including this system header. That  */ \
+    /* *is* interesting */                                                                           \
+    MUON_MSVC_SUPPRESS_WARNING(4820)                                                                 \
+    /* Miscellaneous */                                                                              \
+    MUON_MSVC_SUPPRESS_WARNING(4061)                                                                 \
+    MUON_MSVC_SUPPRESS_WARNING(4100)                                                                 \
+    MUON_MSVC_SUPPRESS_WARNING(4201)                                                                 \
+    MUON_MSVC_SUPPRESS_WARNING(5045)                                                                 \
+    MUON_MSVC_SUPPRESS_WARNING(5105)                                                                 \
+                                                                                                     \
+    /* Clang */                                                                                      \
+    MUON_CLANG_SUPPRESS_WARNING_PUSH                                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wdisabled-macro-expansion")                                        \
+    MUON_CLANG_SUPPRESS_WARNING("-Wlanguage-extension-token")                                        \
+    MUON_CLANG_SUPPRESS_WARNING("-Wc++98-compat")                                                    \
+    MUON_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                           \
+    MUON_CLANG_SUPPRESS_WARNING("-Wfloat-equal")                                                     \
+    MUON_CLANG_SUPPRESS_WARNING("-Wmissing-variable-declarations")                                   \
+    MUON_CLANG_SUPPRESS_WARNING("-Wreserved-id-macro")                                               \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunknown-pragmas")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wstrict-overflow")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wstrict-aliasing")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wsign-compare")                                                    \
+    MUON_CLANG_SUPPRESS_WARNING("-Wsign-conversion")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-macros")                                                   \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-function")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-variable")                                                 \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-result")                                                   \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-parameter")                                                \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-local-typedefs")                                           \
+    MUON_CLANG_SUPPRESS_WARNING("-Wswitch")                                                          \
+    MUON_CLANG_SUPPRESS_WARNING("-Wswitch-enum")                                                     \
+    MUON_CLANG_SUPPRESS_WARNING("-Wswitch-default")                                                  \
+    MUON_CLANG_SUPPRESS_WARNING("-Wformat")                                                          \
+    MUON_CLANG_SUPPRESS_WARNING("-Wformat-extra-args")                                               \
+    MUON_CLANG_SUPPRESS_WARNING("-Wignored-qualifiers")                                              \
+    MUON_CLANG_SUPPRESS_WARNING("-Wuninitialized")                                                   \
+    MUON_CLANG_SUPPRESS_WARNING("-Wunused-const-variable")                                           \
+    MUON_CLANG_SUPPRESS_WARNING("-Wnewline-eof")                                                     \
+    MUON_CLANG_SUPPRESS_WARNING("-Wdeprecated-declarations")                                         \
+                                                                                                     \
+    /* GCC */                                                                                        \
+    MUON_GCC_SUPPRESS_WARNING_PUSH                                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wunknown-pragmas")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wpragmas")                                                           \
+    MUON_GCC_SUPPRESS_WARNING("-Wmaybe-uninitialized")                                               \
+    MUON_GCC_SUPPRESS_WARNING("-Wmultistatement-macros")                                             \
+    MUON_GCC_SUPPRESS_WARNING("-Wdiscarded-qualifiers")                                              \
+    MUON_GCC_SUPPRESS_WARNING("-Wdisabled-macro-expansion")                                          \
+    MUON_GCC_SUPPRESS_WARNING("-Wlanguage-extension-token")                                          \
+    MUON_GCC_SUPPRESS_WARNING("-Wc++98-compat")                                                      \
+    MUON_GCC_SUPPRESS_WARNING("-Wc++98-compat-pedantic")                                             \
+    MUON_GCC_SUPPRESS_WARNING("-Wfloat-equal")                                                       \
+    MUON_GCC_SUPPRESS_WARNING("-Wmissing-variable-declarations")                                     \
+    MUON_GCC_SUPPRESS_WARNING("-Wreserved-id-macro")                                                 \
+    MUON_GCC_SUPPRESS_WARNING("-Wunknown-pragmas")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wstrict-overflow")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wstrict-aliasing")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wsign-compare")                                                      \
+    MUON_GCC_SUPPRESS_WARNING("-Wsign-conversion")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-macros")                                                     \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-function")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-variable")                                                   \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-result")                                                     \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-parameter")                                                  \
+    MUON_GCC_SUPPRESS_WARNING("-Wunused-local-typedefs")                                             \
+    MUON_GCC_SUPPRESS_WARNING("-Wswitch")                                                            \
+    MUON_GCC_SUPPRESS_WARNING("-Wswitch-enum")                                                       \
+    MUON_GCC_SUPPRESS_WARNING("-Wswitch-default")                                                    \
+    MUON_GCC_SUPPRESS_WARNING("-Wformat")                                                            \
+    MUON_GCC_SUPPRESS_WARNING("-Wformat-extra-args")                                                 \
+    MUON_GCC_SUPPRESS_WARNING("-Wdeprecated-declarations")
 #endif // MUON_DISABLE_WARNINGS
+
+#ifndef MUON_DISABLE_WARNINGS_POP
+#define MUON_DISABLE_WARNINGS_POP     \
+    MUON_MSVC_SUPPRESS_WARNING_POP    \
+    MUON_CLANG_SUPPRESS_WARNING_POP   \
+    MUON_GCC_SUPPRESS_WARNING_POP      
+#endif // MUON_DISABLE_WARNINGS_POP
 
 #endif // MUON_COMPILERS_H
 
