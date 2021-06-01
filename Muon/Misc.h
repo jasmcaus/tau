@@ -97,7 +97,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 
 // printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER < 1920)
     #define MUON_PRId64 "I64d"
     #define MUON_PRIu64 "I64u"
 #else
@@ -110,33 +110,11 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     #define MUON_PRIu64 PRIu64
 #endif
 
-// #ifdef __clang__
-//     #define MUON_PRId64     "lld"
-//     #define MUON_PRIu64     "llu"
-// #else 
-//     #define MUON_PRId64     "I64d"
-//     #define MUON_PRIu64     "I64u"
-// #endif  // __clang__
-
 
 // A signed sizeof is more useful 
 #ifndef MUON_SIZEOF
-    #define MUON_SIZEOF(x)     (Ll)(sizeof(x))
+    #define MUON_SIZEOF(x)    (MUON_Ll)(sizeof(x))
 #endif 
 
-
-// Statics!
-// static means 3-4 different things in C/C++!!
-
-
-#ifndef MUON_STATIC
-    #define MUON_STATIC     static
-#endif
-
-#ifndef MUON_GLOBAL
-    #define MUON_GLOBAL       static // Global Variables
-    #define MUON_INTERNAL     static // Internal Linkage
-    #define MUON_LOCALPERSIST static // Local Persisting Variables  
-#endif 
 
 #endif // MUON_MISCELLANEOUS_H
