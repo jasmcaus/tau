@@ -17,7 +17,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 // Base Types (similar to the Types in the Muon Language) ==========================================
 #if defined(MUON_COMPILER_MSVC)
-    #if _MSVC_VER < 1300 
+    #if _MSC_VER < 1300 
         typedef unsigned char     MUON_UInt8;
         typedef signed char       MUON_Int8;
         typedef unsigned short    MUON_UInt16;
@@ -31,7 +31,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
         typedef signed __int16    MUON_Int16;
         typedef unsigned __int32  MUON_UInt32;
         typedef signed __int32    MUON_Int32;
-    #endif 
+    #endif // _MSC_VER
 
     typedef unsigned __int64  MUON_UInt64; 
     typedef signed __int64    MUON_Int64;
@@ -71,57 +71,6 @@ typedef MUON_Int32 MUON_Bool32; // Prefer this!
 
 // Unicode codepoint
 typedef MUON_Int32 MUON_Rune; 
-#define MUON_RUNE_INVALID MUON_CAST(MUON_Rune)(0xfffd)
-#define MUON_RUNE_MAX     MUON_CAST(MUON_Rune)(0x0010ffff)
-#define MUON_RUNE_BOM     MUON_CAST(MUON_Rune)(0xfeff)
-#define MUON_RUNE_EOF     MUON_CAST(MUON_Rune)(-1)
-
-// Max and Min 
-#ifndef MUON_UInt8_MIN 
-    #define MUON_UInt8_MIN 0u
-    #define MUON_UInt8_MAX 0xffu
-    #define MUON_Int8_MIN  (-0x7f - 1)
-    #define MUON_Int8_MAX  0x7f
-
-    #define MUON_UInt16_MIN 0u
-    #define MUON_UInt16_MAX 0xffffu
-    #define MUON_Int16_MIN  (-0x7fff - 1)
-    #define MUON_Int16_MAX  0x7fff
- 
-    #define MUON_UInt32_MIN 0u
-    #define MUON_UInt32_MAX 0xffffffffu
-    #define MUON_Int32_MIN  (-0x7fffffff - 1)
-    #define MUON_Int32_MAX  0x7fffffff
-
-    #define MUON_UInt64_MIN 0ull
-    #define MUON_UInt64_MAX 0xffffffffffffffffull
-    #define MUON_Int64_MIN  (-0x7fffffffffffffffll - 1)
-    #define MUON_Int64_MAX  0x7fffffffffffffffll
-
-    #if defined(MUON_ARCH_32BIT)
-        #define MUON_UINTSIZE_MIX MUON_UInt32_MIN
-        #define MUON_UINTSIZE_MAX MUON_UInt32_MAX
-
-        #define MUON_INTSIZE_MIX MUON_Int32_MIN
-        #define MUON_INTSIZE_MAX MUON_Int32_MAX
-    
-    #elif defined(MUON_ARCH_64BIT)
-        #define MUON_UINTSIZE_MIX MUON_UInt64_MIN
-        #define MUON_UINTSIZE_MAX MUON_UInt64_MAX
-
-        #define MUON_INTSIZE_MIX MUON_Int64_MIN
-        #define MUON_INTSIZE_MAX MUON_Int64_MAX
-    #endif 
-#else
-        #error Unknown architecture size. Muon only supports 32-bit and 64-bit architectures.
-#endif 
-
-#define MUON_Float32_MIN 1.17549435e-38f
-#define MUON_Float32_MAX 3.40282347e+38f
-
-#define MUON_Float64_MIN 2.2250738585072014e-308
-#define MUON_Float64_MAX 1.7976931348623157e+308
-
 // The same thing as size_t 
 typedef MUON_UInt64     MUON_Ull;
 // The same thing as ptrdiff_t
@@ -144,13 +93,13 @@ typedef MUON_Int64      MUON_Ll;
 
 
 // MUON_bool is a basic type in C++ and not C
-// We could just have used <stdMUON_bool.h> but I prefer this as it results in a smaller binary
+// We could just have used <stdbool.h> but I prefer this as it results in a smaller binary
 #ifdef __cplusplus
-    #define MUON_bool  bool
-    #define MUON_false false;
-    #define MUON_true  true;
-#else 
-    typedef MUON_Bool8 MUON_bool;
+    #define MUON_bool   bool
+    #define MUON_false  false
+    #define MUON_true   true
+#else
+    typedef MUON_Bool8 MUON_bool;;
     static const MUON_bool MUON_false = 0;
     static const MUON_bool MUON_true  = 1;
 #endif 
