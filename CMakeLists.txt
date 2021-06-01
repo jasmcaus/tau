@@ -76,7 +76,6 @@ endif()
 
 # ------ A List of Compiler Flags ------
 # A (more or less comprehensive) list is here: https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html
-
 if(NOT MSVC)
     if("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         string(APPEND CMAKE_C_FLAGS " -std=gnu11")
@@ -97,40 +96,7 @@ if(NOT MSVC)
     
     string(APPEND COMPILE_FLAGS " -Wall")
     string(APPEND COMPILE_FLAGS " -Wextra")
-    string(APPEND COMPILE_FLAGS " -Wno-unknown-pragmas")
-    string(APPEND COMPILE_FLAGS " -Wno-sign-compare")
-    string(APPEND COMPILE_FLAGS " -Wno-unused-parameter")
-    # string(APPEND COMPILE_FLAGS " -Wno-unused-variable")
-    # string(APPEND COMPILE_FLAGS " -Wno-unused-function")
-    string(APPEND COMPILE_FLAGS " -Wno-unused-result")
-    string(APPEND COMPILE_FLAGS " -Wno-unused-local-typedefs")
-    string(APPEND COMPILE_FLAGS " -Wno-strict-overflow")
-    string(APPEND COMPILE_FLAGS " -Wno-strict-aliasing")
-    string(APPEND COMPILE_FLAGS " -Werror=return-type")
-    string(APPEND COMPILE_FLAGS " -Wno-error=deprecated-declarations")
-
-    if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        # A hack for Clang on Ubuntu
-        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-            string(APPEND CMAKE_CXX_FLAGS " -fPIE")
-        endif() 
-
-        string(APPEND COMPILE_FLAGS " -fPIE")
-        string(APPEND COMPILE_FLAGS " -Wno-ignored-qualifiers")
-        string(APPEND COMPILE_FLAGS " -Wno-uninitialized")
-        string(APPEND COMPILE_FLAGS " -Wno-unused-const-variable")
-        string(APPEND COMPILE_FLAGS " -Wno-newline-eof")
-    else()
-        string(APPEND COMPILE_FLAGS " -fPIC")
-        string(APPEND COMPILE_FLAGS " -Wno-discarded-qualifiers")
-        string(APPEND COMPILE_FLAGS " -Wno-multistatement-macros")
-
-        if(NOT APPLE)
-            string(APPEND COMPILE_FLAGS " -Wno-unused-but-set-variable")
-            string(APPEND COMPILE_FLAGS " -Wno-maybe-uninitialized")
-        endif()
-    endif() # Clang
-
+    
     if(WERROR)
         check_cxx_compiler_flag("-Werror" COMPILER_SUPPORT_WERROR)
         if(NOT COMPILER_SUPPORT_WERROR)
