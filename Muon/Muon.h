@@ -28,6 +28,9 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     // '__cplusplus' is not defined as a preprocessor macro, replacing with '0' for '#if/#elif'
     #pragma warning(disable : 4668)
 
+    // 'fprintf' : format string '' requires an argument of type 'unsigned __int64', but variadic argument 1 has type 'size_t'
+    #pragma warning(disable : 4777)
+
     // In multi-platform code like ours, we cannot use the non-standard "safe" functions from 
     // Microsoft's C lib like e.g. sprintf_s() instead of standard sprintf().
     #pragma warning(disable: 4996)
@@ -535,6 +538,11 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         #define MUON_CAN_USE_OVERLOADABLES
     #endif // MUON_CAN_USE_OVERLOADABLES
     
+    #if defined(__GNUC__) || defined(__GNUG__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wformat"
+    #endif // __GNUC__
+
     #define MUON_OVERLOAD_PRINTER(val)                                \
         muonPrintf(_Generic((val),                                    \
                                 signed char : "%d",                   \
@@ -552,8 +560,12 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
                                 long double : "%Lf",                  \
                                 default : _Generic((val - val),       \
                                 MUON_Ull : "%p",                      \
-                                default : "%s")),                     \
+                                default : "undef")),                  \
                     (val))
+
+    #if defined(__GNUC__) || defined(__GNUG__)
+        #pragma GCC diagnostic pop
+    #endif // __GNUC__
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
     #define MUON_OVERLOAD_PRINTER(...)                                                              \
@@ -610,7 +622,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
                                                                                                         \
                 muonPrintf("    Actual : %s", #actual);                                                 \
                 printf(" == ");                                                                         \
-                printf(#expected);                                                                      \
+                printf(#actual);                                                                      \
                 muonPrintf("\n");                                                                       \
                 failOrAbort();                                                                          \
             }                                                                                           \
@@ -757,9 +769,11 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #define REQUIRE_2_ARGS(cond, message)   __MUONCHECKREQUIRE__(cond, abortIfInsideTestSuite, REQUIRE, message)
 #define REQUIRE_MACRO_CHOOSER(...)      GET_3RD_ARG(__VA_ARGS__, REQUIRE_2_ARGS, REQUIRE_1_ARGS, )
 
-#define CHECK(...)    CHECK_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+#define CHECK(...)      CHECK_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define REQUIRE(...)    REQUIRE_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
+#define CHECK_NULL(val)       CHECK(val == MUON_NULL)
+#define CHECK_NOT_NULL(val)   CHECK(val != MUON_NULL)
 
 #define WARN(msg)                                                        \
     incrementWarnings();                                                 \
