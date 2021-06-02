@@ -78,13 +78,18 @@ typedef MUON_Int32 MUON_Rune;
 // The same thing as size_t 
 // MUON_Ull --> size_t
 // MUON_Ll  --> ptrdiff_t
-#if defined(_MSC_VER) && !defined(_WIN64)
-    typedef unsigned int MUON_Ull;
-    typedef int          MUON_Ll;
+#if defined(_MSC_VER)
+    #if !defined(_WIN64)
+        typedef unsigned int MUON_Ull;
+        typedef int          MUON_Ll;
+    #else 
+        typedef MUON_UInt64  MUON_Ull;
+        typedef MUON_Int64   MUON_Ll;
+    #endif // _WIN64
 #else
     typedef MUON_UInt64  MUON_Ull;
     typedef MUON_Int64   MUON_Ll;
-#endif
+#endif // _MSC_VER
 
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
 // Are there any modern OSes (not 16 bit) where MUON_Intptr != ptrdiff_t/MUON_Ll ?
