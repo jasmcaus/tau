@@ -499,25 +499,31 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         #define MUON_CAN_USE_OVERLOADABLES
     #endif // MUON_CAN_USE_OVERLOADABLES
 
-    #define MUON_OVERLOAD_PRINTER(val)                                \
-        muonPrintf(_Generic((val),                                    \
-                                signed char : "%d",                   \
-                                unsigned char : "%u",                 \
-                                short : "%d",                         \
-                                unsigned short : "%u",                \
-                                int : "%d",                           \
-                                long : "%ld",                         \
-                                long long : "%lld",                   \
-                                unsigned : "%u",                      \
-                                unsigned long : "%lu",                \
-                                unsigned long long : "%llu",          \
-                                float : "%f",                         \
-                                double : "%f",                        \
-                                long double : "%Lf",                  \
-                                default : _Generic((val - val),       \
-                                MUON_Ull : "%p",                      \
-                                default : "undef")),                  \
+    MUON_GCC_SUPPRESS_WARNING_PUSH
+    MUON_GCC_SUPPRESS_WARNING("-Wformat")
+    MUON_GCC_SUPPRESS_WARNING("-Wformat-extra-args")
+
+    #define MUON_OVERLOAD_PRINTER(val)                            \
+        printf(_Generic((val),                                    \
+                            char : "%c",                          \
+                            char* : "%s",                         \
+                            signed char : "%hhd",                 \
+                            unsigned char : "%hhu",               \
+                            short : "%hd",                        \
+                            unsigned short : "%hu",               \
+                            int : "%d",                           \
+                            unsigned int : "%u",                  \
+                            long : "%ld",                         \
+                            long long : "%lld",                   \
+                            unsigned long : "%lu",                \
+                            unsigned long long : "%"MUON_PRIu64,  \
+                            float : "%f",                         \
+                            double : "%f",                        \
+                            long double : "%Lf",                  \
+                            void* : "%p"),                        \
                     (val))
+    
+    MUON_GCC_SUPPRESS_WARNING_POP
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
     #define MUON_OVERLOAD_PRINTER(...)                                                              \
