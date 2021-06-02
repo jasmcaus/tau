@@ -99,6 +99,8 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     /* signed/unsigned mismatch */                                                                   \
     MUON_MSVC_SUPPRESS_WARNING(4388)                                                                 \
     /* expression' : signed/unsigned mismatch */                                                     \
+    /* '==': signed/unsigned mismatch */                                                             \
+    MUON_MSVC_SUPPRESS_WARNING(4389)                                                                 \
     MUON_MSVC_SUPPRESS_WARNING(4018)                                                                 \
     /* Conversion from 'int' to 'unsigned long', signed/unsigned mismatch */                         \
     MUON_MSVC_SUPPRESS_WARNING(4365)                                                                 \
