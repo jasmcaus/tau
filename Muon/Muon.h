@@ -124,7 +124,7 @@ static int muonDisableSummary = 0;
 static int muonDisplayOnlyFailedOutput = 0; 
 
 static char* muon_argv0_ = MUON_NULL;
-static const char* filter = MUON_NULL;
+static const char* cmd_filter = MUON_NULL;
 
 /**
     This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
@@ -958,7 +958,7 @@ static MUON_bool muonCmdLineRead(int argc, char** argv) {
         // Filter tests
         else if(strncmp(argv[i], filterStr, strlen(filterStr)) == 0)
             // user wants to filter what test suites run!
-            filter = argv[i] + strlen(filterStr);
+            cmd_filter = argv[i] + strlen(filterStr);
 
         // Write XUnit XML file
         else if(strncmp(argv[i], XUnitOutput, strlen(XUnitOutput)) == 0)
@@ -1009,7 +1009,7 @@ static void muonRunTests() {
         checkIsInsideTestSuite = 1; 
         hasCurrentTestFailed = 0;
 
-        if(muonShouldFilterTest(filter, muonTestContext.tests[i].name))
+        if(muonShouldFilterTest(cmd_filter, muonTestContext.tests[i].name))
             continue;
 
         if(!muonDisplayOnlyFailedOutput) {
@@ -1069,7 +1069,7 @@ inline int muon_main(int argc, char** argv) {
         return muonCleanup();
 
     for (MUON_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
-        if(muonShouldFilterTest(filter, muonTestContext.tests[i].name))
+        if(muonShouldFilterTest(cmd_filter, muonTestContext.tests[i].name))
             muonStatsSkippedTests++;
     }
 
