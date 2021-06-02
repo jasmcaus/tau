@@ -31,10 +31,12 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 // Compilers
 #if defined(_MSC_VER)
     #define MUON_COMPILER_MSVC 1
-#elif defined(__GNUC__)
-    #define MUON_COMPILER_GCC 1
 #elif defined(__clang__)
+    #pragma message("MUON_COMPILER_CLANG defined")
     #define MUON_COMPILER_CLANG 1
+#elif defined(__GNUC__)
+    #pragma message("MUON_COMPILER_GCC defined")
+    #define MUON_COMPILER_GCC 1
 #else 
     #error Unknown Compiler (Muon currently supports only MSVC, GCC and Clang)
 #endif 
