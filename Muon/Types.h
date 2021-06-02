@@ -16,53 +16,16 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #include <Muon/Compilers.h>
 
 // Base Types (similar to the Types in the Muon Language) ==========================================
-#if defined(MUON_COMPILER_MSVC)
-    #if _MSC_VER < 1300 
-        typedef unsigned char     MUON_UInt8;
-        typedef signed char       MUON_Int8;
-        typedef unsigned short    MUON_UInt16;
-        typedef signed short      MUON_Int16;
-        typedef unsigned int      MUON_UInt32;
-        typedef signed int        MUON_Int32;
-    #else 
-        typedef unsigned __int8   MUON_UInt8;
-        typedef signed __int8     MUON_Int8;
-        typedef unsigned __int16  MUON_UInt16;
-        typedef signed __int16    MUON_Int16;
-        typedef unsigned __int32  MUON_UInt32;
-        typedef signed __int32    MUON_Int32;
-    #endif // _MSC_VER
-
-    typedef unsigned __int64  MUON_UInt64; 
-    typedef signed __int64    MUON_Int64;
-
-#else 
-    #ifdef __cplusplus
-        #include <cstdint>
-    #else
-        #include <stdint.h>
-    #endif // __cplusplus
-
-    typedef uint8_t   MUON_UInt8; 
-    typedef int8_t    MUON_Int8; 
-    typedef uint16_t  MUON_UInt16; 
-    typedef int16_t   MUON_Int16; 
-    typedef uint32_t  MUON_UInt32; 
-    typedef int32_t   MUON_Int32; 
-    typedef uint64_t  MUON_UInt64; 
-    typedef int64_t   MUON_Int64; 
-#endif // Muon Basic Types 
-
-// <windows.h> declares a typedef float FLOAT for its internal usage. 
-// We need to be polite and respect that :)
-// NOTE: <windows.h> is declared in Muon during Muon's Internal Tests
-// #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-//     #define MUON_Float32     float
-// #else 
-//     typedef float  MUON_Float32; 
-// #endif // _WIN32
-typedef float  MUON_Float32; 
-typedef double MUON_Float64; 
+typedef unsigned char       MUON_UInt8; 
+typedef          char       MUON_Int8;  
+typedef unsigned short      MUON_UInt16;
+typedef signed short        MUON_Int16; 
+typedef unsigned int        MUON_UInt32;
+typedef signed int          MUON_Int32; 
+typedef unsigned long long  MUON_UInt64;
+typedef long long           MUON_Int64; 
+typedef float               MUON_Float32; 
+typedef double              MUON_Float64; 
 
 // Bool-sy
 typedef MUON_Int8  MUON_Bool8; 
@@ -107,8 +70,8 @@ typedef MUON_Int64      MUON_Ll;
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
 // Are there any modern OSes (not 16 bit) where MUON_Intptr != ptrdiff_t/Ll ?
 #if defined(_WIN64)
-    typedef signed   __int64    MUON_Intptr;
-    typedef unsigned __int64    MUON_UIntptr;
+    typedef signed   long long    MUON_Intptr;
+    typedef unsigned long long    MUON_UIntptr;
 #elif defined(_WIN32)
     // To mark types changing their size, e.g. MUON_Intptr
     #ifndef MUON__W64
