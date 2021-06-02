@@ -756,7 +756,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 
 #define TEST(TESTSUITE, TESTNAME)                                                               \
     MUON_EXTERN struct muonTestStateStruct muonTestContext;                                     \
-    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME();                                     \
+    static void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME(void);                                 \
     MUON_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                             \
         const MUON_Ull index = muonTestContext.numTestSuites++;                                 \
         const char* namePart = #TESTSUITE "." #TESTNAME;                                        \
@@ -771,7 +771,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         muonTestContext.tests[index].name = name;                                               \
         MUON_SNPRINTF(name, nameSize, "%s", namePart);                                          \
     }                                                                                           \
-    void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME()
+    void _MUON_TEST_FUNC_##TESTSUITE##_##TESTNAME(void)
 
 
 #define TEST_F_SETUP(FIXTURE)                                                  \

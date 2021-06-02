@@ -32,7 +32,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #if defined(_MSC_VER)
     #define MUON_COMPILER_MSVC 1
 #elif defined(__clang__)
-    #pragma message("MUON_COMPILER_CLANG defined")
     #define MUON_COMPILER_CLANG 1
 #elif defined(__GNUC__)
     #pragma message("MUON_COMPILER_GCC defined")
@@ -152,6 +151,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     MUON_CLANG_SUPPRESS_WARNING("-Wswitch-enum")                                                     \
     MUON_CLANG_SUPPRESS_WARNING("-Wswitch-default")                                                  \
     MUON_CLANG_SUPPRESS_WARNING("-Wformat")                                                          \
+   
     MUON_CLANG_SUPPRESS_WARNING("-Wformat-extra-args")                                               \
     MUON_CLANG_SUPPRESS_WARNING("-Wignored-qualifiers")                                              \
     MUON_CLANG_SUPPRESS_WARNING("-Wuninitialized")                                                   \
