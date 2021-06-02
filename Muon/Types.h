@@ -15,17 +15,19 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 #include <Muon/Compilers.h>
 
-// Base Types (similar to the Types in the Muon Language) ==========================================
-// typedef unsigned char       MUON_UInt8; 
-// typedef          char       MUON_Int8;  
-// typedef unsigned short      MUON_UInt16;
-// typedef signed short        MUON_Int16; 
-// typedef unsigned int        MUON_UInt32;
-// typedef signed int          MUON_Int32; 
-// typedef unsigned long long  MUON_UInt64;
-// typedef long long           MUON_Int64; 
-// typedef float               MUON_Float32; 
-// typedef double              MUON_Float64; 
+// Base Types
+/*
+typedef unsigned char       MUON_UInt8; 
+typedef          char       MUON_Int8;  
+typedef unsigned short      MUON_UInt16;
+typedef signed short        MUON_Int16; 
+typedef unsigned int        MUON_UInt32;
+typedef signed int          MUON_Int32; 
+typedef unsigned long long  MUON_UInt64;
+typedef long long           MUON_Int64; 
+typedef float               MUON_Float32; 
+typedef double              MUON_Float64; 
+*/
 #if defined(MUON_COMPILER_MSVC)
     #if _MSVC_VER < 1300 
         typedef unsigned char     MUON_UInt8;
@@ -74,18 +76,18 @@ typedef MUON_Int32 MUON_Bool32; // Prefer this!
 // Unicode codepoint
 typedef MUON_Int32 MUON_Rune; 
 // The same thing as size_t 
-// Ull --> size_t
-// Ll  --> ptrdiff_t
+// MUON_Ull --> size_t
+// MUON_Ll  --> ptrdiff_t
 #if defined(_MSC_VER) && !defined(_WIN64)
-    typedef unsigned int Ull;
-    typedef int          Ll;
+    typedef unsigned int MUON_Ull;
+    typedef int          MUON_Ll;
 #else
-    typedef MUON_UInt64  Ull;
-    typedef MUON_Int64   Ll;
+    typedef MUON_UInt64  MUON_Ull;
+    typedef MUON_Int64   MUON_Ll;
 #endif
 
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
-// Are there any modern OSes (not 16 bit) where MUON_Intptr != ptrdiff_t/Ll ?
+// Are there any modern OSes (not 16 bit) where MUON_Intptr != ptrdiff_t/MUON_Ll ?
 #if defined(_WIN64)
     typedef signed    __int64    MUON_Intptr;
     typedef unsigned  __int64    MUON_UIntptr;
@@ -105,8 +107,6 @@ typedef MUON_Int32 MUON_Rune;
     typedef  uintptr_t   MUON_UIntptr;
     typedef  intptr_t    MUON_Intptr;
 #endif
-
-
 
 // More Useful Types
 #define MUON_NULLCHAR '\0' 
