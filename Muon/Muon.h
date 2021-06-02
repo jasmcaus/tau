@@ -523,7 +523,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
                             void* : "%p"),                        \
                     (val))
     
-    MUON_GCC_SUPPRESS_WARNINwG_POP
+    MUON_GCC_SUPPRESS_WARNING_POP
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
     #define MUON_OVERLOAD_PRINTER(...)                                                              \
