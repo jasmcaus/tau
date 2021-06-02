@@ -29,12 +29,12 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 // MSVC++ 8.0       _MSC_VER == 1400 (Visual Studio 2005)
 
 // Compilers
-#if defined(_MSC_VER)
+// Why is Clang here? See https://stackoverflow.com/a/66722270
+#if defined(_MSC_VER) && !defined(__clang__)
     #define MUON_COMPILER_MSVC 1
 #elif defined(__clang__)
     #define MUON_COMPILER_CLANG 1
-#elif defined(__GNUC__)
-    #pragma message("MUON_COMPILER_GCC defined")
+#elif defined(__GNUC__) && !defined(INTEL_COMPILER) && !defined(llvm)
     #define MUON_COMPILER_GCC 1
 #else 
     #error Unknown Compiler (Muon currently supports only MSVC, GCC and Clang)
@@ -100,8 +100,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     /* signed/unsigned mismatch */                                                                   \
     MUON_MSVC_SUPPRESS_WARNING(4388)                                                                 \
     /* expression' : signed/unsigned mismatch */                                                     \
-    /* '==': signed/unsigned mismatch */                                                             \
-    MUON_MSVC_SUPPRESS_WARNING(4389)                                                                 \
     MUON_MSVC_SUPPRESS_WARNING(4018)                                                                 \
     /* Conversion from 'int' to 'unsigned long', signed/unsigned mismatch */                         \
     MUON_MSVC_SUPPRESS_WARNING(4365)                                                                 \
@@ -114,8 +112,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     MUON_MSVC_SUPPRESS_WARNING(4996)                                                                 \
     /* warning C4090: '=': different 'const' qualifiers */                                           \
     MUON_MSVC_SUPPRESS_WARNING(4090)                                                                 \
-    /* type 'X' in _Generic association compatible with a previous association type 'X' */           \
-    MUON_MSVC_SUPPRESS_WARNING(7700)                                                                 \
     /* io.h contains definitions for some structures with natural padding. This is uninteresting, */ \
     /* but for some reason, MSVC's behaviour is to warn about including this system header. That  */ \
     /* *is* interesting */                                                                           \
@@ -151,7 +147,6 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     MUON_CLANG_SUPPRESS_WARNING("-Wswitch-enum")                                                     \
     MUON_CLANG_SUPPRESS_WARNING("-Wswitch-default")                                                  \
     MUON_CLANG_SUPPRESS_WARNING("-Wformat")                                                          \
-   
     MUON_CLANG_SUPPRESS_WARNING("-Wformat-extra-args")                                               \
     MUON_CLANG_SUPPRESS_WARNING("-Wignored-qualifiers")                                              \
     MUON_CLANG_SUPPRESS_WARNING("-Wuninitialized")                                                   \
