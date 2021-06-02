@@ -111,6 +111,8 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     MUON_MSVC_SUPPRESS_WARNING(4996)                                                                 \
     /* warning C4090: '=': different 'const' qualifiers */                                           \
     MUON_MSVC_SUPPRESS_WARNING(4090)                                                                 \
+    /* type 'X' in _Generic association compatible with a previous association type 'X' */           \
+    MUON_MSVC_SUPPRESS_WARNING(7700)                                                                 \
     /* io.h contains definitions for some structures with natural padding. This is uninteresting, */ \
     /* but for some reason, MSVC's behaviour is to warn about including this system header. That  */ \
     /* *is* interesting */                                                                           \
