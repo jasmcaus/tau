@@ -95,7 +95,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     /* 'fprintf' : format string '' requires an argument of type 'unsigned __int64', but variadic */ \
     /* argument 1 has type 'size_t' */                                                               \
     MUON_MSVC_SUPPRESS_WARNING(4777)                                                                 \
-    /* https:/*stackoverflow.com/questions/39479163 - what's the difference between 4018 and 4389 */ \
+    /* https://stackoverflow.com/questions/39479163 - what's the difference between 4018 and 4389 */ \
     /* signed/unsigned mismatch */                                                                   \
     MUON_MSVC_SUPPRESS_WARNING(4388)                                                                 \
     /* expression' : signed/unsigned mismatch */                                                     \
