@@ -52,6 +52,7 @@ TAU_DISABLE_WARNINGS
 #endif // _WIN32
 
 #ifdef __cplusplus
+    #include <exception>
     #define TAU_ABORT  std::abort()
 #else 
     #define TAU_ABORT  exit(1)
