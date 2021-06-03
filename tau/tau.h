@@ -65,6 +65,16 @@ TAU_DISABLE_WARNINGS
     #define TAU_EXTERN    extern
 #endif // __cplusplus
 
+#if defined(__cplusplus)
+    #include <exception>
+#endif //__cplusplus
+
+#if defined(__cplusplus)
+    #define TAU_ABORT     std::abort()
+#else
+    #define TAU_ABORT     exit(1)
+#endif //__cplusplus
+
 // Enable the use of the non-standard keyword __attribute__ to silence warnings under some compilers
 #if defined(__GNUC__) || defined(__clang__)
     #define TAU_ATTRIBUTE_(attr)    __attribute__((attr))
