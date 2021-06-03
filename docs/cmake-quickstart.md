@@ -1,23 +1,23 @@
-# Quickstart: Building With CMake
+# Quickstart: Building With cmake
 
-This guide will get you up and running with Tau using CMake. 
+This guide will get you up and running with Tau using cmake. 
 
 ## Prerequisites
 To follow along, you'll need:
 * A compatible operating system (Linux, macOS or Windows).
 * A compatible C/C++ compiler that supports at least C11/C++11 onwards.
-* [CMake](https://cmake.org/) and a compatible build tool ([Make](https://www.gnu.org/software/make/), [Ninja](https://ninja-build.org/) and [others](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)). 
+* [cmake](https://cmake.org/) and a compatible build tool ([Make](https://www.gnu.org/software/make/), [Ninja](https://ninja-build.org/) and [others](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)). 
 
-If you don't already have CMake installed, see the [CMake Installation Guide](https://cmake.org/install). 
+If you don't already have cmake installed, see the [cmake Installation Guide](https://cmake.org/install). 
 
 
 ## Set up a project
-CMake uses the `CMakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Tau. 
+cmake uses the `cmakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Tau. 
 
-First, in your project directory (for the most part, in your ***root*** project directory), create the `CMakeLists.txt` file. 
-Next, you'll need to tell CMake that you want Tau as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
+First, in your project directory (for the most part, in your ***root*** project directory), create the `cmakeLists.txt` file. 
+Next, you'll need to tell cmake that you want Tau as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` cmake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
 
-Inside the CMakeLists.txt, add the following contents:
+Inside the cmakeLists.txt, add the following contents:
 ```cmake
 cmake_minimum_required(VERSION 3.20)
 project(DemoProject) # name this to whatever you'd like 
@@ -57,9 +57,9 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Tau provides [here](https://github.com/jasmcaus/Tau/blob/dev/docs/CMake-quickstart.md). 
+You can read more about the assertions that Tau provides [here](https://github.com/jasmcaus/Tau/blob/dev/docs/cmake-quickstart.md). 
 
-To build the code, add the following to the end of your `CMakeLists.txt` file:
+To build the code, add the following to the end of your `cmakeLists.txt` file:
 ```cmake
 enable_testing()
 
@@ -74,7 +74,7 @@ target_link_libraries(
 )
 ```
 
-The above configuration enable testing in CMake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Tau`. 
+The above configuration enable testing in cmake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Tau`. 
 
 Now you can build and run your test:
 <pre>

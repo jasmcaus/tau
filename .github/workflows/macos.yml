@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: CMake
+      - name: cmake
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On  -DTAU_BUILDTHIRDPARTYTESTS=On
         
       - name: Build

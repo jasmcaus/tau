@@ -8,12 +8,12 @@ project(Tau
         LANGUAGES C CXX
 )
 
-# CMake's FATAL_ERROR is ignored on CMake versions >2.6 
-# Hence we explicitely check for correct enforcement of CMake configurations.
+# cmake's FATAL_ERROR is ignored on cmake versions >2.6 
+# Hence we explicitely check for correct enforcement of cmake configurations.
 if (${CMAKE_VERSION} VERSION_LESS "3.20")
     message(
-        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Tau supports CMake 3.20 above."
-        "Please update your CMake installation."
+        ERROR "You are currently on cmake Version ${CMAKE_VERSION}, but Tau supports cmake 3.20 above."
+        "Please update your cmake installation."
     )
 endif()
 
@@ -41,8 +41,8 @@ endif()
 
 
 if (POLICY CMP0077)
-    # Allow CMake 3.13+ to override options when using FetchContent/add_subdirectory.
-    CMake_policy(SET CMP0077 NEW)
+    # Allow cmake 3.13+ to override options when using FetchContent/add_subdirectory.
+    cmake_policy(SET CMP0077 NEW)
 endif()
 
 
@@ -52,7 +52,7 @@ option(TAU_USE_CI "Enable CI Build Targets" OFF)
 option(TAU_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
 if(TAU_USE_CI)
-    include(CMake/CI.CMake)
+    include(cmake/CI.cmake)
 endif()
 
 
@@ -143,7 +143,7 @@ endif()
 
 
 # This library will be platform-independent, but still be installable following best practices. 
-# We include GNUInstallDirs (included in CMake) which provides us with a set of variables containing installation 
+# We include GNUInstallDirs (included in cmake) which provides us with a set of variables containing installation 
 # directories for various artifacts.
 include(GNUInstallDirs)
 
@@ -160,13 +160,13 @@ set(TAU_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${TAU_TARGET_NAME}.cma
 
 set(TAU_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Tau)
 
-# CMake Configurations (from the ``CMake`` folder)
-set(TAU_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
+# cmake Configurations (from the ``cmake`` folder)
+set(TAU_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
 set(TAU_CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-set(TAU_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
+set(TAU_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in)
 set(TAU_CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
-set(TAU_CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
-set(TAU_CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
+set(TAU_CMAKE_CONFIGS_INSTALL_DIR   "lib/cmake/${PROJECT_NAME}" CACHE INTERNAL "")
+set(TAU_CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pkg-config.pc.in)
 set(TAU_CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
 
 
@@ -199,7 +199,7 @@ set_target_properties(Tau PROPERTIES VERSION ${TAU_VERSION})
 target_include_directories(
     Tau 
     INTERFACE 
-    # If Tau is used directly by another CMake target (such as when building tests or when it is included 
+    # If Tau is used directly by another cmake target (such as when building tests or when it is included 
     # as a sub-directory)
     # $<BUILD_INTERFACE:"${TAU_HEADERS_INCLUDE_DIR}">
     "$<BUILD_INTERFACE:${TAU_BUILD_INCLUDE_DIRS}>"
@@ -213,19 +213,19 @@ target_include_directories(
 # Only perform the installation if Tau is built as the main project (i.e not included as an external project, 
 # or a subdirectory) or destinations might break.
 if(IS_MAIN_PROJECT)
-    ## Installation header files, generate and install CMake config files for find_package()
-    include(CMakePackageConfigHelpers)
+    ## Installation header files, generate and install cmake config files for find_package()
+    include(cmakePackageConfigHelpers)
 
     # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
     # architecture-independent
 
-    # ConfigVersion.CMake.in --> TauConfigVersion.CMake
+    # ConfigVersion.cmake.in --> TauConfigVersion.cmake
     configure_file(
         ${TAU_CMAKE_CONFIGVERSION_IN}
         ${TAU_CMAKE_CONFIGVERSION}
         @ONLY
     )
-    # config.CMake.in --> TauConfig.CMake
+    # config.cmake.in --> TauConfig.cmake
     configure_file(
         ${TAU_CMAKE_CONFIG_IN}
         ${TAU_CMAKE_CONFIG}
@@ -242,10 +242,10 @@ if(IS_MAIN_PROJECT)
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
     )
 
-    # Move TauConfig.CMake and TauConfigVersion.CMake  ---> lib/CMake/Tau/...
+    # Move TauConfig.cmake and TauConfigVersion.cmake  ---> lib/cmake/Tau/...
     install(
-        FILES "${CMAKE_CURRENT_BINARY_DIR}/TauConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/TauConfigVersion.CMake" 
-        DESTINATION "lib/CMake/Tau"
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/TauConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/TauConfigVersion.cmake" 
+        DESTINATION "lib/cmake/Tau"
     )
 
     # ./include --> include
@@ -255,7 +255,7 @@ if(IS_MAIN_PROJECT)
     )
 
 
-    # Export TauTargets from TauTargets.CMake
+    # Export TauTargets from TauTargets.cmake
     export(
         TARGETS Tau
         FILE ${TAU_TARGETS_CMAKE}
@@ -263,7 +263,7 @@ if(IS_MAIN_PROJECT)
 
     install(
         EXPORT ${TAU_TARGET_NAME}
-        DESTINATION lib/CMake/Tau
+        DESTINATION lib/cmake/Tau
     )
 endif() # IS_MAIN_PROJECT
 

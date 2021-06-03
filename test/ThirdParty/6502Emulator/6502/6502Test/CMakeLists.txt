@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 project( TauThirdPartyTests_6502Emulator )
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DM6502_DEBUG")	
-#so we can add the DEBUG preprocessor define and other flags to stay in debug mode - see https://cmake.org/Wiki/CMake_Useful_Variables#Compilers_and_Tools
+#so we can add the DEBUG preprocessor define and other flags to stay in debug mode - see https://cmake.org/Wiki/cmake_Useful_Variables#Compilers_and_Tools
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DM6502_DEBUG")
 
 

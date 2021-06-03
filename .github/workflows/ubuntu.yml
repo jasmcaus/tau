@@ -23,7 +23,7 @@ jobs:
         run: |
           sudo apt-get install -y gcc-11
 
-      - name: CMake
+      - name: cmake
         run: |
           cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On -DTAU_BUILDTHIRDPARTYTESTS=On
 
@@ -52,7 +52,7 @@ jobs:
         run: |
           sudo apt-get install -y clang-10
 
-      - name: CMake
+      - name: cmake
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DTAU_BUILDINTERNALTESTS=On -DTAU_BUILDTHIRDPARTYTESTS=On
 

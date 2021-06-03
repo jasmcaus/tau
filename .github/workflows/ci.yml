@@ -9,7 +9,7 @@ on:
 
 jobs:
   CI:
-    name: CMake LGTM
+    name: cmake LGTM
     runs-on: ubuntu-latest
 
     steps:
@@ -89,25 +89,25 @@ jobs:
 #         run: |
 #           curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}.0.0/LLVM-${{ matrix.version }}.0.0-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
 
-#       - name: CMake (Default Compiler)
+#       - name: cmake (Default Compiler)
 #         shell: bash
 #         if: matrix.compiler == 'default'
 #         run: |
 #           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
-#       - name: CMake (GCC)
+#       - name: cmake (GCC)
 #         shell: bash
 #         if: matrix.compiler == 'gcc'
 #         run: |
 #           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       
-#       - name: CMake (Clang)
+#       - name: cmake (Clang)
 #         shell: bash
 #         if: matrix.compiler == 'clang'
 #         run: |
 #           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On
 
-#       - name: CMake (Clang Cl)
+#       - name: cmake (Clang Cl)
 #         shell: bash
 #         if: matrix.compiler == 'clangcl'
 #         run: |
