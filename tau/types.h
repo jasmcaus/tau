@@ -13,7 +13,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #ifndef TAU_TYPES_H
 #define TAU_TYPES_H
 
-#include <Tau/Compilers.h>
+#include <tau/compilers.h>
 
 // Base Types
 /*
