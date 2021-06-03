@@ -501,7 +501,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 
     #define MUON_OVERLOAD_PRINTER(val)                            \
         printf(_Generic((val),                                    \
-                            char : "%c",                          \
+                            char : "'%c'",                        \
                             char* : "%s",                         \
                             unsigned char : "%hhu",               \
                             short : "%hd",                        \
