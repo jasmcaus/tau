@@ -1,6 +1,6 @@
 # Quickstart: Building With CMake
 
-This guide will get you up and running with Muon using CMake. 
+This guide will get you up and running with Tau using CMake. 
 
 ## Prerequisites
 To follow along, you'll need:
@@ -12,39 +12,39 @@ If you don't already have CMake installed, see the [CMake Installation Guide](ht
 
 
 ## Set up a project
-CMake uses the `CMakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Muon. 
+CMake uses the `CMakeLists.txt` file to configure the build system for your project. You'll need this file to set up your project and declare a dependency on Tau. 
 
 First, in your project directory (for the most part, in your ***root*** project directory), create the `CMakeLists.txt` file. 
-Next, you'll need to tell CMake that you want Muon as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
+Next, you'll need to tell CMake that you want Tau as a dependency. You can do this in numerous ways, but we recommend the [`FetchContent` CMake module](https://cmake.org/cmake/help/latest/module/FetchContent.html). 
 
 Inside the CMakeLists.txt, add the following contents:
 ```cmake
 cmake_minimum_required(VERSION 3.20)
 project(DemoProject) # name this to whatever you'd like 
 
-# Muon requires at least C11/C++11
+# Tau requires at least C11/C++11
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
 include(FetchContent)
 FetchContent_Declare(
-  Muon
-  URL https://github.com/jasmcaus/Muon/archive/dev.zip
+  Tau
+  URL https://github.com/jasmcaus/Tau/archive/dev.zip
 )
 
-FetchContent_MakeAvailable(Muon)
+FetchContent_MakeAvailable(Tau)
 ```
 
-The above configuration declares a dependency on Muon which is automatically downloaded from Github. This example always includes the *latest* version of Muon. 
+The above configuration declares a dependency on Tau which is automatically downloaded from Github. This example always includes the *latest* version of Tau. 
 
 ## Creating & Running a Binary
-With Muon as a dependency, you can now use Muon code within your project. 
+With Tau as a dependency, you can now use Tau code within your project. 
 
 As an example, create a file named `test_assertions.c` in your project directory with the following contents:
 ```c
-#include "Muon/Muon.h"
+#include "tau/tau.h"
 
-MUON_MAIN()
+TAU_MAIN()
 
 TEST(a, count) { 
     int count = 10000000;
@@ -57,7 +57,7 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Muon provides [here](https://github.com/jasmcaus/Muon/blob/dev/docs/CMake-quickstart.md). 
+You can read more about the assertions that Tau provides [here](https://github.com/jasmcaus/Tau/blob/dev/docs/CMake-quickstart.md). 
 
 To build the code, add the following to the end of your `CMakeLists.txt` file:
 ```cmake
@@ -70,11 +70,11 @@ add_executable(
 
 target_link_libraries(
     DemoProject
-    Muon
+    Tau
 )
 ```
 
-The above configuration enable testing in CMake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Muon`. 
+The above configuration enable testing in CMake, declares the C/C++ (in our case, C) test binary you want to build (`DemoProject`) and links to `Tau`. 
 
 Now you can build and run your test:
 <pre>
@@ -87,7 +87,7 @@ Now you can build and run your test:
 <strong>DemoProject$ cmake --build build </strong>
 Scanning dependencies of target gtest
 ...
-[100%] Built target Muon
+[100%] Built target Tau
 
 <strong>DemoProject$ cd build && ./DemoProject </strong>
 [==========] Running 2 test cases.
@@ -100,7 +100,7 @@ Summary:
 SUCCESS: 2 tests have passed in 8.35ms
 </pre>
 
-Congratulations! You've successfully built and run a test binary using Muon!
+Congratulations! You've successfully built and run a test binary using Tau!
 
 # Next Steps
-* [Check out the Primer](muon-primer.md) in Muon to start writing powerful unit tests.
+* [Check out the Primer](muon-primer.md) in Tau to start writing powerful unit tests.

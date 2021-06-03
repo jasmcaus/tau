@@ -1,8 +1,8 @@
 /*
 |  \/  | |  | |/ __ \| \ | |
-| \  / | |  | | |  | |  \| |    Muon - The Micro Testing Framework for C/C++
+| \  / | |  | | |  | |  \| |    Tau - The Micro Testing Framework for C/C++
 | |\/| | |  | | |  | | . ` |    Languages: C, and C++
-| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Muon
+| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Tau
 |_|  |_|\____/ \____/|_| \_|
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
@@ -10,18 +10,18 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 */
 
-#ifndef MUON_MISCELLANEOUS_H
-#define MUON_MISCELLANEOUS_H
+#ifndef TAU_MISCELLANEOUS_H
+#define TAU_MISCELLANEOUS_H
 
 
 // Inline 
 #ifdef __cplusplus
     #if defined(_MSC_VER) && _MSC_VER <= 1800 
-        #define MUON_INLINE     __inline
+        #define TAU_INLINE     __inline
     #elif !defined(__STDC_VERSION__)
-        #define MUON_INLINE     __inline__
+        #define TAU_INLINE     __inline__
     #else 
-        #define MUON_INLINE 
+        #define TAU_INLINE 
     #endif 
 #else
     // We default to C's inline function
@@ -31,95 +31,95 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     // 
     // We can enforce this here, but I'll wait for sometime. If we decide to go ahead with it, a simple text substitution
     // should work :)
-    #define MUON_INLINE  inline
+    #define TAU_INLINE  inline
 #endif 
 
 
 // Force Inline
-#ifndef MUON_ALWAYS_INLINE
+#ifndef TAU_ALWAYS_INLINE
     #if defined(_MSC_VER)
         #if _MSC_VER < 1300
-            #define MUON_ALWAYS_INLINE
+            #define TAU_ALWAYS_INLINE
         #else 
-            #define MUON_ALWAYS_INLINE   __forceinline
+            #define TAU_ALWAYS_INLINE   __forceinline
         #endif 
     #elif __has_attribute(always_inline) || defined(__GNUC__)
-        #define MUON_ALWAYS_INLINE       __attribute__((__always_inline__)) inline
+        #define TAU_ALWAYS_INLINE       __attribute__((__always_inline__)) inline
     #else 
-        #define MUON_ALWAYS_INLINE       inline
+        #define TAU_ALWAYS_INLINE       inline
     #endif 
 #endif 
 
 
 // No Inline 
-#ifndef MUON_NOINLINE
+#ifndef TAU_NOINLINE
     #if defined(_MSC_VER)
-        #define MUON_NOINLINE   __declspec(noinline)
+        #define TAU_NOINLINE   __declspec(noinline)
     #else 
-        #define MUON_NOINLINE   __attribute__((noinline))
+        #define TAU_NOINLINE   __attribute__((noinline))
     #endif 
 #endif 
 
 
 // Casts
 #ifdef __cplusplus
-    #define MUON_CAST(type, x)       static_cast<type>(x)
-    #define MUON_PTRCAST(type, x)    reinterpret_cast<type>(x)
+    #define TAU_CAST(type, x)       static_cast<type>(x)
+    #define TAU_PTRCAST(type, x)    reinterpret_cast<type>(x)
 #else
-    #define MUON_CAST(type, x)       ((type)x)
-    #define MUON_PTRCAST(type, x)    ((type)x)
+    #define TAU_CAST(type, x)       ((type)x)
+    #define TAU_PTRCAST(type, x)    ((type)x)
 #endif // __cplusplus
 
 
 // Noexcept
 #if defined(__cplusplus) && (__cplusplus >= 201103L)
-    #define MUON_NOEXCEPT    noexcept
+    #define TAU_NOEXCEPT    noexcept
 #else 
-    #define MUON_NOEXCEPT
+    #define TAU_NOEXCEPT
 #endif // __cplusplus
 
 
 // Nothrow
 #if defined(__cplusplus) && defined(_MSC_VER)
-    #define MUON_NOTHROW   __declspec(nothrow)
+    #define TAU_NOTHROW   __declspec(nothrow)
 #else
-    #define MUON_NOTHROW
+    #define TAU_NOTHROW
 #endif // __cplusplus
 
 
-#define MUON_CONCATENATE_IMPL(s1, s2)   s1##s2
-#define MUON_CONCATENATE(s1, s2)        MUON_CONCATENATE_IMPL(s1, s2)
+#define TAU_CONCATENATE_IMPL(s1, s2)   s1##s2
+#define TAU_CONCATENATE(s1, s2)        TAU_CONCATENATE_IMPL(s1, s2)
 
-#define MUON_MACRO_EXPAND(args)         args
+#define TAU_MACRO_EXPAND(args)         args
 
-#define MUON_STRINGIZE_IMPL(x)          #x
-#define MUON_STRINGIZE(x)               MUON_STRINGIZE_IMPL(x)
+#define TAU_STRINGIZE_IMPL(x)          #x
+#define TAU_STRINGIZE(x)               TAU_STRINGIZE_IMPL(x)
 
 
-// printf format-string specifiers for MUON_Int64 and MUON_UInt64 respectively
+// printf format-string specifiers for TAU_Int64 and TAU_UInt64 respectively
 #if defined(_MSC_VER) && (_MSC_VER < 1920)
-    #define MUON_PRId64 "I64d"
-    #define MUON_PRIu64 "I64u"
+    #define TAU_PRId64 "I64d"
+    #define TAU_PRIu64 "I64u"
 #else
     // Avoid spurious trailing ‘%’ in format error
 	// See: https://stackoverflow.com/questions/8132399/how-to-printf-uint64-t-fails-with-spurious-trailing-in-format
 	#define __STDC_FORMAT_MACROS
     #include <inttypes.h>
 
-    #define MUON_PRId64 PRId64
-    #define MUON_PRIu64 PRIu64
+    #define TAU_PRId64 PRId64
+    #define TAU_PRIu64 PRIu64
 #endif
 
 
 // A signed sizeof is more useful 
-#ifndef MUON_SIZEOF
-    #define MUON_SIZEOF(x)    (MUON_Ll)(sizeof(x))
+#ifndef TAU_SIZEOF
+    #define TAU_SIZEOF(x)    (TAU_Ll)(sizeof(x))
 #endif 
 
 
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-    #define MUON_TYPEOF(val)                                    \
+    #define TAU_TYPEOF(val)                                    \
         printf("%s\n",                                          \
             _Generic((val),                                     \
                     signed char : "signed char",                \
@@ -135,7 +135,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
                     default: "unknown type"                     \
                 ))
 #else
-    #define MUON_TYPEOF(val)
+    #define TAU_TYPEOF(val)
 #endif 
 
-#endif // MUON_MISCELLANEOUS_H
+#endif // TAU_MISCELLANEOUS_H

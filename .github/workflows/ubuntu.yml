@@ -25,7 +25,7 @@ jobs:
 
       - name: CMake
         run: |
-          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On -DMUON_BUILDTHIRDPARTYTESTS=On
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On -DTAU_BUILDTHIRDPARTYTESTS=On
 
       - name: Build 
         run: |
@@ -33,11 +33,11 @@ jobs:
 
       - name: Test (Internal)
         run: | 
-          cd build/bin ; dir; ./MuonInternalTests
+          cd build/bin ; dir; ./TauInternalTests
       
       - name: Test (ThirdParty)
         run: |
-          cd build/bin ; dir; ./MuonThirdPartyTests_6502
+          cd build/bin ; dir; ./TauThirdPartyTests_6502
 
 
   Clang:
@@ -54,7 +54,7 @@ jobs:
 
       - name: CMake
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DMUON_BUILDINTERNALTESTS=On -DMUON_BUILDTHIRDPARTYTESTS=On
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10 -DTAU_BUILDINTERNALTESTS=On -DTAU_BUILDTHIRDPARTYTESTS=On
 
       - name: Build
         run: |
@@ -62,8 +62,8 @@ jobs:
 
       - name: Test (Internal)
         run: | 
-          cd build/bin ; dir; ./MuonInternalTests
+          cd build/bin ; dir; ./TauInternalTests
       
       - name: Test (ThirdParty)
         run: |
-          cd build/bin ; dir; ./MuonThirdPartyTests_6502
+          cd build/bin ; dir; ./TauThirdPartyTests_6502

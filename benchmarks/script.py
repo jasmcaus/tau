@@ -4,8 +4,8 @@ import time
 
 MAIN_TEXT = \
 """
-#include <Muon/Muon.h>
-MUON_MAIN()
+#include <tau/tau.h>
+TAU_MAIN()
 
 """
 META_TEXT =\

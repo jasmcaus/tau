@@ -1,4 +1,4 @@
-#include <Muon/Muon.h>
+#include <tau/tau.h>
 
 TEST(gen_tests_cpp, DEATHTESTS_ASSERTION_MACROS_2) {
     CHECK_LT(71082, 597971);

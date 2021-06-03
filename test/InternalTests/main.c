@@ -1,3 +1,3 @@
-#include <Muon/Muon.h>
+#include <tau/tau.h>
 
-MUON_MAIN()
+TAU_MAIN()

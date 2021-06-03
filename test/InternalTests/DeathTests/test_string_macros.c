@@ -1,4 +1,4 @@
-#include <Muon/Muon.h>
+#include <tau/tau.h>
 
 TEST(gen_tests_c, DEATHTESTS_CHECK_STREQ) {
     CHECK_STREQ("<+qV>8_;i>b8H,Dy8+,8Y{tD{t(Xb|iu", "<+qV>8_;i>b8H,Dy8+,8Y{tD{t(Xb|iu");

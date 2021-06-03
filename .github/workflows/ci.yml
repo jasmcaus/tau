@@ -69,7 +69,7 @@ jobs:
 #       - name: Test
 #         shell: bash
 #         run: |
-#           cd build/test && ./MuonInternalTests
+#           cd build/test && ./TauInternalTests
   
 
 #   Windows:
@@ -105,7 +105,7 @@ jobs:
 #         shell: bash
 #         if: matrix.compiler == 'clang'
 #         run: |
-#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On
+#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On
 
 #       - name: CMake (Clang Cl)
 #         shell: bash
@@ -120,8 +120,8 @@ jobs:
       
 #       - name: Test (MSVC)
 #         if: (matrix.compiler == 'default') || (matrix.compiler == 'clangcl')
-#         run: cd build/test/${{ matrix.build_type }} ; dir; ./MuonInternalTests
+#         run: cd build/test/${{ matrix.build_type }} ; dir; ./TauInternalTests
 
 #       - name: Test (Clang/Ubuntu)
 #         if: (matrix.compiler == 'gcc') || (matrix.compiler == 'clang')
-#         run: cd build/test/ ; dir; ./MuonInternalTests
+#         run: cd build/test/ ; dir; ./TauInternalTests

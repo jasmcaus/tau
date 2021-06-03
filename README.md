@@ -1,12 +1,12 @@
 <div align="center">
 
-<h1>Muon</h1>
+<h1>Tau</h1>
 
 [![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
-[![License](https://img.shields.io/github/license/jasmcaus/Muon?label=license)][license]
+[![License](https://img.shields.io/github/license/jasmcaus/Tau?label=license)][license]
 [![Twitter](https://img.shields.io/twitter/follow/jasmcaus.svg?style=flatl&label=Follow&logo=twitter&logoColor=white&color=1da1f2)][twitter-badge]
-[![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Muon/releases)
+[![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Tau/releases)
 [![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
 
 </div>
@@ -15,52 +15,52 @@ A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *alw
 code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
 Google Test, & Catch2, making it suitable for on-to-go testing (embedded developers will especially love us!).
 
-I initially wrote Muon to be a unit testing framework for C; however, initial results showed great promise of 
-compiling with (and testing) C++ code. While Muon doesn't currently support mocking, or a way to test for exceptions
+I initially wrote Tau to be a unit testing framework for C; however, initial results showed great promise of 
+compiling with (and testing) C++ code. While Tau doesn't currently support mocking, or a way to test for exceptions
 in C++, its limitations are in fact its biggest strength - you get *negligible* overhead & fast compilation speeds 
 for the sacrifice of a few constructs.
 
 
 ## Features
 * *Ultra-light* (~1k lines of code)
-* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/Muon/blob/dev/test/thirdparty))
-* [Blazing Fast Assertions](https://github.com/jasmcaus/Muon/blob/dev/benchmarks)
+* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/Tau/blob/dev/test/thirdparty))
+* [Blazing Fast Assertions](https://github.com/jasmcaus/Tau/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
 * Test Fixtures 
 
 
 # Installation
-None! Muon is header-only, so simply include it in your project. 
+None! Tau is header-only, so simply include it in your project. 
 ```c
-#include <Muon/Muon.h>
+#include <tau/tau.h>
 ```
 
-To build Muon with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Muon/blob/dev/docs/CMake-quickstart.md).
+To build Tau with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Tau/blob/dev/docs/CMake-quickstart.md).
 
 
 ## Basic Concepts
-Muon provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s 
+Tau provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s 
 which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. 
 Unless the latter takes place, the program continues normally. 
 
-In Muon, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should 
+In Tau, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should 
 ideally reflect the structure of your tested code. 
 
 
 # Prerequistes
-To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Muon to set up 
+To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Tau to set up 
 all your tests:
 ```c
-MUON_MAIN() // IMPORTANT: No semicolon at the end 
+TAU_MAIN() // IMPORTANT: No semicolon at the end 
 ```
-This defines a main function, so if you write a `main()` function ***and*** declare `MUON_MAIN()`, your compiler will
+This defines a main function, so if you write a `main()` function ***and*** declare `TAU_MAIN()`, your compiler will
 throw a `redeclaration of main` error. 
 
 If you must write a `main()` function, use the following instead:
 ```c
-MUON_NO_MAIN()
+TAU_NO_MAIN()
 ```
-This won't define a main function, but sets up any variables/methods that Muon needs to run properly.
+This won't define a main function, but sets up any variables/methods that Tau needs to run properly.
 
 
 # Getting Started
@@ -77,8 +77,8 @@ test. This allows tests to be grouped for convenience.
 
 
 ## Testing Macros
-Muon provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these 
-assertions fail, Muon prints the source code location (file + line number) along with a failure message. 
+Tau provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these 
+assertions fail, Tau prints the source code location (file + line number) along with a failure message. 
 
 `ASSERT`s generate *fatal* failures - the test suite will cease its execution and move on to the next test suite to 
 run. 
@@ -86,15 +86,15 @@ run.
 `CHECK`s generate *non-fatal* failures - the remainder of the test suite will still execute, allowing for further 
 checks to run. 
 
-Read [the Primer](https://github.com/jasmcaus/Muon/blob/dev/docs/muon-primer.md) for more details, including the 
-other testing macros Muon provides you with.
+Read [the Primer](https://github.com/jasmcaus/Tau/blob/dev/docs/muon-primer.md) for more details, including the 
+other testing macros Tau provides you with.
 
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
-#include <Muon/Muon.h>
-MUON_MAIN() // sets up Muon (+ main function)
+#include <tau/tau.h>
+TAU_MAIN() // sets up Tau (+ main function)
 
 TEST(foo, bar1) {
     int a = 42; 
@@ -113,9 +113,9 @@ TEST(foo, bar2) {
 
 
 # Supported Platforms
-Muon supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Muon's source
+Tau supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Tau's source
 code is officially supported on the following platforms. If you notice any problems on your platform, please 
-file an issue on the [Muon Github Issue Tracker][issues]. PRs with fixes are welcome! 
+file an issue on the [Tau Github Issue Tracker][issues]. PRs with fixes are welcome! 
 
 Operating Systems          | Compilers       
 -------------------------- | -------------------------- 
@@ -128,7 +128,7 @@ Windows                    | MSVC 2017+
 We appreciate all contributions, feedback and issues. If you plan to contribute new features, utility functions,
 or extensions to the core, please go through our [Contribution Guidelines][contributing].
 
-To contribute, start working through the `Muon` codebase, read the [Documentation][docs], navigate to the 
+To contribute, start working through the `Tau` codebase, read the [Documentation][docs], navigate to the 
 [Issues][issues] tab and start looking through interesting issues. 
 
 
@@ -139,8 +139,8 @@ If you have any questions, please:
 2. [Search through the issues][issues].
 
 
-# Who uses Muon?
-In addition to several of my personal projects, Muon is also used in the following notable projects:
+# Who uses Tau?
+In addition to several of my personal projects, Tau is also used in the following notable projects:
 * The [Hazel](https://github.com/HazelLang/Hazel) Programming Language
 
 
@@ -152,10 +152,10 @@ If you are able to and would like to sponsor this project, I'm available on [Pat
 # License 
 This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the [MIT License](LICENSE).
 
-[contributing]: https://github.com/jasmcaus/Muon/blob/dev/.github/CONTRIBUTING.md
-[docs]: https://github.com/jasmcaus/Muon/blob/dev/docs
-[discussions]: https://github.com/jasmcaus/Muon/discussions
-[issues]: https://github.com/jasmcaus/Muon/issues
+[contributing]: https://github.com/jasmcaus/Tau/blob/dev/.github/CONTRIBUTING.md
+[docs]: https://github.com/jasmcaus/Tau/blob/dev/docs
+[discussions]: https://github.com/jasmcaus/Tau/discussions
+[issues]: https://github.com/jasmcaus/Tau/issues
 
 [twitter-badge]: https://twitter.com/jasmcaus
-[license]: https://github.com/jasmcaus/Muon/blob/dev/LICENSE
+[license]: https://github.com/jasmcaus/Tau/blob/dev/LICENSE

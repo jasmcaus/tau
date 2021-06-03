@@ -1,13 +1,13 @@
 r"""
-    This Python script sets up all required tests as part of Muon's Internal Testing Mechanism. 
+    This Python script sets up all required tests as part of Tau's Internal Testing Mechanism. 
 
-    It generates a bunch of random data (for example: text, letters and numbers) that Muon will test against.
+    It generates a bunch of random data (for example: text, letters and numbers) that Tau will test against.
 """
 
 import random
 random.seed(3)
 
-INCLUDE_THIS_BEFORE_EACH_FILE = "#include <Muon/Muon.h>\n\n"
+INCLUDE_THIS_BEFORE_EACH_FILE = "#include <tau/tau.h>\n\n"
 TEST_SUITE_BEGIN = "TEST(gen_tests_%(lang)s, DEATHTESTS_%(macro)s) {\n"
 TEST_SUITE_END = "}\n\n"
 

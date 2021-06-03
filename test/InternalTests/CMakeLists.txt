@@ -1,11 +1,11 @@
 # ------ Mhon's Internal Tests  ------
 add_executable(
-    MuonInternalTests
+    TauInternalTests
     main.c
     test.c
     test.cpp
 
-    # Muon's Death Tests
+    # Tau's Death Tests
     DeathTests/test_string_macros.c
     DeathTests/test_string_macros.cpp
     DeathTests/test_assertion_macros_1.c
@@ -15,15 +15,15 @@ add_executable(
 )
 
 install(
-    TARGETS MuonInternalTests
-    RUNTIME DESTINATION ${MUON_BIN_DIR}
+    TARGETS TauInternalTests
+    RUNTIME DESTINATION ${TAU_BIN_DIR}
 )
 
 target_include_directories(
-    MuonInternalTests 
+    TauInternalTests 
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# The Muon INTERFACE library
-target_link_libraries(MuonInternalTests Muon)
+# The Tau INTERFACE library
+target_link_libraries(TauInternalTests Tau)

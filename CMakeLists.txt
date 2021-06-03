@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-set(MUON_VERSION 1.0.0)
+set(TAU_VERSION 1.0.0)
 
-project(Muon 
-        VERSION ${MUON_VERSION}
+project(Tau 
+        VERSION ${TAU_VERSION}
         DESCRIPTION "A Micro Unit Testing Framework for C/C++"
         LANGUAGES C CXX
 )
@@ -12,7 +12,7 @@ project(Muon
 # Hence we explicitely check for correct enforcement of CMake configurations.
 if (${CMAKE_VERSION} VERSION_LESS "3.20")
     message(
-        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Muon supports CMake 3.20 above."
+        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Tau supports CMake 3.20 above."
         "Please update your CMake installation."
     )
 endif()
@@ -33,7 +33,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## Options
 ##
 
-# Determine if Muon is built as a subproject (using add_subdirectory) or if it is the main project being built
+# Determine if Tau is built as a subproject (using add_subdirectory) or if it is the main project being built
 set(IS_MAIN_PROJECT OFF)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(IS_MAIN_PROJECT ON)
@@ -46,17 +46,17 @@ if (POLICY CMP0077)
 endif()
 
 
-option(MUON_BUILDINTERNALTESTS "Build unit tests." ${IS_MAIN_PROJECT})
-option(MUON_BUILDTHIRDPARTYTESTS "Build third party tests." OFF})
-option(MUON_USE_CI "Enable CI Build Targets" OFF)
-option(MUON_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
+option(TAU_BUILDINTERNALTESTS "Build unit tests." ${IS_MAIN_PROJECT})
+option(TAU_BUILDTHIRDPARTYTESTS "Build third party tests." OFF})
+option(TAU_USE_CI "Enable CI Build Targets" OFF)
+option(TAU_HIDE_INTERNAL_SYMBOLS "Hide internal symbols" ON)
 
-if(MUON_USE_CI)
+if(TAU_USE_CI)
     include(CMake/CI.CMake)
 endif()
 
 
-if (MUON_HIDE_INTERNAL_SYMBOLS)
+if (TAU_HIDE_INTERNAL_SYMBOLS)
     set(CMAKE_C_VISIBILITY_PRESET hidden)
     set(CMAKE_CXX_VISIBILITY_PRESET hidden)
     set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
@@ -148,69 +148,69 @@ endif()
 include(GNUInstallDirs)
 
 # ------ Options ------
-set(MUON_ROOT_DIR                    ${CMAKE_CURRENT_SOURCE_DIR})
-set(MUON_BIN_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
-set(MUON_LIB_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${MUON_BIN_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${MUON_LIB_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${MUON_LIB_DIR})
+set(TAU_ROOT_DIR                    ${CMAKE_CURRENT_SOURCE_DIR})
+set(TAU_BIN_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+set(TAU_LIB_DIR                     ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${TAU_BIN_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${TAU_LIB_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${TAU_LIB_DIR})
 
-set(MUON_TARGET_NAME           ${PROJECT_NAME}Targets)
-set(MUON_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${MUON_TARGET_NAME}.cmake)
+set(TAU_TARGET_NAME           ${PROJECT_NAME}Targets)
+set(TAU_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${TAU_TARGET_NAME}.cmake)
 
-set(MUON_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Muon)
+set(TAU_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Tau)
 
 # CMake Configurations (from the ``CMake`` folder)
-set(MUON_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
-set(MUON_CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
-set(MUON_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
-set(MUON_CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
-set(MUON_CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
-set(MUON_CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
-set(MUON_CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
+set(TAU_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVersion.cmake.in)
+set(TAU_CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
+set(TAU_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Config.cmake.in)
+set(TAU_CMAKE_CONFIG                ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
+set(TAU_CMAKE_CONFIGS_INSTALL_DIR   "lib/CMake/${PROJECT_NAME}" CACHE INTERNAL "")
+set(TAU_CMAKE_PKGCONFIG_IN          ${CMAKE_CURRENT_SOURCE_DIR}/CMake/pkg-config.pc.in)
+set(TAU_CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-Pkg-Config.pc)
 
 
 # ------ Main Build ------
-# Main Build File for the main Muon Library
+# Main Build File for the main Tau Library
 # Note that this library must have _minimal_ dependencies 
 
-# Where Muon's .h files can be found.
+# Where Tau's .h files can be found.
 set(
-    MUON_BUILD_INCLUDE_DIRS
-    "${MUON_ROOT_DIR}/Muon"
-    "${MUON_ROOT_DIR}"
+    TAU_BUILD_INCLUDE_DIRS
+    "${TAU_ROOT_DIR}/Tau"
+    "${TAU_ROOT_DIR}"
 )
-include_directories(${MUON_BUILD_INCLUDE_DIRS})
+include_directories(${TAU_BUILD_INCLUDE_DIRS})
 
-# Create the Muon Interface Library
+# Create the Tau Interface Library
 # Interfaces are best for header-only libraries
-add_library(Muon INTERFACE)
-# Add an alias so that Muon can be used with add_subdirectory
-add_library(Muon::Muon ALIAS Muon)
+add_library(Tau INTERFACE)
+# Add an alias so that Tau can be used with add_subdirectory
+add_library(Tau::Tau ALIAS Tau)
 
 if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
-    target_compile_features(Muon INTERFACE c_range_for)
+    target_compile_features(Tau INTERFACE c_range_for)
 else()
-    target_compile_features(Muon INTERFACE c_std_11)
+    target_compile_features(Tau INTERFACE c_std_11)
 endif()
 
-set_target_properties(Muon PROPERTIES VERSION ${MUON_VERSION})
+set_target_properties(Tau PROPERTIES VERSION ${TAU_VERSION})
 
 target_include_directories(
-    Muon 
+    Tau 
     INTERFACE 
-    # If Muon is used directly by another CMake target (such as when building tests or when it is included 
+    # If Tau is used directly by another CMake target (such as when building tests or when it is included 
     # as a sub-directory)
-    # $<BUILD_INTERFACE:"${MUON_HEADERS_INCLUDE_DIR}">
-    "$<BUILD_INTERFACE:${MUON_BUILD_INCLUDE_DIRS}>"
-    # The path if Muon is installed
+    # $<BUILD_INTERFACE:"${TAU_HEADERS_INCLUDE_DIR}">
+    "$<BUILD_INTERFACE:${TAU_BUILD_INCLUDE_DIRS}>"
+    # The path if Tau is installed
     # $<INSTALL_INTERFACE:"include">
     "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}}>"
 )
 
 
 # ------ Installations ------
-# Only perform the installation if Muon is built as the main project (i.e not included as an external project, 
+# Only perform the installation if Tau is built as the main project (i.e not included as an external project, 
 # or a subdirectory) or destinations might break.
 if(IS_MAIN_PROJECT)
     ## Installation header files, generate and install CMake config files for find_package()
@@ -219,79 +219,79 @@ if(IS_MAIN_PROJECT)
     # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
     # architecture-independent
 
-    # ConfigVersion.CMake.in --> MuonConfigVersion.CMake
+    # ConfigVersion.CMake.in --> TauConfigVersion.CMake
     configure_file(
-        ${MUON_CMAKE_CONFIGVERSION_IN}
-        ${MUON_CMAKE_CONFIGVERSION}
+        ${TAU_CMAKE_CONFIGVERSION_IN}
+        ${TAU_CMAKE_CONFIGVERSION}
         @ONLY
     )
-    # config.CMake.in --> MuonConfig.CMake
+    # config.CMake.in --> TauConfig.CMake
     configure_file(
-        ${MUON_CMAKE_CONFIG_IN}
-        ${MUON_CMAKE_CONFIG}
+        ${TAU_CMAKE_CONFIG_IN}
+        ${TAU_CMAKE_CONFIG}
         @ONLY
     )
     # Install a pkg-config file, so other tools can find this.
     configure_file(
-        ${MUON_CMAKE_PKGCONFIG_IN}
-        ${MUON_CMAKE_PKGCONFIG}
+        ${TAU_CMAKE_PKGCONFIG_IN}
+        ${TAU_CMAKE_PKGCONFIG}
     )
     # Install the pkg-config file to lib/pkgconfig
     install(
-        FILES ${MUON_CMAKE_PKGCONFIG}
+        FILES ${TAU_CMAKE_PKGCONFIG}
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
     )
 
-    # Move MuonConfig.CMake and MuonConfigVersion.CMake  ---> lib/CMake/Muon/...
+    # Move TauConfig.CMake and TauConfigVersion.CMake  ---> lib/CMake/Tau/...
     install(
-        FILES "${CMAKE_CURRENT_BINARY_DIR}/MuonConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/MuonConfigVersion.CMake" 
-        DESTINATION "lib/CMake/Muon"
+        FILES "${CMAKE_CURRENT_BINARY_DIR}/TauConfig.CMake" "${CMAKE_CURRENT_BINARY_DIR}/TauConfigVersion.CMake" 
+        DESTINATION "lib/CMake/Tau"
     )
 
     # ./include --> include
     install(
-        DIRECTORY ${MUON_HEADERS_INCLUDE_DIR}
-        DESTINATION Muon
+        DIRECTORY ${TAU_HEADERS_INCLUDE_DIR}
+        DESTINATION Tau
     )
 
 
-    # Export MuonTargets from MuonTargets.CMake
+    # Export TauTargets from TauTargets.CMake
     export(
-        TARGETS Muon
-        FILE ${MUON_TARGETS_CMAKE}
+        TARGETS Tau
+        FILE ${TAU_TARGETS_CMAKE}
     )
 
     install(
-        EXPORT ${MUON_TARGET_NAME}
-        DESTINATION lib/CMake/Muon
+        EXPORT ${TAU_TARGET_NAME}
+        DESTINATION lib/CMake/Tau
     )
 endif() # IS_MAIN_PROJECT
 
 # install(
-#     TARGETS Muon
-#     EXPORT "${MUON_TARGET_NAME}Targets"
-#     INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR}
+#     TARGETS Tau
+#     EXPORT "${TAU_TARGET_NAME}Targets"
+#     INCLUDES DESTINATION ${TAU_HEADERS_INCLUDE_DIR}
 # )
 install(
-    TARGETS Muon
-    EXPORT ${MUON_TARGET_NAME}
+    TARGETS Tau
+    EXPORT ${TAU_TARGET_NAME}
     ARCHIVE DESTINATION "lib"
     LIBRARY DESTINATION "lib"
     RUNTIME DESTINATION "bin"
     ## This results in an ``INTERFACE_INCLUDE_DIRECTORIES`` property contains path ... which is prefixed in the source 
     ## directory. 
     ## There may be something I'm missing out - if you know how to fix this, please send in a PR :)
-    # INCLUDES DESTINATION ${MUON_HEADERS_INCLUDE_DIR)
+    # INCLUDES DESTINATION ${TAU_HEADERS_INCLUDE_DIR)
 )
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Muon
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Tau
     DESTINATION include
 )
 
 # If at least one test option is ON, we need to enter the `test` directory
 # The relevant options will be parsed and the appropriate tests will be called
-if(MUON_BUILDINTERNALTESTS OR MUON_BUILDTHIRDPARTYTESTS)
+if(TAU_BUILDINTERNALTESTS OR TAU_BUILDTHIRDPARTYTESTS)
     add_subdirectory(test)
 endif()

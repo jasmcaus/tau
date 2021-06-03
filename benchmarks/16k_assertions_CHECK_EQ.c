@@ -1,6 +1,6 @@
 
-#include <Muon/Muon.h>
-MUON_MAIN()
+#include <tau/tau.h>
+TAU_MAIN()
 
 
 TEST(0, 0) { CHECK_EQ(0, 0); }

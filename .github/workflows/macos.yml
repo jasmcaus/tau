@@ -24,15 +24,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: CMake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DMUON_BUILDINTERNALTESTS=On  -DMUON_BUILDTHIRDPARTYTESTS=On
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On  -DTAU_BUILDTHIRDPARTYTESTS=On
         
       - name: Build
         run: cmake --build build --config=${{ matrix.build_type }} --parallel 10
 
       - name: Test (Internal)
         run: | 
-          cd build/bin && ./MuonInternalTests
+          cd build/bin && ./TauInternalTests
       
       - name: Test (ThirdParty)
         run: |
-          cd build/bin && ./MuonThirdPartyTests_6502
+          cd build/bin && ./TauThirdPartyTests_6502

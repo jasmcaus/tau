@@ -291,7 +291,7 @@ add_custom_target(CI_TEST_GCC
         ${CMAKE_COMMAND}
         -D CMAKE_BUILD_TYPE=Debug 
         -G "MinGW Makefiles"
-        -D MUON_BUILDINTERNALTESTS=ON
+        -D TAU_BUILDINTERNALTESTS=ON
         -S ${PROJECT_SOURCE_DIR} -B ${PROJECT_BINARY_DIR}/build_gcc
     COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR}/build_gcc
     COMMAND cd ${PROJECT_BINARY_DIR}/build_gcc && ${CMAKE_CTEST_COMMAND} --parallel ${N} --output-on-failure
@@ -303,7 +303,7 @@ add_custom_target(CI_TEST_CLANG
         ${CMAKE_COMMAND}
         -D CMAKE_BUILD_TYPE=Debug 
         -G "MinGW Makefiles"
-        -D MUON_BUILDINTERNALTESTS=ON
+        -D TAU_BUILDINTERNALTESTS=ON
         -S ${PROJECT_SOURCE_DIR} -B ${PROJECT_BINARY_DIR}/build_clang
     COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR}/build_clang
     COMMAND cd ${PROJECT_BINARY_DIR}/build_clang && ${CMAKE_CTEST_COMMAND} --parallel ${N} --output-on-failure

@@ -12,13 +12,13 @@ include(CTest)
 enable_testing()
 
 # ------ Internal Tests  ------
-if(MUON_BUILDINTERNALTESTS)
+if(TAU_BUILDINTERNALTESTS)
     message("------- [INFO] Building Internal Tests")
     add_subdirectory(InternalTests)
-endif() # MUON_BUILDINTERNALTESTS
+endif() # TAU_BUILDINTERNALTESTS
 
 # ------ Third-Party Tests  ------
-if(MUON_BUILDTHIRDPARTYTESTS)
+if(TAU_BUILDTHIRDPARTYTESTS)
     message("------- [INFO] Building ThirdParty Tests")
     add_subdirectory(ThirdParty)
-endif() # MUON_BUILDTHIRDPARTYTESTS
+endif() # TAU_BUILDTHIRDPARTYTESTS

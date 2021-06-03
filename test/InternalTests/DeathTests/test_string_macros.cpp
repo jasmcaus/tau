@@ -1,4 +1,4 @@
-#include <Muon/Muon.h>
+#include <tau/tau.h>
 
 TEST(gen_tests_cpp, DEATHTESTS_CHECK_STREQ) {
     CHECK_STREQ("qHT:ew:sF=", "qHT:ew:sF=");
