@@ -214,7 +214,7 @@ target_include_directories(
 # or a subdirectory) or destinations might break.
 if(IS_MAIN_PROJECT)
     ## Installation header files, generate and install cmake config files for find_package()
-    include(cmakePackageConfigHelpers)
+    include(CMakePackageConfigHelpers)
 
     # We write a custom package version config file instead of `write_basic_package_version_file` to ensure that it's 
     # architecture-independent
