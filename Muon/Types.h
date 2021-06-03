@@ -129,15 +129,17 @@ typedef MUON_Int32 MUON_Rune;
 #endif 
 
 // MUON_bool is a basic type in C++ and not C
-// We could just have used <stdbool.h> but I prefer this as it results in a smaller binary
-#ifdef __cplusplus
-    #define MUON_bool   bool
-    #define MUON_false  false
-    #define MUON_true   true
-#else
-    typedef MUON_Bool8 MUON_bool;;
-    static const MUON_bool MUON_false = 0;
-    static const MUON_bool MUON_true  = 1;
-#endif 
+#ifndef MUON_Bool_types_defined
+#define MUON_Bool_types_defined
+    #ifdef __cplusplus
+        #define MUON_bool   bool
+        #define MUON_false  false
+        #define MUON_true   true
+    #else
+        typedef MUON_Bool32 MUON_bool;
+        static const MUON_bool MUON_false = 0;
+        static const MUON_bool MUON_true = 1;
+    #endif // __cplusplus   
+#endif // MUON_Bool_types_defined
 
 #endif // MUON_TYPES_H

@@ -503,6 +503,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         printf(_Generic((val),                                    \
                             char : "'%c'",                        \
                             char* : "%s",                         \
+                            signed char : "%hhd",                 \
                             unsigned char : "%hhu",               \
                             short : "%hd",                        \
                             unsigned short : "%hu",               \
