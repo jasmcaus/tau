@@ -51,13 +51,6 @@ TAU_DISABLE_WARNINGS
     #pragma warning(pop)
 #endif // _WIN32
 
-#ifdef __cplusplus
-    #include <exception>
-    #define TAU_ABORT  std::abort()
-#else 
-    #define TAU_ABORT  exit(1)
-#endif // __cplusplus
-
 #ifdef __has_include
     #if __has_include(<valgrind.h>)
         #include <valgrind.h>
