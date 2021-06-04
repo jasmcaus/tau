@@ -44,7 +44,7 @@ public:
 }; // M6502LoadRegisterTests
 
 TEST_F_SETUP(M6502LoadRegisterTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502LoadRegisterTests){}
@@ -67,7 +67,7 @@ TEST_F( M6502LoadRegisterTests, TheCPUDoesNothingWhenWeExecuteZeroCycles )
 	constexpr s32 NUM_CYCLES = 0;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( NUM_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( NUM_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, 0 );
@@ -77,13 +77,13 @@ TEST_F( M6502LoadRegisterTests, CPUCanExecuteMoreCyclesThanRequestedIfRequiredBy
 {
 	// given:
 	using namespace m6502;
-	muon->mem[0xFFFC] = CPU::INS_LDA_IM;
-	muon->mem[0xFFFD] = 0x84;
-	CPU CPUCopy = muon->cpu;
+	tau->mem[0xFFFC] = CPU::INS_LDA_IM;
+	tau->mem[0xFFFD] = 0x84;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 NUM_CYCLES = 1;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( NUM_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( NUM_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, 2 );
@@ -113,19 +113,19 @@ void M6502LoadRegisterTests::TestLoadRegisterImmediate(
 TEST_F( M6502LoadRegisterTests, LDAImmediateCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterImmediate( CPU::INS_LDA_IM, &CPU::A );
+	tau->TestLoadRegisterImmediate( CPU::INS_LDA_IM, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXImmediateCanLoadAValueIntoTheXRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterImmediate( CPU::INS_LDX_IM, &CPU::X );
+	tau->TestLoadRegisterImmediate( CPU::INS_LDX_IM, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYImmediateCanLoadAValueIntoTheYRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterImmediate( CPU::INS_LDY_IM, &CPU::Y );
+	tau->TestLoadRegisterImmediate( CPU::INS_LDY_IM, &CPU::Y );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterZeroPage(
@@ -153,37 +153,37 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPage(
 TEST_F( M6502LoadRegisterTests, LDAZeroPageCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPage( CPU::INS_LDA_ZP, &CPU::A );
+	tau->TestLoadRegisterZeroPage( CPU::INS_LDA_ZP, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXZeroPageCanLoadAValueIntoTheXRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPage( CPU::INS_LDX_ZP, &CPU::X );
+	tau->TestLoadRegisterZeroPage( CPU::INS_LDX_ZP, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYZeroPageCanLoadAValueIntoTheYRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPage( CPU::INS_LDY_ZP, &CPU::Y );
+	tau->TestLoadRegisterZeroPage( CPU::INS_LDY_ZP, &CPU::Y );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAImmediateCanAffectTheZeroFlag )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0x44;
-	muon->mem[0xFFFC] = CPU::INS_LDA_IM;
-	muon->mem[0xFFFD] = 0x0;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.A = 0x44;
+	tau->mem[0xFFFC] = CPU::INS_LDA_IM;
+	tau->mem[0xFFFD] = 0x0;
+	CPU CPUCopy = tau->cpu;
 
 	//when:
-	muon->cpu.Execute( 2, muon->mem );
+	tau->cpu.Execute( 2, tau->mem );
 
 	//then:
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( tau->cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterZeroPageX(
@@ -235,40 +235,40 @@ void M6502LoadRegisterTests::TestLoadRegisterZeroPageY(
 TEST_F( M6502LoadRegisterTests, LDAZeroPageXCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPageX( CPU::INS_LDA_ZPX, &CPU::A );
+	tau->TestLoadRegisterZeroPageX( CPU::INS_LDA_ZPX, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXZeroPageYCanLoadAValueIntoTheXRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPageY( CPU::INS_LDX_ZPY, &CPU::X );
+	tau->TestLoadRegisterZeroPageY( CPU::INS_LDX_ZPY, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYZeroPageXCanLoadAValueIntoTheYRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterZeroPageX( CPU::INS_LDY_ZPX, &CPU::Y );
+	tau->TestLoadRegisterZeroPageX( CPU::INS_LDY_ZPX, &CPU::Y );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.X = 0xFF;
-	muon->mem[0xFFFC] = CPU::INS_LDA_ZPX;
-	muon->mem[0xFFFD] = 0x80;
-	muon->mem[0x007F] = 0x37;
+	tau->cpu.X = 0xFF;
+	tau->mem[0xFFFC] = CPU::INS_LDA_ZPX;
+	tau->mem[0xFFFD] = 0x80;
+	tau->mem[0x007F] = 0x37;
 
 	//when:
-	CPU CPUCopy = muon->cpu;
-	s32 CyclesUsed = muon->cpu.Execute( 4, muon->mem );
+	CPU CPUCopy = tau->cpu;
+	s32 CyclesUsed = tau->cpu.Execute( 4, tau->mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.A, 0x37 );
+	CHECK_EQ( tau->cpu.A, 0x37 );
 	CHECK_EQ( CyclesUsed, 4 );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( tau->cpu, CPUCopy );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsolute(
@@ -299,19 +299,19 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsolute(
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsolute( CPU::INS_LDA_ABS, &CPU::A );
+	tau->TestLoadRegisterAbsolute( CPU::INS_LDA_ABS, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXAbsoluteCanLoadAValueIntoTheXRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsolute( CPU::INS_LDX_ABS, &CPU::X );
+	tau->TestLoadRegisterAbsolute( CPU::INS_LDX_ABS, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYAbsoluteCanLoadAValueIntoTheYRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsolute( CPU::INS_LDY_ABS, &CPU::Y );
+	tau->TestLoadRegisterAbsolute( CPU::INS_LDY_ABS, &CPU::Y );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsoluteX(
@@ -369,19 +369,19 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteY(
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteXCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteX( CPU::INS_LDA_ABSX, &CPU::A );
+	tau->TestLoadRegisterAbsoluteX( CPU::INS_LDA_ABSX, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXAbsoluteYCanLoadAValueIntoTheXRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteY( CPU::INS_LDX_ABSY, &CPU::X );
+	tau->TestLoadRegisterAbsoluteY( CPU::INS_LDX_ABSY, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYAbsoluteXCanLoadAValueIntoTheYRegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteX( CPU::INS_LDY_ABSX, &CPU::Y );
+	tau->TestLoadRegisterAbsoluteX( CPU::INS_LDY_ABSX, &CPU::Y );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsoluteXWhenCrossingPage(
@@ -412,19 +412,19 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteXWhenCrossingPage(
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteXWhenCrossingPage( CPU::INS_LDA_ABSX, &CPU::A );
+	tau->TestLoadRegisterAbsoluteXWhenCrossingPage( CPU::INS_LDA_ABSX, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDYAbsoluteXCanLoadAValueIntoTheYRegisterWhenItCrossesAPageBoundary )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteXWhenCrossingPage( CPU::INS_LDY_ABSX, &CPU::Y );
+	tau->TestLoadRegisterAbsoluteXWhenCrossingPage( CPU::INS_LDY_ABSX, &CPU::Y );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteYCanLoadAValueIntoTheARegister )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteY( CPU::INS_LDA_ABSY, &CPU::A );
+	tau->TestLoadRegisterAbsoluteY( CPU::INS_LDA_ABSY, &CPU::A );
 }
 
 void M6502LoadRegisterTests::TestLoadRegisterAbsoluteYWhenCrossingPage(
@@ -455,85 +455,85 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteYWhenCrossingPage(
 TEST_F( M6502LoadRegisterTests, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteYWhenCrossingPage( CPU::INS_LDA_ABSY, &CPU::A );
+	tau->TestLoadRegisterAbsoluteYWhenCrossingPage( CPU::INS_LDA_ABSY, &CPU::A );
 }
 
 TEST_F( M6502LoadRegisterTests, LDXAbsoluteYCanLoadAValueIntoTheXRegisterWhenItCrossesAPageBoundary )
 {
 	using namespace m6502;
-	muon->TestLoadRegisterAbsoluteYWhenCrossingPage( CPU::INS_LDX_ABSY, &CPU::X );
+	tau->TestLoadRegisterAbsoluteYWhenCrossingPage( CPU::INS_LDX_ABSY, &CPU::X );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAIndirectXCanLoadAValueIntoTheARegister )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.Z = muon->cpu.Flag.N = true;
-	muon->cpu.X = 0x04;
-	muon->mem[0xFFFC] = CPU::INS_LDA_INDX;
-	muon->mem[0xFFFD] = 0x02;
-	muon->mem[0x0006] = 0x00;	//0x2 + 0x4
-	muon->mem[0x0007] = 0x80;	
-	muon->mem[0x8000] = 0x37;
+	tau->cpu.Flag.Z = tau->cpu.Flag.N = true;
+	tau->cpu.X = 0x04;
+	tau->mem[0xFFFC] = CPU::INS_LDA_INDX;
+	tau->mem[0xFFFD] = 0x02;
+	tau->mem[0x0006] = 0x00;	//0x2 + 0x4
+	tau->mem[0x0007] = 0x80;	
+	tau->mem[0x8000] = 0x37;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.A, 0x37 );
+	CHECK_EQ( tau->cpu.A, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegister )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.Z = muon->cpu.Flag.N = true;
-	muon->cpu.Y = 0x04;
-	muon->mem[0xFFFC] = CPU::INS_LDA_INDY;
-	muon->mem[0xFFFD] = 0x02;
-	muon->mem[0x0002] = 0x00;	
-	muon->mem[0x0003] = 0x80;
-	muon->mem[0x8004] = 0x37;	//0x8000 + 0x4
+	tau->cpu.Flag.Z = tau->cpu.Flag.N = true;
+	tau->cpu.Y = 0x04;
+	tau->mem[0xFFFC] = CPU::INS_LDA_INDY;
+	tau->mem[0xFFFD] = 0x02;
+	tau->mem[0x0002] = 0x00;	
+	tau->mem[0x0003] = 0x80;
+	tau->mem[0x8004] = 0x37;	//0x8000 + 0x4
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.A, 0x37 );
+	CHECK_EQ( tau->cpu.A, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesAPage )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Y = 0x1;
-	muon->mem[0xFFFC] = CPU::INS_LDA_INDY;
-	muon->mem[0xFFFD] = 0x05;
-	muon->mem[0x0005] = 0xFF;
-	muon->mem[0x0006] = 0x80;
-	muon->mem[0x8100] = 0x37;	//0x80FF + 0x1
+	tau->cpu.Y = 0x1;
+	tau->mem[0xFFFC] = CPU::INS_LDA_INDY;
+	tau->mem[0xFFFD] = 0x05;
+	tau->mem[0x0005] = 0xFF;
+	tau->mem[0x0006] = 0x80;
+	tau->mem[0x8100] = 0x37;	//0x80FF + 0x1
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
-	CHECK_EQ( muon->cpu.A, 0x37 );
+	CHECK_EQ( tau->cpu.A, 0x37 );
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	VerfifyUnmodifiedFlagsFromLoadRegister( muon->cpu, CPUCopy );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	VerfifyUnmodifiedFlagsFromLoadRegister( tau->cpu, CPUCopy );
 }

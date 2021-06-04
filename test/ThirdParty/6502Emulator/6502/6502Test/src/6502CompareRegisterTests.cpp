@@ -353,371 +353,371 @@ public:
 //-- Immediate
 
 TEST_F_SETUP(M6502CompareRegisterTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502CompareRegisterTests){}
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareTwoIdenticalValues  )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 //-- Zero Page
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 //-- Zero Page X
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageXCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CMPZeroPageX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CMPZeroPageX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageXCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CMPZeroPageX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CMPZeroPageX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageXCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CMPZeroPageX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CMPZeroPageX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPZeroPageXCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CMPZeroPageX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CMPZeroPageX( Test );
 }
 
 //-- Absolute
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::A );
 }
 
 //-- Absolute X
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteXCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CMPAbsoluteX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CMPAbsoluteX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteXCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CMPAbsoluteX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CMPAbsoluteX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteXCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CMPAbsoluteX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CMPAbsoluteX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteXCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CMPAbsoluteX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CMPAbsoluteX( Test );
 }
 
 //-- Absolute Y
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteYCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CMPAbsoluteY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CMPAbsoluteY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteYCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CMPAbsoluteY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CMPAbsoluteY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteYCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CMPAbsoluteY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CMPAbsoluteY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPAbsoluteYCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CMPAbsoluteY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CMPAbsoluteY( Test );
 }
 
 //-- Indirect X
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectXCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CMPIndirectX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CMPIndirectX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectXCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CMPIndirectX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CMPIndirectX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectXCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CMPIndirectX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CMPIndirectX( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectXCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CMPIndirectX( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CMPIndirectX( Test );
 }
 
 //-- Indirect Y
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectYCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CMPIndirectY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CMPIndirectY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectYCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CMPIndirectY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CMPIndirectY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectYCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CMPIndirectY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CMPIndirectY( Test );
 }
 
 TEST_F( M6502CompareRegisterTests, CMPIndirectYCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CMPIndirectY( Test );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CMPIndirectY( Test );
 }
 
 //-- CPX Immediate
 
 TEST_F( M6502CompareRegisterTests, CPXImmediateCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXImmediateCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXImmediateCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 //-- CPY Immediate
 
 TEST_F( M6502CompareRegisterTests, CPYImmediateCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYImmediateCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYImmediateCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareImmediate( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 //-- CPX Zero Page
 
 TEST_F( M6502CompareRegisterTests, CPXZeroPageCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXZeroPageCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXZeroPageCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXZeroPageCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 //-- CPY Zero Page
 
 TEST_F( M6502CompareRegisterTests, CPYZeroPageCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYZeroPageCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYZeroPageCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYZeroPageCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareZeroPage( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 //-- CPX Absolute
 
 TEST_F( M6502CompareRegisterTests, CPXAbsoluteCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXAbsoluteCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXAbsoluteCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 TEST_F( M6502CompareRegisterTests, CPXAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::X );
 }
 
 //-- CPY Absolute
 
 TEST_F( M6502CompareRegisterTests, CPYAbsoluteCanCompareTwoIdenticalValues )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoIdenticalValues();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoIdenticalValues();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYAbsoluteCanCompareALargePositiveToASmallPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareALargePositiveToASmallPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareALargePositiveToASmallPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYAbsoluteCanCompareANegativeNumberToAPositive )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareANegativeNumberToAPositive();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareANegativeNumberToAPositive();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 TEST_F( M6502CompareRegisterTests, CPYAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-	M6502CompareRegisterTests::CMPTestData Test = muon->CompareTwoValuesThatResultInANegativeFlagSet();
-	muon->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
+	M6502CompareRegisterTests::CMPTestData Test = tau->CompareTwoValuesThatResultInANegativeFlagSet();
+	tau->CompareAbsolute( Test, M6502CompareRegisterTests::ERegister::Y );
 }
 
 #if 0 // for loop test
@@ -740,13 +740,13 @@ TEST_F( M6502CompareRegisterTests, LoopTest )
 	Byte TestPrg[] = { 0x0,0x10,0xA9,0x00,0x18,0x69,0x08,0xC9,0x18,0xD0,0xFA,0xA2,0x14 };
 
 	// when:
-	Word StartAddress = muon->cpu.LoadPrg( TestPrg, sizeof( TestPrg ), muon->mem );
-	muon->cpu.PC = StartAddress;
+	Word StartAddress = tau->cpu.LoadPrg( TestPrg, sizeof( TestPrg ), tau->mem );
+	tau->cpu.PC = StartAddress;
 
 	//then:
 	for ( m6502::s32 Clock = 1000; Clock > 0; )
 	{
-		Clock -= muon->cpu.Execute( 1, muon->mem );
+		Clock -= tau->cpu.Execute( 1, tau->mem );
 	}
 }
 #endif

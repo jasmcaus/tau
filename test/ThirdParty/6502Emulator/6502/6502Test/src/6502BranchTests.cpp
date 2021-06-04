@@ -9,7 +9,7 @@ public:
 };
 
 TEST_F_SETUP(M6502BranchTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502BranchTests){}
@@ -18,127 +18,127 @@ TEST_F( M6502BranchTests, BEQCanBranchForwardsWhenZeroIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.Z = true;
-	muon->mem[0xFF00] = CPU::INS_BEQ;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.Z = true;
+	tau->mem[0xFF00] = CPU::INS_BEQ;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQDoesNotBranchForwardsWhenZeroIsNotSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.Z = false;
-	muon->mem[0xFF00] = CPU::INS_BEQ;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.Z = false;
+	tau->mem[0xFF00] = CPU::INS_BEQ;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF02 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF02 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchForwardsIntoANewPageWhenZeroIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFEFD, muon->mem );
-	muon->cpu.Flag.Z = true;
-	muon->mem[0xFEFD] = CPU::INS_BEQ;
-	muon->mem[0xFEFE] = 0x1;
+	tau->cpu.Reset( 0xFEFD, tau->mem );
+	tau->cpu.Flag.Z = true;
+	tau->mem[0xFEFD] = CPU::INS_BEQ;
+	tau->mem[0xFEFE] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF00 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF00 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFFCC, muon->mem );
-	muon->cpu.Flag.Z = true;
-	muon->mem[0xFFCC] = CPU::INS_BEQ;
-	muon->mem[0xFFCD] = static_cast<Byte>( -0x2 );
+	tau->cpu.Reset( 0xFFCC, tau->mem );
+	tau->cpu.Flag.Z = true;
+	tau->mem[0xFFCC] = CPU::INS_BEQ;
+	tau->mem[0xFFCD] = static_cast<Byte>( -0x2 );
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFFCC );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFFCC );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSetFromAssembleCode )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFFCC, muon->mem );
-	muon->cpu.Flag.Z = true;
+	tau->cpu.Reset( 0xFFCC, tau->mem );
+	tau->cpu.Flag.Z = true;
 	/*
 	loop
 	lda #0
 	beq loop
 	*/
-	muon->mem[0xFFCC] = 0xA9;
-	muon->mem[0xFFCC+1] = 0x00;
-	muon->mem[0xFFCC+2] = 0xF0;
-	muon->mem[0xFFCC+3] = 0xFC;
+	tau->mem[0xFFCC] = 0xA9;
+	tau->mem[0xFFCC+1] = 0x00;
+	tau->mem[0xFFCC+2] = 0xF0;
+	tau->mem[0xFFCC+3] = 0xFC;
 	constexpr s32 EXPECTED_CYCLES = 2 + 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFFCC );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFFCC );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BNECanBranchForwardsWhenZeroIsNotSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.Z = false;
-	muon->mem[0xFF00] = CPU::INS_BNE;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.Z = false;
+	tau->mem[0xFF00] = CPU::INS_BNE;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 
@@ -146,118 +146,118 @@ TEST_F( M6502BranchTests, BCSCanBranchForwardsWhenCarryFlagIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.C = true;
-	muon->mem[0xFF00] = CPU::INS_BCS;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.C = true;
+	tau->mem[0xFF00] = CPU::INS_BCS;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BCCCanBranchForwardsWhenCarryFlagIsNotSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.C = false;
-	muon->mem[0xFF00] = CPU::INS_BCC;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.C = false;
+	tau->mem[0xFF00] = CPU::INS_BCC;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BMICanBranchForwardsWhenNegativeFlagIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.N = true;
-	muon->mem[0xFF00] = CPU::INS_BMI;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.N = true;
+	tau->mem[0xFF00] = CPU::INS_BMI;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BPLCanBranchForwardsWhenCarryNegativeIsNotSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.N = false;
-	muon->mem[0xFF00] = CPU::INS_BPL;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.N = false;
+	tau->mem[0xFF00] = CPU::INS_BPL;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BVSCanBranchForwardsWhenOverflowFlagIsSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.V = true;
-	muon->mem[0xFF00] = CPU::INS_BVS;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.V = true;
+	tau->mem[0xFF00] = CPU::INS_BVS;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }
 
 TEST_F( M6502BranchTests, BVCCanBranchForwardsWhenOverflowNegativeIsNotSet )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Reset( 0xFF00, muon->mem );
-	muon->cpu.Flag.V = false;
-	muon->mem[0xFF00] = CPU::INS_BVC;
-	muon->mem[0xFF01] = 0x1;
+	tau->cpu.Reset( 0xFF00, tau->mem );
+	tau->cpu.Flag.V = false;
+	tau->mem[0xFF00] = CPU::INS_BVC;
+	tau->mem[0xFF01] = 0x1;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.PC, 0xFF03 );
-	CHECK_EQ( muon->cpu.PS, CPUCopy.PS );
+	CHECK_EQ( tau->cpu.PC, 0xFF03 );
+	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 }

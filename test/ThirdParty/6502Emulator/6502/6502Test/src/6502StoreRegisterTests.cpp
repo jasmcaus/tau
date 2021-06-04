@@ -112,7 +112,7 @@ public:
 
 
 TEST_F_SETUP(M6502StoreRegisterTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502StoreRegisterTests){}
@@ -121,141 +121,141 @@ TEST_F_TEARDOWN(M6502StoreRegisterTests){}
 TEST_F( M6502StoreRegisterTests, STAZeroPageCanStoreTheARegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPage( CPU::INS_STA_ZP, &CPU::A );
+	tau->TestStoreRegisterZeroPage( CPU::INS_STA_ZP, &CPU::A );
 }
 
 TEST_F( M6502StoreRegisterTests, STXZeroPageCanStoreTheXRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPage( CPU::INS_STX_ZP, &CPU::X );
+	tau->TestStoreRegisterZeroPage( CPU::INS_STX_ZP, &CPU::X );
 }
 
 TEST_F( M6502StoreRegisterTests, STXZeroPageYCanStoreTheXRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPageY( CPU::INS_STX_ZPY, &CPU::X );
+	tau->TestStoreRegisterZeroPageY( CPU::INS_STX_ZPY, &CPU::X );
 }
 
 TEST_F( M6502StoreRegisterTests, STYZeroPageCanStoreTheYRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPage( CPU::INS_STY_ZP, &CPU::Y );
+	tau->TestStoreRegisterZeroPage( CPU::INS_STY_ZP, &CPU::Y );
 }
 
 TEST_F( M6502StoreRegisterTests, STAAbsoluteCanStoreTheARegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterAbsolute( CPU::INS_STA_ABS, &CPU::A );
+	tau->TestStoreRegisterAbsolute( CPU::INS_STA_ABS, &CPU::A );
 }
 
 TEST_F( M6502StoreRegisterTests, STXAbsoluteCanStoreTheXRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterAbsolute( CPU::INS_STX_ABS, &CPU::X );
+	tau->TestStoreRegisterAbsolute( CPU::INS_STX_ABS, &CPU::X );
 }
 
 TEST_F( M6502StoreRegisterTests, STYAbsoluteCanStoreTheYRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterAbsolute( CPU::INS_STY_ABS, &CPU::Y );
+	tau->TestStoreRegisterAbsolute( CPU::INS_STY_ABS, &CPU::Y );
 }
 
 TEST_F( M6502StoreRegisterTests, STAZeroPageXCanStoreTheARegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPageX( CPU::INS_STA_ZPX, &CPU::A );
+	tau->TestStoreRegisterZeroPageX( CPU::INS_STA_ZPX, &CPU::A );
 }
 
 TEST_F( M6502StoreRegisterTests, STYZeroPageXCanStoreTheYRegisterIntoMemory )
 {
 	using namespace m6502;
-	muon->TestStoreRegisterZeroPageX( CPU::INS_STY_ZPX, &CPU::Y );
+	tau->TestStoreRegisterZeroPageX( CPU::INS_STY_ZPX, &CPU::Y );
 }
 
 TEST_F( M6502StoreRegisterTests, STAAbsoluteXCanStoreTheARegisterIntoMemory )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0x42;
-	muon->cpu.X = 0x0F;
-	muon->mem[0xFFFC] = CPU::INS_STA_ABSX;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
+	tau->cpu.A = 0x42;
+	tau->cpu.X = 0x0F;
+	tau->mem[0xFFFC] = CPU::INS_STA_ABSX;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->mem[0x800F], 0x42 );
-	VerfifyUnmodifiedFlagsFromStoreRegister( muon->cpu, CPUCopy );
+	CHECK_EQ( tau->mem[0x800F], 0x42 );
+	VerfifyUnmodifiedFlagsFromStoreRegister( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502StoreRegisterTests, STAAbsoluteYCanStoreTheARegisterIntoMemory )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0x42;
-	muon->cpu.Y = 0x0F;
-	muon->mem[0xFFFC] = CPU::INS_STA_ABSY;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
+	tau->cpu.A = 0x42;
+	tau->cpu.Y = 0x0F;
+	tau->mem[0xFFFC] = CPU::INS_STA_ABSY;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->mem[0x800F], 0x42 );
-	VerfifyUnmodifiedFlagsFromStoreRegister( muon->cpu, CPUCopy );
+	CHECK_EQ( tau->mem[0x800F], 0x42 );
+	VerfifyUnmodifiedFlagsFromStoreRegister( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502StoreRegisterTests, STAIndirectXCanStoreTheARegisterIntoMemory )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0x42;
-	muon->cpu.X = 0x0F;
-	muon->mem[0xFFFC] = CPU::INS_STA_INDX;
-	muon->mem[0xFFFD] = 0x20;
-	muon->mem[0x002F] = 0x00;
-	muon->mem[0x0030] = 0x80;
-	muon->mem[0x8000] = 0x00;
+	tau->cpu.A = 0x42;
+	tau->cpu.X = 0x0F;
+	tau->mem[0xFFFC] = CPU::INS_STA_INDX;
+	tau->mem[0xFFFD] = 0x20;
+	tau->mem[0x002F] = 0x00;
+	tau->mem[0x0030] = 0x80;
+	tau->mem[0x8000] = 0x00;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->mem[0x8000], 0x42 );
-	VerfifyUnmodifiedFlagsFromStoreRegister( muon->cpu, CPUCopy );
+	CHECK_EQ( tau->mem[0x8000], 0x42 );
+	VerfifyUnmodifiedFlagsFromStoreRegister( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502StoreRegisterTests, STAIndirectYCanStoreTheARegisterIntoMemory )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0x42;
-	muon->cpu.Y = 0x0F;
-	muon->mem[0xFFFC] = CPU::INS_STA_INDY;
-	muon->mem[0xFFFD] = 0x20;
-	muon->mem[0x0020] = 0x00;
-	muon->mem[0x0021] = 0x80;
-	muon->mem[0x8000 + 0x0F] = 0x00;
+	tau->cpu.A = 0x42;
+	tau->cpu.Y = 0x0F;
+	tau->mem[0xFFFC] = CPU::INS_STA_INDY;
+	tau->mem[0xFFFD] = 0x20;
+	tau->mem[0x0020] = 0x00;
+	tau->mem[0x0021] = 0x80;
+	tau->mem[0x8000 + 0x0F] = 0x00;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = muon->cpu;
+	CPU CPUCopy = tau->cpu;
 
 	// when:
-	const s32 ActualCycles = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( muon->mem[0x8000 + 0x0F], 0x42 );
-	VerfifyUnmodifiedFlagsFromStoreRegister( muon->cpu, CPUCopy );
+	CHECK_EQ( tau->mem[0x8000 + 0x0F], 0x42 );
+	VerfifyUnmodifiedFlagsFromStoreRegister( tau->cpu, CPUCopy );
 }

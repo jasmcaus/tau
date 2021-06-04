@@ -489,7 +489,7 @@ public:
 
 
 TEST_F_SETUP(M6502AndEorOraBitTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502AndEorOraBitTests){}
@@ -498,383 +498,383 @@ TEST_F_TEARDOWN(M6502AndEorOraBitTests){}
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpANDOnARegisterImmediate )
 {
 	using namespace m6502;
-	muon->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOROnARegisterImmediate )
 {
 	using namespace m6502;
-	muon->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEOROnARegisterImmediate )
 {
 	using namespace m6502;
-	muon->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpImmediate( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndOnARegisterZeroPage )
 {
 	using namespace m6502;
-	muon->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrOnARegisterZeroPage )
 {
 	using namespace m6502;
-	muon->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorOnARegisterZeroPage )
 {
 	using namespace m6502;
-	muon->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpZeroPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorImmediateCanAffectZeroFlag )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.A = 0xCC;
-	muon->mem[0xFFFC] = CPU::INS_EOR_IM;
-	muon->mem[0xFFFD] = muon->cpu.A;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.A = 0xCC;
+	tau->mem[0xFFFC] = CPU::INS_EOR_IM;
+	tau->mem[0xFFFD] = tau->cpu.A;
+	CPU CPUCopy = tau->cpu;
 
 	//when:
-	muon->cpu.Execute( 2, muon->mem );
+	tau->cpu.Execute( 2, tau->mem );
 
 	//then:
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.N );
-	muon->VerfifyUnmodifiedFlagsFromLogicalOpInstruction( muon->cpu, CPUCopy );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.N );
+	tau->VerfifyUnmodifiedFlagsFromLogicalOpInstruction( tau->cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndOnARegisterZeroPageX )
 {
-	muon->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrOnARegisterZeroPageX )
 {
-	muon->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorOnARegisterZeroPageX )
 {
-	muon->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpZeroPageX( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, LogicalOpEorCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
-	muon->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, LogicalOpOrCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
-	muon->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 TEST_F( M6502AndEorOraBitTests, LogicalOpAndCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
-	muon->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpZeroPageXWhenItWraps( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorOnARegisterAbsolute )
 {
-	muon->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrOnARegisterAbsolute )
 {
-	muon->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndOnARegisterAbsolute )
 {
-	muon->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpAbsolute( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndOnARegisterAbsoluteX )
 {
-	muon->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrOnARegisterAbsoluteX )
 {
-	muon->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorOnARegisterAbsoluteX )
 {
-	muon->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpAbsoluteX( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteX )
 {
-	muon->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteX )
 {
-	muon->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteX )
 {
-	muon->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLoadRegisterAbsoluteXWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndAbsoluteY )
 {
-	muon->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrAbsoluteY )
 {
-	muon->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorAbsoluteY )
 {
-	muon->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpAbsoluteY( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteY )
 {
-	muon->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteY )
 {
-	muon->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteY )
 {
-	muon->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLoadRegisterAbsoluteYWhenCrossingPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndIndirectX )
 {
-	muon->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorIndirectX )
 {
-	muon->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrIndirectX )
 {
-	muon->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpIndirectX( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndIndirectY )
 {
-	muon->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrIndirectY )
 {
-	muon->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorIndirectY )
 {
-	muon->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpIndirectY( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpAndWhenItCrossesAPageIndirectY )
 {
-	muon->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::And );
+	tau->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::And );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpOrWhenItCrossesAPageIndirectY )
 {
-	muon->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::Or );
+	tau->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::Or );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpEorWhenItCrossesAPageIndirectY )
 {
-	muon->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
+	tau->TestLogicalOpIndirectYWhenItCrossesAPage( M6502AndEorOraBitTests::ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPage )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = false;
-	muon->cpu.A = 0xCC;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ZP;	
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0042] = 0xCC;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = false;
+	tau->cpu.A = 0xCC;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;	
+	tau->mem[0xFFFD] = 0x42;
+	tau->mem[0x0042] = 0xCC;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0xCC );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_TRUE( muon->cpu.Flag.V );
-	CHECK_TRUE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0xCC );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_TRUE( tau->cpu.Flag.V );
+	CHECK_TRUE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZero )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = true;
-	muon->cpu.A = 0xCC;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ZP;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0042] = 0x33;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = true;
+	tau->cpu.A = 0xCC;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
+	tau->mem[0xFFFD] = 0x42;
+	tau->mem[0x0042] = 0x33;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0xCC );
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.V );
-	CHECK_FALSE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0xCC );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.V );
+	CHECK_FALSE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Zero )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = false;
-	muon->cpu.A = 0x33;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ZP;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0042] = 0xCC;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = false;
+	tau->cpu.A = 0x33;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
+	tau->mem[0xFFFD] = 0x42;
+	tau->mem[0x0042] = 0xCC;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0x33 );
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_TRUE( muon->cpu.Flag.V );
-	CHECK_TRUE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0x33 );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_TRUE( tau->cpu.Flag.V );
+	CHECK_TRUE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Mixed )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = false;
-	muon->cpu.Flag.N = true;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ZP;
-	muon->mem[0xFFFD] = 0x42;
-	muon->mem[0x0042] = 0b01000000;
+	tau->cpu.Flag.V = false;
+	tau->cpu.Flag.N = true;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
+	tau->mem[0xFFFD] = 0x42;
+	tau->mem[0x0042] = 0b01000000;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
-	muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
-	CHECK_TRUE( muon->cpu.Flag.V );
-	CHECK_FALSE( muon->cpu.Flag.N );
+	CHECK_TRUE( tau->cpu.Flag.V );
+	CHECK_FALSE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsolute )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = false;
-	muon->cpu.A = 0xCC;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ABS;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
-	muon->mem[0x8000] = 0xCC;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = false;
+	tau->cpu.A = 0xCC;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ABS;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
+	tau->mem[0x8000] = 0xCC;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0xCC );
-	CHECK_FALSE( muon->cpu.Flag.Z );
-	CHECK_TRUE( muon->cpu.Flag.V );
-	CHECK_TRUE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0xCC );
+	CHECK_FALSE( tau->cpu.Flag.Z );
+	CHECK_TRUE( tau->cpu.Flag.V );
+	CHECK_TRUE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZero )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = true;
-	muon->cpu.A = 0xCC;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ABS;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
-	muon->mem[0x8000] = 0x33;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = true;
+	tau->cpu.A = 0xCC;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ABS;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
+	tau->mem[0x8000] = 0x33;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0xCC );
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_FALSE( muon->cpu.Flag.V );
-	CHECK_FALSE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0xCC );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_FALSE( tau->cpu.Flag.V );
+	CHECK_FALSE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Zero )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = muon->cpu.Flag.N = false;
-	muon->cpu.A = 0x33;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ABS;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
-	muon->mem[0x8000] = 0xCC;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = tau->cpu.Flag.N = false;
+	tau->cpu.A = 0x33;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ABS;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
+	tau->mem[0x8000] = 0xCC;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
-	s32 CyclesUsed = muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	s32 CyclesUsed = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
 	CHECK_EQ( CyclesUsed, EXPECTED_CYCLES );
-	CHECK_EQ( muon->cpu.A, 0x33 );
-	CHECK_TRUE( muon->cpu.Flag.Z );
-	CHECK_TRUE( muon->cpu.Flag.V );
-	CHECK_TRUE( muon->cpu.Flag.N );
+	CHECK_EQ( tau->cpu.A, 0x33 );
+	CHECK_TRUE( tau->cpu.Flag.Z );
+	CHECK_TRUE( tau->cpu.Flag.V );
+	CHECK_TRUE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Mixed )
 {
 	// given:
 	using namespace m6502;
-	muon->cpu.Flag.V = true;
-	muon->cpu.Flag.N = false;
-	muon->mem[0xFFFC] = CPU::INS_BIT_ABS;
-	muon->mem[0xFFFD] = 0x00;
-	muon->mem[0xFFFE] = 0x80;
-	muon->mem[0x8000] = 0b10000000;
-	CPU CPUCopy = muon->cpu;
+	tau->cpu.Flag.V = true;
+	tau->cpu.Flag.N = false;
+	tau->mem[0xFFFC] = CPU::INS_BIT_ABS;
+	tau->mem[0xFFFD] = 0x00;
+	tau->mem[0xFFFE] = 0x80;
+	tau->mem[0x8000] = 0b10000000;
+	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
-	muon->cpu.Execute( EXPECTED_CYCLES, muon->mem );
+	tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
 
 	//then:
-	CHECK_FALSE( muon->cpu.Flag.V );
-	CHECK_TRUE( muon->cpu.Flag.N );
+	CHECK_FALSE( tau->cpu.Flag.V );
+	CHECK_TRUE( tau->cpu.Flag.N );
 }

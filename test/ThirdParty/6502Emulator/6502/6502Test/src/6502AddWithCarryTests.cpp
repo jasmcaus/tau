@@ -342,7 +342,7 @@ public:
 #define BYTE( A ) ( (m6502::Byte)A )
 
 TEST_F_SETUP(M6502AddSubWithCarryTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502AddSubWithCarryTests){}
@@ -358,7 +358,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddZeroToZeroAndGetZero )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddCarryAndZeroToZeroAndGetOne )
@@ -372,7 +372,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddCarryAndZeroToZeroAndGetOne )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddTwoUnsignedNumbers )
@@ -386,7 +386,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddAPositiveAndNegativeNumber )
@@ -405,7 +405,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddOneToFFAndItWillCauseACarry )
@@ -419,7 +419,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddOneToFFAndItWillCauseACarry )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheNegativeFlagWhenTheResultIsNegative )
@@ -433,7 +433,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheNegativeFlagWhenTheResultIsNe
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedNegativeAddtionFails )
@@ -451,7 +451,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedNegativ
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, 
@@ -472,7 +472,7 @@ TEST_F( M6502AddSubWithCarryTests,
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedPositiveAddtionFails )
@@ -490,7 +490,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedPositiv
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestADCAbsolute( Test );
+	tau->TestADCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddTwoUnsignedNumbers )
@@ -504,7 +504,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCImmediate( Test );
+	tau->TestADCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddAPositiveAndNegativeNumber )
@@ -523,7 +523,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddAPositiveAndNegativeNumber 
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCImmediate( Test );
+	tau->TestADCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddTwoUnsignedNumbers )
@@ -537,7 +537,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCZeroPage( Test );
+	tau->TestADCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddAPositiveAndNegativeNumber )
@@ -556,7 +556,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCZeroPage( Test );
+	tau->TestADCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddTwoUnsignedNumbers )
@@ -570,7 +570,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCZeroPageX( Test );
+	tau->TestADCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddAPositiveAndNegativeNumber )
@@ -589,7 +589,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddAPositiveAndNegativeNumber 
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCZeroPageX( Test );
+	tau->TestADCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddTwoUnsignedNumbers )
@@ -603,7 +603,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsoluteX( Test );
+	tau->TestADCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddAPositiveAndNegativeNumber )
@@ -622,7 +622,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsoluteX( Test );
+	tau->TestADCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddTwoUnsignedNumbers )
@@ -636,7 +636,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsoluteY( Test );
+	tau->TestADCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddAPositiveAndNegativeNumber )
@@ -655,7 +655,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCAbsoluteY( Test );
+	tau->TestADCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddTwoUnsignedNumbers )
@@ -669,7 +669,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCIndirectX( Test );
+	tau->TestADCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddAPositiveAndNegativeNumber )
@@ -688,7 +688,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCIndirectX( Test );
+	tau->TestADCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddTwoUnsignedNumbers )
@@ -702,7 +702,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCIndirectY( Test );
+	tau->TestADCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddAPositiveAndNegativeNumber )
@@ -721,7 +721,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddAPositiveAndNegativeNumber )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestADCIndirectY( Test );
+	tau->TestADCIndirectY( Test );
 }
 
 // SBC Abs --------------
@@ -737,7 +737,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractZeroFromZeroAndGetZero )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -751,7 +751,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractZeroFromZeroAndCarryAndGetMi
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractOneFromZeroAndGetMinusOne )
@@ -765,7 +765,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractOneFromZeroAndGetMinusOne )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -779,7 +779,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractOneFromZeroWithCarryAndGetMi
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -793,7 +793,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoNegativeNumbersAndGetSign
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -807,7 +807,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractAPostitiveAndNegativeNumbers
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoUnsignedNumbers )
@@ -821,7 +821,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoNegativeNumbers )
@@ -835,7 +835,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsolute( Test );
+	tau->TestSBCAbsolute( Test );
 }
 
 // SBC Zero Page
@@ -851,7 +851,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractZeroFromZeroAndGetZero 
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -865,7 +865,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractZeroFromZeroAndCarryAnd
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractOneFromZeroAndGetMinusOne )
@@ -879,7 +879,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractOneFromZeroAndGetMinusO
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -893,7 +893,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractOneFromZeroWithCarryAnd
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -907,7 +907,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoNegativeNumbersAndGe
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -921,7 +921,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractAPostitiveAndNegativeNu
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoUnsignedNumbers )
@@ -935,7 +935,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoNegativeNumbers )
@@ -949,7 +949,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPage( Test );
+	tau->TestSBCZeroPage( Test );
 }
 
 // SBC Immediate ---------
@@ -965,7 +965,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -979,7 +979,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractOneFromZeroAndGetMinusOne )
@@ -993,7 +993,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1007,7 +1007,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1021,7 +1021,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1035,7 +1035,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoUnsignedNumbers )
@@ -1049,7 +1049,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoNegativeNumbers )
@@ -1063,7 +1063,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCImmediateCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCImmediate( Test );
+	tau->TestSBCImmediate( Test );
 }
 
 // SBC Zero Page, X -------
@@ -1079,7 +1079,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -1093,7 +1093,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractOneFromZeroAndGetMinusOne )
@@ -1107,7 +1107,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1121,7 +1121,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1135,7 +1135,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1149,7 +1149,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoUnsignedNumbers )
@@ -1163,7 +1163,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoNegativeNumbers )
@@ -1177,7 +1177,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCZeroPageXCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCZeroPageX( Test );
+	tau->TestSBCZeroPageX( Test );
 }
 
 // SBC Absolute, X -------
@@ -1193,7 +1193,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -1207,7 +1207,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractOneFromZeroAndGetMinusOne )
@@ -1221,7 +1221,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1235,7 +1235,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1249,7 +1249,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1263,7 +1263,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoUnsignedNumbers )
@@ -1277,7 +1277,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoNegativeNumbers )
@@ -1291,7 +1291,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteXCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteX( Test );
+	tau->TestSBCAbsoluteX( Test );
 }
 
 // SBC Absolute, Y
@@ -1307,7 +1307,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -1321,7 +1321,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractOneFromZeroAndGetMinusOne )
@@ -1335,7 +1335,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1349,7 +1349,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1363,7 +1363,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1377,7 +1377,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoUnsignedNumbers )
@@ -1391,7 +1391,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoNegativeNumbers )
@@ -1405,7 +1405,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCAbsoluteYCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCAbsoluteY( Test );
+	tau->TestSBCAbsoluteY( Test );
 }
 
 // SBC Indirect, X ---------
@@ -1421,7 +1421,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -1435,7 +1435,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroAndGetMinusOne )
@@ -1449,7 +1449,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1463,7 +1463,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1477,7 +1477,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1491,7 +1491,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoUnsignedNumbers )
@@ -1505,7 +1505,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbers )
@@ -1519,7 +1519,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectX( Test );
+	tau->TestSBCIndirectX( Test );
 }
 
 // SBC Indirect, Y -----------
@@ -1535,7 +1535,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractZeroFromZeroAndGetZero
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = true;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
@@ -1549,7 +1549,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractZeroFromZeroAndCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractOneFromZeroAndGetMinusOne )
@@ -1563,7 +1563,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractOneFromZeroAndGetMinus
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
@@ -1577,7 +1577,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractOneFromZeroWithCarryAn
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
@@ -1591,7 +1591,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoNegativeNumbersAndG
 	Test.ExpectN = false;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
@@ -1605,7 +1605,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractAPostitiveAndNegativeN
 	Test.ExpectN = true;
 	Test.ExpectV = true;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoUnsignedNumbers )
@@ -1619,7 +1619,7 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoUnsignedNumbers )
 	Test.ExpectN = false;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }
 
 TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoNegativeNumbers )
@@ -1633,5 +1633,5 @@ TEST_F( M6502AddSubWithCarryTests, SBCIndirectYCanSubtractTwoNegativeNumbers )
 	Test.ExpectN = true;
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
-	muon->TestSBCIndirectY( Test );
+	tau->TestSBCIndirectY( Test );
 }

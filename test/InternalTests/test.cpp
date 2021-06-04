@@ -380,8 +380,8 @@ struct Stack {
 
 TEST_F_SETUP(Stack) {
     WARN(TESTING WARNING);
-    muon->name = "Hello";
-    muon->age = 4;
+    tau->name = "Hello";
+    tau->age = 4;
 }
 
 TEST_F_TEARDOWN(Stack) {
@@ -389,8 +389,8 @@ TEST_F_TEARDOWN(Stack) {
 }
 
 TEST_F(Stack, TestStackDetails) {
-    muon->test();
-    CHECK_EQ(muon->age, 4);
-    REQUIRE_STREQ(muon->name, "Hello");
-    REQUIRE_EQ(muon->pop(), 123);
+    tau->test();
+    CHECK_EQ(tau->age, 4);
+    REQUIRE_STREQ(tau->name, "Hello");
+    REQUIRE_EQ(tau->pop(), 123);
 }

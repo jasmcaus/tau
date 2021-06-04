@@ -188,20 +188,20 @@ struct MyTestF {
 };
 
 TEST_F_SETUP(MyTestF) {
-    REQUIRE_EQ(0, muon->foo);
-    muon->foo = 42;
+    REQUIRE_EQ(0, tau->foo);
+    tau->foo = 42;
 }
 
 TEST_F_TEARDOWN(MyTestF) { 
-    REQUIRE_EQ(13, muon->foo); 
+    REQUIRE_EQ(13, tau->foo); 
 }
 
 TEST_F(MyTestF, c) {
-    REQUIRE_EQ(42, muon->foo);
-    muon->foo = 13;
+    REQUIRE_EQ(42, tau->foo);
+    tau->foo = 13;
 }
 
 TEST_F(MyTestF, c2) {
-    REQUIRE_EQ(42, muon->foo);
-    muon->foo = 13;
+    REQUIRE_EQ(42, tau->foo);
+    tau->foo = 13;
 }

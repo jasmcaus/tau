@@ -29,7 +29,7 @@ public:
 };
 
 TEST_F_SETUP(M6502LoadPrgTests) {
-	muon->cpu.Reset( muon->mem );
+	tau->cpu.Reset( tau->mem );
 }
 
 TEST_F_TEARDOWN(M6502LoadPrgTests){}
@@ -40,18 +40,18 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramIntoTheCorrectAreaOfMemory )
 	using namespace m6502;
 
 	// when:
-	muon->cpu.LoadPrg( TestPrg, NumBytesInPrg, muon->mem );
+	tau->cpu.LoadPrg( TestPrg, NumBytesInPrg, tau->mem );
 
 	//then:
-	CHECK_EQ( muon->mem[0x0FFF], 0x0 );
-	CHECK_EQ( muon->mem[0x1000], 0xA9 );
-	CHECK_EQ( muon->mem[0x1001], 0xFF );
-	CHECK_EQ( muon->mem[0x1002], 0x85 );
+	CHECK_EQ( tau->mem[0x0FFF], 0x0 );
+	CHECK_EQ( tau->mem[0x1000], 0xA9 );
+	CHECK_EQ( tau->mem[0x1001], 0xFF );
+	CHECK_EQ( tau->mem[0x1002], 0x85 );
 	//....
-	CHECK_EQ( muon->mem[0x1009], 0x4C );
-	CHECK_EQ( muon->mem[0x100A], 0x02 );
-	CHECK_EQ( muon->mem[0x100B], 0x10 );
-	CHECK_EQ( muon->mem[0x100C], 0x0 );
+	CHECK_EQ( tau->mem[0x1009], 0x4C );
+	CHECK_EQ( tau->mem[0x100A], 0x02 );
+	CHECK_EQ( tau->mem[0x100B], 0x10 );
+	CHECK_EQ( tau->mem[0x100C], 0x0 );
 }
 
 TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramAndExecuteIt )
@@ -60,13 +60,13 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramAndExecuteIt )
 	using namespace m6502;
 
 	// when:
-	Word StartAddress = muon->cpu.LoadPrg( TestPrg, NumBytesInPrg, muon->mem );
-	muon->cpu.PC = StartAddress;
+	Word StartAddress = tau->cpu.LoadPrg( TestPrg, NumBytesInPrg, tau->mem );
+	tau->cpu.PC = StartAddress;
 
 	//then:
 	for ( m6502::s32 Clock = 1000; Clock > 0; )
 	{
-		Clock -= muon->cpu.Execute( 1, muon->mem );
+		Clock -= tau->cpu.Execute( 1, tau->mem );
 	}
 }
 
@@ -81,15 +81,15 @@ TEST_F( M6502LoadPrgTests, LoadThe6502TestPrg )
 	fopen_s( &fp, 
 		"6502_functional_test.bin", "rb" );
 
-	fread( &muon->mem[0x000A], 1, 65526, fp );
+	fread( &tau->mem[0x000A], 1, 65526, fp );
 	fclose( fp );
 
-	muon->cpu.PC = 0x400;
+	tau->cpu.PC = 0x400;
 
 	//then:
 	while ( true )
 	{
-		muon->cpu.Execute( 1, muon->mem );
+		tau->cpu.Execute( 1, tau->mem );
 	}
 #endif
 }
