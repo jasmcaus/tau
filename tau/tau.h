@@ -58,11 +58,11 @@ TAU_DISABLE_WARNINGS
 #endif // __has_include
 
 #ifdef __cplusplus
-    #define TAU_C_FUNC extern "C"
-    #define TAU_EXTERN extern "C"
+    #define TAU_C_FUNC   extern "C"
+    #define TAU_EXTERN   extern "C"
 #else
     #define TAU_C_FUNC
-    #define TAU_EXTERN    extern
+    #define TAU_EXTERN   extern
 #endif // __cplusplus
 
 #if defined(__cplusplus)
@@ -98,32 +98,32 @@ TAU_DISABLE_WARNINGS
     #define TAU_UNUSED   __attribute__((unused))
 #endif // _MSC_VER
 
-typedef void (*muon_testsuite_t)();
-struct muonTestSuiteStruct {
-    muon_testsuite_t func;
+typedef void (*tau_testsuite_t)();
+struct tauTestSuiteStruct {
+    tau_testsuite_t func;
     char* name;
 };
 
-struct muonTestStateStruct {
-    struct muonTestSuiteStruct* tests;
+struct tauTestStateStruct {
+    struct tauTestSuiteStruct* tests;
     TAU_Ull numTestSuites;
     FILE* foutput;
 };
 
-static TAU_UInt64 muonStatsTotalTestSuites = 0;
-static TAU_UInt64 muonStatsTestsRan = 0;
-static TAU_UInt64 muonStatsNumTestsFailed = 0;
-static TAU_UInt64 muonStatsSkippedTests = 0; 
-static TAU_Ull* muonStatsFailedTestSuites = TAU_NULL; 
-static TAU_Ull muonStatsNumFailedTestSuites = 0;
-extern TAU_UInt64 muonStatsNumWarnings;
+static TAU_UInt64 tauStatsTotalTestSuites = 0;
+static TAU_UInt64 tauStatsTestsRan = 0;
+static TAU_UInt64 tauStatsNumTestsFailed = 0;
+static TAU_UInt64 tauStatsSkippedTests = 0; 
+static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL; 
+static TAU_Ull tauStatsNumFailedTestSuites = 0;
+extern TAU_UInt64 tauStatsNumWarnings;
 
-// Overridden in `muon_main` if the cmdline option `--no-color` is passed
-static int muonShouldColourizeOutput = 1;
-static int muonDisableSummary = 0;
-static int muonDisplayOnlyFailedOutput = 0; 
+// Overridden in `tau_main` if the cmdline option `--no-color` is passed
+static int tauShouldColourizeOutput = 1;
+static int tauDisableSummary = 0;
+static int tauDisplayOnlyFailedOutput = 0; 
 
-static char* muon_argv0_ = TAU_NULL;
+static char* tau_argv0_ = TAU_NULL;
 static const char* cmd_filter = TAU_NULL;
 
 /**
@@ -165,11 +165,11 @@ static void abortIfInsideTestSuite() {
 }
 
 static void incrementWarnings() {
-    muonStatsNumWarnings++;
+    tauStatsNumWarnings++;
 }
 
-// extern to the global state muon needs to execute
-TAU_EXTERN struct muonTestStateStruct muonTestContext;
+// extern to the global state tau needs to execute
+TAU_EXTERN struct tauTestStateStruct tauTestContext;
 
 #if defined(_MSC_VER)
     #ifndef TAU_USE_OLD_QPC
@@ -229,7 +229,7 @@ TAU_EXTERN struct muonTestStateStruct muonTestContext;
     NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
     (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
 */
-static inline double muonClock() {
+static inline double tauClock() {
 #ifdef TAU_WIN_
     LARGE_INTEGER counter;
     LARGE_INTEGER frequency;
@@ -259,7 +259,7 @@ static inline double muonClock() {
 #endif // TAU_WIN_
 }
 
-static void muonClockPrintDuration(double nanoseconds_duration) {
+static void tauClockPrintDuration(double nanoseconds_duration) {
     TAU_UInt64 n; 
     int n_digits = 0; 
     n = (TAU_UInt64)nanoseconds_duration;
@@ -303,7 +303,7 @@ static void muonClockPrintDuration(double nanoseconds_duration) {
 #endif // _MSC_VER
 
 
-static inline void* muon_realloc(void* const ptr, TAU_Ull new_size) {
+static inline void* tau_realloc(void* const ptr, TAU_Ull new_size) {
     void* const new_ptr = realloc(ptr, new_size);
 
     if(new_ptr == TAU_NULL)
@@ -327,9 +327,9 @@ static inline void* muon_realloc(void* const ptr, TAU_Ull new_size) {
 #define TAU_COLOUR_BOLD_                 12
 
 static inline int TAU_ATTRIBUTE_(format (printf, 2, 3))
-muonColouredPrintf(int colour, const char* fmt, ...);
+tauColouredPrintf(int colour, const char* fmt, ...);
 static inline int TAU_ATTRIBUTE_(format (printf, 2, 3))
-muonColouredPrintf(int colour, const char* fmt, ...) {
+tauColouredPrintf(int colour, const char* fmt, ...) {
     va_list args;
     char buffer[256];
     int n;
@@ -339,7 +339,7 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
     va_end(args);
     buffer[sizeof(buffer)-1] = '\0';
 
-    if(!muonShouldColourizeOutput) {
+    if(!tauShouldColourizeOutput) {
         return printf("%s", buffer);
     }
 
@@ -403,9 +403,9 @@ muonColouredPrintf(int colour, const char* fmt, ...) {
 }
 
 
-#define muonPrintf(...)                                  \
-    if(muonTestContext.foutput)                          \
-        fprintf(muonTestContext.foutput, __VA_ARGS__);   \
+#define tauPrintf(...)                                  \
+    if(tauTestContext.foutput)                          \
+        fprintf(tauTestContext.foutput, __VA_ARGS__);   \
     printf(__VA_ARGS__)
 
 
@@ -422,7 +422,7 @@ static inline int TAU_isDigit(char c) { return c >= '0' && c <= '9'; }
 // Note: the arguments are of type `char const*` as opposed to `char*`
 // This helps mitigate the ``warning: ISO C++ forbids converting a string constant to 'char*'``
 // See: https://stackoverflow.com/questions/20944784/why-is-conversion-from-string-constant-to-char-valid-in-c-but-invalid-in-c/20944858
-static inline int muonShouldDecomposeMacro(char const* actual, char const* expected, int isStringCmp) {
+static inline int tauShouldDecomposeMacro(char const* actual, char const* expected, int isStringCmp) {
     // Signal that the macro can be further decomposed if either of the following symbols are present
     int dots = 0;
     int numActualDigits = 0;
@@ -476,22 +476,22 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long unsigned int i);
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(const void* p);
 
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(float f) { muonPrintf("%f", TAU_CAST(double, f)); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(double d) { muonPrintf("%f", d); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long double d) { muonPrintf("%Lf", d); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(int i) { muonPrintf("%d", i); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(unsigned int i) { muonPrintf("%u", i); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long int i) { muonPrintf("%ld", i); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long unsigned int i) { muonPrintf("%lu", i); }
-    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(const void* p) { muonPrintf("%p", p); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(float f) { tauPrintf("%f", TAU_CAST(double, f)); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(double d) { tauPrintf("%f", d); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long double d) { tauPrintf("%Lf", d); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(int i) { tauPrintf("%d", i); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(unsigned int i) { tauPrintf("%u", i); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long int i) { tauPrintf("%ld", i); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long unsigned int i) { tauPrintf("%lu", i); }
+    TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(const void* p) { tauPrintf("%p", p); }
 
     // long long is in C++ only
     #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) || defined(__cplusplus) && (__cplusplus >= 201103L)
         TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long int i);
         TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long unsigned int i);
 
-        TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long int i) { muonPrintf("%lld", i); }
-        TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long unsigned int i) { muonPrintf("%llu", i); }
+        TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long int i) { tauPrintf("%lld", i); }
+        TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(long long unsigned int i) { tauPrintf("%llu", i); }
     #endif // __STDC_VERSION__
 
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
@@ -500,7 +500,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
     #endif // TAU_CAN_USE_OVERLOADABLES
 
     #define TAU_OVERLOAD_PRINTER(val)                            \
-        muonPrintf(_Generic((val),                                \
+        tauPrintf(_Generic((val),                                \
                             char : "'%c'",                        \
                             char* : "%s",                         \
                             unsigned char : "%hhu",               \
@@ -521,8 +521,8 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
     #define TAU_OVERLOAD_PRINTER(...)                                                              \
-        muonPrintf("Error: Your compiler does not support overloadable methods.");                  \
-        muonPrintf("If you think this was an error, please file an issue on Tau's Github repo.")
+        tauPrintf("Error: Your compiler does not support overloadable methods.");                  \
+        tauPrintf("If you think this was an error, please file an issue on Tau's Github repo.")
 #endif // TAU_OVERLOADABLE
 
 
@@ -532,23 +532,23 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
     #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                  \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
-                muonPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
-                muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                         \
-                if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                           \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",               \
+                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                         \
+                if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                           \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",               \
                                                                 #macroName,                     \
                                                                 #actual, #expected);            \
                 }                                                                               \
-                muonPrintf("  Expected : %s", #actual);                                         \
+                tauPrintf("  Expected : %s", #actual);                                         \
                 printf(" %s ", #cond space);                                                    \
                 TAU_OVERLOAD_PRINTER(expected);                                                \
-                muonPrintf("\n");                                                               \
+                tauPrintf("\n");                                                               \
                                                                                                 \
-                muonPrintf("    Actual : %s", #actual);                                         \
+                tauPrintf("    Actual : %s", #actual);                                         \
                 printf(" == ");                                                                 \
                 TAU_OVERLOAD_PRINTER(actual);                                                  \
-                muonPrintf("\n");                                                               \
+                tauPrintf("\n");                                                               \
                 failOrAbort();                                                                  \
             }                                                                                   \
         }                                                                                       \
@@ -559,23 +559,23 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
     #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                          \
         do {                                                                                            \
             if(!((actual)cond(expected))) {                                                             \
-                muonPrintf("%s:%u: ", __FILE__, __LINE__);                                              \
-                muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                 \
-                if(muonShouldDecomposeMacro(#actual, #expected, 0)) {                                   \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                       \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                       \
+                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                              \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                 \
+                if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                                   \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                       \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                       \
                                                                 #macroName,                             \
                                                                 #actual, #expected);                    \
                 }                                                                                       \
-                muonPrintf("  Expected : %s", #actual);                                                 \
+                tauPrintf("  Expected : %s", #actual);                                                 \
                 printf(" %s ", #cond space);                                                            \
                 printf(#expected);                                                                      \
-                muonPrintf("\n");                                                                       \
+                tauPrintf("\n");                                                                       \
                                                                                                         \
-                muonPrintf("    Actual : %s", #actual);                                                 \
+                tauPrintf("    Actual : %s", #actual);                                                 \
                 printf(" == ");                                                                         \
                 printf(#actual);                                                                      \
-                muonPrintf("\n");                                                                       \
+                tauPrintf("\n");                                                                       \
                 failOrAbort();                                                                          \
             }                                                                                           \
         }                                                                                               \
@@ -585,16 +585,16 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #define __TAUCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)      \
     do {                                                                                                        \
         if(strcmp(actual, expected) cond 0) {                                                                   \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                               \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
+            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                               \
                                                                 #macroName,                                     \
                                                                 #actual, #expected);                            \
                 }                                                                                               \
-            muonPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);             \
-            muonPrintf("    Actual : %s\n", #actualPrint);                                                      \
+            tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);             \
+            tauPrintf("    Actual : %s\n", #actualPrint);                                                      \
             failOrAbort();                                                                                      \
             return;                                                                                             \
         }                                                                                                       \
@@ -604,22 +604,22 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #define __TAUCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
     do {                                                                                                        \
         if(TAU_CAST(int, n) < 0) {                                                                             \
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");                             \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");                             \
             TAU_ABORT;                                                                                         \
         }                                                                                                       \
         if(strncmp(actual, expected, n) cond 0) {                                                               \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(muonShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                            \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
+            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                            \
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #n);                        \
                 }                                                                                               \
-            muonPrintf("  Expected : \"%.*s\" %s \"%.*s\"\n", TAU_CAST(int, n), actual,                        \
+            tauPrintf("  Expected : \"%.*s\" %s \"%.*s\"\n", TAU_CAST(int, n), actual,                        \
                                                               #ifCondFailsThenPrint,                            \
                                                               TAU_CAST(int, n), expected);                     \
-            muonPrintf("    Actual : %s\n", #actualPrint);                                                      \
+            tauPrintf("    Actual : %s\n", #actualPrint);                                                      \
             failOrAbort();                                                                                      \
             return;                                                                                             \
         }                                                                                                       \
@@ -630,16 +630,16 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #define __TAUCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)    \
     do {                                                                            \
         if(negateSign(cond)) {                                                      \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                              \
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                 \
-            if(muonShouldDecomposeMacro(#actual, TAU_NULL, 0)) {                   \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
-                    muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s )\n",       \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                              \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                 \
+            if(tauShouldDecomposeMacro(#actual, TAU_NULL, 0)) {                   \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s )\n",       \
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
-            muonPrintf("  Expected : %s\n", #expected);                             \
-            muonPrintf("    Actual : %s\n", #actual);                               \
+            tauPrintf("  Expected : %s\n", #expected);                             \
+            tauPrintf("    Actual : %s\n", #actual);                               \
             failOrAbort();                                                          \
         }                                                                           \
     } while(0)
@@ -686,14 +686,14 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 #define __TAUCHECKREQUIRE__(cond, failOrAbort, macroName, ...)                                \
     do {                                                                                       \
         if(!(cond)) {                                                                          \
-            muonPrintf("%s:%u: ", __FILE__, __LINE__);                                         \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                         \
             if((sizeof(char[]){__VA_ARGS__}) <= 1)                                             \
-                muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED");                          \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED");                          \
             else                                                                               \
-                muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                       \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                       \
             printf("\n");                                                                      \
             printf("The following assertion failed: \n");                                      \
-            muonColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);  \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);  \
             failOrAbort();                                                                     \
         }                                                                                      \
     }                                                                                          \
@@ -729,7 +729,7 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 
 #define WARN(msg)                                                        \
     incrementWarnings();                                                 \
-    muonColouredPrintf(TAU_COLOUR_YELLOW_, "%s:%u: WARNING: %s\n", __FILE__, __LINE__, #msg)
+    tauColouredPrintf(TAU_COLOUR_YELLOW_, "%s:%u: WARNING: %s\n", __FILE__, __LINE__, #msg)
 
 #ifdef __cplusplus
     #define SECTION(...)    \
@@ -755,33 +755,33 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
 */
 
 #define TEST(TESTSUITE, TESTNAME)                                                               \
-    TAU_EXTERN struct muonTestStateStruct muonTestContext;                                     \
+    TAU_EXTERN struct tauTestStateStruct tauTestContext;                                     \
     static void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void);                                 \
-    TAU_TEST_INITIALIZER(muon_register_##TESTSUITE##_##TESTNAME) {                             \
-        const TAU_Ull index = muonTestContext.numTestSuites++;                                 \
+    TAU_TEST_INITIALIZER(tau_register_##TESTSUITE##_##TESTNAME) {                             \
+        const TAU_Ull index = tauTestContext.numTestSuites++;                                 \
         const char* namePart = #TESTSUITE "." #TESTNAME;                                        \
         const TAU_Ull nameSize = strlen(namePart) + 1;                                         \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                                    \
-        muonTestContext.tests = TAU_PTRCAST(                                                   \
-                                    struct muonTestSuiteStruct* ,                               \
-                                    muon_realloc(TAU_PTRCAST(void* , muonTestContext.tests),   \
-                                                sizeof(struct muonTestSuiteStruct) *            \
-                                                    muonTestContext.numTestSuites));            \
-        muonTestContext.tests[index].func = &_TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME;          \
-        muonTestContext.tests[index].name = name;                                               \
+        tauTestContext.tests = TAU_PTRCAST(                                                   \
+                                    struct tauTestSuiteStruct* ,                               \
+                                    tau_realloc(TAU_PTRCAST(void* , tauTestContext.tests),   \
+                                                sizeof(struct tauTestSuiteStruct) *            \
+                                                    tauTestContext.numTestSuites));            \
+        tauTestContext.tests[index].func = &_TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME;          \
+        tauTestContext.tests[index].name = name;                                               \
         TAU_SNPRINTF(name, nameSize, "%s", namePart);                                          \
     }                                                                                           \
     void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void)
 
 
 #define TEST_F_SETUP(FIXTURE)                                                  \
-    static void __TAU_TEST_FIXTURE_SETUP_##FIXTURE(struct FIXTURE* muon)
+    static void __TAU_TEST_FIXTURE_SETUP_##FIXTURE(struct FIXTURE* tau)
 
 #define TEST_F_TEARDOWN(FIXTURE)                                               \
-    static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* muon)
+    static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* tau)
 
 #define TEST_F(FIXTURE, NAME)                                                  \
-    TAU_EXTERN struct muonTestStateStruct muonTestContext;                    \
+    TAU_EXTERN struct tauTestStateStruct tauTestContext;                    \
     static void __TAU_TEST_FIXTURE_SETUP_##FIXTURE(struct FIXTURE*);          \
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE*);       \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE*);   \
@@ -798,25 +798,25 @@ static inline int muonShouldDecomposeMacro(char const* actual, char const* expec
         __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(&fixture);                      \
     }                                                                          \
                                                                                \
-    TAU_TEST_INITIALIZER(muon_register_##FIXTURE##_##NAME) {                  \
-        const TAU_Ull index = muonTestContext.numTestSuites++;                \
+    TAU_TEST_INITIALIZER(tau_register_##FIXTURE##_##NAME) {                  \
+        const TAU_Ull index = tauTestContext.numTestSuites++;                \
         const char* namePart = #FIXTURE "." #NAME;                             \
         const TAU_Ull nameSize = strlen(namePart) + 1;                        \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                   \
-        muonTestContext.tests = TAU_PTRCAST(                                  \
-                                    struct muonTestSuiteStruct*,               \
-                                    muon_realloc(TAU_PTRCAST(void *, muonTestContext.tests),               \
-                                                                sizeof(struct muonTestSuiteStruct) *        \
-                                                                        muonTestContext.numTestSuites));    \
-        muonTestContext.tests[index].func = &__TAU_TEST_FIXTURE_##FIXTURE##_##NAME;                        \
-        muonTestContext.tests[index].name = name;                              \
+        tauTestContext.tests = TAU_PTRCAST(                                  \
+                                    struct tauTestSuiteStruct*,               \
+                                    tau_realloc(TAU_PTRCAST(void *, tauTestContext.tests),               \
+                                                                sizeof(struct tauTestSuiteStruct) *        \
+                                                                        tauTestContext.numTestSuites));    \
+        tauTestContext.tests[index].func = &__TAU_TEST_FIXTURE_##FIXTURE##_##NAME;                        \
+        tauTestContext.tests[index].name = name;                              \
         TAU_SNPRINTF(name, nameSize, "%s", namePart);                         \
     }                                                                          \
-    static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* muon)
+    static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* tau)
 
 
-static int muonShouldFilterTest(const char* filter, const char* testcase);
-static int muonShouldFilterTest(const char* filter, const char* testcase) {
+static int tauShouldFilterTest(const char* filter, const char* testcase);
+static int tauShouldFilterTest(const char* filter, const char* testcase) {
     if(filter) {
         const char* filter_curr = filter;
         const char* testcase_curr = testcase;
@@ -874,7 +874,7 @@ static int muonShouldFilterTest(const char* filter, const char* testcase) {
     return 0;
 }
 
-static inline FILE* muon_fopen(const char* filename, const char* mode) {
+static inline FILE* tau_fopen(const char* filename, const char* mode) {
 #ifdef _MSC_VER
     FILE* file;
     if(fopen_s(&file, filename, mode) == 0)
@@ -886,8 +886,8 @@ static inline FILE* muon_fopen(const char* filename, const char* mode) {
 #endif // _MSC_VER
 }
 
-static void muon_help_() {
-        printf("Usage: %s [options] [test...]\n", muon_argv0_);
+static void tau_help_() {
+        printf("Usage: %s [options] [test...]\n", tau_argv0_);
         printf("\n");
         printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
         printf("tests in the suite but those listed. By default, if no tests are specified\n");
@@ -912,18 +912,18 @@ static void muon_help_() {
         printf("  --help                   Display this help and exit\n");
 }
 
-static TAU_bool muonCmdLineRead(int argc, char** argv) {
+static TAU_bool tauCmdLineRead(int argc, char** argv) {
     // Coloured output
 #ifdef TAU_UNIX_
-    muonShouldColourizeOutput = isatty(STDOUT_FILENO);
+    tauShouldColourizeOutput = isatty(STDOUT_FILENO);
 #elif defined TAU_WIN_
     #ifdef _BORLANDC_
-        muonShouldColourizeOutput = isatty(_fileno(stdout));
+        tauShouldColourizeOutput = isatty(_fileno(stdout));
     #else
-        muonShouldColourizeOutput = _isatty(_fileno(stdout));
+        tauShouldColourizeOutput = _isatty(_fileno(stdout));
     #endif // _BORLANDC_
 #else 
-    muonShouldColourizeOutput = isatty(STDOUT_FILENO);
+    tauShouldColourizeOutput = isatty(STDOUT_FILENO);
 #endif // TAU_UNIX_
 
     // loop through all arguments looking for our options
@@ -940,13 +940,13 @@ static TAU_bool muonCmdLineRead(int argc, char** argv) {
 
         // Help
         if(strncmp(argv[i], helpStr, strlen(helpStr)) == 0) {
-            muon_help_();
+            tau_help_();
             return TAU_false;
         } 
 
         // Only failed output
         else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput)) == 0) {
-            muonDisplayOnlyFailedOutput = 1;
+            tauDisplayOnlyFailedOutput = 1;
         }
 
         // Filter tests
@@ -956,22 +956,22 @@ static TAU_bool muonCmdLineRead(int argc, char** argv) {
 
         // Write XUnit XML file
         else if(strncmp(argv[i], XUnitOutput, strlen(XUnitOutput)) == 0)
-            muonTestContext.foutput = muon_fopen(argv[i] + strlen(XUnitOutput), "w+");
+            tauTestContext.foutput = tau_fopen(argv[i] + strlen(XUnitOutput), "w+");
 
         // List tests
         else if(strncmp(argv[i], listStr, strlen(listStr)) == 0) {
-            for (i = 0; i < muonTestContext.numTestSuites; i++)
-                muonPrintf("%s\n", muonTestContext.tests[i].name);
+            for (i = 0; i < tauTestContext.numTestSuites; i++)
+                tauPrintf("%s\n", tauTestContext.tests[i].name);
         }
 
         // Disable colouring
         else if(strncmp(argv[i], colourStr, strlen(colourStr)) == 0) {            
-            muonShouldColourizeOutput = 0;
+            tauShouldColourizeOutput = 0;
         }
 
         // Disable Summary
         else if(strncmp(argv[i], summaryStr, strlen(summaryStr))) {
-            muonDisableSummary = 1;
+            tauDisableSummary = 1;
         }
 
         else {
@@ -983,152 +983,152 @@ static TAU_bool muonCmdLineRead(int argc, char** argv) {
     return TAU_true;
 }
 
-static int muonCleanup() {
-    for (TAU_Ull i = 0; i < muonTestContext.numTestSuites; i++)
-        free(TAU_PTRCAST(void* , muonTestContext.tests[i].name));
+static int tauCleanup() {
+    for (TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++)
+        free(TAU_PTRCAST(void* , tauTestContext.tests[i].name));
 
-    free(TAU_PTRCAST(void* , muonStatsFailedTestSuites));
-    free(TAU_PTRCAST(void* , muonTestContext.tests));
+    free(TAU_PTRCAST(void* , tauStatsFailedTestSuites));
+    free(TAU_PTRCAST(void* , tauTestContext.tests));
 
-    if(muonTestContext.foutput)
-        fclose(muonTestContext.foutput);
+    if(tauTestContext.foutput)
+        fclose(tauTestContext.foutput);
 
-    return TAU_CAST(int, muonStatsNumTestsFailed);
+    return TAU_CAST(int, tauStatsNumTestsFailed);
 }
 
 // Triggers and runs all unit tests
-static void muonRunTests() {
+static void tauRunTests() {
     // Run tests
-    for(TAU_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
+    for(TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
         checkIsInsideTestSuite = 1; 
         hasCurrentTestFailed = 0;
 
-        if(muonShouldFilterTest(cmd_filter, muonTestContext.tests[i].name))
+        if(tauShouldFilterTest(cmd_filter, tauTestContext.tests[i].name))
             continue;
 
-        if(!muonDisplayOnlyFailedOutput) {
-            muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
-            muonColouredPrintf(TAU_COLOUR_DEFAULT_, "%s\n", muonTestContext.tests[i].name);
+        if(!tauDisplayOnlyFailedOutput) {
+            tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[ RUN      ] ");
+            tauColouredPrintf(TAU_COLOUR_DEFAULT_, "%s\n", tauTestContext.tests[i].name);
         }
 
-        if(muonTestContext.foutput)
-            fprintf(muonTestContext.foutput, "<testcase name=\"%s\">", muonTestContext.tests[i].name);
+        if(tauTestContext.foutput)
+            fprintf(tauTestContext.foutput, "<testcase name=\"%s\">", tauTestContext.tests[i].name);
 
         // Start the timer
-        double start = muonClock();
+        double start = tauClock();
 
         // The actual test
-        muonTestContext.tests[i].func();
+        tauTestContext.tests[i].func();
 
         // Stop the timer
-        double duration = muonClock() - start;
+        double duration = tauClock() - start;
         
-        if(muonTestContext.foutput)
-            fprintf(muonTestContext.foutput, "</testcase>\n");
+        if(tauTestContext.foutput)
+            fprintf(tauTestContext.foutput, "</testcase>\n");
 
         if(hasCurrentTestFailed == 1) {
-            const TAU_Ull failed_testcase_index = muonStatsNumFailedTestSuites++;
-            muonStatsFailedTestSuites = TAU_PTRCAST(TAU_Ull*, 
-                                            muon_realloc(TAU_PTRCAST(void* , muonStatsFailedTestSuites), 
-                                                          sizeof(TAU_Ull) * muonStatsNumFailedTestSuites));
-            muonStatsFailedTestSuites[failed_testcase_index] = i;
-            muonStatsNumTestsFailed++;
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
-            muonColouredPrintf(TAU_COLOUR_DEFAULT_, "%s (", muonTestContext.tests[i].name);
-            muonClockPrintDuration(duration);
+            const TAU_Ull failed_testcase_index = tauStatsNumFailedTestSuites++;
+            tauStatsFailedTestSuites = TAU_PTRCAST(TAU_Ull*, 
+                                            tau_realloc(TAU_PTRCAST(void* , tauStatsFailedTestSuites), 
+                                                          sizeof(TAU_Ull) * tauStatsNumFailedTestSuites));
+            tauStatsFailedTestSuites[failed_testcase_index] = i;
+            tauStatsNumTestsFailed++;
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
+            tauColouredPrintf(TAU_COLOUR_DEFAULT_, "%s (", tauTestContext.tests[i].name);
+            tauClockPrintDuration(duration);
             printf(")\n");
         } else {
-            if(!muonDisplayOnlyFailedOutput) {
-                muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[       OK ] ");
-                muonColouredPrintf(TAU_COLOUR_DEFAULT_, "%s (", muonTestContext.tests[i].name);
-                muonClockPrintDuration(duration);
+            if(!tauDisplayOnlyFailedOutput) {
+                tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[       OK ] ");
+                tauColouredPrintf(TAU_COLOUR_DEFAULT_, "%s (", tauTestContext.tests[i].name);
+                tauClockPrintDuration(duration);
                 printf(")\n");
             }
         }
     }
-    muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[==========] ");
-    muonColouredPrintf(TAU_COLOUR_DEFAULT_, "%" TAU_PRIu64 " test suites ran\n", muonStatsTestsRan);
+    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[==========] ");
+    tauColouredPrintf(TAU_COLOUR_DEFAULT_, "%" TAU_PRIu64 " test suites ran\n", tauStatsTestsRan);
 }
 
-static inline int muon_main(int argc, char** argv);
-inline int muon_main(int argc, char** argv) {
-    muonStatsTotalTestSuites = TAU_CAST(TAU_UInt64, muonTestContext.numTestSuites);
-    muon_argv0_ = argv[0];
+static inline int tau_main(int argc, char** argv);
+inline int tau_main(int argc, char** argv) {
+    tauStatsTotalTestSuites = TAU_CAST(TAU_UInt64, tauTestContext.numTestSuites);
+    tau_argv0_ = argv[0];
 
     // Start the entire Test Session timer
-    double start = muonClock();
+    double start = tauClock();
 
-    TAU_bool wasCmdLineReadSuccessful = muonCmdLineRead(argc, argv);
+    TAU_bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
     if(!wasCmdLineReadSuccessful) 
-        return muonCleanup();
+        return tauCleanup();
 
-    for (TAU_Ull i = 0; i < muonTestContext.numTestSuites; i++) {
-        if(muonShouldFilterTest(cmd_filter, muonTestContext.tests[i].name))
-            muonStatsSkippedTests++;
+    for (TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
+        if(tauShouldFilterTest(cmd_filter, tauTestContext.tests[i].name))
+            tauStatsSkippedTests++;
     }
 
-    muonStatsTestsRan = muonStatsTotalTestSuites - muonStatsSkippedTests;
+    tauStatsTestsRan = tauStatsTotalTestSuites - tauStatsSkippedTests;
 
     // Begin tests`
-    muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[==========] ");
-    muonColouredPrintf(TAU_COLOUR_BOLD_, "Running %" TAU_PRIu64 " test suites.\n", TAU_CAST(TAU_UInt64, muonStatsTestsRan));
+    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[==========] ");
+    tauColouredPrintf(TAU_COLOUR_BOLD_, "Running %" TAU_PRIu64 " test suites.\n", TAU_CAST(TAU_UInt64, tauStatsTestsRan));
 
-    if(muonTestContext.foutput) {
-        fprintf(muonTestContext.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        fprintf(muonTestContext.foutput,
+    if(tauTestContext.foutput) {
+        fprintf(tauTestContext.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fprintf(tauTestContext.foutput,
                 "<testsuites tests=\"%" TAU_PRIu64 "\" name=\"All\">\n",
-                TAU_CAST(TAU_UInt64, muonStatsTestsRan));
-        fprintf(muonTestContext.foutput,
+                TAU_CAST(TAU_UInt64, tauStatsTestsRan));
+        fprintf(tauTestContext.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" TAU_PRIu64 "\">\n",
-                TAU_CAST(TAU_UInt64, muonStatsTestsRan));
+                TAU_CAST(TAU_UInt64, tauStatsTestsRan));
     }
 
     // Run tests
-    muonRunTests();
+    tauRunTests();
 
     // End the entire Test Session timer
-    double duration = muonClock() - start;
+    double duration = tauClock() - start;
 
     // Write a Summary
-    muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", muonStatsTestsRan - muonStatsNumTestsFailed, muonStatsTestsRan - muonStatsNumTestsFailed == 1 ? "suite" : "suites");
-    muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", muonStatsNumTestsFailed, muonStatsNumTestsFailed == 1 ? "suite" : "suites");
+    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", tauStatsTestsRan - tauStatsNumTestsFailed, tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", tauStatsNumTestsFailed, tauStatsNumTestsFailed == 1 ? "suite" : "suites");
 
-    if(!muonDisableSummary) {
-        muonColouredPrintf(TAU_COLOUR_BOLD_, "\nSummary:\n");
+    if(!tauDisableSummary) {
+        tauColouredPrintf(TAU_COLOUR_BOLD_, "\nSummary:\n");
 
-        printf("    Total test suites:          %" TAU_PRIu64 "\n", muonStatsTotalTestSuites);
-        printf("    Total suites run:           %" TAU_PRIu64 "\n", muonStatsTestsRan);
-        printf("    Total warnings generated:   %" TAU_PRIu64 "\n", muonStatsNumWarnings);
-        printf("    Total suites skipped:       %" TAU_PRIu64 "\n", muonStatsSkippedTests);
-        printf("    Total suites failed:        %" TAU_PRIu64 "\n", muonStatsNumTestsFailed);
+        printf("    Total test suites:          %" TAU_PRIu64 "\n", tauStatsTotalTestSuites);
+        printf("    Total suites run:           %" TAU_PRIu64 "\n", tauStatsTestsRan);
+        printf("    Total warnings generated:   %" TAU_PRIu64 "\n", tauStatsNumWarnings);
+        printf("    Total suites skipped:       %" TAU_PRIu64 "\n", tauStatsSkippedTests);
+        printf("    Total suites failed:        %" TAU_PRIu64 "\n", tauStatsNumTestsFailed);
     }
 
-    if(muonStatsNumTestsFailed > 0) {
-        muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED: ");
-        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", muonStatsNumTestsFailed, muonStatsTestsRan - muonStatsNumTestsFailed);
-        muonClockPrintDuration(duration);
+    if(tauStatsNumTestsFailed > 0) {
+        tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED: ");
+        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", tauStatsNumTestsFailed, tauStatsTestsRan - tauStatsNumTestsFailed);
+        tauClockPrintDuration(duration);
         printf("\n");
         
-        for (TAU_Ull i = 0; i < muonStatsNumFailedTestSuites; i++) {
-            muonColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", muonTestContext.tests[muonStatsFailedTestSuites[i]].name);
+        for (TAU_Ull i = 0; i < tauStatsNumFailedTestSuites; i++) {
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
         }
-    } else if(muonStatsNumTestsFailed == 0 && muonStatsTotalTestSuites > 0) {
-        TAU_UInt64 total_tests_passed = muonStatsTestsRan - muonStatsNumTestsFailed;
-        muonColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
+    } else if(tauStatsNumTestsFailed == 0 && tauStatsTotalTestSuites > 0) {
+        TAU_UInt64 total_tests_passed = tauStatsTestsRan - tauStatsNumTestsFailed;
+        tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" TAU_PRIu64 " test suites passed in ", total_tests_passed);
-        muonClockPrintDuration(duration);
+        tauClockPrintDuration(duration);
         printf("\n");
     } else {
-        muonColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "WARNING: ");
+        tauColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "WARNING: ");
         printf("No test suites were found. If you think this was an error, please file an issue on Tau's Github repo.");
         printf("\n");
     }
 
 
-    if(muonTestContext.foutput)
-        fprintf(muonTestContext.foutput, "</testsuite>\n</testsuites>\n");
+    if(tauTestContext.foutput)
+        fprintf(tauTestContext.foutput, "</testsuite>\n</testsuites>\n");
 
-    return muonCleanup();
+    return tauCleanup();
 }
 
 /**
@@ -1150,21 +1150,21 @@ inline int muon_main(int argc, char** argv) {
     volatile int hasCurrentTestFailed = 0;              \
     volatile int shouldFailTest = 0;             \
     volatile int shouldAbortTest = 0;             \
-    TAU_UInt64 muonStatsNumWarnings = 0;
+    TAU_UInt64 tauStatsNumWarnings = 0;
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define TAU_NO_MAIN()                                        \
-    struct muonTestStateStruct muonTestContext = {0, 0, 0};   \
+    struct tauTestStateStruct tauTestContext = {0, 0, 0};   \
     TAU_ONLY_GLOBALS()
 
-// Define a main() function to call into muon.h and start executing tests.
+// Define a main() function to call into tau.h and start executing tests.
 #define TAU_MAIN()                                                             \
     /* Define the global struct that will hold the data we need to run Tau. */ \
-    struct muonTestStateStruct muonTestContext = {0, 0, 0};                     \
+    struct tauTestStateStruct tauTestContext = {0, 0, 0};                     \
     TAU_ONLY_GLOBALS()                                                         \
                                                                                 \
     int main(int argc, char** argv) {                                           \
-        return muon_main(argc, argv);                                           \
+        return tau_main(argc, argv);                                           \
     }
 
 TAU_DISABLE_WARNINGS_POP
