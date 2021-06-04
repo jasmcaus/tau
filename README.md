@@ -35,7 +35,7 @@ None! Tau is header-only, so simply include it in your project.
 #include <tau/tau.h>
 ```
 
-To build Tau with cmake, read through the [cmake Quickstart Guide](https://github.com/jasmcaus/Tau/blob/dev/docs/cmake-quickstart.md).
+To build Tau with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Tau/blob/dev/docs/cmake-quickstart.md).
 
 
 ## Basic Concepts

@@ -8,12 +8,12 @@ project(Tau
         LANGUAGES C CXX
 )
 
-# cmake's FATAL_ERROR is ignored on cmake versions >2.6 
-# Hence we explicitely check for correct enforcement of cmake configurations.
+# CMake's FATAL_ERROR is ignored on CMake versions >2.6 
+# Hence we explicitely check for correct enforcement of CMake configurations.
 if (${CMAKE_VERSION} VERSION_LESS "3.20")
     message(
-        ERROR "You are currently on cmake Version ${CMAKE_VERSION}, but Tau supports cmake 3.20 above."
-        "Please update your cmake installation."
+        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Tau supports CMake 3.20 above."
+        "Please update your CMake installation."
     )
 endif()
 
@@ -41,7 +41,7 @@ endif()
 
 
 if (POLICY CMP0077)
-    # Allow cmake 3.13+ to override options when using FetchContent/add_subdirectory.
+    # Allow CMake 3.13+ to override options when using FetchContent/add_subdirectory.
     cmake_policy(SET CMP0077 NEW)
 endif()
 
@@ -143,7 +143,7 @@ endif()
 
 
 # This library will be platform-independent, but still be installable following best practices. 
-# We include GNUInstallDirs (included in cmake) which provides us with a set of variables containing installation 
+# We include GNUInstallDirs (included in CMake) which provides us with a set of variables containing installation 
 # directories for various artifacts.
 include(GNUInstallDirs)
 
@@ -160,7 +160,7 @@ set(TAU_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${TAU_TARGET_NAME}.cma
 
 set(TAU_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Tau)
 
-# cmake Configurations (from the ``cmake`` folder)
+# CMake Configurations (from the ``cmake`` folder)
 set(TAU_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
 set(TAU_CMAKE_CONFIGVERSION         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake)
 set(TAU_CMAKE_CONFIG_IN             ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in)
@@ -177,7 +177,7 @@ set(TAU_CMAKE_PKGCONFIG             ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-
 # Where Tau's .h files can be found.
 set(
     TAU_BUILD_INCLUDE_DIRS
-    "${TAU_ROOT_DIR}/Tau"
+    "${TAU_ROOT_DIR}/tau"
     "${TAU_ROOT_DIR}"
 )
 include_directories(${TAU_BUILD_INCLUDE_DIRS})
@@ -286,7 +286,7 @@ install(
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Tau
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tau
     DESTINATION include
 )
 
