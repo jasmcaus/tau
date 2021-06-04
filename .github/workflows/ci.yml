@@ -64,7 +64,7 @@ jobs:
 #       - name: Build
 #         shell: bash
 #         run: |
-#           CMake --build build/ --config ${{ matrix.build_type }}
+#           cmake --build build/ --config ${{ matrix.build_type }}
 
 #       - name: Test
 #         shell: bash
@@ -116,7 +116,7 @@ jobs:
 #       - name: Build
 #         shell: bash
 #         run: |
-#           CMake --build build/ --config ${{ matrix.build_type }}
+#           cmake --build build/ --config ${{ matrix.build_type }}
       
 #       - name: Test (MSVC)
 #         if: (matrix.compiler == 'default') || (matrix.compiler == 'clangcl')

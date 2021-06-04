@@ -27,7 +27,7 @@ jobs:
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On  -DTAU_BUILDTHIRDPARTYTESTS=On
         
       - name: Build
-        run: CMake --build build --config=${{ matrix.build_type }} --parallel 10
+        run: cmake --build build --config=${{ matrix.build_type }} --parallel 10
 
       - name: Test (Internal)
         run: | 

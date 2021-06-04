@@ -32,7 +32,7 @@ jobs:
 
       - name: Build
         run: |
-          CMake --build build --config ${{ matrix.build_type }} --parallel 10
+          cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
       - name: Test (Internal)
         run: | 
@@ -71,7 +71,7 @@ jobs:
 
     - name: Build
       run: |
-        CMake --build build --config ${{ matrix.build_type }} --parallel 10
+        cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
     - name: Test (Internal)
       run: | 
@@ -93,7 +93,7 @@ jobs:
 
     - name: Build
       run: |
-        CMake --build build --config Release --parallel 10
+        cmake --build build --config Release --parallel 10
     
     - name: Test (Internal)
       run: | 
@@ -119,7 +119,7 @@ jobs:
       
     - name: Build
       run: |
-        CMake --build build --config ${{ matrix.build_type }} --parallel 10
+        cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
     - name: Test (Internal)
       run: | 
@@ -141,7 +141,7 @@ jobs:
 
     - name: Build
       run: |
-        CMake --build build --config Release --parallel 10
+        cmake --build build --config Release --parallel 10
 
     - name: Test (Internal)
       run: | 
@@ -167,7 +167,7 @@ jobs:
 
       - name: Build
         run: |
-          CMake --build build --config ${{ matrix.build_type }} --parallel 10
+          cmake --build build --config ${{ matrix.build_type }} --parallel 10
 
       - name: Test (Internal)
         run: | 
@@ -197,7 +197,7 @@ jobs:
 
   #     - name: Build
   #       run: |
-        #   CMake --build build --parallel 10
+        #   cmake --build build --parallel 10
 
       # - name: Test (Internal)
       #   run: | 

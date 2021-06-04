@@ -29,7 +29,7 @@ jobs:
 
       - name: Build 
         run: |
-          CMake --build build --config=${{ matrix.build_type }}
+          cmake --build build --config=${{ matrix.build_type }}
 
       - name: Test (Internal)
         run: | 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Build
         run: |
-          CMake --build build --config=${{ matrix.build_type }}
+          cmake --build build --config=${{ matrix.build_type }}
 
       - name: Test (Internal)
         run: | 
