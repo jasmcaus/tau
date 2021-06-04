@@ -1,9 +1,10 @@
 /*
-|  \/  | |  | |/ __ \| \ | |
-| \  / | |  | | |  | |  \| |    Tau - The Micro Testing Framework for C/C++
-| |\/| | |  | | |  | | . ` |    Languages: C, and C++
-| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Tau
-|_|  |_|\____/ \____/|_| \_|
+ _______           _    _
+|__   __|   /\    | |  | |
+   | |     /  \   | |  | |  Tau - The Micro Testing Framework for C/C++
+   | |    / /\ \  | |  | |  Language: C
+   | |   / ____ \ | |__| |  https://github.com/jasmcaus/tau
+   |_|__/_/    \_\ \____/ 
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT

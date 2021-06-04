@@ -1,9 +1,10 @@
 /*
-|  \/  | |  | |/ __ \| \ | |
-| \  / | |  | | |  | |  \| |    Tau - The Micro Testing Framework for C/C++
-| |\/| | |  | | |  | | . ` |    Languages: C, and C++
-| |  | | |__| | |__| | |\  |    https://github.com/jasmcaus/Tau
-|_|  |_|\____/ \____/|_| \_|
+ _______           _    _
+|__   __|   /\    | |  | |
+   | |     /  \   | |  | |  Tau - The Micro Testing Framework for C/C++
+   | |    / /\ \  | |  | |  Language: C
+   | |   / ____ \ | |__| |  https://github.com/jasmcaus/tau
+   |_|__/_/    \_\ \____/ 
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT
@@ -15,7 +16,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 #include <tau/compilers.h>
 
-// Base Types
+// Base types/
 /*
 typedef unsigned char       TAU_UInt8; 
 typedef          char       TAU_Int8;  
@@ -63,7 +64,7 @@ typedef double              TAU_Float64;
     typedef int32_t   TAU_Int32; 
     typedef uint64_t  TAU_UInt64; 
     typedef int64_t   TAU_Int64; 
-#endif // Tau Basic Types 
+#endif // Tau Basic types/ 
 
 typedef float  TAU_Float32; 
 typedef double TAU_Float64; 
@@ -113,7 +114,7 @@ typedef TAU_Int32 TAU_Rune;
     typedef  intptr_t    TAU_Intptr;
 #endif
 
-// More Useful Types
+// More Useful types/
 #define TAU_NULLCHAR '\0' 
  
 #ifndef TAU_NULL 
