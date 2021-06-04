@@ -47,19 +47,19 @@ jobs:
 #         shell: bash
 #         if: matrix.compiler == 'default'
 #         run: |
-#           CMake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+#           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
 #       - name: GCC (Ubuntu)
 #         shell: bash
 #         if: (matrix.compiler == 'gcc') && (matrix.os == 'ubuntu-latest')
 #         run: |
-#           CMake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
+#           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-10
 
 #       - name: Clang (Ubuntu)
 #         shell: bash
 #         if: (matrix.compiler == 'clang') && (matrix.os == 'ubuntu-latest')
 #         run: |
-#           CMake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10
+#           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-10 -DCMAKE_CXX_COMPILER=clang++-10
 
 #       - name: Build
 #         shell: bash
@@ -93,25 +93,25 @@ jobs:
 #         shell: bash
 #         if: matrix.compiler == 'default'
 #         run: |
-#           CMake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+#           cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
 #       - name: CMake (GCC)
 #         shell: bash
 #         if: matrix.compiler == 'gcc'
 #         run: |
-#           CMake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       
 #       - name: CMake (Clang)
 #         shell: bash
 #         if: matrix.compiler == 'clang'
 #         run: |
-#           CMake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On
+#           cmake -S . -B build -G"MinGW Makefiles" -DCMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DTAU_BUILDINTERNALTESTS=On
 
 #       - name: CMake (Clang Cl)
 #         shell: bash
 #         if: matrix.compiler == 'clangcl'
 #         run: |
-#           CMake -S . -B build -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-cl -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
+#           cmake -S . -B build -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER=clang-cl -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
 
 #       - name: Build
 #         shell: bash
