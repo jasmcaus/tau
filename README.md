@@ -4,9 +4,9 @@
 
 [![Standard](https://img.shields.io/badge/C-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C_(programming_language))
 [![Standard](https://img.shields.io/badge/C%2B%2B-11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
-[![License](https://img.shields.io/github/license/jasmcaus/Tau?label=license)][license]
+[![License](https://img.shields.io/github/license/jasmcaus/tau?label=license)][license]
 [![Twitter](https://img.shields.io/twitter/follow/jasmcaus.svg?style=flatl&label=Follow&logo=twitter&logoColor=white&color=1da1f2)][twitter-badge]
-[![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/Tau/releases)
+[![Download](https://img.shields.io/badge/download%20%20-link-green.svg)](https://github.com/jasmcaus/tau/releases)
 [![Docs](https://img.shields.io/badge/docs%20%20-online-blue.svg)][docs]
 
 </div>
@@ -23,8 +23,8 @@ for the sacrifice of a few constructs.
 
 ## Features
 * *Ultra-light* (~1k lines of code)
-* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/Tau/blob/dev/test/thirdparty))
-* [Blazing Fast Assertions](https://github.com/jasmcaus/Tau/blob/dev/benchmarks)
+* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/thirdparty))
+* [Blazing Fast Assertions](https://github.com/jasmcaus/tau/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
 * Test Fixtures 
 
@@ -35,7 +35,7 @@ None! Tau is header-only, so simply include it in your project.
 #include <tau/tau.h>
 ```
 
-To build Tau with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/Tau/blob/dev/docs/cmake-quickstart.md).
+To build Tau with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/tau/blob/dev/docs/cmake-quickstart.md).
 
 
 ## Basic Concepts
@@ -86,7 +86,7 @@ run.
 `CHECK`s generate *non-fatal* failures - the remainder of the test suite will still execute, allowing for further 
 checks to run. 
 
-Read [the Primer](https://github.com/jasmcaus/Tau/blob/dev/docs/muon-primer.md) for more details, including the 
+Read [the Primer](https://github.com/jasmcaus/tau/blob/dev/docs/tau-primer.md) for more details, including the 
 other testing macros Tau provides you with.
 
 
@@ -152,10 +152,10 @@ If you are able to and would like to sponsor this project, I'm available on [Pat
 # License 
 This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the [MIT License](LICENSE).
 
-[contributing]: https://github.com/jasmcaus/Tau/blob/dev/.github/CONTRIBUTING.md
-[docs]: https://github.com/jasmcaus/Tau/blob/dev/docs
-[discussions]: https://github.com/jasmcaus/Tau/discussions
-[issues]: https://github.com/jasmcaus/Tau/issues
+[contributing]: https://github.com/jasmcaus/tau/blob/dev/.github/CONTRIBUTING.md
+[docs]: https://github.com/jasmcaus/tau/blob/dev/docs
+[discussions]: https://github.com/jasmcaus/tau/discussions
+[issues]: https://github.com/jasmcaus/tau/issues
 
 [twitter-badge]: https://twitter.com/jasmcaus
-[license]: https://github.com/jasmcaus/Tau/blob/dev/LICENSE
+[license]: https://github.com/jasmcaus/tau/blob/dev/LICENSE
