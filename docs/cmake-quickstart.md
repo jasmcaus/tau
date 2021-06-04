@@ -105,4 +105,4 @@ SUCCESS: 2 tests have passed in 8.35ms
 Congratulations! You've successfully built and run a test binary using Tau!
 
 # Next Steps
-* [Check out the Primer](muon-primer.md) in Tau to start writing powerful unit tests.
+* [Check out the Primer](tau-primer.md) in Tau to start writing powerful unit tests.
