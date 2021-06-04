@@ -9,8 +9,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 */
 
-#ifndef TAU_TEST_H_
-#define TAU_TEST_H_
+#ifndef TAU_H_
+#define TAU_H_
 
 #include <tau/types.h>
 #include <tau/misc.h>
@@ -1169,4 +1169,4 @@ inline int tau_main(int argc, char** argv) {
 
 TAU_DISABLE_WARNINGS_POP
 
-#endif // TAU_TEST_H_
+#endif // TAU_H_
