@@ -730,7 +730,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 
 #define WARN(msg)                                                        \
     incrementWarnings();                                                 \
-    tauColouredPrintf(TAU_COLOUR_YELLOW_, "%s:%u: WARNING: %s\n", __FILE__, __LINE__, #msg)
+    tauColouredPrintf(TAU_COLOUR_YELLOW_, "%s:%u:\nWARNING: %s\n", __FILE__, __LINE__, #msg)
 
 #ifdef __cplusplus
     #define SECTION(...)    \
