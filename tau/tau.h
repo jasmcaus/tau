@@ -291,13 +291,13 @@ static void tauClockPrintDuration(double nanoseconds_duration) {
     #endif // _WIN64
 
     #pragma section(".CRT$XCU", read)
-    #define TAU_TEST_INITIALIZER(f)                                                     \
+    #define TAU_TEST_INITIALIZER(f)                                                      \
     static void __cdecl f(void);                                                         \
-        __pragma(comment(linker, "/include:" TAU_SYMBOL_PREFIX #f "_"))                 \
-        TAU_C_FUNC __declspec(allocate(".CRT$XCU"))    void(__cdecl * f##_)(void) = f;  \
+        __pragma(comment(linker, "/include:" TAU_SYMBOL_PREFIX #f "_"))                  \
+        TAU_C_FUNC __declspec(allocate(".CRT$XCU"))    void(__cdecl * f##_)(void) = f;   \
     static void __cdecl f(void)
 #else
-    #define TAU_TEST_INITIALIZER(f)                            \
+    #define TAU_TEST_INITIALIZER(f)                             \
         static void f(void)     __attribute__((constructor));   \
         static void f(void)
 #endif // _MSC_VER
@@ -499,8 +499,8 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
         #define TAU_CAN_USE_OVERLOADABLES
     #endif // TAU_CAN_USE_OVERLOADABLES
 
-    #define TAU_OVERLOAD_PRINTER(val)                            \
-        tauPrintf(_Generic((val),                                \
+    #define TAU_OVERLOAD_PRINTER(val)                             \
+        tauPrintf(_Generic((val),                                 \
                             char : "'%c'",                        \
                             char* : "%s",                         \
                             unsigned char : "%hhu",               \
@@ -511,7 +511,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                             long : "%ld",                         \
                             long long : "%lld",                   \
                             unsigned long : "%lu",                \
-                            unsigned long long : "%"TAU_PRIu64,  \
+                            unsigned long long : "%"TAU_PRIu64,   \
                             float : "%f",                         \
                             double : "%f",                        \
                             long double : "%Lf",                  \
@@ -529,72 +529,72 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(TAU_CAN_USE_OVERLOADABLES)
-    #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                  \
+    #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                   \
         do {                                                                                    \
             if(!((actual)cond(expected))) {                                                     \
-                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                         \
+                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                       \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                          \
                 if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                           \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");               \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",               \
-                                                                #macroName,                     \
-                                                                #actual, #expected);            \
-                }                                                                               \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                \
+                                                                #macroName,                    \
+                                                                #actual, #expected);           \
+                }                                                                              \
                 tauPrintf("  Expected : %s", #actual);                                         \
-                printf(" %s ", #cond space);                                                    \
+                printf(" %s ", #cond space);                                                   \
                 TAU_OVERLOAD_PRINTER(expected);                                                \
                 tauPrintf("\n");                                                               \
-                                                                                                \
+                                                                                               \
                 tauPrintf("    Actual : %s", #actual);                                         \
-                printf(" == ");                                                                 \
+                printf(" == ");                                                                \
                 TAU_OVERLOAD_PRINTER(actual);                                                  \
                 tauPrintf("\n");                                                               \
-                failOrAbort();                                                                  \
-            }                                                                                   \
-        }                                                                                       \
+                failOrAbort();                                                                 \
+            }                                                                                  \
+        }                                                                                      \
         while(0)
 
 // TAU_OVERLOAD_PRINTER does not work on some compilers
 #else
     #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                          \
-        do {                                                                                            \
-            if(!((actual)cond(expected))) {                                                             \
+        do {                                                                                           \
+            if(!((actual)cond(expected))) {                                                            \
                 tauPrintf("%s:%u: ", __FILE__, __LINE__);                                              \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                 \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                  \
                 if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                                   \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                       \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                       \
-                                                                #macroName,                             \
-                                                                #actual, #expected);                    \
-                }                                                                                       \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                        \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                        \
+                                                                #macroName,                            \
+                                                                #actual, #expected);                   \
+                }                                                                                      \
                 tauPrintf("  Expected : %s", #actual);                                                 \
-                printf(" %s ", #cond space);                                                            \
-                printf(#expected);                                                                      \
+                printf(" %s ", #cond space);                                                           \
+                printf(#expected);                                                                     \
                 tauPrintf("\n");                                                                       \
-                                                                                                        \
+                                                                                                       \
                 tauPrintf("    Actual : %s", #actual);                                                 \
-                printf(" == ");                                                                         \
-                printf(#actual);                                                                      \
+                printf(" == ");                                                                        \
+                printf(#actual);                                                                       \
                 tauPrintf("\n");                                                                       \
-                failOrAbort();                                                                          \
-            }                                                                                           \
-        }                                                                                               \
+                failOrAbort();                                                                         \
+            }                                                                                          \
+        }                                                                                              \
         while(0)
 #endif // TAU_CAN_USE_OVERLOADABLES
 
-#define __TAUCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)      \
+#define __TAUCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)       \
     do {                                                                                                        \
         if(strcmp(actual, expected) cond 0) {                                                                   \
-            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                               \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                           \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                               \
+            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                                \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                                 \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                                 \
                                                                 #macroName,                                     \
                                                                 #actual, #expected);                            \
                 }                                                                                               \
-            tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);             \
-            tauPrintf("    Actual : %s\n", #actualPrint);                                                      \
+            tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);              \
+            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort();                                                                                      \
             return;                                                                                             \
         }                                                                                                       \
@@ -603,23 +603,23 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 
 #define __TAUCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
     do {                                                                                                        \
-        if(TAU_CAST(int, n) < 0) {                                                                             \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");                             \
-            TAU_ABORT;                                                                                         \
+        if(TAU_CAST(int, n) < 0) {                                                                              \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");                               \
+            TAU_ABORT;                                                                                          \
         }                                                                                                       \
         if(strncmp(actual, expected, n) cond 0) {                                                               \
-            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                          \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                             \
-            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                               \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                               \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                            \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                           \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                               \
+            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                                \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                                 \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s)\n",                              \
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #n);                        \
                 }                                                                                               \
-            tauPrintf("  Expected : \"%.*s\" %s \"%.*s\"\n", TAU_CAST(int, n), actual,                        \
+            tauPrintf("  Expected : \"%.*s\" %s \"%.*s\"\n", TAU_CAST(int, n), actual,                          \
                                                               #ifCondFailsThenPrint,                            \
-                                                              TAU_CAST(int, n), expected);                     \
-            tauPrintf("    Actual : %s\n", #actualPrint);                                                      \
+                                                              TAU_CAST(int, n), expected);                      \
+            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort();                                                                                      \
             return;                                                                                             \
         }                                                                                                       \
@@ -627,19 +627,19 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     while(0)  
 
 
-#define __TAUCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)    \
+#define __TAUCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)     \
     do {                                                                            \
         if(negateSign(cond)) {                                                      \
-            tauPrintf("%s:%u: ", __FILE__, __LINE__);                              \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                 \
-            if(tauShouldDecomposeMacro(#actual, TAU_NULL, 0)) {                   \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");   \
-                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s )\n",       \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                               \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                   \
+            if(tauShouldDecomposeMacro(#actual, TAU_NULL, 0)) {                     \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");     \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s )\n",         \
                                                                 #macroName,         \
                                                                 #cond);             \
                 }                                                                   \
-            tauPrintf("  Expected : %s\n", #expected);                             \
-            tauPrintf("    Actual : %s\n", #actual);                               \
+            tauPrintf("  Expected : %s\n", #expected);                              \
+            tauPrintf("    Actual : %s\n", #actual);                                \
             failOrAbort();                                                          \
         }                                                                           \
     } while(0)
@@ -683,17 +683,17 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #define REQUIRE_TRUE(cond)    __TAUCMP_TF(cond, false, true, !, REQUIRE_TRUE, abortIfInsideTestSuite)
 #define REQUIRE_FALSE(cond)   __TAUCMP_TF(cond, true, false, , REQUIRE_FALSE, abortIfInsideTestSuite)
 
-#define __TAUCHECKREQUIRE__(cond, failOrAbort, macroName, ...)                                \
+#define __TAUCHECKREQUIRE__(cond, failOrAbort, macroName, ...)                                 \
     do {                                                                                       \
         if(!(cond)) {                                                                          \
-            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                         \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                          \
             if((sizeof(char[]){__VA_ARGS__}) <= 1)                                             \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED");                          \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED");                            \
             else                                                                               \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                       \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                         \
             printf("\n");                                                                      \
             printf("The following assertion failed: \n");                                      \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);  \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);    \
             failOrAbort();                                                                     \
         }                                                                                      \
     }                                                                                          \
@@ -754,23 +754,23 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #########################################
 */
 
-#define TEST(TESTSUITE, TESTNAME)                                                               \
-    TAU_EXTERN struct tauTestStateStruct tauTestContext;                                     \
+#define TEST(TESTSUITE, TESTNAME)                                                              \
+    TAU_EXTERN struct tauTestStateStruct tauTestContext;                                       \
     static void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void);                                 \
-    TAU_TEST_INITIALIZER(tau_register_##TESTSUITE##_##TESTNAME) {                             \
-        const TAU_Ull index = tauTestContext.numTestSuites++;                                 \
-        const char* namePart = #TESTSUITE "." #TESTNAME;                                        \
+    TAU_TEST_INITIALIZER(tau_register_##TESTSUITE##_##TESTNAME) {                              \
+        const TAU_Ull index = tauTestContext.numTestSuites++;                                  \
+        const char* namePart = #TESTSUITE "." #TESTNAME;                                       \
         const TAU_Ull nameSize = strlen(namePart) + 1;                                         \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                                    \
-        tauTestContext.tests = TAU_PTRCAST(                                                   \
+        tauTestContext.tests = TAU_PTRCAST(                                                    \
                                     struct tauTestSuiteStruct* ,                               \
-                                    tau_realloc(TAU_PTRCAST(void* , tauTestContext.tests),   \
+                                    tau_realloc(TAU_PTRCAST(void* , tauTestContext.tests),     \
                                                 sizeof(struct tauTestSuiteStruct) *            \
                                                     tauTestContext.numTestSuites));            \
-        tauTestContext.tests[index].func = &_TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME;          \
+        tauTestContext.tests[index].func = &_TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME;           \
         tauTestContext.tests[index].name = name;                                               \
         TAU_SNPRINTF(name, nameSize, "%s", namePart);                                          \
-    }                                                                                           \
+    }                                                                                          \
     void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void)
 
 
@@ -780,38 +780,38 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #define TEST_F_TEARDOWN(FIXTURE)                                               \
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* tau)
 
-#define TEST_F(FIXTURE, NAME)                                                  \
-    TAU_EXTERN struct tauTestStateStruct tauTestContext;                    \
+#define TEST_F(FIXTURE, NAME)                                                 \
+    TAU_EXTERN struct tauTestStateStruct tauTestContext;                      \
     static void __TAU_TEST_FIXTURE_SETUP_##FIXTURE(struct FIXTURE*);          \
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE*);       \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE*);   \
-                                                                               \
+                                                                              \
     static void __TAU_TEST_FIXTURE_##FIXTURE##_##NAME() {                     \
-        struct FIXTURE fixture;                                                \
-        memset(&fixture, 0, sizeof(fixture));                                  \
+        struct FIXTURE fixture;                                               \
+        memset(&fixture, 0, sizeof(fixture));                                 \
         __TAU_TEST_FIXTURE_SETUP_##FIXTURE(&fixture);                         \
-        if (hasCurrentTestFailed == 1) {                                       \
-            return;                                                            \
-        }                                                                      \
-                                                                               \
+        if (hasCurrentTestFailed == 1) {                                      \
+            return;                                                           \
+        }                                                                     \
+                                                                              \
         __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(&fixture);                  \
         __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(&fixture);                      \
-    }                                                                          \
-                                                                               \
-    TAU_TEST_INITIALIZER(tau_register_##FIXTURE##_##NAME) {                  \
-        const TAU_Ull index = tauTestContext.numTestSuites++;                \
-        const char* namePart = #FIXTURE "." #NAME;                             \
+    }                                                                         \
+                                                                              \
+    TAU_TEST_INITIALIZER(tau_register_##FIXTURE##_##NAME) {                   \
+        const TAU_Ull index = tauTestContext.numTestSuites++;                 \
+        const char* namePart = #FIXTURE "." #NAME;                            \
         const TAU_Ull nameSize = strlen(namePart) + 1;                        \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                   \
-        tauTestContext.tests = TAU_PTRCAST(                                  \
+        tauTestContext.tests = TAU_PTRCAST(                                   \
                                     struct tauTestSuiteStruct*,               \
                                     tau_realloc(TAU_PTRCAST(void *, tauTestContext.tests),               \
-                                                                sizeof(struct tauTestSuiteStruct) *        \
-                                                                        tauTestContext.numTestSuites));    \
-        tauTestContext.tests[index].func = &__TAU_TEST_FIXTURE_##FIXTURE##_##NAME;                        \
+                                                                sizeof(struct tauTestSuiteStruct) *      \
+                                                                        tauTestContext.numTestSuites));  \
+        tauTestContext.tests[index].func = &__TAU_TEST_FIXTURE_##FIXTURE##_##NAME;                       \
         tauTestContext.tests[index].name = name;                              \
         TAU_SNPRINTF(name, nameSize, "%s", namePart);                         \
-    }                                                                          \
+    }                                                                         \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* tau)
 
 
@@ -1146,24 +1146,24 @@ inline int tau_main(int argc, char** argv) {
     See: https://stackoverflow.com/questions/1856599/when-to-use-static-keyword-before-global-variables
 */
 #define TAU_ONLY_GLOBALS()                       \
-    volatile int checkIsInsideTestSuite = 0;      \
-    volatile int hasCurrentTestFailed = 0;              \
+    volatile int checkIsInsideTestSuite = 0;     \
+    volatile int hasCurrentTestFailed = 0;       \
     volatile int shouldFailTest = 0;             \
-    volatile int shouldAbortTest = 0;             \
+    volatile int shouldAbortTest = 0;            \
     TAU_UInt64 tauStatsNumWarnings = 0;
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
-#define TAU_NO_MAIN()                                        \
+#define TAU_NO_MAIN()                                       \
     struct tauTestStateStruct tauTestContext = {0, 0, 0};   \
     TAU_ONLY_GLOBALS()
 
 // Define a main() function to call into tau.h and start executing tests.
 #define TAU_MAIN()                                                             \
     /* Define the global struct that will hold the data we need to run Tau. */ \
-    struct tauTestStateStruct tauTestContext = {0, 0, 0};                     \
+    struct tauTestStateStruct tauTestContext = {0, 0, 0};                      \
     TAU_ONLY_GLOBALS()                                                         \
-                                                                                \
-    int main(int argc, char** argv) {                                           \
+                                                                               \
+    int main(int argc, char** argv) {                                          \
         return tau_main(argc, argv);                                           \
     }
 
