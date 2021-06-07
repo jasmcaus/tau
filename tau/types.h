@@ -69,6 +69,19 @@ typedef double              TAU_Float64;
 typedef float  TAU_Float32; 
 typedef double TAU_Float64; 
 
+TAU_CHECK(sizeof(TAU_UInt8)  == sizeof(TAU_Int8));
+TAU_CHECK(sizeof(TAU_UInt16) == sizeof(TAU_Int16));
+TAU_CHECK(sizeof(TAU_UInt32) == sizeof(TAU_Int32));
+TAU_CHECK(sizeof(TAU_UInt64) == sizeof(TAU_Int64));
+
+TAU_CHECK(sizeof(TAU_UInt8)  == 1);
+TAU_CHECK(sizeof(TAU_UInt16) == 2);
+TAU_CHECK(sizeof(TAU_UInt32) == 4);
+TAU_CHECK(sizeof(TAU_UInt64) == 8);
+
+TAU_CHECK(sizeof(TAU_Float32) == 4);
+TAU_CHECK(sizeof(TAU_Float64) == 8);
+
 // Bool-sy
 typedef TAU_Int8  TAU_Bool8; 
 typedef TAU_Int16 TAU_Bool16;
@@ -113,6 +126,8 @@ typedef TAU_Int32 TAU_Rune;
     typedef  uintptr_t   TAU_UIntptr;
     typedef  intptr_t    TAU_Intptr;
 #endif
+
+TAU_CHECK(sizeof(TAU_UIntptr) == sizeof(Intptr));
 
 // More Useful types/
 #define TAU_NULLCHAR '\0' 
