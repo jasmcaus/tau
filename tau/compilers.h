@@ -185,6 +185,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
     TAU_GCC_SUPPRESS_WARNING("-Wswitch-default")                                                     \
     TAU_GCC_SUPPRESS_WARNING("-Wformat")                                                             \
     TAU_GCC_SUPPRESS_WARNING("-Wformat-extra-args")                                                  \
+    TAU_GCC_SUPPRESS_WARNING("-Wsuggest-attribute=format")                                           \
     TAU_GCC_SUPPRESS_WARNING("-Wdeprecated-declarations")
 #endif // TAU_DISABLE_WARNINGS
 
