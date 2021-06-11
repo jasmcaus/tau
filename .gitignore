@@ -5,6 +5,7 @@ build/*
 /test.h
 /test.c
 Makefile
+tauoutput.txt
 
 # Compiled Object files
 *.slo

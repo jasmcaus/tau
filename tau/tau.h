@@ -91,41 +91,43 @@ TAU_DISABLE_WARNINGS
     #define TAU_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
-#if defined(_MSC_VER) || defined(__cplusplus)
-    #define TAU_WEAK     inline
-    #define TAU_UNUSED
-#else
-    #define TAU_WEAK     __attribute__((weak))
-    #define TAU_UNUSED   __attribute__((unused))
-#endif // _MSC_VER
+#ifndef TAU_NO_TESTING
+    #if defined(_MSC_VER) || defined(__cplusplus)
+        #define TAU_WEAK     inline
+        #define TAU_UNUSED
+    #else
+        #define TAU_WEAK     __attribute__((weak))
+        #define TAU_UNUSED   __attribute__((unused))
+    #endif // _MSC_VER
 
-typedef void (*tau_testsuite_t)();
-struct tauTestSuiteStruct {
-    tau_testsuite_t func;
-    char* name;
-};
+    typedef void (*tau_testsuite_t)();
+    struct tauTestSuiteStruct {
+        tau_testsuite_t func;
+        char* name;
+    };
 
-struct tauTestStateStruct {
-    struct tauTestSuiteStruct* tests;
-    TAU_Ull numTestSuites;
-    FILE* foutput;
-};
+    struct tauTestStateStruct {
+        struct tauTestSuiteStruct* tests;
+        TAU_Ull numTestSuites;
+        FILE* foutput;
+    };
 
-static TAU_UInt64 tauStatsTotalTestSuites = 0;
-static TAU_UInt64 tauStatsTestsRan = 0;
-static TAU_UInt64 tauStatsNumTestsFailed = 0;
-static TAU_UInt64 tauStatsSkippedTests = 0; 
-static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL; 
-static TAU_Ull tauStatsNumFailedTestSuites = 0;
-extern TAU_UInt64 tauStatsNumWarnings;
+    static TAU_UInt64 tauStatsTotalTestSuites = 0;
+    static TAU_UInt64 tauStatsTestsRan = 0;
+    static TAU_UInt64 tauStatsNumTestsFailed = 0;
+    static TAU_UInt64 tauStatsSkippedTests = 0; 
+    static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL; 
+    static TAU_Ull tauStatsNumFailedTestSuites = 0;
+    extern TAU_UInt64 tauStatsNumWarnings;
 
-// Overridden in `tau_main` if the cmdline option `--no-color` is passed
-static int tauShouldColourizeOutput = 1;
-static int tauDisableSummary = 0;
-static int tauDisplayOnlyFailedOutput = 0; 
+    // Overridden in `tau_main` if the cmdline option `--no-color` is passed
+    static int tauShouldColourizeOutput = 1;
+    static int tauDisableSummary = 0;
+    static int tauDisplayOnlyFailedOutput = 0; 
 
-static char* tau_argv0_ = TAU_NULL;
-static const char* cmd_filter = TAU_NULL;
+    static char* tau_argv0_ = TAU_NULL;
+    static const char* cmd_filter = TAU_NULL;
+#endif // TAU_NO_TESTING
 
 /**
     This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
@@ -149,21 +151,23 @@ extern volatile int shouldAbortTest;
     appropriately - fail the current test suite and carry on with the other checks (or move on to the next
     suite in the case of a REQUIRE)
 */
-static void failIfInsideTestSuite();
-static void failIfInsideTestSuite() {
+static void __failIfInsideTestSuite();
+static void __failIfInsideTestSuite() {
     if(checkIsInsideTestSuite== 1) {
         hasCurrentTestFailed = 1;
         shouldFailTest = 1;
     }
 }
 
-static void abortIfInsideTestSuite();
-static void abortIfInsideTestSuite() {
+static void __abortIfInsideTestSuite();
+static void __abortIfInsideTestSuite() {
     if(checkIsInsideTestSuite== 1) {
         hasCurrentTestFailed = 1;
         shouldAbortTest = 1;
     }
 }
+
+#ifndef TAU_NO_TESTING
 
 static void incrementWarnings() {
     tauStatsNumWarnings++;
@@ -312,7 +316,7 @@ static inline void* tau_realloc(void* const ptr, TAU_Ull new_size) {
 
     return new_ptr;
 }
-
+#endif // TAU_NO_TESTING
 
 #define TAU_COLOUR_DEFAULT_              0
 #define TAU_COLOUR_RED_                  1
@@ -340,9 +344,11 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
     va_end(args);
     buffer[sizeof(buffer)-1] = '\0';
 
+#ifndef TAU_NO_TESTING
     if(!tauShouldColourizeOutput) {
         return printf("%s", buffer);
     }
+#endif // TAU_NO_TESTING
 
 #ifdef TAU_UNIX_
     {
@@ -403,18 +409,17 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
 #endif // TAU_UNIX_
 }
 
-
-#define tauPrintf(...)                                  \
-    if(tauTestContext.foutput)                          \
-        fprintf(tauTestContext.foutput, __VA_ARGS__);   \
-    printf(__VA_ARGS__)
-
-
-#ifdef _MSC_VER
-    #define TAU_SNPRINTF(BUFFER, N, ...)   _snprintf_s(BUFFER, N, N, __VA_ARGS__)
+#ifndef TAU_NO_TESTING
+    #define tauPrintf(...)                                  \
+        if(tauTestContext.foutput)                          \
+            fprintf(tauTestContext.foutput, __VA_ARGS__);   \
+        printf(__VA_ARGS__)
 #else
-    #define TAU_SNPRINTF(...)              snprintf(__VA_ARGS__)
-#endif // _MSC_VER
+    #define tauPrintf(...)   \
+        printf(__VA_ARGS__)
+#endif // TAU_NO_TESTING
+
+
 
 static inline int TAU_isDigit(char c) { return c >= '0' && c <= '9'; }
 // If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
@@ -526,6 +531,13 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
         tauPrintf("If you think this was an error, please file an issue on Tau's Github repo.")
 #endif // TAU_OVERLOADABLE
 
+#ifndef TAU_NO_TESTING
+    #define TAU_FAIL_IF_INSIDE_TESTSUITE    __failIfInsideTestSuite()
+    #define TAU_ABORT_IF_INSIDE_TESTSUITE   __abortIfInsideTestSuite()
+#else 
+    #define TAU_FAIL_IF_INSIDE_TESTSUITE    TAU_ABORT
+    #define TAU_ABORT_IF_INSIDE_TESTSUITE   TAU_ABORT
+#endif // TAU_NO_TESTING
 
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
@@ -550,7 +562,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 printf(" == ");                                                                \
                 TAU_OVERLOAD_PRINTER(actual);                                                  \
                 tauPrintf("\n");                                                               \
-                failOrAbort();                                                                 \
+                failOrAbort;                                                                   \
             }                                                                                  \
         }                                                                                      \
         while(0)
@@ -577,7 +589,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 printf(" == ");                                                                        \
                 printf(#actual);                                                                       \
                 tauPrintf("\n");                                                                       \
-                failOrAbort();                                                                         \
+                failOrAbort;                                                                           \
             }                                                                                          \
         }                                                                                              \
         while(0)
@@ -596,7 +608,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 }                                                                                               \
             tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);              \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
-            failOrAbort();                                                                                      \
+            failOrAbort;                                                                                        \
             return;                                                                                             \
         }                                                                                                       \
     }                                                                                                           \
@@ -621,7 +633,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                                                               #ifCondFailsThenPrint,                            \
                                                               TAU_CAST(int, n), expected);                      \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
-            failOrAbort();                                                                                      \
+            failOrAbort;                                                                                        \
             return;                                                                                             \
         }                                                                                                       \
     }                                                                                                           \
@@ -641,7 +653,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 }                                                                   \
             tauPrintf("  Expected : %s\n", #expected);                              \
             tauPrintf("    Actual : %s\n", #actual);                                \
-            failOrAbort();                                                          \
+            failOrAbort;                                                            \
         }                                                                           \
     } while(0)
 
@@ -650,39 +662,39 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
           {CHECK|REQUIRE} Macros
 ############################################
 */
-#define CHECK_EQ(actual, expected)     __TAUCMP__(actual, expected, ==, "", CHECK_EQ, failIfInsideTestSuite)
-#define CHECK_NE(actual, expected)     __TAUCMP__(actual, expected, !=, "", CHECK_NE, failIfInsideTestSuite)
-#define CHECK_LT(actual, expected)     __TAUCMP__(actual, expected, < , " ", CHECK_LT, failIfInsideTestSuite)
-#define CHECK_LE(actual, expected)     __TAUCMP__(actual, expected, <=, "", CHECK_LE, failIfInsideTestSuite)
-#define CHECK_GT(actual, expected)     __TAUCMP__(actual, expected, > , " ", CHECK_GT, failIfInsideTestSuite)
-#define CHECK_GE(actual, expected)     __TAUCMP__(actual, expected, >=, "", CHECK_GE, failIfInsideTestSuite)
+#define CHECK_EQ(actual, expected)     __TAUCMP__(actual, expected, ==, "", CHECK_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_NE(actual, expected)     __TAUCMP__(actual, expected, !=, "", CHECK_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_LT(actual, expected)     __TAUCMP__(actual, expected, < , " ", CHECK_LT, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_LE(actual, expected)     __TAUCMP__(actual, expected, <=, "", CHECK_LE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_GT(actual, expected)     __TAUCMP__(actual, expected, > , " ", CHECK_GT, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_GE(actual, expected)     __TAUCMP__(actual, expected, >=, "", CHECK_GE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 
-#define REQUIRE_EQ(actual, expected)   __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, abortIfInsideTestSuite)
-#define REQUIRE_NE(actual, expected)   __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, abortIfInsideTestSuite)
-#define REQUIRE_LT(actual, expected)   __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, abortIfInsideTestSuite)
-#define REQUIRE_LE(actual, expected)   __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, abortIfInsideTestSuite)
-#define REQUIRE_GT(actual, expected)   __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, abortIfInsideTestSuite)
-#define REQUIRE_GE(actual, expected)   __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, abortIfInsideTestSuite)
+#define REQUIRE_EQ(actual, expected)   __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_NE(actual, expected)   __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_LT(actual, expected)   __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_LE(actual, expected)   __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_GT(actual, expected)   __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_GE(actual, expected)   __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Whole-string checks
-#define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, failIfInsideTestSuite)
-#define CHECK_STRNEQ(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, failIfInsideTestSuite)
-#define REQUIRE_STREQ(actual, expected)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, abortIfInsideTestSuite)
-#define REQUIRE_STRNEQ(actual, expected)  __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNEQ, abortIfInsideTestSuite)
+#define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_STRNEQ(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STREQ(actual, expected)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STRNEQ(actual, expected)  __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNEQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Substring Checks
-#define CHECK_STRNE(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE, failIfInsideTestSuite)
-#define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, failIfInsideTestSuite) 
-#define REQUIRE_STRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, abortIfInsideTestSuite)
-#define REQUIRE_STRNNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, abortIfInsideTestSuite)
+#define CHECK_STRNE(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, TAU_FAIL_IF_INSIDE_TESTSUITE) 
+#define REQUIRE_STRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STRNNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
 // Do not remove it
-#define CHECK_TRUE(cond)      __TAUCMP_TF(cond, false, true, !, CHECK_TRUE, failIfInsideTestSuite)
-#define CHECK_FALSE(cond)     __TAUCMP_TF(cond, true, false, , CHECK_FALSE, failIfInsideTestSuite)
+#define CHECK_TRUE(cond)      __TAUCMP_TF(cond, false, true, !, CHECK_TRUE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_FALSE(cond)     __TAUCMP_TF(cond, true, false, , CHECK_FALSE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 
-#define REQUIRE_TRUE(cond)    __TAUCMP_TF(cond, false, true, !, REQUIRE_TRUE, abortIfInsideTestSuite)
-#define REQUIRE_FALSE(cond)   __TAUCMP_TF(cond, true, false, , REQUIRE_FALSE, abortIfInsideTestSuite)
+#define REQUIRE_TRUE(cond)    __TAUCMP_TF(cond, false, true, !, REQUIRE_TRUE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_FALSE(cond)   __TAUCMP_TF(cond, true, false, , REQUIRE_FALSE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 #define __TAUCHECKREQUIRE__(cond, failOrAbort, macroName, ...)                                 \
     do {                                                                                       \
@@ -695,7 +707,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
             printf("\n");                                                                      \
             printf("The following assertion failed: \n");                                      \
             tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);    \
-            failOrAbort();                                                                     \
+            failOrAbort;                                                                       \
         }                                                                                      \
     }                                                                                          \
     while(0)
@@ -714,12 +726,12 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 // and: https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments
 #define GET_3RD_ARG(arg1, arg2, arg3, ...)   arg3
 
-#define CHECK_1_ARGS(cond)              __TAUCHECKREQUIRE__(cond, failIfInsideTestSuite, CHECK, "FAILED")
-#define CHECK_2_ARGS(cond, message)     __TAUCHECKREQUIRE__(cond, failIfInsideTestSuite, CHECK, message)
+#define CHECK_1_ARGS(cond)              __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, "FAILED")
+#define CHECK_2_ARGS(cond, message)     __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, message)
 #define CHECK_MACRO_CHOOSER(...)        GET_3RD_ARG(__VA_ARGS__, CHECK_2_ARGS, CHECK_1_ARGS, )
 
-#define REQUIRE_1_ARGS(cond)            __TAUCHECKREQUIRE__(cond, abortIfInsideTestSuite, REQUIRE, "FAILED")
-#define REQUIRE_2_ARGS(cond, message)   __TAUCHECKREQUIRE__(cond, abortIfInsideTestSuite, REQUIRE, message)
+#define REQUIRE_1_ARGS(cond)            __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, "FAILED")
+#define REQUIRE_2_ARGS(cond, message)   __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, message)
 #define REQUIRE_MACRO_CHOOSER(...)      GET_3RD_ARG(__VA_ARGS__, REQUIRE_2_ARGS, REQUIRE_1_ARGS, )
 
 #define CHECK(...)      CHECK_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
@@ -754,6 +766,13 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
              Implementation
 #########################################
 */
+
+#ifndef TAU_NO_TESTING
+#ifdef _MSC_VER
+    #define TAU_SNPRINTF(BUFFER, N, ...)   _snprintf_s(BUFFER, N, N, __VA_ARGS__)
+#else
+    #define TAU_SNPRINTF(...)              snprintf(__VA_ARGS__)
+#endif // _MSC_VER
 
 #define TEST(TESTSUITE, TESTNAME)                                                              \
     TAU_EXTERN struct tauTestStateStruct tauTestContext;                                       \
@@ -1167,6 +1186,15 @@ inline int tau_main(int argc, char** argv) {
     int main(int argc, char** argv) {                                          \
         return tau_main(argc, argv);                                           \
     }
+
+#endif // TAU_NO_TESTING
+
+#ifdef TAU_NO_TESTING
+    volatile int checkIsInsideTestSuite = 0;
+    volatile int hasCurrentTestFailed = 0;  
+    volatile int shouldFailTest = 0;        
+    volatile int shouldAbortTest = 0;       
+#endif // TAU_NO_TESTING
 
 TAU_DISABLE_WARNINGS_POP
 
