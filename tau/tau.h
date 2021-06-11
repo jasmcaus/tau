@@ -91,15 +91,15 @@ TAU_DISABLE_WARNINGS
     #define TAU_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
-#ifndef TAU_NO_TESTING
-    #if defined(_MSC_VER) || defined(__cplusplus)
-        #define TAU_WEAK     inline
-        #define TAU_UNUSED
-    #else
-        #define TAU_WEAK     __attribute__((weak))
-        #define TAU_UNUSED   __attribute__((unused))
-    #endif // _MSC_VER
+#if defined(_MSC_VER) || defined(__cplusplus)
+    #define TAU_WEAK     inline
+    #define TAU_UNUSED
+#else
+    #define TAU_WEAK     __attribute__((weak))
+    #define TAU_UNUSED   __attribute__((unused))
+#endif // _MSC_VER
 
+#ifndef TAU_NO_TESTING
     typedef void (*tau_testsuite_t)();
     struct tauTestSuiteStruct {
         tau_testsuite_t func;
@@ -142,6 +142,7 @@ TAU_DISABLE_WARNINGS
 */
 extern volatile int checkIsInsideTestSuite;
 extern volatile int hasCurrentTestFailed;
+#ifndef TAU_NO_TESTING
 extern volatile int shouldFailTest;
 extern volatile int shouldAbortTest;
 
@@ -167,12 +168,15 @@ static void __abortIfInsideTestSuite() {
     }
 }
 
-#ifndef TAU_NO_TESTING
+#endif // TAU_NO_TESTING
 
 static void incrementWarnings() {
+#ifndef TAU_NO_TESTING
     tauStatsNumWarnings++;
+#endif // TAU_NO_TESTING
 }
 
+#ifndef TAU_NO_TESTING
 // extern to the global state tau needs to execute
 TAU_EXTERN struct tauTestStateStruct tauTestContext;
 
@@ -418,7 +422,6 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
     #define tauPrintf(...)   \
         printf(__VA_ARGS__)
 #endif // TAU_NO_TESTING
-
 
 
 static inline int TAU_isDigit(char c) { return c >= '0' && c <= '9'; }
@@ -1192,8 +1195,8 @@ inline int tau_main(int argc, char** argv) {
 #ifdef TAU_NO_TESTING
     volatile int checkIsInsideTestSuite = 0;
     volatile int hasCurrentTestFailed = 0;  
-    volatile int shouldFailTest = 0;        
-    volatile int shouldAbortTest = 0;       
+    // volatile int shouldFailTest = 0;        
+    // volatile int shouldAbortTest = 0;       
 #endif // TAU_NO_TESTING
 
 TAU_DISABLE_WARNINGS_POP
