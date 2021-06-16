@@ -474,18 +474,18 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     return 0;
 }
 
-#define STR(x) #x
-#define XSTR(x) STR(x)
+#define TAUSTR(x) #x
+#define TAUXSTR(x) TAUSTR(x)
 
 #ifdef TAU_OVERLOADABLE
     #ifndef TAU_CAN_USE_OVERLOADABLES
         #define TAU_CAN_USE_OVERLOADABLES
     #endif // TAU_CAN_USE_OVERLOADABLES
 
-    #pragma message "Value of TAU_COMPILER_CLANG = " XSTR(TAU_COMPILER_CLANG)
-    #pragma message "Value of TAU_COMPILER_MSVC = " XSTR(TAU_COMPILER_MSVC)
-    #pragma message "Value of TAU_WEAK = " XSTR(TAU_WEAK)
-    #pragma message "Value of TAU_OVERLOADABLE = " XSTR(TAU_OVERLOADABLE)
+    #pragma message "Value of TAU_COMPILER_CLANG = " TAUXSTR(TAU_COMPILER_CLANG)
+    #pragma message "Value of TAU_COMPILER_MSVC = " TAUXSTR(TAU_COMPILER_MSVC)
+    #pragma message "Value of TAU_WEAK = " TAUXSTR(TAU_WEAK)
+    #pragma message "Value of TAU_OVERLOADABLE = " TAUXSTR(TAU_OVERLOADABLE)
 
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(float f);
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(double d);

@@ -120,7 +120,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-    #define TAU_TYPEOF(val)                                    \
+    #define TAU_TAU_TYPEOF(val)                               \
         printf("%s\n",                                          \
             _Generic((val),                                     \
                     signed char : "signed char",                \
@@ -136,7 +136,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
                     default: "unknown type"                     \
                 ))
 #else
-    #define TAU_TYPEOF(val)
+    #define TAU_TAU_TYPEOF(val)
 #endif 
 
 #endif // TAU_MISCELLANEOUS_H
