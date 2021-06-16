@@ -16,7 +16,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 #include <tau/types.h>
 #include <tau/misc.h>
 
-TAU_DISABLE_WARNINGS
+TAU_DISABLE_DEBUG_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1201,6 +1201,6 @@ inline int tau_main(int argc, char** argv) {
     // volatile int shouldAbortTest = 0;       
 #endif // TAU_NO_TESTING
 
-TAU_DISABLE_WARNINGS_POP
+TAU_DISABLE_DEBUG_WARNINGS_POP
 
 #endif // TAU_H_
