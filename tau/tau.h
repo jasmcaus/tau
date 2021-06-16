@@ -87,14 +87,17 @@ TAU_DISABLE_WARNINGS
     // On C++, default to its polymorphism capabilities
     #define TAU_OVERLOADABLE
 #elif defined(__clang__)
+    #pragma message "INSIDE CLANG OVERLOADABLE DECLARATION"
     // If we're still in C, use the __attribute__ keyword for Clang
     #define TAU_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
 
 #if defined(_MSC_VER) || defined(__cplusplus)
+    #pragma message "INSIDE FIRST WEAK DECLARATION"
     #define TAU_WEAK     inline
     #define TAU_UNUSED
 #else
+    #pragma message "INSIDE ELSE WEAK DECLARATION"
     #define TAU_WEAK     __attribute__((weak))
     #define TAU_UNUSED   __attribute__((unused))
 #endif // _MSC_VER
@@ -471,10 +474,18 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     return 0;
 }
 
+#define STR(x) #x
+#define XSTR(x) STR(x)
+
 #ifdef TAU_OVERLOADABLE
     #ifndef TAU_CAN_USE_OVERLOADABLES
         #define TAU_CAN_USE_OVERLOADABLES
     #endif // TAU_CAN_USE_OVERLOADABLES
+
+    #pragma message "Value of TAU_COMPILER_CLANG = " XSTR(TAU_COMPILER_CLANG)
+    #pragma message "Value of TAU_COMPILER_MSVC = " XSTR(TAU_COMPILER_MSVC)
+    #pragma message "Value of TAU_WEAK = " XSTR(TAU_WEAK)
+    #pragma message "Value of TAU_OVERLOADABLE = " XSTR(TAU_OVERLOADABLE)
 
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(float f);
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(double d);
