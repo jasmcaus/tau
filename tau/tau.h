@@ -93,11 +93,9 @@ TAU_DISABLE_WARNINGS
 #endif // __cplusplus
 
 #if defined(_MSC_VER) || defined(__cplusplus)
-    #pragma message "INSIDE FIRST WEAK DECLARATION"
     #define TAU_WEAK     inline
     #define TAU_UNUSED
 #else
-    #pragma message "INSIDE ELSE WEAK DECLARATION"
     #define TAU_WEAK     __attribute__((weak))
     #define TAU_UNUSED   __attribute__((unused))
 #endif // _MSC_VER
@@ -474,18 +472,11 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     return 0;
 }
 
-#define TAUSTR(x) #x
-#define TAUXSTR(x) TAUSTR(x)
 
 #ifdef TAU_OVERLOADABLE
     #ifndef TAU_CAN_USE_OVERLOADABLES
         #define TAU_CAN_USE_OVERLOADABLES
     #endif // TAU_CAN_USE_OVERLOADABLES
-
-    #pragma message "Value of TAU_COMPILER_CLANG = " TAUXSTR(TAU_COMPILER_CLANG)
-    #pragma message "Value of TAU_COMPILER_MSVC = " TAUXSTR(TAU_COMPILER_MSVC)
-    #pragma message "Value of TAU_WEAK = " TAUXSTR(TAU_WEAK)
-    #pragma message "Value of TAU_OVERLOADABLE = " TAUXSTR(TAU_OVERLOADABLE)
 
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(float f);
     TAU_WEAK TAU_OVERLOADABLE void TAU_OVERLOAD_PRINTER(double d);
