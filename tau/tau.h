@@ -87,7 +87,6 @@ TAU_DISABLE_DEBUG_WARNINGS
     // On C++, default to its polymorphism capabilities
     #define TAU_OVERLOADABLE
 #elif defined(__clang__)
-    #pragma message "INSIDE CLANG OVERLOADABLE DECLARATION"
     // If we're still in C, use the __attribute__ keyword for Clang
     #define TAU_OVERLOADABLE   __attribute__((overloadable))
 #endif // __cplusplus
