@@ -145,8 +145,16 @@ In addition to several of my personal projects, Tau is also used in the followin
 
 
 # Supporting This Project
-If you are able to and would like to sponsor this project, I'm available on [Patreon](https://patreon.com/jasmcaus),
-[Ko-Fi](https://ko-fi.com/jasmcaus), and [Paypal](https://paypal.me/jasmcaus). Your support is greatly appreciated 😊.
+If you are able to and would like to sponsor this project, I'm available here: 
+
+It is never required, but always appreciated :)
+
+<p align="center">
+<!--    <a href="https://www.buymeacoffee.com/jasmcaus" target = "_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/master/other/1.png"></a> -->
+    <a href="https://www.ko-fi.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/mater/other/2.png"></a>
+    <a href="https://www.paypal.me/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/master/other/3.png"></a>
+    <a href="https://www.patreon.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width=48px" src="https://raw.githubusercontent/adi1090x/files/master/other4.png"></a>
+</p>
 
 
 # License 
