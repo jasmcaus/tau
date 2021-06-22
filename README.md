@@ -151,9 +151,9 @@ It is never required, but always appreciated :)
 
 <p align="center">
 <!--    <a href="https://www.buymeacoffee.com/jasmcaus" target = "_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/master/other/1.png"></a> -->
-    <a href="https://www.ko-fi.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/mater/other/2.png"></a>
+    <a href="https://www.ko-fi.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/master/other/2.png"></a>
     <a href="https://www.paypal.me/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width="48px" src="https://raw.githubusercontent.com/adi1090x/files/master/other/3.png"></a>
-    <a href="https://www.patreon.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width=48px" src="https://raw.githubusercontent/adi1090x/files/master/other4.png"></a>
+    <a href="https://www.patreon.com/jasmcaus" target="_blank"><img alt="Buy Jason a Coffee" width=48px src="https://raw.githubusercontent.com/adi1090x/files/master/other/4.png"></a>
 </p>
 
 
