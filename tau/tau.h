@@ -627,14 +627,17 @@ static void tauPrintColoredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
     }
 }
 
-static void tauPrintHexBufComp(TAU_UInt8 *buf, TAU_UInt8 *ref, int size, TAU_bool cr) {
+static void tauPrintHexBufComp(void *buf, void *ref, int size, TAU_bool cr) {
+    TAU_UInt8 *test_buf = (TAU_UInt8*)buf;
+    TAU_UInt8 *ref_buf = (TAU_UInt8*)ref;
+
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size) {
-        tauPrintColoredIfDifferent(buf[0], ref[0]);
+        tauPrintColoredIfDifferent(test_buf[0], ref_buf[0]);
     }
     for(int i=1; i<size; ++i) {
         tauPrintf(" ");
-        tauPrintColoredIfDifferent(buf[i], ref[i]);
+        tauPrintColoredIfDifferent(test_buf[i], ref_buf[i]);
     }
     tauColouredPrintf(TAU_COLOUR_CYAN_,">");
     if(cr) {
