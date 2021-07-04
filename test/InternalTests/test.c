@@ -183,6 +183,30 @@ TEST(c11, no_double_eval) {
     REQUIRE_EQ(i, 1);
 }
 
+TEST(c11, CHECK_BUF_EQ) {
+	uint8_t buf[]={1,2,3,4,5};
+	uint8_t ref[]={1,2,3,4,5};
+	CHECK_BUF_EQ(buf, ref, sizeof(ref));
+}
+
+TEST(c11, CHECK_BUF_NE) {
+	uint8_t buf[]={1,2,3,4,5};
+	uint8_t ref[]={10,2,3,4,5};
+	CHECK_BUF_NE(buf, ref, sizeof(ref));
+}
+
+TEST(c11, REQUIRE_BUF_EQ) {
+	uint8_t buf[]={1,2,3,4,5};
+	uint8_t ref[]={1,2,3,4,5};
+	REQUIRE_BUF_EQ(buf, ref, sizeof(ref));
+}
+
+TEST(c11, REQUIRE_BUF_NE) {
+	uint8_t buf[]={1,2,3,4,5};
+	uint8_t ref[]={10,2,3,4,5};
+	REQUIRE_BUF_NE(buf, ref, sizeof(ref));
+}
+
 struct MyTestF {
   int foo;
 };
