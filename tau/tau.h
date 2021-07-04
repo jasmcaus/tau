@@ -618,8 +618,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     }                                                                                                           \
     while(0)
 
-static void tauPrintColoredIfDifferent(uint8_t ch, uint8_t ref)
-{
+static void tauPrintColoredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
     if(ch == ref)  {
         tauPrintf("%02X", ch);
     }
@@ -628,8 +627,7 @@ static void tauPrintColoredIfDifferent(uint8_t ch, uint8_t ref)
     }
 }
 
-static void tauPrintHexBufComp(uint8_t *buf, uint8_t *ref, int size, TAU_bool cr)
-{
+static void tauPrintHexBufComp(TAU_UInt8 *buf, TAU_UInt8 *ref, int size, TAU_bool cr) {
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size) {
         tauPrintColoredIfDifferent(buf[0], ref[0]);
@@ -643,6 +641,7 @@ static void tauPrintHexBufComp(uint8_t *buf, uint8_t *ref, int size, TAU_bool cr
         tauPrintf("\n");
     }
 }
+
 #define __TAUCMP_BUF__(actual, expected, len, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
     do {                                                                                                        \
         if(memcmp(actual, expected, len) cond 0) {                                                              \
