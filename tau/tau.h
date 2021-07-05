@@ -4,7 +4,7 @@
    | |     /  \   | |  | |  Tau - The Micro Testing Framework for C/C++
    | |    / /\ \  | |  | |  Language: C
    | |   / ____ \ | |__| |  https://github.com/jasmcaus/tau
-   |_|__/_/    \_\ \____/ 
+   |_|__/_/    \_\ \____/
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT
 Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
@@ -115,28 +115,28 @@ TAU_DISABLE_DEBUG_WARNINGS
     static TAU_UInt64 tauStatsTotalTestSuites = 0;
     static TAU_UInt64 tauStatsTestsRan = 0;
     static TAU_UInt64 tauStatsNumTestsFailed = 0;
-    static TAU_UInt64 tauStatsSkippedTests = 0; 
-    static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL; 
+    static TAU_UInt64 tauStatsSkippedTests = 0;
+    static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL;
     static TAU_Ull tauStatsNumFailedTestSuites = 0;
     extern TAU_UInt64 tauStatsNumWarnings;
 
     // Overridden in `tau_main` if the cmdline option `--no-color` is passed
     static int tauShouldColourizeOutput = 1;
     static int tauDisableSummary = 0;
-    static int tauDisplayOnlyFailedOutput = 0; 
+    static int tauDisplayOnlyFailedOutput = 0;
 
     static char* tau_argv0_ = TAU_NULL;
     static const char* cmd_filter = TAU_NULL;
 #endif // TAU_NO_TESTING
 
 /**
-    This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a 
+    This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a
     a Test Suite. Tau supports both - so we need to handle this
     We could have determined this somehow from within a function, but this is cleaner a cleaner approach
     (which is the aim on Tau).
 
-    Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the 
-    CHECKs and REQUIREs will do their thing and return the appropriate result. 
+    Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the
+    CHECKs and REQUIREs will do their thing and return the appropriate result.
     If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
     resets it back to false so that this same process occurs for the rest of the checks.
 */
@@ -183,7 +183,7 @@ TAU_EXTERN struct tauTestStateStruct tauTestContext;
 #if defined(_MSC_VER)
     #ifndef TAU_USE_OLD_QPC
         typedef LARGE_INTEGER TAU_LARGE_INTEGER;
-    #else 
+    #else
         //use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
         //on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
         typedef union {
@@ -198,15 +198,15 @@ TAU_EXTERN struct tauTestStateStruct tauTestContext;
         Int64 QuadPart;
         } TAU_LARGE_INTEGER;
 
-        TAU_C_FUNC __declspec(dllimport) int 
+        TAU_C_FUNC __declspec(dllimport) int
         __stdcall QueryPerformanceCounter(TAU_LARGE_INTEGER*);
-        TAU_C_FUNC __declspec(dllimport) int 
+        TAU_C_FUNC __declspec(dllimport) int
         __stdcall QueryPerformanceFrequency(TAU_LARGE_INTEGER*);
     #endif // TAU_USE_OLD_QPC
 
 #elif defined(__linux__)
-    // We need to include glibc's features.h, but we don't want to just include a header that might not be 
-    // defined for other C libraries like musl. 
+    // We need to include glibc's features.h, but we don't want to just include a header that might not be
+    // defined for other C libraries like musl.
     // Instead we include limits.h, which I know all glibc distributions include features.h
     #include <limits.h>
 
@@ -231,10 +231,10 @@ TAU_EXTERN struct tauTestStateStruct tauTestContext;
 #endif // _MSC_VER
 
 /**
-    Tau Timer 
+    Tau Timer
     This method is useful in timing the execution of an Tau Test Suite
-    To use this, simply call this function before and after the particular code block you want to time, 
-    and their difference will give you the time (in seconds). 
+    To use this, simply call this function before and after the particular code block you want to time,
+    and their difference will give you the time (in seconds).
     NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
     (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
 */
@@ -247,7 +247,7 @@ static inline double tauClock() {
     return TAU_CAST(double, (counter.QuadPart * 1000 * 1000 * 1000) / frequency.QuadPart); // in nanoseconds
 
 #elif defined(__linux) && defined(__STRICT_ANSI__)
-    return TAU_CAST(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds 
+    return TAU_CAST(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds
 
 #elif defined(__linux)
     struct timespec ts;
@@ -269,21 +269,21 @@ static inline double tauClock() {
 }
 
 static void tauClockPrintDuration(double nanoseconds_duration) {
-    TAU_UInt64 n; 
-    int n_digits = 0; 
+    TAU_UInt64 n;
+    int n_digits = 0;
     n = (TAU_UInt64)nanoseconds_duration;
     while(n!=0) {
         n/=10;
         ++n_digits;
     }
-    
+
     // Stick with nanoseconds (no need for decimal points here)
-    if(n_digits < 3) 
+    if(n_digits < 3)
         printf("%.0lfns", nanoseconds_duration);
 
     else if(n_digits >= 3 && n_digits < 6)
         printf("%.2lfus", nanoseconds_duration/1000);
-        
+
     else if(n_digits >= 6 && n_digits <= 9)
         printf("%.2lfms", nanoseconds_duration/1000000);
 
@@ -393,9 +393,9 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
             case TAU_COLOUR_YELLOW_:         attr = FOREGROUND_RED | FOREGROUND_GREEN; break;
             case TAU_COLOUR_BRIGHTRED_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BRIGHTGREEN_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
-            case TAU_COLOUR_BRIGHTCYAN_:     attr = FOREGROUND_BLUE | FOREGROUND_GREEN | 
+            case TAU_COLOUR_BRIGHTCYAN_:     attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
                                                      FOREGROUND_INTENSITY; break;
-            case TAU_COLOUR_BRIGHTYELLOW_:   attr = FOREGROUND_RED | FOREGROUND_GREEN | 
+            case TAU_COLOUR_BRIGHTYELLOW_:   attr = FOREGROUND_RED | FOREGROUND_GREEN |
                                                      FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BOLD_:           attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
                                                      FOREGROUND_RED | FOREGROUND_INTENSITY; break;
@@ -427,7 +427,7 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
 static inline int TAU_isDigit(char c) { return c >= '0' && c <= '9'; }
 // If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
 // This method signals whether this message should be printed
-// 
+//
 // Note: the arguments are of type `char const*` as opposed to `char*`
 // This helps mitigate the ``warning: ISO C++ forbids converting a string constant to 'char*'``
 // See: https://stackoverflow.com/questions/20944784/why-is-conversion-from-string-constant-to-char-valid-in-c-but-invalid-in-c/20944858
@@ -437,14 +437,14 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     int numActualDigits = 0;
     int numExpectedDigits = 0;
 
-    // If not inside a string comparison, we will return `1` only if we determine that `actual` is a variable 
+    // If not inside a string comparison, we will return `1` only if we determine that `actual` is a variable
     // name/expression (i.e for a value, we search through each character verifying that each is a digit
     // - for floats, we allow a maximum of 1 '.' char)
     if(!isStringCmp) {
         for(int i=0; i < strlen(actual); i++) {
             if(TAU_isDigit(actual[i])) { numActualDigits++; }
-            else if(actual[i] == '.') { 
-                dots++; 
+            else if(actual[i] == '.') {
+                dots++;
                 if(dots > 1) { return 1; }
             }
             else { return 1; }
@@ -453,17 +453,17 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
         dots = 0;
         for(int i=0; i < strlen(expected); i++) {
             if(TAU_isDigit(expected[i])) { numExpectedDigits++; }
-            else if(expected[i] == '.') { 
-                dots++; 
+            else if(expected[i] == '.') {
+                dots++;
                 if(dots > 1) { return 1; }
             }
             else { return 1; }
         }
-    } 
+    }
     // Inside a string comparison, we search for common expression tokens like the following:
     // '(', ')', '-'
     else {
-        if(strchr(actual, '(') != NULL || strchr(expected, '(') != NULL || 
+        if(strchr(actual, '(') != NULL || strchr(expected, '(') != NULL ||
            actual[0] != '"' || expected[0] != '"' ) {
             return 1;
         }
@@ -527,7 +527,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                             long double : "%Lf",                  \
                             void* : "%p"),                        \
                     (val))
-    
+
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
     #define TAU_OVERLOAD_PRINTER(...)                                                              \
@@ -538,7 +538,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #ifndef TAU_NO_TESTING
     #define TAU_FAIL_IF_INSIDE_TESTSUITE    __failIfInsideTestSuite()
     #define TAU_ABORT_IF_INSIDE_TESTSUITE   __abortIfInsideTestSuite()
-#else 
+#else
     #define TAU_FAIL_IF_INSIDE_TESTSUITE    TAU_ABORT
     #define TAU_ABORT_IF_INSIDE_TESTSUITE   TAU_ABORT
 #endif // TAU_NO_TESTING
@@ -616,9 +616,57 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
             return;                                                                                             \
         }                                                                                                       \
     }                                                                                                           \
-    while(0)  
+    while(0)
 
-#define __TAUCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
+static void tauPrintColoredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
+    if(ch == ref)  {
+        tauPrintf("%02X", ch);
+    }
+    else {
+        tauColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "%02X", ch);
+    }
+}
+
+static void tauPrintHexBufComp(void *buf, void *ref, int size, TAU_bool cr) {
+    TAU_UInt8 *test_buf = (TAU_UInt8*)buf;
+    TAU_UInt8 *ref_buf = (TAU_UInt8*)ref;
+
+    tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
+    if(size) {
+        tauPrintColoredIfDifferent(test_buf[0], ref_buf[0]);
+    }
+    for(int i=1; i<size; ++i) {
+        tauPrintf(" ");
+        tauPrintColoredIfDifferent(test_buf[i], ref_buf[i]);
+    }
+    tauColouredPrintf(TAU_COLOUR_CYAN_,">");
+    if(cr) {
+        tauPrintf("\n");
+    }
+}
+
+#define __TAUCMP_BUF__(actual, expected, len, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
+    do {                                                                                                        \
+        if(memcmp(actual, expected, len) cond 0) {                                                              \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                           \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                               \
+            if(tauShouldDecomposeMacro(#actual, #expected, 1)) {                                                \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                                 \
+                    tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s, %s )\n",                             \
+                                                                #macroName,                                     \
+                                                                #actual, #expected, #len);                      \
+                }                                                                                               \
+            tauPrintf("  Expected :"); tauPrintHexBufComp(actual, expected, len, TAU_false);                    \
+            tauPrintf(" %s ", #ifCondFailsThenPrint);                                                           \
+            tauPrintHexBufComp(expected, actual, len, TAU_true);                                                \
+            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
+            failOrAbort;                                                                                        \
+            return;                                                                                             \
+        }                                                                                                       \
+    }                                                                                                           \
+    while(0)
+
+#define __TAUCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)   \
     do {                                                                                                        \
         if(TAU_CAST(int, n) < 0) {                                                                              \
             tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`n` cannot be negative\n");                               \
@@ -641,7 +689,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
             return;                                                                                             \
         }                                                                                                       \
     }                                                                                                           \
-    while(0)  
+    while(0)
 
 
 #define __TAUCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort)     \
@@ -680,6 +728,12 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #define REQUIRE_GT(actual, expected)   __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE)
 #define REQUIRE_GE(actual, expected)   __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
+// Buffers
+#define CHECK_BUF_EQ(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_BUF_NE(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_EQ(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_NE(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+
 // Whole-string checks
 #define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define CHECK_STRNEQ(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
@@ -688,7 +742,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 
 // Substring Checks
 #define CHECK_STRNE(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, TAU_FAIL_IF_INSIDE_TESTSUITE) 
+#define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define REQUIRE_STRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 #define REQUIRE_STRNNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
@@ -717,11 +771,11 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     while(0)
 
 // This is a little hack that allows a form of "polymorphism" to a macro - it allows a user to optionally pass
-// an extra argument to a macro in {CHECK|REQUIRE}. 
+// an extra argument to a macro in {CHECK|REQUIRE}.
 // The first argument is always the condition to check/assert. If this condition fails, by default a `FAILED`
 // message is sent to STDOUT. If a second argument is passed to the macro (a string), this will be outputted
 // instead.
-// 
+//
 // The MACRO_CHOOSER uses the list of arguments twice, first to form the name of the helper macro, and then to
 // pass the arguments to that helper macro. It uses a standard trick to count the number of arguments to a macro.
 //
@@ -755,7 +809,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
         static_assert(__VA_ARGS__, #__VA_ARGS__)
     #define STATIC_REQUIRE_FALSE(...)            \
         static_assert(!(__VA_ARGS__), "!(" #__VA_ARGS__ ")")
-#else 
+#else
     #define SECTION(...)                                            \
         WARN(Using "SECTION" in C results in limited diagnostics.); \
         if(1)
@@ -856,7 +910,7 @@ static int tauShouldFilterTest(const char* filter, const char* testcase) {
 
                 while ((*filter_curr != TAU_NULLCHAR) && (*testcase_curr != TAU_NULLCHAR)) {
                     if(*filter_curr == '*') {
-                        // Found another wildcard (filter is something like *foo*), so exit the current loop, 
+                        // Found another wildcard (filter is something like *foo*), so exit the current loop,
                         // and return to the parent loop to handle the wildcard case
                         break;
                     } else if(*filter_curr != *testcase_curr) {
@@ -889,7 +943,7 @@ static int tauShouldFilterTest(const char* filter, const char* testcase) {
             }
         }
 
-        if((*filter_curr != TAU_NULLCHAR) || ((*testcase_curr == TAU_NULLCHAR) && ((filter == filter_curr) || 
+        if((*filter_curr != TAU_NULLCHAR) || ((*testcase_curr == TAU_NULLCHAR) && ((filter == filter_curr) ||
             (filter_curr[-1] != '*')))) {
             // We have a mismatch
             return 1;
@@ -946,7 +1000,7 @@ static TAU_bool tauCmdLineRead(int argc, char** argv) {
     #else
         tauShouldColourizeOutput = _isatty(_fileno(stdout));
     #endif // _BORLANDC_
-#else 
+#else
     tauShouldColourizeOutput = isatty(STDOUT_FILENO);
 #endif // TAU_UNIX_
 
@@ -966,7 +1020,7 @@ static TAU_bool tauCmdLineRead(int argc, char** argv) {
         if(strncmp(argv[i], helpStr, strlen(helpStr)) == 0) {
             tau_help_();
             return TAU_false;
-        } 
+        }
 
         // Only failed output
         else if(strncmp(argv[i], onlyFailedOutput, strlen(onlyFailedOutput)) == 0) {
@@ -989,7 +1043,7 @@ static TAU_bool tauCmdLineRead(int argc, char** argv) {
         }
 
         // Disable colouring
-        else if(strncmp(argv[i], colourStr, strlen(colourStr)) == 0) {            
+        else if(strncmp(argv[i], colourStr, strlen(colourStr)) == 0) {
             tauShouldColourizeOutput = 0;
         }
 
@@ -1024,7 +1078,7 @@ static int tauCleanup() {
 static void tauRunTests() {
     // Run tests
     for(TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
-        checkIsInsideTestSuite = 1; 
+        checkIsInsideTestSuite = 1;
         hasCurrentTestFailed = 0;
 
         if(tauShouldFilterTest(cmd_filter, tauTestContext.tests[i].name))
@@ -1046,14 +1100,14 @@ static void tauRunTests() {
 
         // Stop the timer
         double duration = tauClock() - start;
-        
+
         if(tauTestContext.foutput)
             fprintf(tauTestContext.foutput, "</testcase>\n");
 
         if(hasCurrentTestFailed == 1) {
             const TAU_Ull failed_testcase_index = tauStatsNumFailedTestSuites++;
-            tauStatsFailedTestSuites = TAU_PTRCAST(TAU_Ull*, 
-                                            tau_realloc(TAU_PTRCAST(void* , tauStatsFailedTestSuites), 
+            tauStatsFailedTestSuites = TAU_PTRCAST(TAU_Ull*,
+                                            tau_realloc(TAU_PTRCAST(void* , tauStatsFailedTestSuites),
                                                           sizeof(TAU_Ull) * tauStatsNumFailedTestSuites));
             tauStatsFailedTestSuites[failed_testcase_index] = i;
             tauStatsNumTestsFailed++;
@@ -1083,7 +1137,7 @@ inline int tau_main(int argc, char** argv) {
     double start = tauClock();
 
     TAU_bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
-    if(!wasCmdLineReadSuccessful) 
+    if(!wasCmdLineReadSuccessful)
         return tauCleanup();
 
     for (TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
@@ -1132,7 +1186,7 @@ inline int tau_main(int argc, char** argv) {
         printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", tauStatsNumTestsFailed, tauStatsTestsRan - tauStatsNumTestsFailed);
         tauClockPrintDuration(duration);
         printf("\n");
-        
+
         for (TAU_Ull i = 0; i < tauStatsNumFailedTestSuites; i++) {
             tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
         }
@@ -1156,15 +1210,15 @@ inline int tau_main(int argc, char** argv) {
 }
 
 /**
-    We need to declare these variables here because they're used in multiple translation units (if compiled 
+    We need to declare these variables here because they're used in multiple translation units (if compiled
     as so).
     For example, if test1.c(pp) #includes `tau/tau.h` and test2.c(pp) does the same, declaring the variables
-    static will only make them exist in the first translation unit the compiler sees. 
-    We can get around this by compiling only one file (eg. main.c(pp)) and including the other source files 
+    static will only make them exist in the first translation unit the compiler sees.
+    We can get around this by compiling only one file (eg. main.c(pp)) and including the other source files
     using `#include`, but this would be counter-productive.
 
     If we used C++ as the base language for this project, we could have got around this problem using OOP
-    constructs, but C++ is not (and should not) be the language this project is written in. 
+    constructs, but C++ is not (and should not) be the language this project is written in.
     With C, the best (and closest) thing we have are global variables that persists through the _entire_
     compilation project (all testing source files).
     See: https://stackoverflow.com/questions/1856599/when-to-use-static-keyword-before-global-variables
@@ -1195,9 +1249,9 @@ inline int tau_main(int argc, char** argv) {
 
 #ifdef TAU_NO_TESTING
     volatile int checkIsInsideTestSuite = 0;
-    volatile int hasCurrentTestFailed = 0;  
-    // volatile int shouldFailTest = 0;        
-    // volatile int shouldAbortTest = 0;       
+    volatile int hasCurrentTestFailed = 0;
+    // volatile int shouldFailTest = 0;
+    // volatile int shouldAbortTest = 0;
 #endif // TAU_NO_TESTING
 
 TAU_DISABLE_DEBUG_WARNINGS_POP
