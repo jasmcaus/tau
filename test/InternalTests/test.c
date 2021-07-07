@@ -184,26 +184,26 @@ TEST(c11, no_double_eval) {
 }
 
 TEST(c11, CHECK_BUF_EQ) {
-	TAU_UInt8 buf[]={1,2,3,4,5};
-	TAU_UInt8 ref[]={1,2,3,4,5};
+	TAU_UInt8 buf[] = {1, 2, 3, 4, 5};
+	TAU_UInt8 ref[] = {1, 2, 3, 4, 5};
 	CHECK_BUF_EQ(buf, ref, sizeof(ref));
 }
 
 TEST(c11, CHECK_BUF_NE) {
-	TAU_UInt8 buf[]={1,2,3,4,5};
-	TAU_UInt8 ref[]={10,2,3,4,5};
+	TAU_UInt8 buf[] = {1, 2, 3, 4, 5};
+	TAU_UInt8 ref[] = {10, 2, 3, 4, 5};
 	CHECK_BUF_NE(buf, ref, sizeof(ref));
 }
 
 TEST(c11, REQUIRE_BUF_EQ) {
-	TAU_UInt8 buf[]={1,2,3,4,5};
-	TAU_UInt8 ref[]={1,2,3,4,5};
+	TAU_UInt8 buf[] = {1, 2, 3, 4, 5};
+	TAU_UInt8 ref[] = {1, 2, 3, 4, 5};
 	REQUIRE_BUF_EQ(buf, ref, sizeof(ref));
 }
 
 TEST(c11, REQUIRE_BUF_NE) {
-	TAU_UInt8 buf[]={1,2,3,4,5};
-	TAU_UInt8 ref[]={10,2,3,4,5};
+	TAU_UInt8 buf[] = {1, 2, 3, 4, 5};
+	TAU_UInt8 ref[] = {10, 23, 3, 4, 5};
 	REQUIRE_BUF_NE(buf, ref, sizeof(ref));
 }
 

@@ -618,8 +618,8 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     }                                                                                                           \
     while(0)
 
-static void tauPrintColoredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
-    if(ch == ref)  {
+static void tauPrintColouredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
+    if(ch == ref) {
         tauPrintf("%02X", ch);
     }
     else {
@@ -627,22 +627,19 @@ static void tauPrintColoredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
     }
 }
 
-static void tauPrintHexBufComp(void *buf, void *ref, int size, TAU_bool cr) {
+static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
     TAU_UInt8 *test_buf = (TAU_UInt8*)buf;
     TAU_UInt8 *ref_buf = (TAU_UInt8*)ref;
 
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
-    if(size) {
-        tauPrintColoredIfDifferent(test_buf[0], ref_buf[0]);
-    }
+    if(size)
+        tauPrintColouredIfDifferent(test_buf[0], ref_buf[0]);
+    
     for(int i=1; i<size; ++i) {
-        tauPrintf(" ");
-        tauPrintColoredIfDifferent(test_buf[i], ref_buf[i]);
+        printf(" ");
+        tauPrintColouredIfDifferent(test_buf[i], ref_buf[i]);
     }
     tauColouredPrintf(TAU_COLOUR_CYAN_,">");
-    if(cr) {
-        tauPrintf("\n");
-    }
 }
 
 #define __TAUCMP_BUF__(actual, expected, len, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort)  \
@@ -656,10 +653,10 @@ static void tauPrintHexBufComp(void *buf, void *ref, int size, TAU_bool cr) {
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #len);                      \
                 }                                                                                               \
-            tauPrintf("  Expected :"); tauPrintHexBufComp(actual, expected, len, TAU_false);                    \
+            tauPrintf("  Expected : "); tauPrintHexBufCmp(actual, expected, len);                               \
             tauPrintf(" %s ", #ifCondFailsThenPrint);                                                           \
-            tauPrintHexBufComp(expected, actual, len, TAU_true);                                                \
-            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
+            tauPrintHexBufCmp(expected, actual, len);                                                           \
+            tauPrintf("\n    Actual : %s\n", #actualPrint);                                                     \
             failOrAbort;                                                                                        \
             return;                                                                                             \
         }                                                                                                       \
@@ -883,7 +880,7 @@ static void tauPrintHexBufComp(void *buf, void *ref, int size, TAU_bool cr) {
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                   \
         tauTestContext.tests = TAU_PTRCAST(                                   \
                                     struct tauTestSuiteStruct*,               \
-                                    tau_realloc(TAU_PTRCAST(void *, tauTestContext.tests),               \
+                                    tau_realloc(TAU_PTRCAST(void* , tauTestContext.tests),               \
                                                                 sizeof(struct tauTestSuiteStruct) *      \
                                                                         tauTestContext.numTestSuites));  \
         tauTestContext.tests[index].func = &__TAU_TEST_FIXTURE_##FIXTURE##_##NAME;                       \
