@@ -1206,7 +1206,6 @@ inline int tau_main(int argc, char** argv) {
         printf("\n");
     }
 
-
     if(tauTestContext.foutput)
         fprintf(tauTestContext.foutput, "</testsuite>\n</testsuites>\n");
 
