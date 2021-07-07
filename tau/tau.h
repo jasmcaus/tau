@@ -369,7 +369,7 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
             case TAU_COLOUR_BRIGHTBLUE_:   str = "\033[1;34m"; break;
             case TAU_COLOUR_BRIGHTCYAN_:   str = "\033[1;36m"; break;
             case TAU_COLOUR_BOLD_:         str = "\033[1m"; break;
-            default:                        str = "\033[0m"; break;
+            default:                       str = "\033[0m"; break;
         }
         printf("%s", str);
         n = printf("%s", buffer);
@@ -399,7 +399,7 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
                                                      FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BOLD_:           attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
                                                      FOREGROUND_RED | FOREGROUND_INTENSITY; break;
-            default:                          attr = 0; break;
+            default:                         attr = 0; break;
         }
         if(attr != 0)
             SetConsoleTextAttribute(h, attr);
@@ -628,8 +628,8 @@ static void tauPrintColouredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
 }
 
 static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
-    TAU_UInt8 *test_buf = (TAU_UInt8*)buf;
-    TAU_UInt8 *ref_buf = (TAU_UInt8*)ref;
+    TAU_UInt8* test_buf = (TAU_UInt8*)buf;
+    TAU_UInt8* ref_buf = (TAU_UInt8*)ref;
 
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size)
@@ -725,12 +725,6 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
 #define REQUIRE_GT(actual, expected)   __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE)
 #define REQUIRE_GE(actual, expected)   __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
-// Buffers
-#define CHECK_BUF_EQ(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_BUF_NE(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define REQUIRE_BUF_EQ(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_BUF_NE(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
-
 // Whole-string checks
 #define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define CHECK_STRNEQ(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
@@ -742,6 +736,12 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
 #define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define REQUIRE_STRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 #define REQUIRE_STRNNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+
+// Buffer Checks
+#define CHECK_BUF_EQ(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_BUF_NE(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_EQ(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_NE(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
 // Do not remove it
@@ -1165,8 +1165,12 @@ inline int tau_main(int argc, char** argv) {
     double duration = tauClock() - start;
 
     // Write a Summary
-    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", tauStatsTestsRan - tauStatsNumTestsFailed, tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
-    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", tauStatsNumTestsFailed, tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", 
+                            tauStatsTestsRan - tauStatsNumTestsFailed,
+                            tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", 
+                            tauStatsNumTestsFailed, 
+                            tauStatsNumTestsFailed == 1 ? "suite" : "suites");
 
     if(!tauDisableSummary) {
         tauColouredPrintf(TAU_COLOUR_BOLD_, "\nSummary:\n");
@@ -1180,12 +1184,15 @@ inline int tau_main(int argc, char** argv) {
 
     if(tauStatsNumTestsFailed > 0) {
         tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED: ");
-        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", tauStatsNumTestsFailed, tauStatsTestsRan - tauStatsNumTestsFailed);
+        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", 
+                            tauStatsNumTestsFailed,
+                            tauStatsTestsRan - tauStatsNumTestsFailed);
         tauClockPrintDuration(duration);
         printf("\n");
 
         for (TAU_Ull i = 0; i < tauStatsNumFailedTestSuites; i++) {
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", 
+                            tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
         }
     } else if(tauStatsNumTestsFailed == 0 && tauStatsTotalTestSuites > 0) {
         TAU_UInt64 total_tests_passed = tauStatsTestsRan - tauStatsNumTestsFailed;
