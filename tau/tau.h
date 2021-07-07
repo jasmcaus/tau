@@ -394,11 +394,11 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
             case TAU_COLOUR_BRIGHTRED_:      attr = FOREGROUND_RED | FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BRIGHTGREEN_:    attr = FOREGROUND_GREEN | FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BRIGHTCYAN_:     attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
-                                                     FOREGROUND_INTENSITY; break;
+                                                    FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BRIGHTYELLOW_:   attr = FOREGROUND_RED | FOREGROUND_GREEN |
-                                                     FOREGROUND_INTENSITY; break;
+                                                    FOREGROUND_INTENSITY; break;
             case TAU_COLOUR_BOLD_:           attr = FOREGROUND_BLUE | FOREGROUND_GREEN |
-                                                     FOREGROUND_RED | FOREGROUND_INTENSITY; break;
+                                                    FOREGROUND_RED | FOREGROUND_INTENSITY; break;
             default:                         attr = 0; break;
         }
         if(attr != 0)
@@ -546,10 +546,10 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
 // For example, if `cond` is "!=", then `ifCondFailsThenPrint` will be `==`
 #if defined(TAU_CAN_USE_OVERLOADABLES)
-    #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                   \
-        do {                                                                                    \
-            if(!((actual)cond(expected))) {                                                     \
-                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                       \
+    #define __TAUCMP__(actual, expected, cond, space, macroName, failOrAbort)                  \
+        do {                                                                                   \
+            if(!((actual)cond(expected))) {                                                    \
+                tauPrintf("%s:%u: ", __FILE__, __LINE__);                                      \
                 tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                          \
                 if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                           \
                     tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                \
