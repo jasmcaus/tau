@@ -727,15 +727,15 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
 
 // Whole-string checks
 #define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_STRNEQ(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNEQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_STRNE(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define REQUIRE_STREQ(actual, expected)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_STRNEQ(actual, expected)  __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNEQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STRNE(actual, expected)  __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Substring Checks
-#define CHECK_STRNE(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_STRNNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_STRNNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define REQUIRE_STRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_STRNNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_STRNNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define CHECK_SUBSTREQ(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_SUBSTREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_SUBSTRNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_SUBSTRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_SUBSTREQ(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_SUBSTREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_SUBSTRNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_SUBSTRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Buffer Checks
 #define CHECK_BUF_EQ(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)

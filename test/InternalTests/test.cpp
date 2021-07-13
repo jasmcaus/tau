@@ -35,16 +35,16 @@ TEST(cpp, REQUIRE_STREQ) {
     REQUIRE_STREQ("foo", "foo"); 
 }
 
-TEST(cpp, REQUIRE_STRNEQ) { 
-    REQUIRE_STRNEQ("foo", "bar"); 
-}
-
 TEST(cpp, REQUIRE_STRNE) { 
-    REQUIRE_STRNE("foo", "foo", strlen("foo")); 
+    REQUIRE_STRNE("foo", "bar"); 
 }
 
-TEST(cpp, REQUIRE_STRNNE) { 
-    REQUIRE_STRNNE("foo", "barfoo", strlen("foo")); 
+TEST(cpp, REQUIRE_SUBSTREQ) { 
+    REQUIRE_SUBSTREQ("foo", "foo", strlen("foo")); 
+}
+
+TEST(cpp, REQUIRE_SUBSTRNE) { 
+    REQUIRE_SUBSTRNE("foo", "barfoo", strlen("foo")); 
 }
 
 
@@ -76,8 +76,8 @@ TEST(cpp, CHECK_GE) {
 //     CHECK_STREQ("foo", "foo"); 
 // }
 
-// TEST(cpp, CHECK_STRNEQ) { 
-//     CHECK_STRNEQ("foo", "bar"); 
+// TEST(cpp, CHECK_STRNE) { 
+//     CHECK_STRNE("foo", "bar"); 
 // }
 
 // TEST(cpp, CHECK_STRMNEQ) { 
@@ -211,16 +211,16 @@ TEST(cpp11, REQUIRE_STREQ) {
     REQUIRE_STREQ("foo", "foo"); 
 }
 
-TEST(cpp11, REQUIRE_STRNEQ) { 
-    REQUIRE_STRNEQ("foo", "bar"); 
-}
-
 TEST(cpp11, REQUIRE_STRNE) { 
-    REQUIRE_STRNE("foo", "foo", strlen("foo")); 
+    REQUIRE_STRNE("foo", "bar"); 
 }
 
-TEST(cpp11, REQUIRE_STRNNE) { 
-    REQUIRE_STRNNE("foo", "barfoo", strlen("foo")); 
+TEST(cpp11, REQUIRE_SUBSTREQ) { 
+    REQUIRE_SUBSTREQ("foo", "foo", strlen("foo")); 
+}
+
+TEST(cpp11, REQUIRE_SUBSTRNE) { 
+    REQUIRE_SUBSTRNE("foo", "barfoo", strlen("foo")); 
 }
 
 TEST(cpp11, CHECK_EQ) { 
@@ -253,16 +253,16 @@ TEST(cpp11, CHECK_STREQ) {
     CHECK_STREQ("foo", "foo"); 
 }
 
-TEST(cpp11, CHECK_STRNEQ) { 
-    CHECK_STRNEQ("foo", "bar"); 
-}
-
 TEST(cpp11, CHECK_STRNE) { 
-    CHECK_STRNE("foo", "foo", strlen("foo")); 
+    CHECK_STRNE("foo", "bar"); 
 }
 
-TEST(cpp11, CHECK_STRNNE) { 
-    CHECK_STRNNE("foo", "barfoo", strlen("foo")); 
+TEST(cpp11, CHECK_SUBSTREQ) { 
+    CHECK_SUBSTREQ("foo", "foo", strlen("foo")); 
+}
+
+TEST(cpp11, CHECK_SUBSTRNE) { 
+    CHECK_SUBSTRNE("foo", "barfoo", strlen("foo")); 
 }
 
 TEST(cpp11, no_double_eval) {

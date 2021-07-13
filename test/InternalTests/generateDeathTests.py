@@ -45,9 +45,9 @@ def test_string_macros(lang: str, filename: str ='DeathTests/test_string_macros'
     NSTRING_MACROS_TEXT = """   %(macro)s("%(str1)s", "%(str2)s", %(n)s);\n"""
 
     STRING_EQUAL_MACROS = ['CHECK_STREQ', 'REQUIRE_STREQ' ]
-    STRING_UNEQUAL_MACROS = ['CHECK_STRNEQ', 'REQUIRE_STRNEQ']
-    NSTRING_EQUAL_MACROS = ['CHECK_STRNE', 'REQUIRE_STRNE']
-    NSTRING_UNEQUAL_MACROS = ['CHECK_STRNNE', 'REQUIRE_STRNNE']
+    STRING_UNEQUAL_MACROS = ['CHECK_STRNE', 'REQUIRE_STRNE']
+    NSTRING_EQUAL_MACROS = ['CHECK_SUBSTREQ', 'REQUIRE_SUBSTREQ']
+    NSTRING_UNEQUAL_MACROS = ['CHECK_SUBSTRNE', 'REQUIRE_SUBSTRNE']
 
     # Open a file to write
     a = open(filename, 'w')
