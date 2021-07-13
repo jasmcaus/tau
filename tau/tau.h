@@ -711,37 +711,37 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
           {CHECK|REQUIRE} Macros
 ############################################
 */
-#define CHECK_EQ(actual, expected)     __TAUCMP__(actual, expected, ==, "", CHECK_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_NE(actual, expected)     __TAUCMP__(actual, expected, !=, "", CHECK_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_LT(actual, expected)     __TAUCMP__(actual, expected, < , " ", CHECK_LT, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_LE(actual, expected)     __TAUCMP__(actual, expected, <=, "", CHECK_LE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_GT(actual, expected)     __TAUCMP__(actual, expected, > , " ", CHECK_GT, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_GE(actual, expected)     __TAUCMP__(actual, expected, >=, "", CHECK_GE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_EQ(actual, expected)      __TAUCMP__(actual, expected, ==, "", CHECK_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_NE(actual, expected)      __TAUCMP__(actual, expected, !=, "", CHECK_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_LT(actual, expected)      __TAUCMP__(actual, expected, < , " ", CHECK_LT, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_LE(actual, expected)      __TAUCMP__(actual, expected, <=, "", CHECK_LE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_GT(actual, expected)      __TAUCMP__(actual, expected, > , " ", CHECK_GT, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_GE(actual, expected)      __TAUCMP__(actual, expected, >=, "", CHECK_GE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 
-#define REQUIRE_EQ(actual, expected)   __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_NE(actual, expected)   __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_LT(actual, expected)   __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_LE(actual, expected)   __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_GT(actual, expected)   __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_GE(actual, expected)   __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_EQ(actual, expected)    __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_NE(actual, expected)    __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_LT(actual, expected)    __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_LE(actual, expected)    __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_GT(actual, expected)    __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_GE(actual, expected)    __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Whole-string checks
-#define CHECK_STREQ(actual, expected)     __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_STRNE(actual, expected)    __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define REQUIRE_STREQ(actual, expected)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_STRNE(actual, expected)  __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define CHECK_STREQ(actual, expected)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_STRNE(actual, expected)   __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STREQ(actual, expected) __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_STRNE(actual, expected) __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Substring Checks
 #define CHECK_SUBSTREQ(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_SUBSTREQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_SUBSTRNE(actual, expected, n)    __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_SUBSTRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_SUBSTRNE(actual, expected, n)     __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_SUBSTRNE, TAU_FAIL_IF_INSIDE_TESTSUITE)
 #define REQUIRE_SUBSTREQ(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_SUBSTREQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_SUBSTRNE(actual, expected, n)  __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_SUBSTRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_SUBSTRNE(actual, expected, n)   __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_SUBSTRNE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Buffer Checks
-#define CHECK_BUF_EQ(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_BUF_NE(actual, expected, n)    __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define REQUIRE_BUF_EQ(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_BUF_NE(actual, expected, n)  __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define CHECK_BUF_EQ(actual, expected, n)       __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define CHECK_BUF_NE(actual, expected, n)       __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_EQ(actual, expected, n)     __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define REQUIRE_BUF_NE(actual, expected, n)     __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
 
 // Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
 // Do not remove it

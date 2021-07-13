@@ -306,7 +306,7 @@ TEST(gen_tests_c, DEATHTESTS_REQUIRE_STREQ) {
     REQUIRE_STREQ(".oR=DxE2(UqWPF9N:AXS1mxK|_ogwMh3V@{8i`*7d{eHy3>~$G:{Z_=$vh<NDLfPWYc|gSjt#`wrLOt2G,PSyW7+ZOnJ", ".oR=DxE2(UqWPF9N:AXS1mxK|_ogwMh3V@{8i`*7d{eHy3>~$G:{Z_=$vh<NDLfPWYc|gSjt#`wrLOt2G,PSyW7+ZOnJ");
 }
 
-TEST(gen_tests_c, DEATHTESTS_CHECK_STRNEQ) {
+TEST(gen_tests_c, DEATHTESTS_CHECK_STRNE) {
     CHECK_STRNE("K!!IqP+qdRnj{r{cuj`Azx6Q_S{9wttw+fyv:{_l$o!v`0Oyh)|REG+<#V", "VLe");
     CHECK_STRNE("A~HRpslZ$;*QQUl*i{FkG1}HLc{kF1D**)8)Hroa|7l}hwzPT5b_uL_i9}v*)5Z1G0", "AP6^(lJ17d^@8ck;*");
     CHECK_STRNE("YS*MqcBbk&>s:O*s_", ".9T{(|^(");
@@ -459,7 +459,7 @@ TEST(gen_tests_c, DEATHTESTS_CHECK_STRNEQ) {
     CHECK_STRNE("^pLm0rvc(p=JJAU2zElGarZP{nIIZyI>l`C>sh(B>6Wq{m2N7cgr2-qR*J", "X!<c@-^ljj<FBSQD,qR@{bkqb8F1S{N{Y{cp$.DQgZ.$sr<|;iFTO*V$^YqDFpKvyn#u");
 }
 
-TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNEQ) {
+TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNE) {
     REQUIRE_STRNE("Yk*{~e#i3D7Pc2Fy5zNj*_io>gRH`-T^<d#j=1dggU:dH-1ul=<9M1p8.lFvt<nd*c(xH^y@TKisQ_!w;<*8", "Y>9=Ch");
     REQUIRE_STRNE("G<wxEn5L)iXa)8JjP9`iKktsxh,#TQ8G*z(Sfn`HqlRb|wwd}rVmlpX:`yY@Y|++}<iJn$5}", "k$)$+a6zcg3f4CJWEyWMH");
     REQUIRE_STRNE("yfHWJv8`Nha^k6*Ods>qYaz;t.E>Zrr-zRKy3^.)D9g:!xLxR=+iE.vU2T-&rYUjNaBL|9.j`U8Fxd&M`Oc", "V>~6<l(ICnkD0VVu&({!S{Vmj^@a!");
@@ -612,7 +612,7 @@ TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNEQ) {
     REQUIRE_STRNE("vG~wvdn1l~5FQbjz+(;437ZV`KVizDXq*v", "u+xf0T:+XcM;l<DVS9$Vx<{C4<OBa01~K`N");
 }
 
-TEST(gen_tests_c, DEATHTESTS_CHECK_STRNE) {
+TEST(gen_tests_c, DEATHTESTS_CHECK_SUBSTREQ) {
    CHECK_SUBSTREQ("J!y=3XW=a>>lj+Q7N,ht+}:+V;r&UjWJ0Gt{=jvL{Qfb^k}bV!!0)Mqro.y*5OU#==-l!R^T*aKW6m@Y3jyNzL5nJ", "J!y=3XW=a>>lj+Q7N,ht+}:+V;r&UjWJ0Gt{=jvL{Qfb^k}bV!!0)Mqro.y*5OU#==-l!R^T*aKW6m@Y3jyNzL5nJ}na>w=mM87o", 89);
    CHECK_SUBSTREQ("^4!O$KwF>LIWaOMP|8~J&N;8E@*dUD;*(nf)Mrne`o8LXZM^;xR{q04;", "^4!O$KwF>LIWaOMP|8~J&N;8E@*dUD;*(nf)Mrne`o8LXZM^;xR{q04;&haKG.SoZ(Zolc903Sc", 56);
    CHECK_SUBSTREQ("uF}:={n2}f.6", "uF}:={n2}f.6p`|6v>@$Tmf", 12);
@@ -765,7 +765,7 @@ TEST(gen_tests_c, DEATHTESTS_CHECK_STRNE) {
    CHECK_SUBSTREQ("j`{o{nKn:(s=3K)_sBRCvzUl{-I`xZwM3Z", "j`{o{nKn:(s=3K)_sBRCvzUl{-I`xZwM3ZzFIq{`}.+Gmvpb(~fv", 34);
 }
 
-TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNE) {
+TEST(gen_tests_c, DEATHTESTS_REQUIRE_SUBSTREQ) {
    REQUIRE_SUBSTREQ("qT(LLygZb|#:N9k(#>", "qT(LLygZb|#:N9k(#>LP;H`1;zuM@;vPk", 18);
    REQUIRE_SUBSTREQ("zYzb0!t-ZF}8TEUuHZ$5,0>", "zYzb0!t-ZF}8TEUuHZ$5,0>-DeZj", 23);
    REQUIRE_SUBSTREQ("CU;D`~pomf^i0|9+&JHWv^U^aPR}nB1:l&*DDuT-^Hq#2qEvyWieBf-N566U9S-X;^7vsxAsFE&oI,=Xfxf2{bm37Zn", "CU;D`~pomf^i0|9+&JHWv^U^aPR}nB1:l&*DDuT-^Hq#2qEvyWieBf-N566U9S-X;^7vsxAsFE&oI,=Xfxf2{bm37ZnlDxqj{`ILkf9O", 91);
@@ -918,7 +918,7 @@ TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNE) {
    REQUIRE_SUBSTREQ("q.GGS@17i{tGtTAyEH|Z5sNq)MKdQNaYPt8>5I;vE>S>`2|dF{&S+tFIgBYt+.BC0NQv)#R-M~CHaz{6xKEyj", "q.GGS@17i{tGtTAyEH|Z5sNq)MKdQNaYPt8>5I;vE>S>`2|dF{&S+tFIgBYt+.BC0NQv)#R-M~CHaz{6xKEyjC=Ug>JOX1W:LGAnP8", 85);
 }
 
-TEST(gen_tests_c, DEATHTESTS_CHECK_STRNNE) {
+TEST(gen_tests_c, DEATHTESTS_CHECK_SUBSTRNE) {
    CHECK_SUBSTRNE("Bl^w|wQgPP0Dk7RrSdm-e|my2f(iLbU", "FLk.=o", 31);
    CHECK_SUBSTRNE("(@(z,zXW+D3h|aRXwv>gP8DgmAx_#q3tz5gL^1.}d_,dmro3uRSH~m4:~,`Ud$dJ1ukZ!&}3UeVqfSl!1KVU5,7~c&vh@L,f2`R", "z|6dhEZYMR;YE-sovnOT|CM^yu*I.CaIPl_+<oqIj}L|,g+a9yMHF{sW1g7M:<mt0iF*g{4kl4pvkL+A2B46Gz|3>u0Wp4Yst", 99);
    CHECK_SUBSTRNE("6*F`fRH2c##y,+,B`N~=)QGtE4-dW!qwh7*y{.AY>Z3G0}E.fSQ!{{9{7.sO0eL~)`10*@_~E", ":(>G#!d0aBEp#!vgrytpGYbCSuDsmXg`SKF@<jgyBD_<HB{es6lLxfd", 73);
@@ -1071,7 +1071,7 @@ TEST(gen_tests_c, DEATHTESTS_CHECK_STRNNE) {
    CHECK_SUBSTRNE("1iD$X!iBzp", "L(:4h#eMAhK+~eZ*e^cJ}T7H@_jE", 10);
 }
 
-TEST(gen_tests_c, DEATHTESTS_REQUIRE_STRNNE) {
+TEST(gen_tests_c, DEATHTESTS_REQUIRE_SUBSTRNE) {
    REQUIRE_SUBSTRNE("{$2fE@4!w", ":m)s@-lbl)~OwKwtIkaS{HupWu0*T;sxgF4|KkAiT!e~#6S`TXOG2Wf02>0ig2m2d^@>byzm(0xV", 9);
    REQUIRE_SUBSTRNE("ahQvLzBEvq0u<:7==G2SJHZN)3&<=IC!0r3uVJgfG", "_F.7Rpvk`Wh9aix$i69>Ql~fRCZa@P{EL6KN0>j`v#ui$5=>hw,po&!5mST)hb;`kw5P9XB>w}tEoP=NE{=d5tjrb>Ft-S3.", 41);
    REQUIRE_SUBSTRNE(">:k7k)0_@LWaF2&O}jfN^@agjr=Qe!.(koo`{m*}+!T7*ZeV{Pf", "vYbb<<iCT=$:2QX#FHRE#_;O$;{KlIL(3QJf|m@{U2D>bTPOaDHaL_M4$5Ls2XZhDLCQP))*", 51);
