@@ -69,9 +69,9 @@ These macros compare two ***C-strings***.
 | Fatal assertion                | Nonfatal assertion             | Checks                                                 |
 | --------------------------     | ------------------------------ | -------------------------------------------------------- |
 | `REQUIRE_STREQ(str1,str2);`    | `CHECK_STREQ(str1,str2);`     | the two C strings have the same content   		     |
-| `REQUIRE_STRNEQ(str1,str2);`   | `CHECK_STRNEQ(str1,str2);`    | the two C strings have different contents 		     |
-| `REQUIRE_STRNE(str1,str2);`    | `CHECK_STRNE(str1,str2);`     | the two C strings have the same contents, upto the length of str1   |
-| `REQUIRE_STRNNE(str1,str2);`   | `CHECK_STRNNE(str1,str2);`    | the two C strings have different content, upto the length of str1   |
+| `REQUIRE_STRNE(str1,str2);`   | `CHECK_STRNE(str1,str2);`    | the two C strings have different contents 		     |
+| `REQUIRE_SUBSTREQ(str1,str2);`    | `CHECK_SUBSTREQ(str1,str2);`     | the two C strings have the same contents, upto the length of str1   |
+| `REQUIRE_SUBSTRNE(str1,str2);`   | `CHECK_SUBSTRNE(str1,str2);`    | the two C strings have different content, upto the length of str1   |
 
 
 ## Example Usage
