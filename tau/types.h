@@ -74,8 +74,6 @@ typedef TAU_Int8  TAU_Bool8;
 typedef TAU_Int16 TAU_Bool16;
 typedef TAU_Int32 TAU_Bool32; // Prefer this!
 
-// Unicode codepoint
-typedef TAU_Int32 TAU_Rune; 
 // The same thing as size_t 
 // TAU_Ull --> size_t
 // TAU_Ll  --> ptrdiff_t
@@ -129,17 +127,16 @@ typedef TAU_Int32 TAU_Rune;
     #endif // __cplusplus
 #endif 
 
-// TAU_bool is a basic type in C++ and not C
+// bool is a basic type in C++ and not C
 #ifndef TAU_Bool_types_defined
 #define TAU_Bool_types_defined
     #ifdef __cplusplus
-        #define TAU_bool   bool
         #define TAU_false  false
         #define TAU_true   true
     #else
-        typedef TAU_Bool32 TAU_bool;
-        static const TAU_bool TAU_false = 0;
-        static const TAU_bool TAU_true = 1;
+        typedef TAU_Bool32 TAU_Bool;
+        static const TAU_Bool TAU_false = 0;
+        static const TAU_Bool TAU_true = 1;
     #endif // __cplusplus   
 #endif // TAU_Bool_types_defined
 

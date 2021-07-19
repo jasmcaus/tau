@@ -1,6 +1,5 @@
 # Prerequisites
 *.d
-/script.py
 build/*
 /test.h
 /test.c
