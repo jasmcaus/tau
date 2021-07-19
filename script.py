@@ -236,6 +236,8 @@ WARNING = r"""
     TAU_CLANG_SUPPRESS_WARNING_POP         \
     TAU_GCC_SUPPRESS_WARNING_POP      
 #endif // TAU_DISABLE_DEBUG_WARNINGS_POP
+
+#endif // TAU_COMPILERS_H
 """
 
 for file in os.listdir(BASE):

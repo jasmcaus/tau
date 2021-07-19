@@ -16,7 +16,7 @@ Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
 
 #include <tau/compilers.h>
 
-// Base types/
+// Base types
 /*
 typedef unsigned char       TAU_UInt8; 
 typedef          char       TAU_Int8;  

@@ -3,6 +3,10 @@ $(VERBOSE)MAKESILENT = -s
 #Suppress display of executed commands.
 $(VERBOSE).SILENT:
 
+all:
+	python3 script.py
+.PHONY: all
+
 SOURCE_DIR = .
 BUILD_DIR = build
 # GENERATOR = "MinGW Makefiles"
@@ -13,3 +17,7 @@ cmake:
 	echo ------------------ Running Target ------------------
 	cd build/bin/ ; ./TauInternalTests
 .PHONY: cmake
+
+cmakeclean:
+	rm -rf build/ && mkdir build
+.PHONY: cmakeclean

@@ -987,7 +987,7 @@ static void tau_help_() {
         printf("  --help                   Display this help and exit\n");
 }
 
-static TAU_bool tauCmdLineRead(int argc, char** argv) {
+static TAU_Bool tauCmdLineRead(int argc, char** argv) {
     // Coloured output
 #ifdef TAU_UNIX_
     tauShouldColourizeOutput = isatty(STDOUT_FILENO);
@@ -1133,7 +1133,7 @@ inline int tau_main(int argc, char** argv) {
     // Start the entire Test Session timer
     double start = tauClock();
 
-    TAU_bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
+    TAU_Bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
     if(!wasCmdLineReadSuccessful)
         return tauCleanup();
 
