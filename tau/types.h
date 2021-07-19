@@ -127,6 +127,7 @@ typedef TAU_Int32 TAU_Bool32; // Prefer this!
     #endif // __cplusplus
 #endif 
 
+typedef TAU_Bool32 TAU_Bool;
 // bool is a basic type in C++ and not C
 #ifndef TAU_Bool_types_defined
 #define TAU_Bool_types_defined
@@ -134,7 +135,6 @@ typedef TAU_Int32 TAU_Bool32; // Prefer this!
         #define TAU_false  false
         #define TAU_true   true
     #else
-        typedef TAU_Bool32 TAU_Bool;
         static const TAU_Bool TAU_false = 0;
         static const TAU_Bool TAU_true = 1;
     #endif // __cplusplus   
