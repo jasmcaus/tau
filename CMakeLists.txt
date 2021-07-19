@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 set(TAU_VERSION 1.0.0)
 
@@ -10,9 +10,9 @@ project(Tau
 
 # CMake's FATAL_ERROR is ignored on CMake versions >2.6 
 # Hence we explicitely check for correct enforcement of CMake configurations.
-if (${CMAKE_VERSION} VERSION_LESS "3.10")
+if (${CMAKE_VERSION} VERSION_LESS "3.20")
     message(
-        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Tau supports CMake 3.10 above."
+        ERROR "You are currently on CMake Version ${CMAKE_VERSION}, but Tau supports CMake 3.20 above."
         "Please update your CMake installation."
     )
 endif()
