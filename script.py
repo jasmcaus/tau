@@ -1,15 +1,15 @@
 import os 
 import os.path as osp 
 
-BASE = r'/home/jas/Documents/dev/hazel/hazel/core'
+BASE = r'/home/jas/Documents/dev/adorad/adorad/core'
 HERE = osp.join(osp.dirname(__file__), 'tau')
 
-HAZEL_COPYRIGHT = """\
+ADORAD_COPYRIGHT = """\
 _ _    _           ______   _______        
 | |  | |    /\    /___  /   |  ____|| |    
-| |__| |   /  \      / /    | |__   | |       Hazel - The Fast, Expressive & Elegant Programming Language
+| |__| |   /  \      / /    | |__   | |       Adorad - The Fast, Expressive & Elegant Programming Language
 |  __  |  / /\ \    / /     |  __|  | |       Languages: C, C++, and Assembly
-| |  | | / ____ \  / /___   | |____ | |____   https://github.com/HazelLang/hazel/
+| |  | | / ____ \  / /___   | |____ | |____   https://github.com/AdoradLang/adorad/
 |_|_ |_|/_/    \_\/_______\ |______|_\______|
 """
 
@@ -245,10 +245,10 @@ for file in os.listdir(BASE):
         with open(osp.join(BASE, file), 'r') as f:
             s = f.read()
 
-        s = s.replace(HAZEL_COPYRIGHT, TAU_COPYRIGHT)
+        s = s.replace(ADORAD_COPYRIGHT, TAU_COPYRIGHT)
         s = s.replace('CSTL_', 'TAU_')
-        s = s.replace('Hazel', 'Tau')
-        s = s.replace('hazel', 'tau')
+        s = s.replace('Adorad', 'Tau')
+        s = s.replace('adorad', 'tau')
         s = s.replace('tau/core', 'tau')
         s = s.replace('#include <tau/debug.h>\n', '')
 
