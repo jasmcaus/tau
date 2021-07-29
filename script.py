@@ -262,6 +262,7 @@ for file in os.listdir(BASE):
         s  = s.replace('typedef TAU_Bool32 bool', 'typedef TAU_Bool32 TAU_Bool')
         s = s.replace('#define false', '#define TAU_false')
         s = s.replace('#define true', '#define TAU_true')
+        s = s.replace('#define TAU_false  false', '#define TAU_Bool   bool\n        #define TAU_false  false')
         s = s.replace('static const bool false', 'static const TAU_Bool TAU_false')
         s = s.replace('static const bool true', 'static const TAU_Bool TAU_true')
 

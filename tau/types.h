@@ -131,6 +131,7 @@ typedef TAU_Int32 TAU_Bool32; // Prefer this!
 #ifndef TAU_Bool_types_defined
 #define TAU_Bool_types_defined
     #ifdef __cplusplus
+        #define TAU_Bool   bool
         #define TAU_false  false
         #define TAU_true   true
     #else
