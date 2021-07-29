@@ -1,5 +1,5 @@
 /*
- _______           _    _
+ _______          _    _
 |__   __|  /\    | |  | |
    | |    /  \   | |  | |  Tau - The Micro Testing Framework for C/C++
    | |   / /\ \  | |  | |  Language: C
@@ -8,7 +8,7 @@
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>
 SPDX-License-Identifier: MIT
-Copyright (c) 2021 Jason Dsouza <http://github.com/jasmcaus>
+Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 */
 
 #ifndef TAU_COMPILERS_H

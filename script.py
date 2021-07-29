@@ -5,16 +5,16 @@ BASE = r'/home/jas/Documents/dev/adorad/adorad/core'
 HERE = osp.join(osp.dirname(__file__), 'tau')
 
 ADORAD_COPYRIGHT = """\
-          _____         _____           _____  
-    /\   |  __ \ / __ \|  __ \    /\   |  __ \
-   /  \  | |  | | |  | | |__)|   /  \  | |  | | Adorad - The Fast, Expressive & Elegant Programming Language
-  / /\ \ | |  | | |  | |  _  /  / /\ \ | |  | | Languages: C, C++, and Assembly
- / ____ \| |__| | |__| | | \ \ / ____ \| |__| | https://github.com/adorad/adorad/
-/_/_ __\_\_____/_\____/|_|__\_/_/_ __\_\_____/
+          _____   ____  _____            _____  
+    /\   |  __ \ / __ \|  __ \     /\   |  __ \ 
+   /  \  | |  | | |  | | |__) |   /  \  | |  | | Adorad - The Fast, Expressive & Elegant Programming Language
+  / /\ \ | |  | | |  | |  _  /   / /\ \ | |  | | Languages: C, C++, and Assembly
+ / ____ \| |__| | |__| | | \ \  / ____ \| |__| | https://github.com/adorad/adorad/
+/_/    \_\_____/ \____/|_|  \_\/_/    \_\_____/ 
 """
 
 TAU_COPYRIGHT = """\
- _______           _    _
+ _______          _    _
 |__   __|  /\    | |  | |
    | |    /  \   | |  | |  Tau - The Micro Testing Framework for C/C++
    | |   / /\ \  | |  | |  Language: C
