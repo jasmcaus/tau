@@ -23,7 +23,7 @@ for the sacrifice of a few constructs.
 
 ## Features
 * *Ultra-light* (~1k lines of code)
-* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/thirdparty))
+* Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/ThirdParty))
 * [Blazing Fast Assertions](https://github.com/jasmcaus/tau/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
 * Test Fixtures 
