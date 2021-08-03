@@ -95,7 +95,6 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 #define TAU_STRINGIZE_IMPL(x)          #x
 #define TAU_STRINGIZE(x)               TAU_STRINGIZE_IMPL(x)
 
-
 // printf format-string specifiers for TAU_Int64 and TAU_UInt64 respectively
 #if defined(_MSC_VER) && (_MSC_VER < 1920)
     #define TAU_PRId64 "I64d"
@@ -110,12 +109,10 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_PRIu64 PRIu64
 #endif
 
-
 // A signed sizeof is more useful 
 #ifndef TAU_SIZEOF
     #define TAU_SIZEOF(x)    (TAU_Ll)(sizeof(x))
 #endif 
-
 
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
