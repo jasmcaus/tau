@@ -14,53 +14,6 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 #ifndef TAU_MISCELLANEOUS_H
 #define TAU_MISCELLANEOUS_H
 
-// Inline 
-#ifdef __cplusplus
-    #if defined(_MSC_VER) && _MSC_VER <= 1800 
-        #define TAU_INLINE     __inline
-    #elif !defined(__STDC_VERSION__)
-        #define TAU_INLINE     __inline__
-    #else 
-        #define TAU_INLINE 
-    #endif 
-#else
-    // We default to C's inline function
-    // NOTE: GCC performs inline substitution for `inline` functions. This presents a problem because declared `inline`
-    // functions are not visible to the linker and hence will result in ``undefined reference to `function` `` errors
-    // A quick fix is to make sure `inline` functions are declared as static. 
-    // 
-    // We can enforce this here, but I'll wait for sometime. If we decide to go ahead with it, a simple text substitution
-    // should work :)
-    #define TAU_INLINE  inline
-#endif 
-
-
-// Force Inline
-#ifndef TAU_ALWAYS_INLINE
-    #if defined(_MSC_VER)
-        #if _MSC_VER < 1300
-            #define TAU_ALWAYS_INLINE
-        #else 
-            #define TAU_ALWAYS_INLINE   __forceinline
-        #endif 
-    #elif __has_attribute(always_inline) || defined(__GNUC__)
-        #define TAU_ALWAYS_INLINE       __attribute__((__always_inline__)) inline
-    #else 
-        #define TAU_ALWAYS_INLINE       inline
-    #endif 
-#endif 
-
-
-// No Inline 
-#ifndef TAU_NOINLINE
-    #if defined(_MSC_VER)
-        #define TAU_NOINLINE   __declspec(noinline)
-    #else 
-        #define TAU_NOINLINE   __attribute__((noinline))
-    #endif 
-#endif 
-
-
 // Casts
 #ifdef __cplusplus
     #define TAU_CAST(type, x)       static_cast<type>(x)
@@ -69,31 +22,6 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_CAST(type, x)       ((type)x)
     #define TAU_PTRCAST(type, x)    ((type)x)
 #endif // __cplusplus
-
-
-// Noexcept
-#if defined(__cplusplus) && (__cplusplus >= 201103L)
-    #define TAU_NOEXCEPT    noexcept
-#else 
-    #define TAU_NOEXCEPT
-#endif // __cplusplus
-
-
-// Nothrow
-#if defined(__cplusplus) && defined(_MSC_VER)
-    #define TAU_NOTHROW   __declspec(nothrow)
-#else
-    #define TAU_NOTHROW
-#endif // __cplusplus
-
-
-#define TAU_CONCATENATE_IMPL(s1, s2)   s1##s2
-#define TAU_CONCATENATE(s1, s2)        TAU_CONCATENATE_IMPL(s1, s2)
-
-#define TAU_MACRO_EXPAND(args)         args
-
-#define TAU_STRINGIZE_IMPL(x)          #x
-#define TAU_STRINGIZE(x)               TAU_STRINGIZE_IMPL(x)
 
 // printf format-string specifiers for TAU_Int64 and TAU_UInt64 respectively
 #if defined(_MSC_VER) && (_MSC_VER < 1920)

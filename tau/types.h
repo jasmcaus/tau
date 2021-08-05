@@ -17,18 +17,6 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 #include <tau/compilers.h>
 
 // Base types
-/*
-typedef unsigned char       TAU_UInt8; 
-typedef          char       TAU_Int8;  
-typedef unsigned short      TAU_UInt16;
-typedef signed short        TAU_Int16; 
-typedef unsigned int        TAU_UInt32;
-typedef signed int          TAU_Int32; 
-typedef unsigned long long  TAU_UInt64;
-typedef long long           TAU_Int64; 
-typedef float               TAU_Float32; 
-typedef double              TAU_Float64; 
-*/
 #if defined(TAU_COMPILER_MSVC)
     #if _MSVC_VER < 1300 
         typedef unsigned char     TAU_UInt8;
