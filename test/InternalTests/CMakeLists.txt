@@ -1,4 +1,4 @@
-# ------ Mhon's Internal Tests  ------
+# ------ Tau's Internal Tests  ------
 add_executable(
     TauInternalTests
     main.c

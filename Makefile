@@ -2,6 +2,7 @@
 $(VERBOSE)MAKESILENT = -s
 #Suppress display of executed commands.
 $(VERBOSE).SILENT:
+MAKEFLAGS += --silent
 
 all:
 	python3 script.py

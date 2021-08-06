@@ -293,5 +293,7 @@ install(
 # If at least one test option is ON, we need to enter the `test` directory
 # The relevant options will be parsed and the appropriate tests will be called
 if(TAU_BUILDINTERNALTESTS OR TAU_BUILDTHIRDPARTYTESTS)
+    include(CTest)
+    enable_testing()
     add_subdirectory(test)
 endif()
