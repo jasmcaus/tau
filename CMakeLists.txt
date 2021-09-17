@@ -286,7 +286,7 @@ install(
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tau
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tau
     DESTINATION include
 )
 
