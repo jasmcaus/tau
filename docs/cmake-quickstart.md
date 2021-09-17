@@ -29,7 +29,7 @@ set(CMAKE_CXX_STANDARD 11)
 include(FetchContent)
 FetchContent_Declare(
     Tau
-    URL https://github.com/jasmcaus/Tau/archive/dev.zip
+    URL https://github.com/jasmcaus/tau/archive/dev.zip
 )
 
 FetchContent_MakeAvailable(Tau)
@@ -58,7 +58,7 @@ TEST(b, require) {
 }
 ```
 
-You can read more about the assertions that Tau provides [here](https://github.com/jasmcaus/Tau/blob/dev/docs/tau-primer.md). 
+You can read more about the assertions that Tau provides [here](https://github.com/jasmcaus/tau/blob/dev/docs/tau-primer.md). 
 
 To build the code, add the following to the end of your `CMakeLists.txt` file:
 ```cmake
