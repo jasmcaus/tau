@@ -141,7 +141,7 @@ If you have any questions, please:
 
 # Who uses Tau?
 In addition to several of my personal projects, Tau is also used in the following notable projects:
-* The [Adorad](https://github.com/AdoradLang/Adorad) Programming Language
+* The [Adorad](https://github.com/adorad/adorad) Programming Language
 
 
 # Supporting This Project
