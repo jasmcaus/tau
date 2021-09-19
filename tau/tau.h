@@ -187,21 +187,19 @@ TAU_EXTERN struct tauTestStateStruct tauTestContext;
         //use old QueryPerformanceCounter definitions (not sure is this needed in some edge cases or not)
         //on Win7 with VS2015 these extern declaration cause "second C linkage of overloaded function not allowed" error
         typedef union {
-        struct {
-            unsigned long LowPart;
-            long HighPart;
-        } s;
-        struct {
-            unsigned long LowPart;
-            long HighPart;
-        } u;
-        Int64 QuadPart;
+            struct {
+                unsigned long LowPart;
+                long HighPart;
+            } s;
+            struct {
+                unsigned long LowPart;
+                long HighPart;
+            } u;
+            Int64 QuadPart;
         } TAU_LARGE_INTEGER;
 
-        extern "C" __declspec(dllimport) int
-        __stdcall QueryPerformanceCounter(TAU_LARGE_INTEGER*);
-        extern "C" __declspec(dllimport) int
-        __stdcall QueryPerformanceFrequency(TAU_LARGE_INTEGER*);
+        extern "C" __declspec(dllimport) int __stdcall QueryPerformanceCounter(TAU_LARGE_INTEGER*);
+        extern "C" __declspec(dllimport) int __stdcall QueryPerformanceFrequency(TAU_LARGE_INTEGER*);
     #endif // TAU_USE_OLD_QPC
 
 #elif defined(__linux__)
