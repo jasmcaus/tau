@@ -98,33 +98,34 @@ TAU_DISABLE_DEBUG_WARNINGS
 #endif // _MSC_VER
 
 #ifndef TAU_NO_TESTING
-    typedef void (*tau_testsuite_t)();
-    struct tauTestSuiteStruct {
-        tau_testsuite_t func;
-        char* name;
-    };
 
-    struct tauTestStateStruct {
-        struct tauTestSuiteStruct* tests;
-        TAU_Ull numTestSuites;
-        FILE* foutput;
-    };
+typedef void (*tau_testsuite_t)();
+struct tauTestSuiteStruct {
+    tau_testsuite_t func;
+    char* name;
+};
 
-    static TAU_UInt64 tauStatsTotalTestSuites = 0;
-    static TAU_UInt64 tauStatsTestsRan = 0;
-    static TAU_UInt64 tauStatsNumTestsFailed = 0;
-    static TAU_UInt64 tauStatsSkippedTests = 0;
-    static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL;
-    static TAU_Ull tauStatsNumFailedTestSuites = 0;
-    extern TAU_UInt64 tauStatsNumWarnings;
+struct tauTestStateStruct {
+    struct tauTestSuiteStruct* tests;
+    TAU_Ull numTestSuites;
+    FILE* foutput;
+};
 
-    // Overridden in `tau_main` if the cmdline option `--no-color` is passed
-    static int tauShouldColourizeOutput = 1;
-    static int tauDisableSummary = 0;
-    static int tauDisplayOnlyFailedOutput = 0;
+static TAU_UInt64 tauStatsTotalTestSuites = 0;
+static TAU_UInt64 tauStatsTestsRan = 0;
+static TAU_UInt64 tauStatsNumTestsFailed = 0;
+static TAU_UInt64 tauStatsSkippedTests = 0;
+static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL;
+static TAU_Ull tauStatsNumFailedTestSuites = 0;
+extern TAU_UInt64 tauStatsNumWarnings;
 
-    static char* tau_argv0_ = TAU_NULL;
-    static const char* cmd_filter = TAU_NULL;
+// Overridden in `tau_main` if the cmdline option `--no-color` is passed
+static int tauShouldColourizeOutput = 1;
+static int tauDisableSummary = 0;
+static int tauDisplayOnlyFailedOutput = 0;
+
+static char* tau_argv0_ = TAU_NULL;
+static const char* cmd_filter = TAU_NULL;
 #endif // TAU_NO_TESTING
 
 /**
