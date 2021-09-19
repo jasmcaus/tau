@@ -4,10 +4,6 @@ $(VERBOSE)MAKESILENT = -s
 $(VERBOSE).SILENT:
 MAKEFLAGS += --silent
 
-all:
-	python3 script.py
-.PHONY: all
-
 SOURCE_DIR = .
 BUILD_DIR = build
 # GENERATOR = "MinGW Makefiles"
@@ -18,6 +14,10 @@ cmake:
 	echo ------------------ Running Target ------------------
 	cd build/bin/ ; ./TauInternalTests
 .PHONY: cmake
+
+script:
+	python3 script.py
+.PHONY: script
 
 cmakeclean:
 	rm -rf build/ && mkdir build
