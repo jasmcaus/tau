@@ -513,24 +513,25 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
         #define TAU_CAN_USE_OVERLOADABLES
     #endif // TAU_CAN_USE_OVERLOADABLES
 
-    #define TAU_OVERLOAD_PRINTER(val)                             \
-        tauPrintf(_Generic((val),                                 \
-                            char : "'%c'",                        \
-                            char* : "%s",                         \
-                            unsigned char : "%hhu",               \
-                            short : "%hd",                        \
-                            unsigned short : "%hu",               \
-                            int : "%d",                           \
-                            unsigned int : "%u",                  \
-                            long : "%ld",                         \
-                            long long : "%lld",                   \
-                            unsigned long : "%lu",                \
-                            unsigned long long : "%"TAU_PRIu64,   \
-                            float : "%f",                         \
-                            double : "%f",                        \
-                            long double : "%Lf",                  \
-                            void* : "%p"),                        \
-                    (val))
+    #define TAU_OVERLOAD_PRINTER(val)                         \
+        tauPrintf(                                            \
+            _Generic((val),                                   \
+                        char : "'%c'",                        \
+                        char* : "%s",                         \
+                        unsigned char : "%hhu",               \
+                        short : "%hd",                        \
+                        unsigned short : "%hu",               \
+                        int : "%d",                           \
+                        unsigned int : "%u",                  \
+                        long : "%ld",                         \
+                        long long : "%lld",                   \
+                        unsigned long : "%lu",                \
+                        unsigned long long : "%"TAU_PRIu64,   \
+                        float : "%f",                         \
+                        double : "%f",                        \
+                        long double : "%Lf",                  \
+                        void* : "%p"),                        \
+                (val))
 
 #else
     // If we're here, this means that the Compiler does not support overloadable methods
