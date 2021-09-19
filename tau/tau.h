@@ -154,6 +154,8 @@ extern volatile int shouldAbortTest;
     suite in the case of a REQUIRE)
 */
 static void __failIfInsideTestSuite();
+static void __abortIfInsideTestSuite();
+
 static void __failIfInsideTestSuite() {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
@@ -161,7 +163,6 @@ static void __failIfInsideTestSuite() {
     }
 }
 
-static void __abortIfInsideTestSuite();
 static void __abortIfInsideTestSuite() {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
