@@ -425,11 +425,11 @@ tauColouredPrintf(int colour, const char* fmt, ...) {
 
 
 static inline int TAU_isDigit(char c) { return c >= '0' && c <= '9'; }
-// If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`
-// This method signals whether this message should be printed
+// If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`.
+// This method signals whether this message should be printed.
 //
-// Note: the arguments are of type `char const*` as opposed to `char*`
-// This helps mitigate the ``warning: ISO C++ forbids converting a string constant to 'char*'``
+// Note: the arguments are of type `char const*` as opposed to `char*`.
+// This helps mitigate the ``warning: ISO C++ forbids converting a string constant to 'char*'`.
 // See: https://stackoverflow.com/questions/20944784/why-is-conversion-from-string-constant-to-char-valid-in-c-but-invalid-in-c/20944858
 static inline int tauShouldDecomposeMacro(char const* actual, char const* expected, int isStringCmp) {
     // Signal that the macro can be further decomposed if either of the following symbols are present
@@ -441,23 +441,27 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     // name/expression (i.e for a value, we search through each character verifying that each is a digit
     // - for floats, we allow a maximum of 1 '.' char)
     if(!isStringCmp) {
-        for(int i=0; i < strlen(actual); i++) {
-            if(TAU_isDigit(actual[i])) { numActualDigits++; }
-            else if(actual[i] == '.') {
+        for(int i = 0; i < strlen(actual); i++) {
+            if(TAU_isDigit(actual[i])) { 
+                numActualDigits++; 
+            } else if(actual[i] == '.') {
                 dots++;
                 if(dots > 1) { return 1; }
+            } else { 
+                return 1; 
             }
-            else { return 1; }
         }
         // Do the same for `expected`
         dots = 0;
         for(int i=0; i < strlen(expected); i++) {
-            if(TAU_isDigit(expected[i])) { numExpectedDigits++; }
-            else if(expected[i] == '.') {
+            if(TAU_isDigit(expected[i])) { 
+                numExpectedDigits++; 
+            } else if(expected[i] == '.') {
                 dots++;
                 if(dots > 1) { return 1; }
+            } else { 
+                return 1; 
             }
-            else { return 1; }
         }
     }
     // Inside a string comparison, we search for common expression tokens like the following:
