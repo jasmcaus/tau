@@ -128,18 +128,20 @@ TAU_DISABLE_DEBUG_WARNINGS
 #endif // TAU_NO_TESTING
 
 /**
-    This helps us determine whether a CHECK or a REQUIRE are being called from within or outside a
-    a Test Suite. Tau supports both - so we need to handle this
-    We could have determined this somehow from within a function, but this is cleaner a cleaner approach
-    (which is the aim on Tau).
+    This helps us determine whether a CHECK or a REQUIRE are being called from within (or outside)
+    a Test Suite. Tau supports both - so we need to handle this.
 
-    Inside the TEST() initializer, this is set to true (because we are inside a Test Suite), so the
-    CHECKs and REQUIREs will do their thing and return the appropriate result.
-    If the assertion macro is not within the TEST() scope, it simply does not return anything - it only
+    We could have somehow determined this from within a function, but this is a cleaner approach 
+    (which is the Tau's aim).
+
+    Inside the TEST() initializer, this is set to `true` (because we are inside a Test Suite), so the
+    `CHECK`s and `REQUIRE`s will do their thing and return the appropriate result.
+    If the assertion macro is not within the `TEST()` scope, it simply does not return anything - it only
     resets it back to false so that this same process occurs for the rest of the checks.
 */
 extern volatile int checkIsInsideTestSuite;
 extern volatile int hasCurrentTestFailed;
+
 #ifndef TAU_NO_TESTING
 extern volatile int shouldFailTest;
 extern volatile int shouldAbortTest;
@@ -152,7 +154,7 @@ extern volatile int shouldAbortTest;
 */
 static void __failIfInsideTestSuite();
 static void __failIfInsideTestSuite() {
-    if(checkIsInsideTestSuite== 1) {
+    if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldFailTest = 1;
     }
@@ -160,7 +162,7 @@ static void __failIfInsideTestSuite() {
 
 static void __abortIfInsideTestSuite();
 static void __abortIfInsideTestSuite() {
-    if(checkIsInsideTestSuite== 1) {
+    if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldAbortTest = 1;
     }
