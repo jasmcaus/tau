@@ -626,8 +626,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 static void tauPrintColouredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
     if(ch == ref) {
         tauPrintf("%02X", ch);
-    }
-    else {
+    } else {
         tauColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "%02X", ch);
     }
 }
@@ -637,10 +636,10 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
     TAU_UInt8* ref_buf = (TAU_UInt8*)ref;
 
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
-    if(size)
+    if(size != 0)
         tauPrintColouredIfDifferent(test_buf[0], ref_buf[0]);
     
-    for(int i=1; i<size; ++i) {
+    for(int i = 1; i < size; ++i) {
         printf(" ");
         tauPrintColouredIfDifferent(test_buf[i], ref_buf[i]);
     }
@@ -903,7 +902,7 @@ static int tauShouldFilterTest(const char* filter, const char* testcase) {
         const char* filter_wildcard = TAU_NULL;
 
         while ((*filter_curr != TAU_NULLCHAR) && (*testcase_curr != TAU_NULLCHAR)) {
-            if('*' == *filter_curr) {
+            if(*filter_curr == '*') {
                 // store the position of the wildcard
                 filter_wildcard = filter_curr;
 
@@ -957,39 +956,40 @@ static int tauShouldFilterTest(const char* filter, const char* testcase) {
 static inline FILE* tau_fopen(const char* filename, const char* mode) {
 #ifdef _MSC_VER
     FILE* file;
-    if(fopen_s(&file, filename, mode) == 0)
+    if(fopen_s(&file, filename, mode) == 0) {
         return file;
-    else
+    } else {
         return TAU_NULL;
+    }
 #else
     return fopen(filename, mode);
 #endif // _MSC_VER
 }
 
 static void tau_help_() {
-        printf("Usage: %s [options] [test...]\n", tau_argv0_);
-        printf("\n");
-        printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
-        printf("tests in the suite but those listed. By default, if no tests are specified\n");
-        printf("on the command line, all unit tests in the suite are run.\n");
-        printf("\n");
-        printf("Options:\n");
-        printf("  --failed-output-only     Output only failed Test Suites");
-        printf("  --filter=<filter>        Filter the test suites to run (e.g: Suite1*.a\n");
-        printf("                             would run Suite1Case.a but not Suite1Case.b}\n");
-    #if defined(TAU_WIN_)
-        printf("  --time                   Measure test duration\n");
-    #elif defined(TAU_HAS_POSIX_TIMER_)
-        printf("  --time                   Measure test duration (real time)\n");
-        printf("  --time=TIMER             Measure test duration, using given timer\n");
-        printf("                               (TIMER is one of 'real', 'cpu')\n");
-    #endif // TAU_WIN_
-        printf("  --no-summary             Suppress printing of test results summary\n");
-        printf("  --output=<FILE>          Write an XUnit XML file to Enable XUnit output\n");
-        printf("                             to the given file\n");
-        printf("  --list                   List unit tests in the suite and exit\n");
-        printf("  --no-color               Disable coloured output\n");
-        printf("  --help                   Display this help and exit\n");
+    printf("Usage: %s [options] [test...]\n", tau_argv0_);
+    printf("\n");
+    printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
+    printf("tests in the suite but those listed. By default, if no tests are specified\n");
+    printf("on the command line, all unit tests in the suite are run.\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("  --failed-output-only     Output only failed Test Suites");
+    printf("  --filter=<filter>        Filter the test suites to run (e.g: Suite1*.a\n");
+    printf("                             would run Suite1Case.a but not Suite1Case.b}\n");
+#if defined(TAU_WIN_)
+    printf("  --time                   Measure test duration\n");
+#elif defined(TAU_HAS_POSIX_TIMER_)
+    printf("  --time                   Measure test duration (real time)\n");
+    printf("  --time=TIMER             Measure test duration, using given timer\n");
+    printf("                               (TIMER is one of 'real', 'cpu')\n");
+#endif // TAU_WIN_
+    printf("  --no-summary             Suppress printing of test results summary\n");
+    printf("  --output=<FILE>          Write an XUnit XML file to Enable XUnit output\n");
+    printf("                             to the given file\n");
+    printf("  --list                   List unit tests in the suite and exit\n");
+    printf("  --no-color               Disable coloured output\n");
+    printf("  --help                   Display this help and exit\n");
 }
 
 static TAU_Bool tauCmdLineRead(int argc, char** argv) {
