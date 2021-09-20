@@ -59,8 +59,10 @@ TAU_DISABLE_DEBUG_WARNINGS
 #endif // __has_include
 
 #ifdef __cplusplus
+    #define TAU_C_FUNC   extern "C"
     #define TAU_EXTERN   extern "C"
 #else
+    #define TAU_C_FUNC
     #define TAU_EXTERN   extern
 #endif // __cplusplus
 
@@ -200,8 +202,8 @@ TAU_EXTERN struct tauTestStateStruct tauTestContext;
             Int64 QuadPart;
         } TAU_LARGE_INTEGER;
 
-        extern "C" __declspec(dllimport) int __stdcall QueryPerformanceCounter(TAU_LARGE_INTEGER*);
-        extern "C" __declspec(dllimport) int __stdcall QueryPerformanceFrequency(TAU_LARGE_INTEGER*);
+        TAU_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceCounter(TAU_LARGE_INTEGER*);
+        TAU_C_FUNC __declspec(dllimport) int __stdcall QueryPerformanceFrequency(TAU_LARGE_INTEGER*);
     #endif // TAU_USE_OLD_QPC
 
 #elif defined(__linux__)
