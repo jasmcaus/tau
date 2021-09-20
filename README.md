@@ -11,7 +11,7 @@
 
 </div>
 
-A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
+A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 2k lines of
 code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
 Google Test, & Catch2, making it suitable for on-to-go testing (embedded developers will especially love us!).
 
@@ -22,11 +22,13 @@ for the sacrifice of a few constructs.
 
 
 ## Features
-* *Ultra-light* (~1k lines of code)
+* *Ultra-light* (~2k lines of code)
+* **8x** times faster than GoogleTest and Catch2
 * Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/ThirdParty))
 * [Blazing Fast Assertions](https://github.com/jasmcaus/tau/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
-* Test Fixtures 
+* Support Test Fixtures
+* Allows filtering of test cases
 
 
 # Installation
@@ -38,13 +40,13 @@ None! Tau is header-only, so simply include it in your project.
 To build Tau with CMake, read through the [CMake Quickstart Guide](https://github.com/jasmcaus/tau/blob/dev/docs/cmake-quickstart.md).
 
 
-## Basic Concepts
+<!-- ## Basic Concepts
 Tau provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s 
 which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. 
 Unless the latter takes place, the program continues normally. 
 
 In Tau, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should 
-ideally reflect the structure of your tested code. 
+ideally reflect the structure of your tested code.  -->
 
 
 # Prerequistes
