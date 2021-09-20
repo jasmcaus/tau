@@ -27,7 +27,7 @@ for the sacrifice of a few constructs.
 * Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/ThirdParty))
 * [Blazing Fast Assertions](https://github.com/jasmcaus/tau/blob/dev/benchmarks)
 * Gtest-like Assertion Macros
-* Support Test Fixtures
+* Supports Test Fixtures
 * Allows filtering of test cases
 
 
