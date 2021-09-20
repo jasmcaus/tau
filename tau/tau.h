@@ -303,10 +303,10 @@ static void tauClockPrintDuration(double nanoseconds_duration) {
 
     #pragma section(".CRT$XCU", read)
     #define TAU_TEST_INITIALIZER(f)                                                      \
-    static void __cdecl f(void);                                                         \
-    __pragma(comment(linker, "/include:" TAU_SYMBOL_PREFIX #f "_"))                      \
-    extern "C" __declspec(allocate(".CRT$XCU"))    void(__cdecl * f##_)(void) = f;       \
-    static void __cdecl f(void)
+        static void __cdecl f(void);                                                         \
+        __pragma(comment(linker, "/include:" TAU_SYMBOL_PREFIX #f "_"))                      \
+        extern "C" __declspec(allocate(".CRT$XCU"))    void(__cdecl * f##_)(void) = f;       \
+        static void __cdecl f(void)
 #else
     #define TAU_TEST_INITIALIZER(f)                             \
         static void f(void)     __attribute__((constructor));   \
