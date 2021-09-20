@@ -11,7 +11,7 @@
 
 </div>
 
-A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 2k lines of
+A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
 code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
 Google Test, & Catch2, making it suitable for on-to-go testing (embedded developers will especially love us!).
 
