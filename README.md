@@ -22,7 +22,7 @@ for the sacrifice of a few constructs.
 
 
 ## Features
-* *Ultra-light* (~2k lines of code)
+* *Ultra-light* (~1k lines of code)
 * **8x** times faster than GoogleTest and Catch2
 * Can test both C and C++ code (see [ThirdParty tests](https://github.com/jasmcaus/tau/blob/dev/test/ThirdParty))
 * [Blazing Fast Assertions](https://github.com/jasmcaus/tau/blob/dev/benchmarks)
