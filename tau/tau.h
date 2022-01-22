@@ -1175,7 +1175,8 @@ inline int tau_main(int argc, char** argv) {
     tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", 
                             tauStatsTestsRan - tauStatsNumTestsFailed,
                             tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
-    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", 
+    tauColouredPrintf(tauStatsNumTestsFailed > 0 ? TAU_COLOUR_BRIGHTRED_ : TAU_COLOUR_DEFAULT_,
+                            "[  FAILED  ] %" TAU_PRIu64 " %s\n",
                             tauStatsNumTestsFailed, 
                             tauStatsNumTestsFailed == 1 ? "suite" : "suites");
 
