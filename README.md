@@ -12,12 +12,12 @@
 </div>
 
 A Micro Unit Testing Framework for >C11/C++11 projects, with the promise of *always being tiny* - about 1k lines of
-code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like 
+code. This framework is a *much* simpler, *much* lighter and *much* faster alternative to heavier frameworks like
 Google Test, & Catch2, making it suitable for on-to-go testing (embedded developers will especially love us!).
 
-I initially wrote Tau to be a unit testing framework for C; however, initial results showed great promise of 
+I initially wrote Tau to be a unit testing framework for C; however, initial results showed great promise of
 compiling with (and testing) C++ code. While Tau doesn't currently support mocking, or a way to test for exceptions
-in C++, its limitations are in fact its biggest strength - you get *negligible* overhead & fast compilation speeds 
+in C++, its limitations are in fact its biggest strength - you get *negligible* overhead & fast compilation speeds
 for the sacrifice of a few constructs.
 
 
@@ -32,7 +32,7 @@ for the sacrifice of a few constructs.
 
 
 # Installation
-None! Tau is header-only, so simply include it in your project. 
+None! Tau is header-only, so simply include it in your project.
 ```c
 #include <tau/tau.h>
 ```
@@ -41,22 +41,22 @@ To build Tau with CMake, read through the [CMake Quickstart Guide](https://githu
 
 
 <!-- ## Basic Concepts
-Tau provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s 
-which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*. 
-Unless the latter takes place, the program continues normally. 
+Tau provides several variants of Assertion Macros for us - `CHECK`s which are *non-fatal* asserts, and `REQUIRE`s
+which are *fatal* asserts. The result of an assertion is either *success*, *non-fatal failure* or a *fatal failure*.
+Unless the latter takes place, the program continues normally.
 
-In Tau, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should 
+In Tau, you would normally define a ***Test Suite*** which contains multiple tests. These test suites should
 ideally reflect the structure of your tested code.  -->
 
 
 # Prerequistes
-To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Tau to set up 
+To begin, you **must** include the following in *any* (but only one) C/C++ file. This initializes Tau to set up
 all your tests:
 ```c
-TAU_MAIN() // IMPORTANT: No semicolon at the end 
+TAU_MAIN() // IMPORTANT: No semicolon at the end
 ```
 This defines a main function, so if you write a `main()` function ***and*** declare `TAU_MAIN()`, your compiler will
-throw a `redeclaration of main` error. 
+throw a `redeclaration of main` error.
 
 If you must write a `main()` function, use the following instead:
 ```c
@@ -74,35 +74,35 @@ TEST(TestSuiteName, TestName) {
     ... rest of the test body ...
 }
 ```
-The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the 
-test. This allows tests to be grouped for convenience. 
+The `TEST` macro takes two parameters - the first is the name of the Test Suite, and the second is the name of the
+test. This allows tests to be grouped for convenience.
 
 
 ## Testing Macros
-Tau provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these 
-assertions fail, Tau prints the source code location (file + line number) along with a failure message. 
+Tau provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these
+assertions fail, Tau prints the source code location (file + line number) along with a failure message.
 
-`ASSERT`s generate *fatal* failures - the test suite will cease its execution and move on to the next test suite to 
-run. 
+`ASSERT`s generate *fatal* failures - the test suite will cease its execution and move on to the next test suite to
+run.
 
-`CHECK`s generate *non-fatal* failures - the remainder of the test suite will still execute, allowing for further 
-checks to run. 
+`CHECK`s generate *non-fatal* failures - the remainder of the test suite will still execute, allowing for further
+checks to run.
 
-Read [the Primer](https://github.com/jasmcaus/tau/blob/dev/docs/tau-primer.md) for more details, including the 
+Read [the Primer](https://github.com/jasmcaus/tau/blob/dev/docs/tau-primer.md) for more details, including the
 other testing macros Tau provides you with.
 
 
 ## Example Usage
 Below is a slightly contrived example showing a number of possible supported operations:
 ```C
-#include <tau/tau.h>
+#include "tau/tau/tau.h"
 TAU_MAIN() // sets up Tau (+ main function)
 
 TEST(foo, bar1) {
-    int a = 42; 
-    int b = 13; 
+    int a = 42;
+    int b = 13;
     CHECK_GE(a, b); // pass :)
-    CHECK_LE(b, 8); // fail - Test suite not aborted 
+    CHECK_LE(b, 8); // fail - Test suite not aborted
 }
 
 TEST(foo, bar2) {
@@ -116,12 +116,12 @@ TEST(foo, bar2) {
 
 # Supported Platforms
 Tau supports codebases and compilers that are compliant with the C11/C++11 standard or newer. Tau's source
-code is officially supported on the following platforms. If you notice any problems on your platform, please 
-file an issue on the [Tau Github Issue Tracker][issues]. PRs with fixes are welcome! 
+code is officially supported on the following platforms. If you notice any problems on your platform, please
+file an issue on the [Tau Github Issue Tracker][issues]. PRs with fixes are welcome!
 
-Operating Systems          | Compilers       
--------------------------- | -------------------------- 
-Linux                      | gcc 5.0+ 
+Operating Systems          | Compilers
+-------------------------- | --------------------------
+Linux                      | gcc 5.0+
 macOS                      | clang 5.0+
 Windows                    | MSVC 2017+
 
@@ -130,8 +130,8 @@ Windows                    | MSVC 2017+
 We appreciate all contributions, feedback and issues. If you plan to contribute new features, utility functions,
 or extensions to the core, please go through our [Contribution Guidelines][contributing].
 
-To contribute, start working through the `Tau` codebase, read the [Documentation][docs], navigate to the 
-[Issues][issues] tab and start looking through interesting issues. 
+To contribute, start working through the `Tau` codebase, read the [Documentation][docs], navigate to the
+[Issues][issues] tab and start looking through interesting issues.
 
 
 # Asking for help
@@ -157,7 +157,7 @@ If you are able to and would like to sponsor this project, you may do so using e
 </p>
 
 
-# License 
+# License
 This project was written by [Jason Dsouza](https://github.com/jasmcaus) and licensed under the [MIT License](LICENSE).
 
 [contributing]: https://github.com/jasmcaus/tau/blob/dev/.github/CONTRIBUTING.md
