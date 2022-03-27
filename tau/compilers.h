@@ -22,9 +22,9 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_COMPILER_CLANG 1
 #elif defined(__GNUC__) && !defined(INTEL_COMPILER) && !defined(llvm)
     #define TAU_COMPILER_GCC 1
-#else 
+#else
     #error Unknown Compiler (Tau currently supports only MSVC, GCC and Clang)
-#endif 
+#endif
 
 // Disable Compiler Warnings
 // These are a big nuisance when compiling with external code
@@ -177,7 +177,7 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 #define TAU_DISABLE_DEBUG_WARNINGS_POP     \
     TAU_MSVC_SUPPRESS_WARNING_POP          \
     TAU_CLANG_SUPPRESS_WARNING_POP         \
-    TAU_GCC_SUPPRESS_WARNING_POP      
+    TAU_GCC_SUPPRESS_WARNING_POP
 #endif // TAU_DISABLE_DEBUG_WARNINGS_POP
 
 #endif // TAU_COMPILERS_H

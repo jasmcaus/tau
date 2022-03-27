@@ -37,10 +37,10 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_PRIu64 PRIu64
 #endif
 
-// A signed sizeof is more useful 
+// A signed sizeof is more useful
 #ifndef TAU_SIZEOF
     #define TAU_SIZEOF(x)    (TAU_Ll)(sizeof(x))
-#endif 
+#endif
 
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
@@ -61,6 +61,6 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
                 ))
 #else
     #define TAU_TYPEOF(val)
-#endif 
+#endif
 
 #endif // TAU_MISCELLANEOUS_H
