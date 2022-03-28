@@ -134,7 +134,7 @@ static const char* cmd_filter = TAU_NULL;
     This helps us determine whether a CHECK or a REQUIRE are being called from within (or outside)
     a Test Suite. Tau supports both - so we need to handle this.
 
-    We could have somehow determined this from within a function, but this is a cleaner approach 
+    We could have somehow determined this from within a function, but this is a cleaner approach
     (which is the Tau's aim).
 
     Inside the TEST() initializer, this is set to `true` (because we are inside a Test Suite), so the
@@ -444,25 +444,25 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     // - for floats, we allow a maximum of 1 '.' char)
     if(!isStringCmp) {
         for(int i = 0; i < strlen(actual); i++) {
-            if(TAU_isDigit(actual[i])) { 
-                numActualDigits++; 
+            if(TAU_isDigit(actual[i])) {
+                numActualDigits++;
             } else if(actual[i] == '.') {
                 dots++;
                 if(dots > 1) { return 1; }
-            } else { 
-                return 1; 
+            } else {
+                return 1;
             }
         }
         // Do the same for `expected`
         dots = 0;
         for(int i=0; i < strlen(expected); i++) {
-            if(TAU_isDigit(expected[i])) { 
-                numExpectedDigits++; 
+            if(TAU_isDigit(expected[i])) {
+                numExpectedDigits++;
             } else if(expected[i] == '.') {
                 dots++;
                 if(dots > 1) { return 1; }
-            } else { 
-                return 1; 
+            } else {
+                return 1;
             }
         }
     }
@@ -640,7 +640,7 @@ static void tauPrintHexBufCmp(void* buf, void* ref, int size) {
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size != 0)
         tauPrintColouredIfDifferent(test_buf[0], ref_buf[0]);
-    
+
     for(int i = 1; i < size; ++i) {
         printf(" ");
         tauPrintColouredIfDifferent(test_buf[i], ref_buf[i]);
@@ -1172,11 +1172,11 @@ inline int tau_main(int argc, char** argv) {
     double duration = tauClock() - start;
 
     // Write a Summary
-    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n", 
+    tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n",
                             tauStatsTestsRan - tauStatsNumTestsFailed,
                             tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
-    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n", 
-                            tauStatsNumTestsFailed, 
+    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n",
+                            tauStatsNumTestsFailed,
                             tauStatsNumTestsFailed == 1 ? "suite" : "suites");
 
     if(!tauDisableSummary) {
@@ -1191,14 +1191,14 @@ inline int tau_main(int argc, char** argv) {
 
     if(tauStatsNumTestsFailed > 0) {
         tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED: ");
-        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ", 
+        printf("%" TAU_PRIu64 " failed, %" TAU_PRIu64 " passed in ",
                             tauStatsNumTestsFailed,
                             tauStatsTestsRan - tauStatsNumTestsFailed);
         tauClockPrintDuration(duration);
         printf("\n");
 
         for (TAU_Ull i = 0; i < tauStatsNumFailedTestSuites; i++) {
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n", 
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n",
                             tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
         }
     } else if(tauStatsNumTestsFailed == 0 && tauStatsTotalTestSuites > 0) {

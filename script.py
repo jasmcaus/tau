@@ -1,16 +1,16 @@
-# import os 
-# import os.path as osp 
+# import os
+# import os.path as osp
 
 # BASE = r'/home/jas/Documents/dev/adorad/adorad/core'
 # HERE = osp.join(osp.dirname(__file__), 'tau')
 
 # ADORAD_COPYRIGHT = """\
-#           _____   ____  _____            _____  
-#     /\   |  __ \ / __ \|  __ \     /\   |  __ \ 
+#           _____   ____  _____            _____
+#     /\   |  __ \ / __ \|  __ \     /\   |  __ \
 #    /  \  | |  | | |  | | |__) |   /  \  | |  | | Adorad - The Fast, Expressive & Elegant Programming Language
 #   / /\ \ | |  | | |  | |  _  /   / /\ \ | |  | | Languages: C, C++, and Assembly
 #  / ____ \| |__| | |__| | | \ \  / ____ \| |__| | https://github.com/adorad/adorad/
-# /_/    \_\_____/ \____/|_|  \_\/_/    \_\_____/ 
+# /_/    \_\_____/ \____/|_|  \_\/_/    \_\_____/
 # """
 
 # TAU_COPYRIGHT = """\
@@ -48,7 +48,7 @@
 # // static means 3-4 different things in C/C++!!
 # #ifndef TAU_EXTERN
 #     #define TAU_EXTERN       extern
-# #endif 
+# #endif
 
 # #ifndef TAU_STATIC
 #     #define TAU_STATIC       static
@@ -57,20 +57,20 @@
 # #ifndef TAU_GLOBAL
 #     #define TAU_GLOBAL       static // Global Variables
 #     #define TAU_INTERNAL     static // Internal Linkage
-#     #define TAU_LOCALPERSIST static // Local Persisting Variables  
-# #endif 
+#     #define TAU_LOCALPERSIST static // Local Persisting Variables
+# #endif
 # """
 
 # MAX_AND_MIN = """\
 # // Unicode codepoint
-# typedef TAU_Int32 Rune; 
+# typedef TAU_Int32 Rune;
 # #define TAU_RUNE_INVALID cast(Rune)(0xfffd)
 # #define TAU_RUNE_MAX     cast(Rune)(0x0010ffff)
 # #define TAU_RUNE_BOM     cast(Rune)(0xfeff)
 # #define TAU_RUNE_EOF     cast(Rune)(-1)
 
-# // Max and Min 
-# #ifndef TAU_UInt8_MIN 
+# // Max and Min
+# #ifndef TAU_UInt8_MIN
 #     #define TAU_UInt8_MIN 0u
 #     #define TAU_UInt8_MAX 0xffu
 #     #define TAU_Int8_MIN  (-0x7f - 1)
@@ -80,7 +80,7 @@
 #     #define TAU_UInt16_MAX 0xffffu
 #     #define TAU_Int16_MIN  (-0x7fff - 1)
 #     #define TAU_Int16_MAX  0x7fff
- 
+
 #     #define TAU_UInt32_MIN 0u
 #     #define TAU_UInt32_MAX 0xffffffffu
 #     #define TAU_Int32_MIN  (-0x7fffffff - 1)
@@ -97,17 +97,17 @@
 
 #         #define INTSIZE_MIX TAU_Int32_MIN
 #         #define INTSIZE_MAX TAU_Int32_MAX
-    
+
 #     #elif defined(TAU_ARCH_64BIT)
 #         #define UINTSIZE_MIX TAU_UInt64_MIN
 #         #define UINTSIZE_MAX TAU_UInt64_MAX
 
 #         #define INTSIZE_MIX TAU_Int64_MIN
 #         #define INTSIZE_MAX TAU_Int64_MAX
-#     #endif 
+#     #endif
 # #else
 #         #error Unknown architecture size. Tau only supports 32-bit and 64-bit architectures.
-# #endif 
+# #endif
 
 # #define TAU_Float32_MIN 1.17549435e-38f
 # #define TAU_Float32_MAX 3.40282347e+38f
@@ -234,12 +234,12 @@
 # #define TAU_DISABLE_DEBUG_WARNINGS_POP     \
 #     TAU_MSVC_SUPPRESS_WARNING_POP          \
 #     TAU_CLANG_SUPPRESS_WARNING_POP         \
-#     TAU_GCC_SUPPRESS_WARNING_POP      
+#     TAU_GCC_SUPPRESS_WARNING_POP
 # #endif // TAU_DISABLE_DEBUG_WARNINGS_POP
 
 # #endif // TAU_COMPILERS_H
 # """
- 
+
 # for file in os.listdir(BASE):
 #     if file.endswith(('compilers.h', 'types.h')):
 #         with open(osp.join(BASE, file), 'r') as f:
@@ -278,10 +278,10 @@
 #         s = s.replace('_W64', 'TAU__W64')
 #         s = s.replace('TAU_DEBUG_CHECK(sizeof(TAU_UIntptr) == sizeof(TAU_Intptr));\n\n', '')
 #         s = s.replace(DEBUG_CHECK, '')
-        
+
 #         if file.endswith('compilers.h'):
 #             s = s.replace('\n#endif // TAU_COMPILERS_H', WARNING)
-        
+
 #         # Write changes
 #         with open(osp.join(HERE, file), 'w') as f:
 #             f.write(s)
