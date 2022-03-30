@@ -54,6 +54,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Visual Studio 17
+      run: |
+        choco install visualstudio2017community
+        choco install visualstudio2017-workload-nativedesktop
+
     - name: CMake (Release, x64)
       if: matrix.build_type == 'Release' && matrix.architecture == 'x64'
       run: |
@@ -87,6 +92,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Visual Studio 17
+      run: |
+        choco install visualstudio2017community
+        choco install visualstudio2017-workload-nativedesktop
+        
     - name: CMake
       run: |
         cmake -S . -B build -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DTAU_BUILDINTERNALTESTS=On -DTAU_BUILDTHIRDPARTYTESTS=On -DCMAKE_C_FLAGS="/permissive- /std:c11 /utf-8 /W4" -DCMAKE_SYSTEM_VERSION="10.0.18362.0"
