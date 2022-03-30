@@ -35,6 +35,10 @@ TEST(c, CHECK) {
     CHECK(1 < 2, "1 < 2"); 
 }
 
+TEST(c, CHECK_2) {
+    CHECK(0, "Why doesn't this fail?");
+}
+
 TEST(c, REQUIRE_LT) { 
     REQUIRE_LT(1, 2);  
 }
