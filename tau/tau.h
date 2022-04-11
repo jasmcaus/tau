@@ -155,17 +155,17 @@ extern volatile int shouldAbortTest;
     appropriately - fail the current test suite and carry on with the other checks (or move on to the next
     suite in the case of a REQUIRE)
 */
-static void __failIfInsideTestSuite();
-static void __abortIfInsideTestSuite();
+static void failIfInsideTestSuite__();
+static void abortIfInsideTestSuite__();
 
-static void __failIfInsideTestSuite() {
+static void failIfInsideTestSuite__() {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldFailTest = 1;
     }
 }
 
-static void __abortIfInsideTestSuite() {
+static void abortIfInsideTestSuite__() {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldAbortTest = 1;
@@ -543,8 +543,8 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
 #endif // TAU_OVERLOADABLE
 
 #ifndef TAU_NO_TESTING
-    #define TAU_FAIL_IF_INSIDE_TESTSUITE    __failIfInsideTestSuite()
-    #define TAU_ABORT_IF_INSIDE_TESTSUITE   __abortIfInsideTestSuite()
+    #define TAU_FAIL_IF_INSIDE_TESTSUITE    failIfInsideTestSuite__()
+    #define TAU_ABORT_IF_INSIDE_TESTSUITE   abortIfInsideTestSuite__()
 #else
     #define TAU_FAIL_IF_INSIDE_TESTSUITE    TAU_ABORT
     #define TAU_ABORT_IF_INSIDE_TESTSUITE   TAU_ABORT
