@@ -109,17 +109,17 @@ typedef struct tauTestSuiteStruct {
 
 typedef struct tauTestStateStruct {
     tauTestSuiteStruct* tests;
-    TAU_Ull numTestSuites;
+    tau_ull numTestSuites;
     FILE* foutput;
 } tauTestStateStruct;
 
-static TAU_UInt64 tauStatsTotalTestSuites = 0;
-static TAU_UInt64 tauStatsTestsRan = 0;
-static TAU_UInt64 tauStatsNumTestsFailed = 0;
-static TAU_UInt64 tauStatsSkippedTests = 0;
-static TAU_Ull* tauStatsFailedTestSuites = TAU_NULL;
-static TAU_Ull tauStatsNumFailedTestSuites = 0;
-extern TAU_UInt64 tauStatsNumWarnings;
+static tau_u64 tauStatsTotalTestSuites = 0;
+static tau_u64 tauStatsTestsRan = 0;
+static tau_u64 tauStatsNumTestsFailed = 0;
+static tau_u64 tauStatsSkippedTests = 0;
+static tau_ull* tauStatsFailedTestSuites = TAU_NULL;
+static tau_ull tauStatsNumFailedTestSuites = 0;
+extern tau_u64 tauStatsNumWarnings;
 
 // Overridden in `tau_main` if the cmdline option `--no-color` is passed
 static int tauShouldColourizeOutput = 1;
@@ -271,9 +271,9 @@ static inline double tauClock() {
 }
 
 static void tauClockPrintDuration(double nanoseconds_duration) {
-    TAU_UInt64 n;
+    tau_u64 n;
     int num_digits = 0;
-    n = TAU_CAST(TAU_UInt64, nanoseconds_duration);
+    n = TAU_CAST(tau_u64, nanoseconds_duration);
     while(n!=0) {
         n/=10;
         ++num_digits;
@@ -313,7 +313,7 @@ static void tauClockPrintDuration(double nanoseconds_duration) {
 #endif // _MSC_VER
 
 
-static inline void* tau_realloc(void* const ptr, TAU_Ull new_size) {
+static inline void* tau_realloc(void* const ptr, tau_ull new_size) {
     void* const new_ptr = realloc(ptr, new_size);
 
     if(TAU_NONE(new_ptr))
@@ -625,7 +625,7 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
     while(0)
 
 
-static void tauPrintColouredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
+static void tauPrintColouredIfDifferent(tau_u8 ch, tau_u8 ref) {
     if(ch == ref) {
         tauPrintf("%02X", ch);
     } else {
@@ -635,8 +635,8 @@ static void tauPrintColouredIfDifferent(TAU_UInt8 ch, TAU_UInt8 ref) {
 
 
 static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
-    TAU_UInt8* test_buff = TAU_CAST(TAU_UInt8*, buff);
-    TAU_UInt8* ref_buff = TAU_CAST(TAU_UInt8*, ref);
+    tau_u8* test_buff = TAU_CAST(tau_u8*, buff);
+    tau_u8* ref_buff = TAU_CAST(tau_u8*, ref);
 
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size != 0)
@@ -841,9 +841,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
     TAU_EXTERN tauTestStateStruct tauTestContext;                                       \
     static void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void);                                 \
     TAU_TEST_INITIALIZER(tau_register_##TESTSUITE##_##TESTNAME) {                              \
-        const TAU_Ull index = tauTestContext.numTestSuites++;                                  \
+        const tau_ull index = tauTestContext.numTestSuites++;                                  \
         const char* namePart = #TESTSUITE "." #TESTNAME;                                       \
-        const TAU_Ull nameSize = strlen(namePart) + 1;                                         \
+        const tau_ull nameSize = strlen(namePart) + 1;                                         \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                                    \
         tauTestContext.tests = TAU_PTRCAST(                                                    \
                                     tauTestSuiteStruct*,                                       \
@@ -882,9 +882,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
     }                                                                         \
                                                                               \
     TAU_TEST_INITIALIZER(tau_register_##FIXTURE##_##NAME) {                   \
-        const TAU_Ull index = tauTestContext.numTestSuites++;                 \
+        const tau_ull index = tauTestContext.numTestSuites++;                 \
         const char* namePart = #FIXTURE "." #NAME;                            \
-        const TAU_Ull nameSize = strlen(namePart) + 1;                        \
+        const tau_ull nameSize = strlen(namePart) + 1;                        \
         char* name = TAU_PTRCAST(char* , malloc(nameSize));                   \
         tauTestContext.tests = TAU_PTRCAST(                                   \
                                     tauTestSuiteStruct*,                      \
@@ -998,7 +998,7 @@ static void tau_help_() {
 }
 
 
-static TAU_Bool tauCmdLineRead(int argc, char** argv) {
+static tau_bool tauCmdLineRead(int argc, char** argv) {
     // Coloured output
 #ifdef TAU_UNIX_
     tauShouldColourizeOutput = isatty(STDOUT_FILENO);
@@ -1013,7 +1013,7 @@ static TAU_Bool tauCmdLineRead(int argc, char** argv) {
 #endif // TAU_UNIX_
 
     // loop through all arguments looking for our options
-    for(TAU_Ull i = 1; i < TAU_CAST(TAU_Ull, argc); i++) {
+    for(tau_ull i = 1; i < TAU_CAST(tau_ull, argc); i++) {
         /* Informational switches */
         const char* helpStr = "--help";
         const char* listStr = "--list";
@@ -1027,7 +1027,7 @@ static TAU_Bool tauCmdLineRead(int argc, char** argv) {
         // Help
         if(strncmp(argv[i], helpStr, strlen(helpStr)) == 0) {
             tau_help_();
-            return TAU_false;
+            return tau_false;
         }
 
         // Only failed output
@@ -1062,15 +1062,15 @@ static TAU_Bool tauCmdLineRead(int argc, char** argv) {
 
         else {
             printf("ERROR: Unrecognized option: %s", argv[i]);
-            return TAU_false;
+            return tau_false;
         }
     }
 
-    return TAU_true;
+    return tau_true;
 }
 
 static int tauCleanup() {
-    for (TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++)
+    for (tau_ull i = 0; i < tauTestContext.numTestSuites; i++)
         free(TAU_PTRCAST(void* , tauTestContext.tests[i].name));
 
     free(TAU_PTRCAST(void* , tauStatsFailedTestSuites));
@@ -1085,7 +1085,7 @@ static int tauCleanup() {
 // Triggers and runs all unit tests
 static void tauRunTests() {
     // Run tests
-    for(TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
+    for(tau_ull i = 0; i < tauTestContext.numTestSuites; i++) {
         checkIsInsideTestSuite = 1;
         hasCurrentTestFailed = 0;
 
@@ -1113,10 +1113,10 @@ static void tauRunTests() {
             fprintf(tauTestContext.foutput, "</testcase>\n");
 
         if(hasCurrentTestFailed == 1) {
-            const TAU_Ull failed_testcase_index = tauStatsNumFailedTestSuites++;
-            tauStatsFailedTestSuites = TAU_PTRCAST(TAU_Ull*,
+            const tau_ull failed_testcase_index = tauStatsNumFailedTestSuites++;
+            tauStatsFailedTestSuites = TAU_PTRCAST(tau_ull*,
                                             tau_realloc(TAU_PTRCAST(void*, tauStatsFailedTestSuites),
-                                                          sizeof(TAU_Ull) * tauStatsNumFailedTestSuites));
+                                                          sizeof(tau_ull) * tauStatsNumFailedTestSuites));
             tauStatsFailedTestSuites[failed_testcase_index] = i;
             tauStatsNumTestsFailed++;
             tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] ");
@@ -1139,17 +1139,17 @@ static void tauRunTests() {
 
 static inline int tau_main(int argc, char** argv);
 inline int tau_main(int argc, char** argv) {
-    tauStatsTotalTestSuites = TAU_CAST(TAU_UInt64, tauTestContext.numTestSuites);
+    tauStatsTotalTestSuites = TAU_CAST(tau_u64, tauTestContext.numTestSuites);
     tau_argv0_ = argv[0];
 
     // Start the entire Test Session timer
     double start = tauClock();
 
-    TAU_Bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
+    tau_bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
     if(!wasCmdLineReadSuccessful)
         return tauCleanup();
 
-    for (TAU_Ull i = 0; i < tauTestContext.numTestSuites; i++) {
+    for (tau_ull i = 0; i < tauTestContext.numTestSuites; i++) {
         if(tauShouldFilterTest(cmd_filter, tauTestContext.tests[i].name))
             tauStatsSkippedTests++;
     }
@@ -1158,16 +1158,16 @@ inline int tau_main(int argc, char** argv) {
 
     // Begin tests`
     tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[==========] ");
-    tauColouredPrintf(TAU_COLOUR_BOLD_, "Running %" TAU_PRIu64 " test suites.\n", TAU_CAST(TAU_UInt64, tauStatsTestsRan));
+    tauColouredPrintf(TAU_COLOUR_BOLD_, "Running %" TAU_PRIu64 " test suites.\n", TAU_CAST(tau_u64, tauStatsTestsRan));
 
     if(tauTestContext.foutput) {
         fprintf(tauTestContext.foutput, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         fprintf(tauTestContext.foutput,
                 "<testsuites tests=\"%" TAU_PRIu64 "\" name=\"All\">\n",
-                TAU_CAST(TAU_UInt64, tauStatsTestsRan));
+                TAU_CAST(tau_u64, tauStatsTestsRan));
         fprintf(tauTestContext.foutput,
                 "<testsuite name=\"Tests\" tests=\"%" TAU_PRIu64 "\">\n",
-                TAU_CAST(TAU_UInt64, tauStatsTestsRan));
+                TAU_CAST(tau_u64, tauStatsTestsRan));
     }
 
     // Run tests
@@ -1202,12 +1202,12 @@ inline int tau_main(int argc, char** argv) {
         tauClockPrintDuration(duration);
         printf("\n");
 
-        for (TAU_Ull i =0; i < tauStatsNumFailedTestSuites; i++) {
+        for (tau_ull i = 0; i < tauStatsNumFailedTestSuites; i++) {
             tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "  [ FAILED ] %s\n",
                             tauTestContext.tests[tauStatsFailedTestSuites[i]].name);
         }
     } else if(tauStatsNumTestsFailed == 0 && tauStatsTotalTestSuites > 0) {
-        TAU_UInt64 total_tests_passed = tauStatsTestsRan - tauStatsNumTestsFailed;
+        tau_u64 total_tests_passed = tauStatsTestsRan - tauStatsNumTestsFailed;
         tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" TAU_PRIu64 " test suites passed in ", total_tests_passed);
         tauClockPrintDuration(duration);
@@ -1243,7 +1243,7 @@ inline int tau_main(int argc, char** argv) {
     volatile int hasCurrentTestFailed = 0;       \
     volatile int shouldFailTest = 0;             \
     volatile int shouldAbortTest = 0;            \
-    TAU_UInt64 tauStatsNumWarnings = 0;
+    tau_u64 tauStatsNumWarnings = 0;
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define TAU_NO_MAIN()                                       \

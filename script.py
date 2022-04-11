@@ -24,18 +24,18 @@
 
 # DEBUG_CHECK = """\
 
-# TAU_DEBUG_CHECK(sizeof(TAU_UInt8)  == sizeof(TAU_Int8));
-# TAU_DEBUG_CHECK(sizeof(TAU_UInt16) == sizeof(TAU_Int16));
-# TAU_DEBUG_CHECK(sizeof(TAU_UInt32) == sizeof(TAU_Int32));
-# TAU_DEBUG_CHECK(sizeof(TAU_UInt64) == sizeof(TAU_Int64));
+# TAU_DEBUG_CHECK(sizeof(TAU_UInt8)  == sizeof(tau_i8));
+# TAU_DEBUG_CHECK(sizeof(TAU_UInt16) == sizeof(tau_i16));
+# TAU_DEBUG_CHECK(sizeof(TAU_UInt32) == sizeof(tau_i32));
+# TAU_DEBUG_CHECK(sizeof(tau_u64) == sizeof(tau_i64));
 
 # TAU_DEBUG_CHECK(sizeof(TAU_UInt8)  == 1);
 # TAU_DEBUG_CHECK(sizeof(TAU_UInt16) == 2);
 # TAU_DEBUG_CHECK(sizeof(TAU_UInt32) == 4);
-# TAU_DEBUG_CHECK(sizeof(TAU_UInt64) == 8);
+# TAU_DEBUG_CHECK(sizeof(tau_u64) == 8);
 
-# TAU_DEBUG_CHECK(sizeof(TAU_Float32) == 4);
-# TAU_DEBUG_CHECK(sizeof(TAU_Float64) == 8);
+# TAU_DEBUG_CHECK(sizeof(tau_f32) == 4);
+# TAU_DEBUG_CHECK(sizeof(tau_f64) == 8);
 # """
 
 # TYPES = (
@@ -63,7 +63,7 @@
 
 # MAX_AND_MIN = """\
 # // Unicode codepoint
-# typedef TAU_Int32 Rune;
+# typedef tau_i32 Rune;
 # #define TAU_RUNE_INVALID cast(Rune)(0xfffd)
 # #define TAU_RUNE_MAX     cast(Rune)(0x0010ffff)
 # #define TAU_RUNE_BOM     cast(Rune)(0xfeff)
@@ -73,47 +73,47 @@
 # #ifndef TAU_UInt8_MIN
 #     #define TAU_UInt8_MIN 0u
 #     #define TAU_UInt8_MAX 0xffu
-#     #define TAU_Int8_MIN  (-0x7f - 1)
-#     #define TAU_Int8_MAX  0x7f
+#     #define tau_i8_MIN  (-0x7f - 1)
+#     #define tau_i8_MAX  0x7f
 
 #     #define TAU_UInt16_MIN 0u
 #     #define TAU_UInt16_MAX 0xffffu
-#     #define TAU_Int16_MIN  (-0x7fff - 1)
-#     #define TAU_Int16_MAX  0x7fff
+#     #define tau_i16_MIN  (-0x7fff - 1)
+#     #define tau_i16_MAX  0x7fff
 
 #     #define TAU_UInt32_MIN 0u
 #     #define TAU_UInt32_MAX 0xffffffffu
-#     #define TAU_Int32_MIN  (-0x7fffffff - 1)
-#     #define TAU_Int32_MAX  0x7fffffff
+#     #define tau_i32_MIN  (-0x7fffffff - 1)
+#     #define tau_i32_MAX  0x7fffffff
 
-#     #define TAU_UInt64_MIN 0ull
-#     #define TAU_UInt64_MAX 0xffffffffffffffffull
-#     #define TAU_Int64_MIN  (-0x7fffffffffffffffll - 1)
-#     #define TAU_Int64_MAX  0x7fffffffffffffffll
+#     #define tau_u64_MIN 0ull
+#     #define tau_u64_MAX 0xffffffffffffffffull
+#     #define tau_i64_MIN  (-0x7fffffffffffffffll - 1)
+#     #define tau_i64_MAX  0x7fffffffffffffffll
 
 #     #if defined(TAU_ARCH_32BIT)
 #         #define UINTSIZE_MIX TAU_UInt32_MIN
 #         #define UINTSIZE_MAX TAU_UInt32_MAX
 
-#         #define INTSIZE_MIX TAU_Int32_MIN
-#         #define INTSIZE_MAX TAU_Int32_MAX
+#         #define INTSIZE_MIX tau_i32_MIN
+#         #define INTSIZE_MAX tau_i32_MAX
 
 #     #elif defined(TAU_ARCH_64BIT)
-#         #define UINTSIZE_MIX TAU_UInt64_MIN
-#         #define UINTSIZE_MAX TAU_UInt64_MAX
+#         #define UINTSIZE_MIX tau_u64_MIN
+#         #define UINTSIZE_MAX tau_u64_MAX
 
-#         #define INTSIZE_MIX TAU_Int64_MIN
-#         #define INTSIZE_MAX TAU_Int64_MAX
+#         #define INTSIZE_MIX tau_i64_MIN
+#         #define INTSIZE_MAX tau_i64_MAX
 #     #endif
 # #else
 #         #error Unknown architecture size. Tau only supports 32-bit and 64-bit architectures.
 # #endif
 
-# #define TAU_Float32_MIN 1.17549435e-38f
-# #define TAU_Float32_MAX 3.40282347e+38f
+# #define tau_f32_MIN 1.17549435e-38f
+# #define tau_f32_MAX 3.40282347e+38f
 
-# #define TAU_Float64_MIN 2.2250738585072014e-308
-# #define TAU_Float64_MAX 1.7976931348623157e+308
+# #define tau_f64_MIN 2.2250738585072014e-308
+# #define tau_f64_MAX 1.7976931348623157e+308
 # """
 
 # WARNING = r"""
@@ -258,13 +258,13 @@
 #         s = s.replace('nullchar', 'TAU_NULLCHAR')
 #         s = s.replace('null', 'TAU_NULL')
 #         s = s.replace('TAU_NULLptr', 'nullptr')
-#         s = s.replace('Bool_', 'TAU_Bool_')
-#         s  = s.replace('typedef TAU_Bool32 bool', 'typedef TAU_Bool32 TAU_Bool')
-#         s = s.replace('#define false', '#define TAU_false')
-#         s = s.replace('#define true', '#define TAU_true')
-#         s = s.replace('#define TAU_false  false', '#define TAU_Bool   bool\n        #define TAU_false  false')
-#         s = s.replace('static const bool false', 'static const TAU_Bool TAU_false')
-#         s = s.replace('static const bool true', 'static const TAU_Bool TAU_true')
+#         s = s.replace('Bool_', 'tau_bool_')
+#         s  = s.replace('typedef tau_bool32 bool', 'typedef tau_bool32 tau_bool')
+#         s = s.replace('#define false', '#define tau_false')
+#         s = s.replace('#define true', '#define tau_true')
+#         s = s.replace('#define tau_false  false', '#define tau_bool   bool\n        #define tau_false  false')
+#         s = s.replace('static const bool false', 'static const tau_bool tau_false')
+#         s = s.replace('static const bool true', 'static const tau_bool tau_true')
 #         s = s.replace('cast', 'TAU_CAST')
 #         s = s.replace('ptrTAU_CAST', 'TAU_PTRCAST')
 #         s = s.replace('static_TAU_CAST', 'static_cast')
@@ -274,9 +274,9 @@
 #         s = s.replace(STATICS, "")
 #         s = s.replace(f'\n{MAX_AND_MIN}', "")
 #         s = s.replace('#define TAU_TYPEOF(val) ', '#define TAU_TYPEOF(val)  ')
-#         s = s.replace('(U)TAU_Intptr', '(U)Intptr')
+#         s = s.replace('(U)tau_iptr', '(U)Intptr')
 #         s = s.replace('_W64', 'TAU__W64')
-#         s = s.replace('TAU_DEBUG_CHECK(sizeof(TAU_UIntptr) == sizeof(TAU_Intptr));\n\n', '')
+#         s = s.replace('TAU_DEBUG_CHECK(sizeof(tau_uptr) == sizeof(tau_iptr));\n\n', '')
 #         s = s.replace(DEBUG_CHECK, '')
 
 #         if file.endswith('compilers.h'):

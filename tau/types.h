@@ -19,23 +19,23 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 // Base types
 #if defined(TAU_COMPILER_MSVC)
     #if _MSVC_VER < 1300
-        typedef unsigned char     TAU_UInt8;
-        typedef signed char       TAU_Int8;
-        typedef unsigned short    TAU_UInt16;
-        typedef signed short      TAU_Int16;
-        typedef unsigned int      TAU_UInt32;
-        typedef signed int        TAU_Int32;
+        typedef unsigned char     tau_u8;
+        typedef signed char       tau_i8;
+        typedef unsigned short    tau_u16;
+        typedef signed short      tau_i16;
+        typedef unsigned int      tau_u32;
+        typedef signed int        tau_i32;
     #else
-        typedef unsigned __int8   TAU_UInt8;
-        typedef signed __int8     TAU_Int8;
-        typedef unsigned __int16  TAU_UInt16;
-        typedef signed __int16    TAU_Int16;
-        typedef unsigned __int32  TAU_UInt32;
-        typedef signed __int32    TAU_Int32;
+        typedef unsigned __int8   tau_u8;
+        typedef signed __int8     tau_i8;
+        typedef unsigned __int16  tau_u16;
+        typedef signed __int16    tau_i16;
+        typedef unsigned __int32  tau_u32;
+        typedef signed __int32    tau_i32;
     #endif
 
-    typedef unsigned __int64  TAU_UInt64;
-    typedef signed __int64    TAU_Int64;
+    typedef unsigned __int64  tau_u64;
+    typedef signed __int64    tau_i64;
 
 #else
     #ifdef __cplusplus
@@ -44,47 +44,47 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
         #include <stdint.h>
     #endif // __cplusplus
 
-    typedef uint8_t   TAU_UInt8;
-    typedef int8_t    TAU_Int8;
-    typedef uint16_t  TAU_UInt16;
-    typedef int16_t   TAU_Int16;
-    typedef uint32_t  TAU_UInt32;
-    typedef int32_t   TAU_Int32;
-    typedef uint64_t  TAU_UInt64;
-    typedef int64_t   TAU_Int64;
+    typedef uint8_t   tau_u8;
+    typedef int8_t    tau_i8;
+    typedef uint16_t  tau_u16;
+    typedef int16_t   tau_i16;
+    typedef uint32_t  tau_u32;
+    typedef int32_t   tau_i32;
+    typedef uint64_t  tau_u64;
+    typedef int64_t   tau_i64;
 #endif // Tau Basic types/
 
-typedef float  TAU_Float32;
-typedef double TAU_Float64;
+typedef float  tau_f32;
+typedef double tau_f64;
 
 // Bool-sy
-typedef TAU_Int8  TAU_Bool8;
-typedef TAU_Int16 TAU_Bool16;
-typedef TAU_Int32 TAU_Bool32; // Prefer this!
+typedef tau_i8  tau_bool8;
+typedef tau_i16 tau_bool16;
+typedef tau_i32 tau_bool32; // Prefer this!
 
 // The same thing as size_t
-// TAU_Ull --> size_t
-// TAU_Ll  --> ptrdiff_t
+// tau_ull --> size_t
+// tau_ll  --> ptrdiff_t
 #if defined(_MSC_VER)
     #if !defined(_WIN64)
-        typedef unsigned int TAU_Ull;
-        typedef int          TAU_Ll;
+        typedef unsigned int tau_ull;
+        typedef int          tau_ll;
     #else
-        typedef TAU_UInt64  TAU_Ull;
-        typedef TAU_Int64   TAU_Ll;
+        typedef tau_u64  tau_ull;
+        typedef tau_i64   tau_ll;
     #endif // _WIN64
 #else
-    typedef TAU_UInt64  TAU_Ull;
-    typedef TAU_Int64   TAU_Ll;
+    typedef tau_u64  tau_ull;
+    typedef tau_i64   tau_ll;
 #endif // _MSC_VER
 
 // (U)Intptr is only here for semantic reasons really as this library will only support 32/64 bit OSes.
-// Are there any modern OSes (not 16 bit) where TAU_Intptr != ptrdiff_t/TAU_Ll ?
+// Are there any modern OSes (not 16 bit) where tau_iptr != ptrdiff_t/tau_ll ?
 #if defined(_WIN64)
-    typedef signed    __int64    TAU_Intptr;
-    typedef unsigned  __int64    TAU_UIntptr;
+    typedef signed    __int64    tau_iptr;
+    typedef unsigned  __int64    tau_uptr;
 #elif defined(_WIN32)
-    // To mark types changing their size, e.g. TAU_Intptr
+    // To mark types changing their size, e.g. tau_iptr
     #ifndef TAU__W64
         #if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
             #define TAU__W64 __w64
@@ -93,11 +93,11 @@ typedef TAU_Int32 TAU_Bool32; // Prefer this!
         #endif
     #endif
 
-    typedef TAU__W64 signed int     TAU_Intptr;
-    typedef TAU__W64 unsigned int   TAU_UIntptr;
+    typedef TAU__W64 signed int     tau_iptr;
+    typedef TAU__W64 unsigned int   tau_uptr;
 #else
-    typedef  uintptr_t   TAU_UIntptr;
-    typedef  intptr_t    TAU_Intptr;
+    typedef  uintptr_t   tau_uptr;
+    typedef  intptr_t    tau_iptr;
 #endif
 
 // More Useful types/
@@ -116,17 +116,17 @@ typedef TAU_Int32 TAU_Bool32; // Prefer this!
 #endif
 
 // bool is a basic type in C++ and not C
-#ifndef TAU_Bool_types_defined
-#define TAU_Bool_types_defined
+#ifndef TAU_BOOL_TYPES_DEFINED
+#define TAU_BOOL_TYPES_DEFINED
     #ifdef __cplusplus
-        #define TAU_Bool   bool
-        #define TAU_false  false
-        #define TAU_true   true
+        #define tau_bool   bool
+        #define tau_false  false
+        #define tau_true   true
     #else
-        typedef TAU_Bool32 TAU_Bool;
-        static const TAU_Bool TAU_false = 0;
-        static const TAU_Bool TAU_true = 1;
+        typedef tau_bool32 tau_bool;
+        static const tau_bool tau_false = 0;
+        static const tau_bool tau_true = 1;
     #endif // __cplusplus
-#endif // TAU_Bool_types_defined
+#endif // TAU_BOOL_TYPES_DEFINED
 
 #endif // TAU_TYPES_H

@@ -23,7 +23,7 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_PTRCAST(type, x)    ((type)x)
 #endif // __cplusplus
 
-// printf format-string specifiers for TAU_Int64 and TAU_UInt64 respectively
+// printf format-string specifiers for tau_i64 and tau_u64 respectively
 #if defined(_MSC_VER) && (_MSC_VER < 1920)
     #define TAU_PRId64 "I64d"
     #define TAU_PRIu64 "I64u"
@@ -39,7 +39,7 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 
 // A signed sizeof is more useful
 #ifndef TAU_SIZEOF
-    #define TAU_SIZEOF(x)    (TAU_Ll)(sizeof(x))
+    #define TAU_SIZEOF(x)    (tau_ll)(sizeof(x))
 #endif
 
 
