@@ -42,6 +42,17 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_SIZEOF(x)    (TAU_Ll)(sizeof(x))
 #endif
 
+
+// Compare `SOME` and `NONE` values
+#ifndef TAU_SOME
+    #define TAU_SOME(x) ((x) != TAU_NULL)
+#endif // TAU_SOME
+
+#ifndef TAU_NONE
+    #define TAU_NONE(x) ((x) == TAU_NULL)
+#endif // TAU_NONE
+
+
 // Get the type of `val`
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
     #define TAU_TYPEOF(val)                                     \
