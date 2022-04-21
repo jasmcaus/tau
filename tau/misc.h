@@ -37,6 +37,10 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_PRIu64 PRIu64
 #endif
 
+#ifndef TAU_IS_SIGNED
+    #define TAU_IS_SIGNED(x) (((x)-1) < 0)
+#endif // TAU_IS_SIGNED
+
 // A signed sizeof is more useful
 #ifndef TAU_SIZEOF
     #define TAU_SIZEOF(x)    (tau_ll)(sizeof(x))
