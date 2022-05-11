@@ -16,6 +16,12 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
 
 #include <tau/compilers.h>
 
+// Simple assertion checks (that don't require a message to STDOUT).
+// Condition failure raises a compilation error (negative index) --> 0*2 == 0 + (-1) == -1!
+// This macro is intended only for this file (tau/types.h)
+#define TAU_STAT_ASSERT1__(cond, line)      typedef char static_assertion_at_line_##line[(!!(cond))*2-1]
+#define TAU_STATIC_ASSERT(cond)             TAU_STAT_ASSERT1__(cond, __LINE__)
+
 // Base types
 #if defined(TAU_COMPILER_MSVC)
     #if _MSVC_VER < 1300
@@ -128,5 +134,22 @@ typedef tau_i32 tau_bool32; // Prefer this!
         static const tau_bool tau_true = 1;
     #endif // __cplusplus
 #endif // TAU_BOOL_TYPES_DEFINED
+
+TAU_STATIC_ASSERT(sizeof(tau_u8) == 1);                 // integers
+TAU_STATIC_ASSERT(sizeof(tau_i8) == 1);
+TAU_STATIC_ASSERT(sizeof(tau_u16) == 2);
+TAU_STATIC_ASSERT(sizeof(tau_i16) == 2);
+TAU_STATIC_ASSERT(sizeof(tau_u32) == 4);
+TAU_STATIC_ASSERT(sizeof(tau_i32) == 4);
+TAU_STATIC_ASSERT(sizeof(tau_u64) == 8);
+TAU_STATIC_ASSERT(sizeof(tau_i64) == 8);
+TAU_STATIC_ASSERT(sizeof(tau_f32) == 4);                // floats
+TAU_STATIC_ASSERT(sizeof(tau_f64) == 8);
+TAU_STATIC_ASSERT(sizeof(tau_bool8) == 1);              // bools
+TAU_STATIC_ASSERT(sizeof(tau_bool16) == 2);
+TAU_STATIC_ASSERT(sizeof(tau_bool32)  == 4);
+// pointer sizes (differs on architectures like CHERI)
+TAU_STATIC_ASSERT(sizeof(tau_iptr) == sizeof(tau_ll));  // tau_ull --> size_t
+TAU_STATIC_ASSERT(sizeof(tau_uptr) == sizeof(tau_ull)); // tau_ll  --> ptrdiff_t
 
 #endif // TAU_TYPES_H
