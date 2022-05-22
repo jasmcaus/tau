@@ -263,7 +263,7 @@ static inline double tauClock() {
             syscall(SYS_clock_gettime, cid, &ts);
         #endif
     #endif
-    return TAU_CAST(double, ts.tv_sec) * 1000 * 1000 * 1000 + ts.tv_nsec; // in nanoseconds
+    return TAU_CAST(double, ts.tv_sec) * 1000 * 1000 * 1000 + TAU_CAST(double, ts.tv_nsec); // in nanoseconds
 
 #elif __APPLE__
     return TAU_CAST(double, mach_absolute_time());
