@@ -36,7 +36,7 @@ We highly recommend you add a custom failure message for your macros - it makes 
 
 To do this, simply do the following:
 ```C
-CHECK(i == 42, "Expected i to be 32");
+CHECK(i == 42, "Expected i to be 42");
 ```
 
 
