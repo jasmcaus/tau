@@ -573,6 +573,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 TAU_OVERLOAD_PRINTER(actual);                                                  \
                 tauPrintf("\n");                                                               \
                 failOrAbort;                                                                   \
+                if (shouldAbortTest) {                                                         \
+                    return;                                                                    \
+                }                                                                              \
             }                                                                                  \
         }                                                                                      \
         while(0)
@@ -600,6 +603,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 printf(#actual);                                                                       \
                 tauPrintf("\n");                                                                       \
                 failOrAbort;                                                                           \
+                if (shouldAbortTest) {                                                                 \
+                    return;                                                                            \
+                }                                                                                      \
             }                                                                                          \
         }                                                                                              \
         while(0)
@@ -619,7 +625,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
             tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);              \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if (shouldAbortTest) {                                                                              \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -666,7 +674,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             tauPrintHexBufCmp(expected, actual, len);                                                           \
             tauPrintf("\n    Actual : %s\n", #actualPrint);                                                     \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if (shouldAbortTest) {                                                                              \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -691,7 +701,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
                                                               TAU_CAST(int, n), expected);                      \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if (shouldAbortTest) {                                                                              \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -711,6 +723,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             tauPrintf("  Expected : %s\n", #expected);                              \
             tauPrintf("    Actual : %s\n", #actual);                                \
             failOrAbort;                                                            \
+            if (shouldAbortTest) {                                                  \
+                return;                                                             \
+            }                                                                       \
         }                                                                           \
     } while(0)
 
@@ -771,6 +786,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             printf("The following assertion failed: \n");                                      \
             tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);    \
             failOrAbort;                                                                       \
+            if (shouldAbortTest) {                                                             \
+                return;                                                                        \
+            }                                                                                  \
         }                                                                                      \
     }                                                                                          \
     while(0)
