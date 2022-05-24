@@ -573,6 +573,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 TAU_OVERLOAD_PRINTER(actual);                                                  \
                 tauPrintf("\n");                                                               \
                 failOrAbort;                                                                   \
+                if(shouldAbortTest) {                                                          \
+                    return;                                                                    \
+                }                                                                              \
             }                                                                                  \
         }                                                                                      \
         while(0)
@@ -600,6 +603,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
                 printf(#actual);                                                                       \
                 tauPrintf("\n");                                                                       \
                 failOrAbort;                                                                           \
+                if(shouldAbortTest) {                                                                  \
+                    return;                                                                            \
+                }                                                                                      \
             }                                                                                          \
         }                                                                                              \
         while(0)
@@ -619,7 +625,9 @@ static inline int tauShouldDecomposeMacro(char const* actual, char const* expect
             tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);              \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if(shouldAbortTest) {                                                                               \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -666,7 +674,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             tauPrintHexBufCmp(expected, actual, len);                                                           \
             tauPrintf("\n    Actual : %s\n", #actualPrint);                                                     \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if(shouldAbortTest) {                                                                               \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -691,7 +701,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
                                                               TAU_CAST(int, n), expected);                      \
             tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
             failOrAbort;                                                                                        \
-            return;                                                                                             \
+            if(shouldAbortTest) {                                                                               \
+                return;                                                                                         \
+            }                                                                                                   \
         }                                                                                                       \
     }                                                                                                           \
     while(0)
@@ -711,6 +723,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             tauPrintf("  Expected : %s\n", #expected);                              \
             tauPrintf("    Actual : %s\n", #actual);                                \
             failOrAbort;                                                            \
+            if(shouldAbortTest) {                                                   \
+                return;                                                             \
+            }                                                                       \
         }                                                                           \
     } while(0)
 
@@ -771,6 +786,9 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
             printf("The following assertion failed: \n");                                      \
             tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);    \
             failOrAbort;                                                                       \
+            if(shouldAbortTest) {                                                              \
+                return;                                                                        \
+            }                                                                                  \
         }                                                                                      \
     }                                                                                          \
     while(0)
@@ -838,7 +856,7 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
 #endif // _MSC_VER
 
 #define TEST(TESTSUITE, TESTNAME)                                                              \
-    TAU_EXTERN tauTestStateStruct tauTestContext;                                       \
+    TAU_EXTERN tauTestStateStruct tauTestContext;                                              \
     static void _TAU_TEST_FUNC_##TESTSUITE##_##TESTNAME(void);                                 \
     TAU_TEST_INITIALIZER(tau_register_##TESTSUITE##_##TESTNAME) {                              \
         const tau_ull index = tauTestContext.numTestSuites++;                                  \
@@ -864,7 +882,7 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* tau)
 
 #define TEST_F(FIXTURE, NAME)                                                 \
-    TAU_EXTERN tauTestStateStruct tauTestContext;                      \
+    TAU_EXTERN tauTestStateStruct tauTestContext;                             \
     static void __TAU_TEST_FIXTURE_SETUP_##FIXTURE(struct FIXTURE*);          \
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE*);       \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE*);   \
@@ -873,7 +891,7 @@ static void tauPrintHexBufCmp(void* buff, void* ref, int size) {
         struct FIXTURE fixture;                                               \
         memset(&fixture, 0, sizeof(fixture));                                 \
         __TAU_TEST_FIXTURE_SETUP_##FIXTURE(&fixture);                         \
-        if (hasCurrentTestFailed == 1) {                                      \
+        if(hasCurrentTestFailed == 1) {                                       \
             return;                                                           \
         }                                                                     \
                                                                               \
@@ -1247,13 +1265,13 @@ inline int tau_main(int argc, char** argv) {
 
 // If a user wants to define their own `main()` function, this _must_ be at the very end of the functtion
 #define TAU_NO_MAIN()                                       \
-    tauTestStateStruct tauTestContext = {0, 0, 0};   \
+    tauTestStateStruct tauTestContext = {0, 0, 0};          \
     TAU_ONLY_GLOBALS()
 
 // Define a main() function to call into tau.h and start executing tests.
 #define TAU_MAIN()                                                             \
     /* Define the global struct that will hold the data we need to run Tau. */ \
-    tauTestStateStruct tauTestContext = {0, 0, 0};                      \
+    tauTestStateStruct tauTestContext = {0, 0, 0};                             \
     TAU_ONLY_GLOBALS()                                                         \
                                                                                \
     int main(int argc, char** argv) {                                          \
