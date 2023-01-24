@@ -125,6 +125,7 @@ extern tau_u64 tauStatsNumWarnings;
 static int tauShouldColourizeOutput = 1;
 static int tauDisableSummary = 0;
 static int tauDisplayOnlyFailedOutput = 0;
+static int tauDisplayTests = 0;
 
 static const char* tau_argv0_ = TAU_NULL;
 static const char* cmd_filter = TAU_NULL;
@@ -415,10 +416,11 @@ tauColouredPrintf(const int colour, const char* const fmt, ...) {
 }
 
 #ifndef TAU_NO_TESTING
-    #define tauPrintf(...)                                  \
+    #define tauPrintf(...) {                                \
         if(tauTestContext.foutput)                          \
             fprintf(tauTestContext.foutput, __VA_ARGS__);   \
-        printf(__VA_ARGS__)
+        printf(__VA_ARGS__);                                \
+    }
 #else
     #define tauPrintf(...)   \
         printf(__VA_ARGS__)
@@ -1066,6 +1068,7 @@ static tau_bool tauCmdLineRead(const int argc, const char* const * const argv) {
         else if(strncmp(argv[i], listStr, strlen(listStr)) == 0) {
             for (i = 0; i < tauTestContext.numTestSuites; i++)
                 tauPrintf("%s\n", tauTestContext.tests[i].name);
+            tauDisplayTests = 1;
         }
 
         // Disable colouring
@@ -1164,6 +1167,9 @@ inline int tau_main(const int argc, const char* const * const argv) {
     const double start = tauClock();
 
     const tau_bool wasCmdLineReadSuccessful = tauCmdLineRead(argc, argv);
+    if (tauDisplayTests)
+        return tauCleanup();
+
     if(!wasCmdLineReadSuccessful)
         return tauCleanup();
 
