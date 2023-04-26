@@ -47,7 +47,7 @@ TAU_DISABLE_DEBUG_WARNINGS
 #if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
     #define TAU_WIN_        1
     #pragma warning(push, 0)
-        #include <Windows.h>
+        #include <windows.h>
         #include <io.h>
     #pragma warning(pop)
 #endif // _WIN32
