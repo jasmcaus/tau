@@ -1237,11 +1237,11 @@ inline int tau_main(const int argc, const char* const * const argv) {
         tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" TAU_PRIu64 " test suites passed in ", total_tests_passed);
         tauClockPrintDuration(duration);
-        printf("\n\n");
+        printf("\n");
     } else {
         tauColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "WARNING: ");
         printf("No test suites were found. If you think this was an error, please file an issue on Tau's Github repo.");
-        printf("\n\n");
+        printf("\n");
     }
 
     if(tauTestContext.foutput)
