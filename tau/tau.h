@@ -1204,9 +1204,11 @@ inline int tau_main(const int argc, const char* const * const argv) {
     tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n",
                             tauStatsTestsRan - tauStatsNumTestsFailed,
                             tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
-    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n",
-                            tauStatsNumTestsFailed,
-                            tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    if (tauStatsNumTestsFailed > 0) {
+        tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n",
+                                tauStatsNumTestsFailed,
+                                tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    }
 
     if(!tauDisableSummary) {
         tauColouredPrintf(TAU_COLOUR_BOLD_, "\nSummary:\n");
@@ -1235,11 +1237,11 @@ inline int tau_main(const int argc, const char* const * const argv) {
         tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "SUCCESS: ");
         printf("%" TAU_PRIu64 " test suites passed in ", total_tests_passed);
         tauClockPrintDuration(duration);
-        printf("\n");
+        printf("\n\n");
     } else {
         tauColouredPrintf(TAU_COLOUR_BRIGHTYELLOW_, "WARNING: ");
         printf("No test suites were found. If you think this was an error, please file an issue on Tau's Github repo.");
-        printf("\n");
+        printf("\n\n");
     }
 
     if(tauTestContext.foutput)
