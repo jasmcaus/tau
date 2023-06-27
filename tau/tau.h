@@ -1204,9 +1204,11 @@ inline int tau_main(const int argc, const char* const * const argv) {
     tauColouredPrintf(TAU_COLOUR_BRIGHTGREEN_, "[  PASSED  ] %" TAU_PRIu64 " %s\n",
                             tauStatsTestsRan - tauStatsNumTestsFailed,
                             tauStatsTestsRan - tauStatsNumTestsFailed == 1 ? "suite" : "suites");
-    tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n",
-                            tauStatsNumTestsFailed,
-                            tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    if (tauStatsNumTestsFailed > 0) {
+        tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "[  FAILED  ] %" TAU_PRIu64 " %s\n",
+                                tauStatsNumTestsFailed,
+                                tauStatsNumTestsFailed == 1 ? "suite" : "suites");
+    }
 
     if(!tauDisableSummary) {
         tauColouredPrintf(TAU_COLOUR_BOLD_, "\nSummary:\n");
