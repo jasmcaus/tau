@@ -780,10 +780,7 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
     do {                                                                                       \
         if(!(cond)) {                                                                          \
             tauPrintf("%s:%u: ", __FILE__, __LINE__);                                          \
-            if((sizeof(char[]){__VA_ARGS__}) <= 1)                                             \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED");                            \
-            else                                                                               \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                         \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                             \
             printf("\n");                                                                      \
             printf("The following assertion failed: \n");                                      \
             tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "    %s( %s )\n", #macroName, #cond);    \
@@ -807,15 +804,36 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
 // Neat hack from:
 // https://stackoverflow.com/questions/3046889/optional-parameters-with-c-macros, and
 // https://stackoverflow.com/questions/11761703/overloading-macro-on-number-of-arguments
-#define GET_3RD_ARG(arg1, arg2, arg3, ...)   arg3
+// https://stackoverflow.com/questions/2124339/c-preprocessor-va-args-number-of-arguments
+#define GET_64th_ARG( a1, a2, a3, a4, a5, a6, a7, a8, a9,a10, \
+                     a11,a12,a13,a14,a15,a16,a17,a18,a19,a20, \
+                     a21,a22,a23,a24,a25,a26,a27,a28,a29,a30, \
+                     a31,a32,a33,a34,a35,a36,a37,a38,a39,a40, \
+                     a41,a42,a43,a44,a45,a46,a47,a48,a49,a50, \
+                     a51,a52,a53,a54,a55,a56,a57,a58,a59,a60, \
+                     a61,a62,a63,a64,...)   a64
 
-#define CHECK_1_ARGS(cond)              __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, "FAILED")
-#define CHECK_2_ARGS(cond, message)     __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, message)
-#define CHECK_MACRO_CHOOSER(...)        GET_3RD_ARG(__VA_ARGS__, CHECK_2_ARGS, CHECK_1_ARGS, )
+#define CHECK_1_ARGS(cond)          __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, "FAILED")
+#define CHECK_n_ARGS(cond, ...)     __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, __VA_ARGS__)
+#define CHECK_MACRO_CHOOSER(...)    GET_64th_ARG( \
+    __VA_ARGS__, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, \
+    CHECK_n_ARGS, CHECK_n_ARGS, CHECK_n_ARGS, CHECK_1_ARGS, )
 
-#define REQUIRE_1_ARGS(cond)            __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, "FAILED")
-#define REQUIRE_2_ARGS(cond, message)   __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, message)
-#define REQUIRE_MACRO_CHOOSER(...)      GET_3RD_ARG(__VA_ARGS__, REQUIRE_2_ARGS, REQUIRE_1_ARGS, )
+#define REQUIRE_1_ARGS(cond)        __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, "FAILED")
+#define REQUIRE_n_ARGS(cond, ...)   __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, __VA_ARGS__)
+#define REQUIRE_MACRO_CHOOSER(...)  GET_64th_ARG( \
+    __VA_ARGS__, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, \
+    REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_n_ARGS, REQUIRE_1_ARGS, )
 
 #define CHECK(...)      CHECK_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define REQUIRE(...)    REQUIRE_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
