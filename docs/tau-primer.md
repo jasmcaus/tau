@@ -34,9 +34,13 @@ We recommend using `CHECK`s over `ASSERT`s unless it doesn't make sense to conti
 ### Adding Custom Failure Messages
 We highly recommend you add a custom failure message for your macros - it makes it easier to track down bugs. `Invalid Type ID:` is much more useful than `FAILED`, which is what Tau prints by default.
 
+The message can be a printf format string. This is pretty useful when you do the test in a loop. You can quickly know which iteration of the loop failed.
+
 To do this, simply do the following:
 ```C
 CHECK(i == 42, "Expected i to be 42");
+
+CHECK(result == expected[i], "i=%d", i);
 ```
 
 
