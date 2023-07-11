@@ -579,24 +579,24 @@ static inline int tauShouldDecomposeMacro(const char* const actual, const char* 
     FN, F3, F2, F1, )
 
 /* templates for macors with 1 fixed argument
- * Note the name of the original macro should be changed into XXX_ORIGIN */
-#define FIXED1_F1(NAME, cond)           NAME##_ORIGIN(cond, "FAILED")
-#define FIXED1_FN(NAME, cond, ...)      NAME##_ORIGIN(cond, __VA_ARGS__)
+ * Note a suffix `_` should be added to the name of the original macro */
+#define FIXED1_F1(NAME, cond)           NAME##_(cond, "FAILED")
+#define FIXED1_FN(NAME, cond, ...)      NAME##_(cond, __VA_ARGS__)
 #define FIXED1_CHOOSER(...)             MACRO_CHOOSER(FIXED1_F1, FIXED1_FN, FIXED1_FN, FIXED1_FN, __VA_ARGS__)
 
 /* templates for macors with 2 fixed arguments
- * Note the name of the original macro should be changed into XXX_ORIGIN */
-#define FIXED2_F1(NAME, act)            NAME##_ORIGIN(act)  /* will fail */
-#define FIXED2_F2(NAME, act, exp)       NAME##_ORIGIN(act, exp, "FAILED")
-#define FIXED2_FN(NAME, act, exp, ...)  NAME##_ORIGIN(act, exp, __VA_ARGS__)
+ * Note a suffix `_` should be added to the name of the original macro */
+#define FIXED2_F1(NAME, act)            NAME##_(act)  /* will fail */
+#define FIXED2_F2(NAME, act, exp)       NAME##_(act, exp, "FAILED")
+#define FIXED2_FN(NAME, act, exp, ...)  NAME##_(act, exp, __VA_ARGS__)
 #define FIXED2_CHOOSER(...)             MACRO_CHOOSER(FIXED2_F1, FIXED2_F2, FIXED2_FN, FIXED2_FN, __VA_ARGS__)
 
 /* templates for macors with 3 fixed arguments
- * Note the name of the original macro should be changed into XXX_ORIGIN */
-#define FIXED3_F1(NAME, act)            NAME##_ORIGIN(act)      /* will fail */
-#define FIXED3_F2(NAME, act, exp)       NAME##_ORIGIN(act, exp) /* will fail */
-#define FIXED3_F3(NAME, act, exp, n)        NAME##_ORIGIN(act, exp, n, "FAILED")
-#define FIXED3_FN(NAME, act, exp, n, ...)   NAME##_ORIGIN(act, exp, n, __VA_ARGS__)
+ * Note a suffix `_` should be added to the name of the original macro */
+#define FIXED3_F1(NAME, act)            NAME##_(act)      /* will fail */
+#define FIXED3_F2(NAME, act, exp)       NAME##_(act, exp) /* will fail */
+#define FIXED3_F3(NAME, act, exp, n)        NAME##_(act, exp, n, "FAILED")
+#define FIXED3_FN(NAME, act, exp, n, ...)   NAME##_(act, exp, n, __VA_ARGS__)
 #define FIXED3_CHOOSER(...)             MACRO_CHOOSER(FIXED3_F1, FIXED3_F2, FIXED3_F3, FIXED3_FN, __VA_ARGS__)
 
 // ifCondFailsThenPrint is the string representation of the opposite of the truthy value of `cond`
@@ -790,45 +790,45 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
           {CHECK|REQUIRE} Macros
 ############################################
 */
-#define CHECK_EQ_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, ==, "", CHECK_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_NE_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, !=, "", CHECK_NE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_LT_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, < , " ", CHECK_LT, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_LE_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, <=, "", CHECK_LE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_GT_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, > , " ", CHECK_GT, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_GE_ORIGIN(actual, expected, ...)      __TAUCMP__(actual, expected, >=, "", CHECK_GE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_EQ_(actual, expected, ...)      __TAUCMP__(actual, expected, ==, "", CHECK_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_NE_(actual, expected, ...)      __TAUCMP__(actual, expected, !=, "", CHECK_NE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_LT_(actual, expected, ...)      __TAUCMP__(actual, expected, < , " ", CHECK_LT, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_LE_(actual, expected, ...)      __TAUCMP__(actual, expected, <=, "", CHECK_LE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_GT_(actual, expected, ...)      __TAUCMP__(actual, expected, > , " ", CHECK_GT, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_GE_(actual, expected, ...)      __TAUCMP__(actual, expected, >=, "", CHECK_GE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
-#define REQUIRE_EQ_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_NE_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_LT_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_LE_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_GT_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_GE_ORIGIN(actual, expected, ...)    __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_EQ_(actual, expected, ...)    __TAUCMP__(actual, expected, ==, "", REQUIRE_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_NE_(actual, expected, ...)    __TAUCMP__(actual, expected, !=, "", REQUIRE_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_LT_(actual, expected, ...)    __TAUCMP__(actual, expected, < , " ", REQUIRE_LT, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_LE_(actual, expected, ...)    __TAUCMP__(actual, expected, <=, "", REQUIRE_LE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_GT_(actual, expected, ...)    __TAUCMP__(actual, expected, > , " ", REQUIRE_GT, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_GE_(actual, expected, ...)    __TAUCMP__(actual, expected, >=, "", REQUIRE_GE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Whole-string checks
-#define CHECK_STREQ_ORIGIN(actual, expected, ...)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_STRNE_ORIGIN(actual, expected, ...)   __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_STREQ_ORIGIN(actual, expected, ...) __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_STRNE_ORIGIN(actual, expected, ...) __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_STREQ_(actual, expected, ...)   __TAUCMP_STR__(actual, expected, !=, ==, not equal, CHECK_STREQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_STRNE_(actual, expected, ...)   __TAUCMP_STR__(actual, expected, ==, !=, equal, CHECK_STRNE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_STREQ_(actual, expected, ...) __TAUCMP_STR__(actual, expected, !=, ==, not equal, REQUIRE_STREQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_STRNE_(actual, expected, ...) __TAUCMP_STR__(actual, expected, ==, !=, equal, REQUIRE_STRNE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Substring Checks
-#define CHECK_SUBSTREQ_ORIGIN(actual, expected, n, ...)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_SUBSTREQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_SUBSTRNE_ORIGIN(actual, expected, n, ...)     __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_SUBSTRNE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_SUBSTREQ_ORIGIN(actual, expected, n, ...)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_SUBSTREQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_SUBSTRNE_ORIGIN(actual, expected, n, ...)   __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_SUBSTRNE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_SUBSTREQ_(actual, expected, n, ...)     __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, CHECK_SUBSTREQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_SUBSTRNE_(actual, expected, n, ...)     __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, CHECK_SUBSTRNE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_SUBSTREQ_(actual, expected, n, ...)   __TAUCMP_STRN__(actual, expected, n, !=, ==, unequal substrings, REQUIRE_SUBSTREQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_SUBSTRNE_(actual, expected, n, ...)   __TAUCMP_STRN__(actual, expected, n, ==, !=, equal substrings, REQUIRE_SUBSTRNE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Buffer Checks
-#define CHECK_BUF_EQ_ORIGIN(actual, expected, n, ...)       __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_BUF_NE_ORIGIN(actual, expected, n, ...)       __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_BUF_EQ_ORIGIN(actual, expected, n, ...)     __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_BUF_NE_ORIGIN(actual, expected, n, ...)     __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_BUF_EQ_(actual, expected, n, ...)       __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, CHECK_BUF_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_BUF_NE_(actual, expected, n, ...)       __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, CHECK_BUF_NE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_BUF_EQ_(actual, expected, n, ...)     __TAUCMP_BUF__(actual, expected, n, !=, ==, not equal, REQUIRE_BUF_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_BUF_NE_(actual, expected, n, ...)     __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
 // Do not remove it
-#define CHECK_TRUE_ORIGIN(cond, ...)    __TAUCMP_TF(cond, false, true, !, CHECK_TRUE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define CHECK_FALSE_ORIGIN(cond, ...)   __TAUCMP_TF(cond, true, false, , CHECK_FALSE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_TRUE_(cond, ...)    __TAUCMP_TF(cond, false, true, !, CHECK_TRUE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_FALSE_(cond, ...)   __TAUCMP_TF(cond, true, false, , CHECK_FALSE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
-#define REQUIRE_TRUE_ORIGIN(cond, ...)  __TAUCMP_TF(cond, false, true, !, REQUIRE_TRUE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
-#define REQUIRE_FALSE_ORIGIN(cond, ...) __TAUCMP_TF(cond, true, false, , REQUIRE_FALSE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_TRUE_(cond, ...)  __TAUCMP_TF(cond, false, true, !, REQUIRE_TRUE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_FALSE_(cond, ...) __TAUCMP_TF(cond, true, false, , REQUIRE_FALSE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 #define CHECK_EQ(...)           FIXED2_CHOOSER(__VA_ARGS__)(CHECK_EQ, __VA_ARGS__)
 #define CHECK_NE(...)           FIXED2_CHOOSER(__VA_ARGS__)(CHECK_NE, __VA_ARGS__)
@@ -880,13 +880,13 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
     }                                                                                          \
     while(0)
 
-#define CHECK_ORIGIN(cond, ...)     __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, __VA_ARGS__)
-#define REQUIRE_ORIGIN(cond, ...)   __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, __VA_ARGS__)
+#define CHECK_(cond, ...)     __TAUCHECKREQUIRE__(cond, TAU_FAIL_IF_INSIDE_TESTSUITE, CHECK, __VA_ARGS__)
+#define REQUIRE_(cond, ...)   __TAUCHECKREQUIRE__(cond, TAU_ABORT_IF_INSIDE_TESTSUITE, REQUIRE, __VA_ARGS__)
 
-#define CHECK_NULL_ORIGIN(val, ...)         CHECK_ORIGIN(val == TAU_NULL, __VA_ARGS__)
-#define CHECK_NOT_NULL_ORIGIN(val, ...)     CHECK_ORIGIN(val != TAU_NULL, __VA_ARGS__)
-#define REQUIRE_NULL_ORIGIN(val, ...)       REQUIRE_ORIGIN(val == TAU_NULL, __VA_ARGS__)
-#define REQUIRE_NOT_NULL_ORIGIN(val, ...)   REQUIRE_ORIGIN(val != TAU_NULL, __VA_ARGS__)
+#define CHECK_NULL_(val, ...)         CHECK_(val == TAU_NULL, __VA_ARGS__)
+#define CHECK_NOT_NULL_(val, ...)     CHECK_(val != TAU_NULL, __VA_ARGS__)
+#define REQUIRE_NULL_(val, ...)       REQUIRE_(val == TAU_NULL, __VA_ARGS__)
+#define REQUIRE_NOT_NULL_(val, ...)   REQUIRE_(val != TAU_NULL, __VA_ARGS__)
 
 #define CHECK(...)              FIXED1_CHOOSER(__VA_ARGS__)(CHECK, __VA_ARGS__)
 #define REQUIRE(...)            FIXED1_CHOOSER(__VA_ARGS__)(REQUIRE, __VA_ARGS__)
