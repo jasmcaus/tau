@@ -253,7 +253,7 @@ static inline double tauClock() {
     return TAU_CAST(double, clock()) * 1000000000 / CLOCKS_PER_SEC; // in nanoseconds
 
 #elif defined(__linux)
-    struct timespec ts;
+    struct timespec ts = {0, 0};
     #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
         timespec_get(&ts, TIME_UTC);
     #else
