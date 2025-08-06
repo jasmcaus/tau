@@ -713,32 +713,33 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
     tauColouredPrintf(TAU_COLOUR_CYAN_,">");
 }
 
-#define __TAUCMP_PTR__(actual, expected, cond, space, macroName, failOrAbort)                                   \
-    do {                                                                                                        \
-        if(!((void*)(actual)cond(void*)(expected))) {                                                           \
-            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                           \
-            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "FAILED\n");                                               \
-            if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                                                \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                                     \
-                tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                                     \
-                                                            #macroName,                                         \
-                                                            #actual, #expected);                                \
-            }                                                                                                   \
-            tauPrintf("  Expected : %s", #actual);                                                              \
-            printf(" %s ", #cond space);                                                                        \
-            printf("%p", (void*)expected);                                                                      \
-            tauPrintf("\n");                                                                                    \
-                                                                                                                \
-            tauPrintf("    Actual : %s", #actual);                                                              \
-            printf(" == ");                                                                                     \
-            printf("%p", (void*)actual);                                                                        \
-            tauPrintf("\n");                                                                                    \
-            failOrAbort;                                                                                        \
-            if(shouldAbortTest) {                                                                               \
-                return;                                                                                         \
-            }                                                                                                   \
-        }                                                                                                       \
-    }                                                                                                           \
+#define __TAUCMP_PTR__(actual, expected, cond, space, macroName, failOrAbort, ...)                  \
+    do {                                                                                            \
+        if(!((void*)(actual)cond(void*)(expected))) {                                               \
+            tauPrintf("%s:%u: ", __FILE__, __LINE__);                                               \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                                  \
+            printf("\n");                                                                           \
+            if(tauShouldDecomposeMacro(#actual, #expected, 0)) {                                    \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "  In macro : ");                         \
+                tauColouredPrintf(TAU_COLOUR_BRIGHTCYAN_, "%s( %s, %s )\n",                         \
+                                                            #macroName,                             \
+                                                            #actual, #expected);                    \
+            }                                                                                       \
+            tauPrintf("  Expected : %s", #actual);                                                  \
+            printf(" %s ", #cond space);                                                            \
+            printf("%p", (void*)expected);                                                          \
+            tauPrintf("\n");                                                                        \
+                                                                                                    \
+            tauPrintf("    Actual : %s", #actual);                                                  \
+            printf(" == ");                                                                         \
+            printf("%p", (void*)actual);                                                            \
+            tauPrintf("\n");                                                                        \
+            failOrAbort;                                                                            \
+            if(shouldAbortTest) {                                                                   \
+                return;                                                                             \
+            }                                                                                       \
+        }                                                                                           \
+    }                                                                                               \
     while(0)
 
 #define __TAUCMP_BUF__(actual, expected, len, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort, ...) \
@@ -853,10 +854,10 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
 #define REQUIRE_BUF_NE_(actual, expected, n, ...)     __TAUCMP_BUF__(actual, expected, n, ==, !=, equal, REQUIRE_BUF_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Pointers Checks
-#define CHECK_PTR_EQ(actual, expected)    __TAUCMP_PTR__(actual, expected, ==, "", CHECK_PTR_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define CHECK_PTR_NE(actual, expected)    __TAUCMP_PTR__(actual, expected, !=, "", CHECK_PTR_NE, TAU_FAIL_IF_INSIDE_TESTSUITE)
-#define REQUIRE_PTR_EQ(actual, expected)  __TAUCMP_PTR__(actual, expected, ==, "", REQUIRE_PTR_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE)
-#define REQUIRE_PTR_NE(actual, expected)  __TAUCMP_PTR__(actual, expected, !=, "", REQUIRE_PTR_NE, TAU_ABORT_IF_INSIDE_TESTSUITE)
+#define CHECK_PTR_EQ_(actual, expected, ...)    __TAUCMP_PTR__(actual, expected, ==, "", CHECK_PTR_EQ, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define CHECK_PTR_NE_(actual, expected, ...)    __TAUCMP_PTR__(actual, expected, !=, "", CHECK_PTR_NE, TAU_FAIL_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_PTR_EQ_(actual, expected, ...)  __TAUCMP_PTR__(actual, expected, ==, "", REQUIRE_PTR_EQ, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
+#define REQUIRE_PTR_NE_(actual, expected, ...)  __TAUCMP_PTR__(actual, expected, !=, "", REQUIRE_PTR_NE, TAU_ABORT_IF_INSIDE_TESTSUITE, __VA_ARGS__)
 
 // Note: The negate sign `!` must be there for {CHECK|REQUIRE}_TRUE
 // Do not remove it
@@ -894,6 +895,11 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
 #define CHECK_BUF_NE(...)       FIXED3_CHOOSER(__VA_ARGS__)(CHECK_BUF_NE, __VA_ARGS__)
 #define REQUIRE_BUF_EQ(...)     FIXED3_CHOOSER(__VA_ARGS__)(REQUIRE_BUF_EQ, __VA_ARGS__)
 #define REQUIRE_BUF_NE(...)     FIXED3_CHOOSER(__VA_ARGS__)(REQUIRE_BUF_NE, __VA_ARGS__)
+
+#define CHECK_PTR_EQ(...)       FIXED2_CHOOSER(__VA_ARGS__)(CHECK_PTR_EQ, __VA_ARGS__)
+#define CHECK_PTR_NE(...)       FIXED2_CHOOSER(__VA_ARGS__)(CHECK_PTR_NE, __VA_ARGS__)
+#define REQUIRE_PTR_EQ(...)     FIXED2_CHOOSER(__VA_ARGS__)(REQUIRE_PTR_EQ, __VA_ARGS__)
+#define REQUIRE_PTR_NE(...)     FIXED2_CHOOSER(__VA_ARGS__)(REQUIRE_PTR_NE, __VA_ARGS__)
 
 #define CHECK_TRUE(...)         FIXED1_CHOOSER(__VA_ARGS__)(CHECK_TRUE, __VA_ARGS__)
 #define CHECK_FALSE(...)        FIXED1_CHOOSER(__VA_ARGS__)(CHECK_FALSE, __VA_ARGS__)
