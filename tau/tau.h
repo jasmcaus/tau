@@ -339,6 +339,9 @@ static inline void* tau_realloc(void* const ptr, const tau_ull new_size) {
 #define TAU_COLOUR_BRIGHTBLUE_           10
 #define TAU_COLOUR_BRIGHTCYAN_           11
 #define TAU_COLOUR_BOLD_                 12
+#define TAU_COLOUR_DIFFERENCE_           13
+#define TAU_COLOUR_ESCAPE_DIFF_          14
+#define TAU_COLOUR_ESCAPE_               15
 
 static inline int TAU_ATTRIBUTE_(format (printf, 2, 3))
 tauColouredPrintf(const int colour, const char* const fmt, ...);
@@ -666,6 +669,97 @@ static inline int tauShouldDecomposeMacro(const char* const actual, const char* 
         while(0)
 #endif // TAU_CAN_USE_OVERLOADABLES
 
+// Sets the console text color without requiring a format string
+static void tauSetColour(const int colour) {
+    if(!tauShouldColourizeOutput) return;
+    
+    switch(colour) {
+        case TAU_COLOUR_DIFFERENCE_:   printf("\033[7m"); break;      // Inverse video
+        case TAU_COLOUR_ESCAPE_DIFF_:  printf("\033[7;36m"); break;   // Inverse + cyan
+        case TAU_COLOUR_ESCAPE_:       printf("\033[36m"); break;     // Cyan text only
+        case TAU_COLOUR_DEFAULT_:      printf("\033[0m"); break;      // Reset all
+    }
+}
+
+// Prints a character with proper escaping and highlighting
+// c         - The character to print
+// highlight - Whether to highlight this character as different
+static void tauPrintEscapedChar(char c, int highlight) {
+    // Apply highlighting color only if colors are enabled
+    if(highlight && tauShouldColourizeOutput) {
+        tauSetColour(TAU_COLOUR_DIFFERENCE_);
+    }
+    
+    switch(c) {
+        case '\033': 
+            printf("\\e");
+            break;
+        case '\n':   
+            printf("\\n");
+            break;
+        case '\t':   
+            printf("\\t");
+            break;
+        case '\r':   
+            printf("\\r");
+            break;
+        case '\\':   
+            printf("\\\\");
+            break;
+        case '"':    
+            printf("\\\"");
+            break;
+        default:
+            if(c < 32 || c > 126) {
+                // Non-printable characters in hexadecimal format
+                printf("\\x%02x", (unsigned char)c);
+            } else {
+                printf("%c", c);
+            }
+            break;
+    }
+    
+    // Reset color only if we applied highlighting
+    if(highlight && tauShouldColourizeOutput) {
+        tauSetColour(TAU_COLOUR_DEFAULT_);
+    }
+}
+
+// Prints a string comparison with colored highlighting of differences
+// str    - The actual string to compare
+// ref    - The reference string to compare against
+// maxLen - Maximum length to compare (-1 for full string comparison)
+static void tauPrintColouredStringCmp(const char* const str, const char* const ref, const int maxLen) {
+    const tau_ull strLen = (maxLen < 0) ? strlen(str) : TAU_MIN(strlen(str), (tau_ull)maxLen);
+    const tau_ull refLen = (maxLen < 0) ? strlen(ref) : TAU_MIN(strlen(ref), (tau_ull)maxLen);
+    const tau_ull minLen = TAU_MIN(strLen, refLen);
+    
+    tauColouredPrintf(TAU_COLOUR_CYAN_, "\"");
+    
+    // Print characters that are within both strings' length
+    for(tau_ull i = 0; i < minLen; i++) {
+        if(str[i] == ref[i]) {
+            tauPrintEscapedChar(str[i], 0);
+        } else {
+            tauPrintEscapedChar(str[i], 1);
+        }
+    }
+    
+    // Handle extra characters if one string is longer
+    if(strLen > minLen) {
+        for(tau_ull i = minLen; i < strLen; i++) {
+            tauPrintEscapedChar(str[i], 1);
+        }
+    }
+    
+    tauColouredPrintf(TAU_COLOUR_CYAN_, "\"");
+    
+    // Show length information if strings have different lengths
+    if(strLen != refLen) {
+        tauColouredPrintf(TAU_COLOUR_CYAN_, " (len:%" TAU_PRIu64 " vs %" TAU_PRIu64 ")", 
+                         (tau_u64)strLen, (tau_u64)refLen);
+    }
+}
 #define __TAUCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort, ...)  \
     do {                                                                                                        \
         if(strcmp(actual, expected) cond 0) {                                                                   \
@@ -678,8 +772,11 @@ static inline int tauShouldDecomposeMacro(const char* const actual, const char* 
                                                                 #macroName,                                     \
                                                                 #actual, #expected);                            \
                 }                                                                                               \
-            tauPrintf("  Expected : \"%s\" %s \"%s\"\n", actual, #ifCondFailsThenPrint, expected);              \
-            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
+            tauPrintf("  Expected : ");                                                                         \
+            tauPrintColouredStringCmp(actual, expected, -1);                                                    \
+            tauPrintf(" %s ", #ifCondFailsThenPrint);                                                           \
+            tauPrintColouredStringCmp(expected, actual, -1);                                                    \
+            tauPrintf("\n    Actual : %s\n", #actualPrint);                                                     \
             failOrAbort;                                                                                        \
             if(shouldAbortTest) {                                                                               \
                 return;                                                                                         \
@@ -687,7 +784,6 @@ static inline int tauShouldDecomposeMacro(const char* const actual, const char* 
         }                                                                                                       \
     }                                                                                                           \
     while(0)
-
 
 static void tauPrintColouredIfDifferent(const tau_u8 ch, const tau_u8 ref) {
     if(ch == ref) {
@@ -765,7 +861,7 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
         }                                                                                                       \
     }                                                                                                           \
     while(0)
-
+    
 #define __TAUCMP_STRN__(actual, expected, n, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort, ...) \
     do {                                                                                                        \
         if(TAU_CAST(int, n) < 0) {                                                                              \
@@ -782,10 +878,11 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
                                                                 #macroName,                                     \
                                                                 #actual, #expected, #n);                        \
                 }                                                                                               \
-            tauPrintf("  Expected : \"%.*s\" %s \"%.*s\"\n", TAU_CAST(int, n), actual,                          \
-                                                              #ifCondFailsThenPrint,                            \
-                                                              TAU_CAST(int, n), expected);                      \
-            tauPrintf("    Actual : %s\n", #actualPrint);                                                       \
+            tauPrintf("  Expected : ");                                                                         \
+            tauPrintColouredStringCmp(actual, expected, TAU_CAST(int, n));                                      \
+            tauPrintf(" %s ", #ifCondFailsThenPrint);                                                           \
+            tauPrintColouredStringCmp(expected, actual, TAU_CAST(int, n));                                      \
+            tauPrintf("\n    Actual : %s\n", #actualPrint);                                                     \
             failOrAbort;                                                                                        \
             if(shouldAbortTest) {                                                                               \
                 return;                                                                                         \
@@ -793,7 +890,6 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
         }                                                                                                       \
     }                                                                                                           \
     while(0)
-
 
 #define __TAUCMP_TF(cond, actual, expected, negateSign, macroName, failOrAbort, ...) \
     do {                                                                            \
