@@ -93,28 +93,6 @@ TEST_F(ExampleTestFixture, EnsureSetupRanBeforeAgain)
 }
 ```
 
-## Ignoring Tests
-
-Sometimes you may want to temporarily disable a test without removing it from the codebase. Tau provides `IGNORE_TEST` and `IGNORE_TEST_F` macros for this purpose.
-
-### Ignoring Regular Tests
-```c
-IGNORE_TEST(TestSuiteName, TestName) {
-    // This test will be skipped during execution
-    CHECK(1 == 2, "This would normally fail but won't run");
-}
-```
-
-### Ignoring Fixture Tests
-```c
-IGNORE_TEST_F(ExampleTestFixture, IgnoredFixtureTest) {
-    // This fixture test will be skipped during execution
-    CHECK(tau->test_variable == 100, "This won't run");
-}
-```
-
-Ignored tests will be displayed with an `[ IGNORED  ]` status when the test suite runs, allowing you to see which tests are currently disabled.
-
 ## Testing Macros
 Tau provides two variants of Assertion Macros - `CHECK`s and `ASSERT`s. These resemble function calls. When these assertions fail, Tau prints the source code location (file + line number) along with a failure message. 
 
@@ -136,8 +114,7 @@ CHECK(result == expected[i], "i=%d", i);
 ```
 
 
-## A List of Available Testing Macros
-
+## A List of Avaliable Testing Macros
 ### a. Basic Assertions
 These assertions perform basic true/false condition checking. 
 
@@ -170,132 +147,24 @@ These macros compare two ***C-strings***.
 | `REQUIRE_SUBSTREQ(str1,str2);`    | `CHECK_SUBSTREQ(str1,str2);`     | the two C strings have the same contents, upto the length of str1   |
 | `REQUIRE_SUBSTRNE(str1,str2);`   | `CHECK_SUBSTRNE(str1,str2);`    | the two C strings have different content, upto the length of str1   |
 
-### d. Buffer Comparisons
-These macros compare memory buffers byte-by-byte using `memcmp`. They are useful for testing binary data, arrays, or structures.
-
-| Fatal assertion                | Nonfatal assertion             | Checks                                                 |
-| --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `REQUIRE_BUF_EQ(buf1,buf2,n);` | `CHECK_BUF_EQ(buf1,buf2,n);`  | the two memory buffers have identical content for n bytes |
-| `REQUIRE_BUF_NE(buf1,buf2,n);` | `CHECK_BUF_NE(buf1,buf2,n);`  | the two memory buffers have different content within n bytes |
-
-The `n` parameter specifies how many bytes to compare. When a buffer comparison fails, Tau displays the contents in hexadecimal format, highlighting the differences in yellow for easy identification.
-
-### e. Pointer Comparisons
-These macros compare pointer values directly (not the content they point to).
-
-| Fatal assertion                | Nonfatal assertion             | Checks                                                 |
-| --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `REQUIRE_PTR_EQ(ptr1,ptr2);`   | `CHECK_PTR_EQ(ptr1,ptr2);`     | the two pointers point to the same memory address     |
-| `REQUIRE_PTR_NE(ptr1,ptr2);`   | `CHECK_PTR_NE(ptr1,ptr2);`     | the two pointers point to different memory addresses  |
-
-These are particularly useful for testing pointer assignments, linked data structures, or verifying that functions return the expected pointer values.
-
-### f. NULL Checks
-Convenient macros for checking null pointer values.
-
-| Fatal assertion                | Nonfatal assertion             | Checks                                                 |
-| --------------------------     | ------------------------------ | -------------------------------------------------------- |
-| `REQUIRE_NULL(ptr);`           | `CHECK_NULL(ptr);`             | the pointer is NULL                                    |
-| `REQUIRE_NOT_NULL(ptr);`       | `CHECK_NOT_NULL(ptr);`         | the pointer is not NULL                                |
-
 
 ## Example Usage
-Below is a comprehensive example showing various supported operations:
-
+Below is a slightly contrived example showing a number of possible supported operations:
 ```C
 #include <tau/tau.h>
-#include <string.h>
-
 TAU_MAIN() // sets up Tau 
 
-TEST(BasicTests, ArithmeticOperations) {
+TEST(foo, bar1) {
     int a = 42; 
     int b = 13; 
     CHECK_GE(a, b); // pass :)
     CHECK_LE(b, 8); // fail - Test suite not aborted 
 }
 
-TEST(StringTests, StringComparisons) {
+TEST(foo, bar2) {
     char* a = "foo";
     char* b = "foobar";
-    char* c = "foo";
-    
-    REQUIRE_STREQ(a, c); // pass :) - same content
+    REQUIRE_STREQ(a, a); // pass :)
     REQUIRE_STREQ(a, b); // fail - Test suite aborted :(
-    CHECK_SUBSTREQ(b, a, 3, "First 3 chars should match"); // pass :)
-}
-
-TEST(BufferTests, MemoryComparisons) {
-    unsigned char buffer1[] = {0x01, 0x02, 0x03, 0x04};
-    unsigned char buffer2[] = {0x01, 0x02, 0x03, 0x04};
-    unsigned char buffer3[] = {0x01, 0x02, 0xFF, 0x04};
-    
-    CHECK_BUF_EQ(buffer1, buffer2, 4, "Buffers should be identical");
-    CHECK_BUF_NE(buffer1, buffer3, 4, "Buffers should differ at byte 2");
-}
-
-TEST(PointerTests, PointerComparisons) {
-    int value = 100;
-    int* ptr1 = &value;
-    int* ptr2 = &value;
-    int* ptr3 = NULL;
-    
-    CHECK_PTR_EQ(ptr1, ptr2, "Both pointers should point to same address");
-    CHECK_PTR_NE(ptr1, ptr3, "Pointer should not be NULL");
-    CHECK_NULL(ptr3, "This pointer should be NULL");
-    CHECK_NOT_NULL(ptr1, "This pointer should not be NULL");
-}
-
-// This test will be ignored during execution
-IGNORE_TEST(IgnoredTests, TemporarilyDisabled) {
-    CHECK(1 == 2, "This would fail but won't run");
-}
-
-// Example with test fixture
-struct FileTestFixture {
-    FILE* test_file;
-    char* file_content;
-};
-
-TEST_F_SETUP(FileTestFixture) {
-    tau->test_file = fopen("test.txt", "w+");
-    tau->file_content = malloc(256);
-    strcpy(tau->file_content, "Hello, Tau!");
-    CHECK_NOT_NULL(tau->test_file, "File should be opened successfully");
-}
-
-TEST_F_TEARDOWN(FileTestFixture) {
-    if (tau->test_file) {
-        fclose(tau->test_file);
-    }
-    free(tau->file_content);
-}
-
-TEST_F(FileTestFixture, FileOperations) {
-    // Write to file
-    fprintf(tau->test_file, "%s", tau->file_content);
-    fflush(tau->test_file);
-    
-    // Read back and compare
-    rewind(tau->test_file);
-    char read_buffer[256] = {0};
-    fread(read_buffer, 1, strlen(tau->file_content), tau->test_file);
-    
-    CHECK_STREQ(read_buffer, tau->file_content, "File content should match");
-}
-
-// This fixture test will be ignored
-IGNORE_TEST_F(FileTestFixture, IgnoredFileTest) {
-    // This test won't run but setup/teardown structure is preserved
-    CHECK_STREQ(tau->file_content, "Different content", "This won't execute");
 }
 ```
-
-This example demonstrates:
-- Basic arithmetic checks with custom failure messages
-- String comparison operations (whole strings and substrings)
-- Binary buffer comparisons with hexadecimal output on failure
-- Pointer comparisons and NULL checks
-- Test fixtures with setup and teardown functions
-- How to ignore tests temporarily using `IGNORE_TEST` and `IGNORE_TEST_F`
-- Mixed use of `CHECK` (non-fatal) and `REQUIRE` (fatal) assertions
