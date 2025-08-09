@@ -681,11 +681,9 @@ static void tauSetColour(const int colour) {
     }
 }
 
-/**
- * Prints a character with proper escaping and highlighting
- * @param c The character to print
- * @param highlight Whether to highlight this character as different
- */
+// Prints a character with proper escaping and highlighting
+// c         - The character to print
+// highlight - Whether to highlight this character as different
 static void tauPrintEscapedChar(char c, int highlight) {
     // Apply highlighting color only if colors are enabled
     if(highlight && tauShouldColourizeOutput) {
@@ -732,14 +730,14 @@ static void tauPrintEscapedChar(char c, int highlight) {
 // ref    - The reference string to compare against
 // maxLen - Maximum length to compare (-1 for full string comparison)
 static void tauPrintColouredStringCmp(const char* const str, const char* const ref, const int maxLen) {
-    const int strLen = (maxLen < 0) ? strlen(str) : TAU_MIN(strlen(str), maxLen);
-    const int refLen = (maxLen < 0) ? strlen(ref) : TAU_MIN(strlen(ref), maxLen);
-    const int minLen = TAU_MIN(strLen, refLen);
+    const tau_ull strLen = (maxLen < 0) ? strlen(str) : TAU_MIN(strlen(str), (tau_ull)maxLen);
+    const tau_ull refLen = (maxLen < 0) ? strlen(ref) : TAU_MIN(strlen(ref), (tau_ull)maxLen);
+    const tau_ull minLen = TAU_MIN(strLen, refLen);
     
     tauColouredPrintf(TAU_COLOUR_CYAN_, "\"");
     
     // Print characters that are within both strings' length
-    for(int i = 0; i < minLen; i++) {
+    for(tau_ull i = 0; i < minLen; i++) {
         if(str[i] == ref[i]) {
             tauPrintEscapedChar(str[i], 0);
         } else {
@@ -749,7 +747,7 @@ static void tauPrintColouredStringCmp(const char* const str, const char* const r
     
     // Handle extra characters if one string is longer
     if(strLen > minLen) {
-        for(int i = minLen; i < strLen; i++) {
+        for(tau_ull i = minLen; i < strLen; i++) {
             tauPrintEscapedChar(str[i], 1);
         }
     }
@@ -758,7 +756,8 @@ static void tauPrintColouredStringCmp(const char* const str, const char* const r
     
     // Show length information if strings have different lengths
     if(strLen != refLen) {
-        tauColouredPrintf(TAU_COLOUR_CYAN_, " (len:%d vs %d)", strLen, refLen);
+        tauColouredPrintf(TAU_COLOUR_CYAN_, " (len:%" TAU_PRIu64 " vs %" TAU_PRIu64 ")", 
+                         (tau_u64)strLen, (tau_u64)refLen);
     }
 }
 #define __TAUCMP_STR__(actual, expected, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort, ...)  \
