@@ -89,6 +89,10 @@ typedef tau_i32 tau_bool32; // Prefer this!
 #if defined(_WIN64)
     typedef signed    __int64    tau_iptr;
     typedef unsigned  __int64    tau_uptr;
+#elif defined(_WIN32) && (defined(__MINGW32__) || defined(__MINGW64__))
+    // MinGW: Use standard types to match tau_ll/tau_ull
+    typedef tau_i64    tau_iptr;
+    typedef tau_u64    tau_uptr;
 #elif defined(_WIN32)
     // To mark types changing their size, e.g. tau_iptr
     #ifndef TAU__W64
@@ -102,8 +106,8 @@ typedef tau_i32 tau_bool32; // Prefer this!
     typedef TAU__W64 signed int     tau_iptr;
     typedef TAU__W64 unsigned int   tau_uptr;
 #else
-    typedef  uintptr_t   tau_uptr;
     typedef  intptr_t    tau_iptr;
+    typedef  uintptr_t   tau_uptr;
 #endif
 
 // More Useful types/
