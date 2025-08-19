@@ -319,10 +319,13 @@ static void tauClockPrintDuration(const double nanoseconds_duration) {
 
 static inline void* tau_realloc(void* const ptr, const tau_ull new_size) {
     void* const new_ptr = realloc(ptr, new_size);
-
-    if(TAU_NONE(new_ptr))
-        free(new_ptr);
-
+    
+    if(TAU_NONE(new_ptr) && new_size > 0) {
+        fprintf(stderr, "FATAL: tau_realloc failed to allocate %" TAU_PRIu64 " bytes\n",
+                (tau_u64)new_size);
+        TAU_ABORT;
+    }
+    
     return new_ptr;
 }
 #endif // TAU_NO_TESTING
