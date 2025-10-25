@@ -78,4 +78,13 @@ Copyright (c) 2021 Jason Dsouza <@jasmcaus>
     #define TAU_TYPEOF(val)
 #endif
 
+// Mathematical utility macros
+#ifndef TAU_MIN
+    #define TAU_MIN(a, b) ((a) < (b) ? (a) : (b))
+#endif // TAU_MIN
+
+#ifndef TAU_MAX  
+    #define TAU_MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif // TAU_MAX
+
 #endif // TAU_MISCELLANEOUS_H
