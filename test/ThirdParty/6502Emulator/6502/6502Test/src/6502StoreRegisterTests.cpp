@@ -15,7 +15,7 @@ static void VerfifyUnmodifiedFlagsFromStoreRegister(
 }
 
 struct M6502StoreRegisterTests {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 
@@ -115,7 +115,7 @@ TEST_F_SETUP(M6502StoreRegisterTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502StoreRegisterTests){}
+TEST_F_TEARDOWN(M6502StoreRegisterTests){ (void)tau; }
 
 
 TEST_F( M6502StoreRegisterTests, STAZeroPageCanStoreTheARegisterIntoMemory )

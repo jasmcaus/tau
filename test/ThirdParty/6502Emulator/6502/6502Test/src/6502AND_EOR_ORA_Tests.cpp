@@ -3,7 +3,7 @@
 
 struct M6502AndEorOraBitTests
 {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 
@@ -23,9 +23,9 @@ public:
 		And, Eor, Or
 	};
 
-	m6502::Byte DoLogicalOp( 
-		m6502::Byte A, 
-		m6502::Byte B, 
+	m6502::Byte DoLogicalOp(
+		m6502::Byte A,
+		m6502::Byte B,
 		ELogicalOp LogicalOp )
 	{
 		switch ( LogicalOp )
@@ -44,7 +44,7 @@ public:
 		throw - 1; //invalid Logical Op
 	}
 
-	void TestLogicalOpImmediate( 
+	void TestLogicalOpImmediate(
 		ELogicalOp LogicalOp )
 	{
 		// given:
@@ -492,7 +492,7 @@ TEST_F_SETUP(M6502AndEorOraBitTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502AndEorOraBitTests){}
+TEST_F_TEARDOWN(M6502AndEorOraBitTests){ (void)tau; }
 
 
 TEST_F( M6502AndEorOraBitTests, TestLogicalOpANDOnARegisterImmediate )
@@ -704,10 +704,9 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPage )
 	using namespace m6502;
 	tau->cpu.Flag.V = tau->cpu.Flag.N = false;
 	tau->cpu.A = 0xCC;
-	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;	
+	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
 	tau->mem[0xFFFD] = 0x42;
 	tau->mem[0x0042] = 0xCC;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
@@ -730,7 +729,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZero )
 	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
 	tau->mem[0xFFFD] = 0x42;
 	tau->mem[0x0042] = 0x33;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
@@ -753,7 +751,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitZeroPageResultZeroBits6And7Zero )
 	tau->mem[0xFFFC] = CPU::INS_BIT_ZP;
 	tau->mem[0xFFFD] = 0x42;
 	tau->mem[0x0042] = 0xCC;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 3;
 
 	//when:
@@ -796,7 +793,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsolute )
 	tau->mem[0xFFFD] = 0x00;
 	tau->mem[0xFFFE] = 0x80;
 	tau->mem[0x8000] = 0xCC;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
@@ -820,7 +816,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZero )
 	tau->mem[0xFFFD] = 0x00;
 	tau->mem[0xFFFE] = 0x80;
 	tau->mem[0x8000] = 0x33;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
@@ -844,7 +839,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Zero )
 	tau->mem[0xFFFD] = 0x00;
 	tau->mem[0xFFFE] = 0x80;
 	tau->mem[0x8000] = 0xCC;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:
@@ -868,7 +862,6 @@ TEST_F( M6502AndEorOraBitTests, TestBitAbsoluteResultZeroBit6And7Mixed )
 	tau->mem[0xFFFD] = 0x00;
 	tau->mem[0xFFFE] = 0x80;
 	tau->mem[0x8000] = 0b10000000;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 EXPECTED_CYCLES = 4;
 
 	//when:

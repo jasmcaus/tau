@@ -5,7 +5,7 @@
 m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 {
 	/** Load a Register with the value from the memory address */
-	auto LoadRegister = 
+	auto LoadRegister =
 		[&Cycles,&memory,this]
 		( Word Address, Byte& Register )
 	{
@@ -60,7 +60,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 	};
 
 	/** Do add with carry given the the operand */
-	auto ADC = [&Cycles, &memory, this]
+	auto ADC = [this]
 	( Byte Operand )
 	{
 		ASSERT( Flag.D == false, "haven't handled decimal mode!" );
@@ -83,7 +83,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 	};
 
 	/** Sets the processor status for a CMP/CPX/CPY instruction */
-	auto RegisterCompare = [&Cycles, &memory, this]
+	auto RegisterCompare = [this]
 	( Byte Operand, Byte RegisterValue )
 	{
 		Byte Temp = RegisterValue - Operand;
@@ -143,7 +143,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 	*	Setting bits 4 & 5 on the stack */
 	auto PushPSToStack = [&Cycles, &memory, this]( )
 	{
-		Byte PSStack = PS | BreakFlagBit | UnusedFlagBit;		
+		Byte PSStack = PS | BreakFlagBit | UnusedFlagBit;
 		PushByteOntoStack( Cycles, PSStack, memory );
 	};
 
@@ -166,7 +166,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 		{
 			A &= FetchByte( Cycles, memory );
 			SetZeroAndNegativeFlags( A );
-		} break;		
+		} break;
 		case INS_ORA_IM:
 		{
 			A |= FetchByte( Cycles, memory );
@@ -317,7 +317,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 		case INS_LDA_ZP:
 		{
 			Word Address = AddrZeroPage( Cycles, memory );
-			LoadRegister( Address, A );	
+			LoadRegister( Address, A );
 		} break;
 		case INS_LDX_ZP:
 		{
@@ -453,27 +453,27 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 		{
 			Word Address = AddrAbsoluteY_5( Cycles, memory );
 			WriteByte( A, Cycles, Address, memory );
-		} break;		
+		} break;
 		case INS_JSR:
 		{
 			Word SubAddr = FetchWord( Cycles, memory );
-			PushPCMinusOneToStack( Cycles, memory );	
+			PushPCMinusOneToStack( Cycles, memory );
 			PC = SubAddr;
 			Cycles--;
 		} break;
 		case INS_RTS:
 		{
 			Word ReturnAddress = PopWordFromStack( Cycles, memory );
-			PC = ReturnAddress + 1;	
+			PC = ReturnAddress + 1;
 			Cycles -= 2;
 		} break;
 		//TODO:
-		//An original 6502 has does not correctly fetch the target 
+		//An original 6502 has does not correctly fetch the target
 		//address if the indirect vector falls on a page boundary
 		//( e.g.$xxFF where xx is any value from $00 to $FF ).
-		//In this case fetches the LSB from $xxFF as expected but 
-		//takes the MSB from $xx00.This is fixed in some later chips 
-		//like the 65SC02 so for compatibility always ensure the 
+		//In this case fetches the LSB from $xxFF as expected but
+		//takes the MSB from $xx00.This is fixed in some later chips
+		//like the 65SC02 so for compatibility always ensure the
 		//indirect vector is not at the end of the page.
 		case INS_JMP_ABS:
 		{
@@ -510,7 +510,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 		case INS_PHP:
 		{
 			PushPSToStack();
-		} break;	
+		} break;
 		case INS_PLP:
 		{
 			PopPSFromStack();
@@ -985,7 +985,7 @@ m6502::s32 m6502::CPU::Execute( s32 Cycles, Mem & memory )
 		case INS_ROR_ZP:
 		{
 			Word Address = AddrZeroPage( Cycles, memory );
-			Byte Operand = ReadByte( Cycles, Address, memory );			
+			Byte Operand = ReadByte( Cycles, Address, memory );
 			Byte Result = ROR( Operand );
 			WriteByte( Result, Cycles, Address, memory );
 		} break;
@@ -1102,7 +1102,7 @@ m6502::Word m6502::CPU::AddrAbsoluteY( s32& Cycles, const Mem& memory )
 m6502::Word m6502::CPU::AddrAbsoluteY_5( s32& Cycles, const Mem& memory )
 {
 	Word AbsAddress = FetchWord( Cycles, memory );
-	Word AbsAddressY = AbsAddress + Y;	
+	Word AbsAddressY = AbsAddress + Y;
 	Cycles--;
 	return AbsAddressY;
 }

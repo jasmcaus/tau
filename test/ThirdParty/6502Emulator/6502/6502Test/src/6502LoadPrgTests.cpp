@@ -1,7 +1,7 @@
 #include <tau/tau.h>
 #include "m6502.h"
 
-/** 
+/**
 ; TestPrg
 
 * = $1000
@@ -23,7 +23,7 @@ static const m6502::u32 NumBytesInPrg = 14;
 
 struct M6502LoadPrgTests
 {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 };
@@ -32,7 +32,7 @@ TEST_F_SETUP(M6502LoadPrgTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502LoadPrgTests){}
+TEST_F_TEARDOWN(M6502LoadPrgTests){ (void)tau; }
 
 TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramIntoTheCorrectAreaOfMemory )
 {
@@ -68,28 +68,4 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramAProgramAndExecuteIt )
 	{
 		Clock -= tau->cpu.Execute( 1, tau->mem );
 	}
-}
-
-TEST_F( M6502LoadPrgTests, LoadThe6502TestPrg )
-{
-#if 0
-	// given:
-	using namespace m6502;
-
-	// when:
-	FILE* fp;
-	fopen_s( &fp, 
-		"6502_functional_test.bin", "rb" );
-
-	fread( &tau->mem[0x000A], 1, 65526, fp );
-	fclose( fp );
-
-	tau->cpu.PC = 0x400;
-
-	//then:
-	while ( true )
-	{
-		tau->cpu.Execute( 1, tau->mem );
-	}
-#endif
 }

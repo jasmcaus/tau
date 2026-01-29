@@ -32,11 +32,11 @@ public:
 	};
 
 	void TestSBCAbsolute( ADCTestData Test )
-	{		
+	{
 		TestADCAbsolute( Test, EOperation::Subtract );
 	}
 
-	void TestADCAbsolute( ADCTestData Test, 
+	void TestADCAbsolute( ADCTestData Test,
 		EOperation Operation = EOperation::Add )
 	{
 		// given:
@@ -47,8 +47,8 @@ public:
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.V = !Test.ExpectV;
-		mem[0xFF00] = 
-			(Operation == EOperation::Add) ? 
+		mem[0xFF00] =
+			(Operation == EOperation::Add) ?
 			CPU::INS_ADC_ABS : CPU::INS_SBC_ABS;
 		mem[0xFF01] = 0x00;
 		mem[0xFF02] = 0x80;
@@ -152,7 +152,7 @@ public:
 		TestADCImmediate( Test, EOperation::Subtract );
 	}
 
-	void TestADCImmediate( ADCTestData Test, 
+	void TestADCImmediate( ADCTestData Test,
 		EOperation Operation = EOperation::Add )
 	{
 		// given:
@@ -199,7 +199,7 @@ public:
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.V = !Test.ExpectV;
-		mem[0xFF00] = 
+		mem[0xFF00] =
 			(Operation == EOperation::Add) ?
 			CPU::INS_ADC_ZP : CPU::INS_SBC_ZP;
 		mem[0xFF01] = 0x42;
@@ -225,7 +225,7 @@ public:
 		TestADCZeroPageX( Test, EOperation::Subtract );
 	}
 
-	void TestADCZeroPageX( ADCTestData Test, 
+	void TestADCZeroPageX( ADCTestData Test,
 		EOperation Operation = EOperation::Add )
 	{
 		// given:
@@ -263,7 +263,7 @@ public:
 		TestADCIndirectX( Test, EOperation::Subtract );
 	}
 
-	void TestADCIndirectX( ADCTestData Test, 
+	void TestADCIndirectX( ADCTestData Test,
 		EOperation Operation = EOperation::Add )
 	{
 		// given:
@@ -303,7 +303,7 @@ public:
 		TestADCIndirectY( Test, EOperation::Subtract );
 	}
 
-	void TestADCIndirectY( ADCTestData Test, 
+	void TestADCIndirectY( ADCTestData Test,
 		EOperation Operation = EOperation::Add )
 	{
 		// given:
@@ -345,7 +345,7 @@ TEST_F_SETUP(M6502AddSubWithCarryTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502AddSubWithCarryTests){}
+TEST_F_TEARDOWN(M6502AddSubWithCarryTests){ (void)tau; }
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddZeroToZeroAndGetZero )
 {
@@ -391,7 +391,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -412,7 +412,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsCanAddOneToFFAndItWillCauseACarry )
 {
 	M6502AddSubWithCarryTests::ADCTestData Test;
 	Test.Carry = false;
-	Test.A = 0xFF;			
+	Test.A = 0xFF;
 	Test.Operand = 1;
 	Test.Answer = 0;
 	Test.ExpectC = true;
@@ -454,7 +454,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedNegativ
 	tau->TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddSubWithCarryTests, 
+TEST_F( M6502AddSubWithCarryTests,
 	ADCAbsWillSetTheOverflowFlagWhenSignedNegativeAddtionPassedDueToInitalCarryFlag )
 {
 	// C: 00000001
@@ -477,7 +477,7 @@ TEST_F( M6502AddSubWithCarryTests,
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsWillSetTheOverflowFlagWhenSignedPositiveAddtionFails )
 {
-	// A: 01111111 127   
+	// A: 01111111 127
 	// O: 00000001 1
 	// =: 10000000 128
 	// C:0 N:1 V:1 Z:0
@@ -509,7 +509,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCImmediateCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -542,7 +542,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -575,7 +575,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCZeroPageXCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -608,7 +608,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsXCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -641,7 +641,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCAbsYCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -674,7 +674,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndXCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0
@@ -707,7 +707,7 @@ TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddTwoUnsignedNumbers )
 
 TEST_F( M6502AddSubWithCarryTests, ADCIndYCanAddAPositiveAndNegativeNumber )
 {
-	// A: 00010100 20   
+	// A: 00010100 20
 	// O: 11101111 -17
 	// =: 00000011
 	// C:1 N:0 V:0 Z:0

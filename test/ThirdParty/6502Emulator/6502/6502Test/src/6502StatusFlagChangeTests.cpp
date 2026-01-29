@@ -12,7 +12,7 @@ TEST_F_SETUP(M6502StatusFlagChangeTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502StatusFlagChangeTests){}
+TEST_F_TEARDOWN(M6502StatusFlagChangeTests){ (void)tau; }
 
 
 TEST_F( M6502StatusFlagChangeTests, CLCWillClearTheCarryFlag )
@@ -182,4 +182,3 @@ TEST_F( M6502StatusFlagChangeTests, CLVWillClearTheOverflowFlag )
 	CHECK_EQ( tau->cpu.Flag.I, CPUCopy.Flag.I );
 	CHECK_EQ( tau->cpu.Flag.N, CPUCopy.Flag.N );
 }
-

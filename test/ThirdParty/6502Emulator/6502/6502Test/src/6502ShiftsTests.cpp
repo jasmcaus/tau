@@ -11,7 +11,7 @@ TEST_F_SETUP(M6502ShiftsTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502ShiftsTests){}
+TEST_F_TEARDOWN(M6502ShiftsTests){ (void)tau; }
 
 
 TEST_F( M6502ShiftsTests, ASLCanShiftTheValueOfOne )
@@ -25,7 +25,6 @@ TEST_F( M6502ShiftsTests, ASLCanShiftTheValueOfOne )
 	tau->cpu.A = 1;
 	tau->mem[0xFF00] = CPU::INS_ASL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -35,7 +34,7 @@ TEST_F( M6502ShiftsTests, ASLCanShiftTheValueOfOne )
 	CHECK_EQ( tau->cpu.A, 2 );
 	CHECK_FALSE( tau->cpu.Flag.C );
 	CHECK_FALSE( tau->cpu.Flag.Z );
-	CHECK_FALSE( tau->cpu.Flag.N );	
+	CHECK_FALSE( tau->cpu.Flag.N );
 }
 
 TEST_F( M6502ShiftsTests, ASLCanShiftANegativeValue )
@@ -49,7 +48,6 @@ TEST_F( M6502ShiftsTests, ASLCanShiftANegativeValue )
 	tau->cpu.A = 0b11000010;
 	tau->mem[0xFF00] = CPU::INS_ASL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -74,7 +72,6 @@ TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftTheValueOfOne )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 1;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -99,7 +96,6 @@ TEST_F( M6502ShiftsTests, ASLZeroPageCanShiftANegativeValue )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0b11000010;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -125,7 +121,6 @@ TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftTheValueOfOne )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -151,7 +146,6 @@ TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftANegativeValue )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0b11000010;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -177,7 +171,6 @@ TEST_F( M6502ShiftsTests, ASLAbsCanShiftTheValueOfOne )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -203,7 +196,6 @@ TEST_F( M6502ShiftsTests, ASLAbsCanShiftANegativeValue )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0b11000010;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -230,7 +222,6 @@ TEST_F( M6502ShiftsTests, ASLAbsXCanShiftTheValueOfOne )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -257,7 +248,6 @@ TEST_F( M6502ShiftsTests, ASLAbsXCanShiftANegativeValue )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000+0x10] = 0b11000010;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -281,7 +271,6 @@ TEST_F( M6502ShiftsTests, LSRCanShiftTheValueOfOne )
 	tau->cpu.A = 1;
 	tau->mem[0xFF00] = CPU::INS_LSR;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -305,7 +294,6 @@ TEST_F( M6502ShiftsTests, LSRCanShiftAZeroIntoTheCarryFlag )
 	tau->cpu.A = 8;
 	tau->mem[0xFF00] = CPU::INS_LSR;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -330,7 +318,6 @@ TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftTheValueOfOne )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 1;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -355,7 +342,6 @@ TEST_F( M6502ShiftsTests, LSRZeroPageCanShiftAZeroIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 8;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -381,7 +367,6 @@ TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftTheValueOfOne )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042+ 0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -407,7 +392,6 @@ TEST_F( M6502ShiftsTests, LSRZeroPageXCanShiftAZeroIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042+ 0x10] = 8;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -433,7 +417,6 @@ TEST_F( M6502ShiftsTests, LSRAbsCanShiftTheValueOfOne )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -459,7 +442,6 @@ TEST_F( M6502ShiftsTests, LSRAbsCanShiftAZeroIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 8;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -486,7 +468,6 @@ TEST_F( M6502ShiftsTests, LSRAbsXCanShiftTheValueOfOne )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000+0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -513,7 +494,6 @@ TEST_F( M6502ShiftsTests, LSRAbsXCanShiftAZeroIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 8;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -539,7 +519,6 @@ TEST_F( M6502ShiftsTests, ROLCanShiftABitOutOfTheCarryFlag )
 	tau->cpu.A = 0;
 	tau->mem[0xFF00] = CPU::INS_ROL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -563,7 +542,6 @@ TEST_F( M6502ShiftsTests, ROLCanShiftABitIntoTheCarryFlag )
 	tau->cpu.A = 0b10000000;
 	tau->mem[0xFF00] = CPU::INS_ROL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -587,7 +565,6 @@ TEST_F( M6502ShiftsTests, ROLCanShiftZeroWithNoCarry )
 	tau->cpu.A = 0;
 	tau->mem[0xFF00] = CPU::INS_ROL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -611,7 +588,6 @@ TEST_F( M6502ShiftsTests, ROLCanShiftAValueThatResultInANegativeValue )
 	tau->cpu.A = 0b01110011;
 	tau->mem[0xFF00] = CPU::INS_ROL;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -638,7 +614,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitOutOfTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -663,7 +638,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0b10000000;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -688,7 +662,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftZeroWithNoCarry )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -713,7 +686,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftAValueThatResultInANegativeValue )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0b01110011;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -741,7 +713,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitOutOfTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -767,7 +738,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042+0x10] = 0b10000000;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -793,7 +763,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftZeroWithNoCarry )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -819,7 +788,6 @@ TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftAValueThatResultInANegativeValue )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0b01110011;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -847,7 +815,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftABitOutOfTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -873,7 +840,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftABitIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0b10000000;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -899,7 +865,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftZeroWithNoCarry )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -925,7 +890,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteCanShiftAValueThatResultInANegativeValue )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0b01110011;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -954,7 +918,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftABitOutOfTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000+0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -981,7 +944,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftABitIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 0b10000000;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1008,7 +970,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftZeroWithNoCarry )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1035,7 +996,6 @@ TEST_F( M6502ShiftsTests, ROLAbsoluteXCanShiftAValueThatResultInANegativeValue )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 0b01110011;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1061,7 +1021,6 @@ TEST_F( M6502ShiftsTests, RORCanShiftTheCarryFlagIntoTheOperand )
 	tau->cpu.A = 0;
 	tau->mem[0xFF00] = CPU::INS_ROR;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1085,7 +1044,6 @@ TEST_F( M6502ShiftsTests, RORCanShiftAValueIntoTheCarryFlag )
 	tau->cpu.A = 1;
 	tau->mem[0xFF00] = CPU::INS_ROR;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1109,7 +1067,6 @@ TEST_F( M6502ShiftsTests, RORCanRotateANumber )
 	tau->cpu.A = 0b01101101;
 	tau->mem[0xFF00] = CPU::INS_ROR;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1136,7 +1093,6 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanShiftTheCarryFlagIntoTheOperand )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1161,7 +1117,6 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanShiftAValueIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 1;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1186,7 +1141,6 @@ TEST_F( M6502ShiftsTests, RORZeroPageCanRotateANumber )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042] = 0b01101101;
 	constexpr s32 EXPECTED_CYCLES = 5;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1214,7 +1168,6 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanShiftTheCarryFlagIntoTheOperand )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1240,7 +1193,6 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanShiftAValueIntoTheCarryFlag )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042+0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1266,7 +1218,6 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanRotateANumber )
 	tau->mem[0xFF01] = 0x42;
 	tau->mem[0x0042 + 0x10] = 0b01101101;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1294,7 +1245,6 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftTheCarryFlagIntoTheOperand )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1320,7 +1270,6 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftAValueIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 1;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1346,7 +1295,6 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanRotateANumber )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000] = 0b01101101;
 	constexpr s32 EXPECTED_CYCLES = 6;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1375,7 +1323,6 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftTheCarryFlagIntoTheOperand )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 0;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1402,7 +1349,6 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftAValueIntoTheCarryFlag )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000+0x10] = 1;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -1429,7 +1375,6 @@ TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanRotateANumber )
 	tau->mem[0xFF02] = 0x80;
 	tau->mem[0x8000 + 0x10] = 0b01101101;
 	constexpr s32 EXPECTED_CYCLES = 7;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );

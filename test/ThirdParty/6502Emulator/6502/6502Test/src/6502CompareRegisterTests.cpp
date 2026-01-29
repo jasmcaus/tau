@@ -86,6 +86,8 @@ public:
 		Byte Opcode = CPU::INS_CMP;
 		switch ( RegisterToCompare )
 		{
+		case ERegister::A:
+			break;
 		case ERegister::X:
 			Register = &cpu.X;
 			Opcode = CPU::INS_CPX;
@@ -122,11 +124,13 @@ public:
 		cpu.Flag.C = !Test.ExpectC;
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
-		
+
 		Byte* Register = &cpu.A;
 		Byte Opcode = CPU::INS_CMP_ZP;
 		switch ( RegisterToCompare )
 		{
+		case ERegister::A:
+			break;
 		case ERegister::X:
 			Register = &cpu.X;
 			Opcode = CPU::INS_CPX_ZP;
@@ -197,6 +201,8 @@ public:
 		Byte Opcode = CPU::INS_CMP_ABS;
 		switch ( RegisterToCompare )
 		{
+		case ERegister::A:
+			break;
 		case ERegister::X:
 			Register = &cpu.X;
 			Opcode = CPU::INS_CPX_ABS;
@@ -356,7 +362,7 @@ TEST_F_SETUP(M6502CompareRegisterTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502CompareRegisterTests){}
+TEST_F_TEARDOWN(M6502CompareRegisterTests){ (void)tau; }
 
 TEST_F( M6502CompareRegisterTests, CMPImmediateCanCompareTwoIdenticalValues  )
 {
@@ -725,7 +731,7 @@ TEST_F( M6502CompareRegisterTests, LoopTest )
 {
 	// given:
 	using namespace m6502;
-	/* 
+	/*
 	* = $1000
 
 	lda #0

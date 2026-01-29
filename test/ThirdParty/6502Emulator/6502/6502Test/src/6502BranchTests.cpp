@@ -12,7 +12,7 @@ TEST_F_SETUP(M6502BranchTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502BranchTests){}
+TEST_F_TEARDOWN(M6502BranchTests){ (void)tau; }
 
 TEST_F( M6502BranchTests, BEQCanBranchForwardsWhenZeroIsSet )
 {

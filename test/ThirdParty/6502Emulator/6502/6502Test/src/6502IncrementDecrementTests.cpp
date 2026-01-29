@@ -21,7 +21,7 @@ TEST_F_SETUP(M6502IncrementDecrementTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502IncrementDecrementTests){}
+TEST_F_TEARDOWN(M6502IncrementDecrementTests){ (void)tau; }
 
 TEST_F( M6502IncrementDecrementTests, INXCanIncrementAZeroValue )
 {
@@ -519,7 +519,7 @@ TEST_F( M6502IncrementDecrementTests, TestLoadAProgramThatCanIncMemory )
 	inx
 	jmp start
 	*/
-	Byte TestPrg[] = 
+	Byte TestPrg[] =
 		{ 0x0,0x10,0xA9,0x00,0x85,0x42,0xE6,0x42,
 		0xA6,0x42,0xE8,0x4C,0x04,0x10 };
 

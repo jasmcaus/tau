@@ -3,7 +3,7 @@
 
 struct M6502StackOperationsTests
 {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 };
@@ -12,7 +12,7 @@ TEST_F_SETUP(M6502StackOperationsTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502StackOperationsTests){}
+TEST_F_TEARDOWN(M6502StackOperationsTests){ (void)tau; }
 
 TEST_F( M6502StackOperationsTests, TSXCanTransferTheStackPointerToXRegister )
 {
@@ -24,7 +24,6 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferTheStackPointerToXRegister )
 	tau->cpu.SP = 0x01;
 	tau->mem[0xFF00] = CPU::INS_TSX;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -46,7 +45,6 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferAZeroStackPointerToXRegister )
 	tau->cpu.SP = 0x00;
 	tau->mem[0xFF00] = CPU::INS_TSX;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -68,7 +66,6 @@ TEST_F( M6502StackOperationsTests, TSXCanTransferANegativeStackPointerToXRegiste
 	tau->cpu.SP = 0b10000000;
 	tau->mem[0xFF00] = CPU::INS_TSX;
 	constexpr s32 EXPECTED_CYCLES = 2;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -130,7 +127,6 @@ TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegsiter 
 	tau->mem[0x01FF] = 0x42;
 	tau->mem[0xFF00] = CPU::INS_PLA;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -153,7 +149,6 @@ TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegsi
 	tau->mem[0x01FF] = 0x00;
 	tau->mem[0xFF00] = CPU::INS_PLA;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -178,7 +173,6 @@ TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheAR
 	tau->mem[0x01FF] = 0b10000001;
 	tau->mem[0xFF00] = CPU::INS_PLA;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -206,7 +200,7 @@ TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
 
 	// then:
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
-	CHECK_EQ( tau->mem[tau->cpu.SPToAddress() + 1], 
+	CHECK_EQ( tau->mem[tau->cpu.SPToAddress() + 1],
 		0xCC | CPU::UnusedFlagBit | CPU::BreakFlagBit );
 	CHECK_EQ( tau->cpu.PS, CPUCopy.PS );
 	CHECK_EQ( tau->cpu.SP, 0xFE );
@@ -220,7 +214,6 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 	tau->cpu.PS = 0x0;
 	tau->mem[0xFF00] = CPU::INS_PHP;
 	constexpr s32 EXPECTED_CYCLES = 3;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -230,12 +223,12 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 	CHECK_EQ( ActualCycles, EXPECTED_CYCLES );
 
 	// https://wiki.nesdev.com/w/index.php/Status_flags
-	//Two interrupts (/IRQ and /NMI) and two instructions (PHP and BRK) push 
-	// the flags to the stack. In the byte pushed, bit 5 is always set to 1, 
-	//and bit 4 is 1 if from an instruction (PHP or BRK) or 0 if from an 
-	// interrupt line being pulled low (/IRQ or /NMI). This is the only time 
-	// and place where the B flag actually exists: not in the status register 
-	// itself, but in bit 4 of the copy that is written to the stack. 
+	//Two interrupts (/IRQ and /NMI) and two instructions (PHP and BRK) push
+	// the flags to the stack. In the byte pushed, bit 5 is always set to 1,
+	//and bit 4 is 1 if from an instruction (PHP or BRK) or 0 if from an
+	// interrupt line being pulled low (/IRQ or /NMI). This is the only time
+	// and place where the B flag actually exists: not in the status register
+	// itself, but in bit 4 of the copy that is written to the stack.
 	const Byte FlagsOnStack = CPU::UnusedFlagBit | CPU::BreakFlagBit;
 	CHECK_EQ( tau->mem[AddPSOnStack], FlagsOnStack );
 }
@@ -250,7 +243,6 @@ TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorS
 	tau->mem[0x01FF] = 0x42 | CPU::BreakFlagBit | CPU::UnusedFlagBit;
 	tau->mem[0xFF00] = CPU::INS_PLP;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );
@@ -270,7 +262,6 @@ TEST_F( M6502StackOperationsTests, PLPClearsBits4And5WhenPullingFromTheStack )
 	tau->mem[0x01FF] = CPU::BreakFlagBit | CPU::UnusedFlagBit;
 	tau->mem[0xFF00] = CPU::INS_PLP;
 	constexpr s32 EXPECTED_CYCLES = 4;
-	CPU CPUCopy = tau->cpu;
 
 	// when:
 	const s32 ActualCycles = tau->cpu.Execute( EXPECTED_CYCLES, tau->mem );

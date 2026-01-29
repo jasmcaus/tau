@@ -22,7 +22,7 @@ TEST_F_SETUP(M6502TransferRegistgerTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502TransferRegistgerTests){}
+TEST_F_TEARDOWN(M6502TransferRegistgerTests){ (void)tau; }
 
 TEST_F( M6502TransferRegistgerTests, TAXCanTransferANonNegativeNonZeroValue )
 {

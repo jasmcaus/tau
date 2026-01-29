@@ -2,12 +2,12 @@
 #include "m6502.h"
 
 struct M6502LoadRegisterTests {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 
-	void TestLoadRegisterImmediate( 
-		m6502::Byte Opcode, 
+	void TestLoadRegisterImmediate(
+		m6502::Byte Opcode,
 		m6502::Byte m6502::CPU::* );
 
 	void TestLoadRegisterZeroPage(
@@ -47,10 +47,10 @@ TEST_F_SETUP(M6502LoadRegisterTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502LoadRegisterTests){}
+TEST_F_TEARDOWN(M6502LoadRegisterTests){ (void)tau; }
 
-static void VerfifyUnmodifiedFlagsFromLoadRegister( 
-	const m6502::CPU& cpu, 
+static void VerfifyUnmodifiedFlagsFromLoadRegister(
+	const m6502::CPU& cpu,
 	const m6502::CPU& CPUCopy )
 {
 	CHECK_EQ( cpu.Flag.C, CPUCopy.Flag.C );
@@ -79,7 +79,6 @@ TEST_F( M6502LoadRegisterTests, CPUCanExecuteMoreCyclesThanRequestedIfRequiredBy
 	using namespace m6502;
 	tau->mem[0xFFFC] = CPU::INS_LDA_IM;
 	tau->mem[0xFFFD] = 0x84;
-	CPU CPUCopy = tau->cpu;
 	constexpr s32 NUM_CYCLES = 1;
 
 	//when:
@@ -89,8 +88,8 @@ TEST_F( M6502LoadRegisterTests, CPUCanExecuteMoreCyclesThanRequestedIfRequiredBy
 	CHECK_EQ( CyclesUsed, 2 );
 }
 
-void M6502LoadRegisterTests::TestLoadRegisterImmediate( 
-	m6502::Byte OpcodeToTest,  
+void M6502LoadRegisterTests::TestLoadRegisterImmediate(
+	m6502::Byte OpcodeToTest,
 	m6502::Byte m6502::CPU::*RegisterToTest )
 {
 	// given:
@@ -103,7 +102,7 @@ void M6502LoadRegisterTests::TestLoadRegisterImmediate(
 	s32 CyclesUsed = cpu.Execute( 2, mem );
 
 	//then:
-	CHECK_EQ( cpu.*RegisterToTest, 0x84 ); 
+	CHECK_EQ( cpu.*RegisterToTest, 0x84 );
 	CHECK_EQ( CyclesUsed, 2 );
 	CHECK_FALSE( cpu.Flag.Z );
 	CHECK_TRUE( cpu.Flag.N );
@@ -473,7 +472,7 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectXCanLoadAValueIntoTheARegister )
 	tau->mem[0xFFFC] = CPU::INS_LDA_INDX;
 	tau->mem[0xFFFD] = 0x02;
 	tau->mem[0x0006] = 0x00;	//0x2 + 0x4
-	tau->mem[0x0007] = 0x80;	
+	tau->mem[0x0007] = 0x80;
 	tau->mem[0x8000] = 0x37;
 	constexpr s32 EXPECTED_CYCLES = 6;
 	CPU CPUCopy = tau->cpu;
@@ -497,7 +496,7 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegister )
 	tau->cpu.Y = 0x04;
 	tau->mem[0xFFFC] = CPU::INS_LDA_INDY;
 	tau->mem[0xFFFD] = 0x02;
-	tau->mem[0x0002] = 0x00;	
+	tau->mem[0x0002] = 0x00;
 	tau->mem[0x0003] = 0x80;
 	tau->mem[0x8004] = 0x37;	//0x8000 + 0x4
 	constexpr s32 EXPECTED_CYCLES = 5;

@@ -3,7 +3,7 @@
 
 struct M6502JumpsAndCallsTests
 {
-public:	
+public:
 	m6502::Mem mem;
 	m6502::CPU cpu;
 };
@@ -12,7 +12,7 @@ TEST_F_SETUP(M6502JumpsAndCallsTests) {
 	tau->cpu.Reset( tau->mem );
 }
 
-TEST_F_TEARDOWN(M6502JumpsAndCallsTests){}
+TEST_F_TEARDOWN(M6502JumpsAndCallsTests){ (void)tau; }
 
 TEST_F( M6502JumpsAndCallsTests, CanJumpToASubroutineAndJumpBackAgain )
 {

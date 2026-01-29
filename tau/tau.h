@@ -101,7 +101,7 @@ TAU_DISABLE_DEBUG_WARNINGS
 
 #ifndef TAU_NO_TESTING
 
-typedef void (*tau_testsuite_t)();
+typedef void (*tau_testsuite_t)(void);
 typedef struct tauTestSuiteStruct {
     tau_testsuite_t func;
     char* name;
@@ -157,17 +157,17 @@ extern volatile int shouldAbortTest;
     appropriately - fail the current test suite and carry on with the other checks (or move on to the next
     suite in the case of a REQUIRE)
 */
-static void failIfInsideTestSuite__();
-static void abortIfInsideTestSuite__();
+static void failIfInsideTestSuite__(void);
+static void abortIfInsideTestSuite__(void);
 
-static void failIfInsideTestSuite__() {
+static void failIfInsideTestSuite__(void) {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldFailTest = 1;
     }
 }
 
-static void abortIfInsideTestSuite__() {
+static void abortIfInsideTestSuite__(void) {
     if(checkIsInsideTestSuite == 1) {
         hasCurrentTestFailed = 1;
         shouldAbortTest = 1;
@@ -176,7 +176,7 @@ static void abortIfInsideTestSuite__() {
 
 #endif // TAU_NO_TESTING
 
-static void incrementWarnings() {
+static void incrementWarnings(void) {
 #ifndef TAU_NO_TESTING
     tauStatsNumWarnings++;
 #endif // TAU_NO_TESTING
@@ -244,7 +244,7 @@ TAU_EXTERN volatile int isCurrentTestIgnored;
     NOTE: This method has been edited to return the time (in nanoseconds). Depending on how large this value
     (e.g: 54890938849ns), we appropriately convert it to milliseconds/seconds before displaying it to stdout.
 */
-static inline double tauClock() {
+static inline double tauClock(void) {
 #ifdef TAU_WIN_
     LARGE_INTEGER counter;
     LARGE_INTEGER frequency;
@@ -435,8 +435,10 @@ tauColouredPrintf(const int colour, const char* const fmt, ...) {
         printf(__VA_ARGS__)
 #endif // TAU_NO_TESTING
 
-
-static inline int tauIsDigit(const char c) { return c >= '0' && c <= '9'; }
+static inline int tauIsNumberConstant(const char c)
+{
+    return ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.');
+}
 // If the macro arguments can be decomposed further, we need to print the `In macro ..., so and so failed`.
 // This method signals whether this message should be printed.
 //
@@ -445,36 +447,16 @@ static inline int tauIsDigit(const char c) { return c >= '0' && c <= '9'; }
 // See: https://stackoverflow.com/questions/20944784/why-is-conversion-from-string-constant-to-char-valid-in-c-but-invalid-in-c/20944858
 static inline int tauShouldDecomposeMacro(const char* const actual, const char* const expected, const int isStringCmp) {
     // Signal that the macro can be further decomposed if either of the following symbols are present
-    int dots = 0;
-    int numActualDigits = 0;
-    int numExpectedDigits = 0;
 
     // If not inside a string comparison, we will return `1` only if we determine that `actual` is a variable
     // name/expression (i.e for a value, we search through each character verifying that each is a digit
     // - for floats, we allow a maximum of 1 '.' char)
+    // We can instead just check that the first character is either a digit, '+', '-' or '.' to filter out
+    // number constants since according to the standard identifiers cannot begin with digits.
+    // This accounts for number constants such as -44, 0xFA, 400000000UL, 0b0010(c++) and 1'000'123(c++).
     if(!isStringCmp) {
-        for(int i = 0; i < strlen(actual); i++) {
-            if(tauIsDigit(actual[i])) {
-                numActualDigits++;
-            } else if(actual[i] == '.') {
-                dots++;
-                if(dots > 1) { return 1; }
-            } else {
-                return 1;
-            }
-        }
-        // Do the same for `expected`
-        dots = 0;
-        for(int i=0; i < strlen(expected); i++) {
-            if(tauIsDigit(expected[i])) {
-                numExpectedDigits++;
-            } else if(expected[i] == '.') {
-                dots++;
-                if(dots > 1) { return 1; }
-            } else {
-                return 1;
-            }
-        }
+        if (!tauIsNumberConstant(*actual) || !tauIsNumberConstant(*expected))
+            return 1;
     }
     // Inside a string comparison, we search for common expression tokens like the following:
     // '(', ')', '-'
@@ -799,8 +781,8 @@ static void tauPrintColouredIfDifferent(const tau_u8 ch, const tau_u8 ref) {
 
 
 static void tauPrintHexBufCmp(const void* const buff, const void* const ref, const int size) {
-    const tau_u8* const test_buff = TAU_CAST(const tau_u8* const, buff);
-    const tau_u8* const ref_buff = TAU_CAST(const tau_u8* const, ref);
+    const tau_u8 *const test_buff = TAU_CAST(const tau_u8 *, buff);
+    const tau_u8 *const ref_buff = TAU_CAST(const tau_u8 *, ref);
 
     tauColouredPrintf(TAU_COLOUR_CYAN_,"<");
     if(size != 0)
@@ -1105,7 +1087,7 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* const);                            \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* const);                        \
                                                                                                          \
-    static void __TAU_TEST_FIXTURE_##FIXTURE##_##NAME() {                                                \
+    static void __TAU_TEST_FIXTURE_##FIXTURE##_##NAME(void) {                                                \
         struct FIXTURE fixture;                                                                          \
         memset(&fixture, 0, sizeof(fixture));                                                            \
         __TAU_TEST_FIXTURE_SETUP_##FIXTURE(&fixture);                                                    \
@@ -1168,7 +1150,7 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
     static void __TAU_TEST_FIXTURE_TEARDOWN_##FIXTURE(struct FIXTURE* const);                           \
     static void __TAU_TEST_FIXTURE_RUN_##FIXTURE##_##NAME(struct FIXTURE* const);                       \
                                                                                                         \
-    static void __TAU_TEST_FIXTURE_##FIXTURE##_##NAME() {                                               \
+    static void __TAU_TEST_FIXTURE_##FIXTURE##_##NAME(void) {                                               \
         struct FIXTURE fixture;                                                                         \
         memset(&fixture, 0, sizeof(fixture));                                                           \
         __TAU_TEST_FIXTURE_SETUP_##FIXTURE(&fixture);                                                   \
@@ -1271,7 +1253,7 @@ static inline FILE* tau_fopen(const char* const filename, const char* const mode
 }
 
 
-static void tau_help_() {
+static void tau_help_(void) {
     printf("Usage: %s [options] [test...]\n", tau_argv0_);
     printf("\n");
     printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
@@ -1370,7 +1352,7 @@ static tau_bool tauCmdLineRead(const int argc, const char* const * const argv) {
     return tau_true;
 }
 
-static int tauCleanup() {
+static int tauCleanup(void) {
     for (tau_ull i = 0; i < tauTestContext.numTestSuites; i++)
         free(TAU_PTRCAST(void* , tauTestContext.tests[i].name));
 
@@ -1384,7 +1366,7 @@ static int tauCleanup() {
 }
 
 // Triggers and runs all unit tests
-static void tauRunTests() {
+static void tauRunTests(void) {
     // Run tests
     for(tau_ull i = 0; i < tauTestContext.numTestSuites; i++) {
         checkIsInsideTestSuite = 1;
@@ -1585,6 +1567,6 @@ inline int tau_main(const int argc, const char* const * const argv) {
     // volatile int shouldAbortTest = 0;
 #endif // TAU_NO_TESTING
 
-TAU_DISABLE_DEBUG_WARNINGS_POP
+    TAU_DISABLE_DEBUG_WARNINGS_POP
 
 #endif // TAU_H_
