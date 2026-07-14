@@ -844,6 +844,10 @@ static void tauPrintHexBufCmp(const void* const buff, const void* const ref, con
 
 #define __TAUCMP_BUF__(actual, expected, len, cond, ifCondFailsThenPrint, actualPrint, macroName, failOrAbort, ...) \
     do {                                                                                                        \
+        if(TAU_CAST(int, len) < 0) {                                                                            \
+            tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, "`len` cannot be negative\n");                             \
+            TAU_ABORT;                                                                                          \
+        }                                                                                                       \
         if(memcmp(actual, expected, len) cond 0) {                                                              \
             tauPrintf("%s:%u: ", __FILE__, __LINE__);                                                           \
             tauColouredPrintf(TAU_COLOUR_BRIGHTRED_, __VA_ARGS__);                                              \
