@@ -229,3 +229,7 @@ TEST_F(MyTestF, c2) {
     REQUIRE_EQ(42, tau->foo);
     tau->foo = 13;
 }
+
+TEST(c11, filter_exact_name) {
+    CHECK_EQ(tauShouldFilterTest("c11.filter_exact_name", "c11.filter_exact_name"), 0);
+}
