@@ -1248,8 +1248,7 @@ static int tauShouldFilterTest(const char* const filter, const char* const testc
             }
         }
 
-        if((*filter_curr != TAU_NULLCHAR) || ((*testcase_curr == TAU_NULLCHAR) && ((filter == filter_curr) ||
-            (filter_curr[-1] != '*')))) {
+        if(*filter_curr != TAU_NULLCHAR) {
             // We have a mismatch
             return 1;
         }
