@@ -156,9 +156,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${TAU_LIB_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${TAU_LIB_DIR})
 
 set(TAU_TARGET_NAME           ${PROJECT_NAME}Targets)
+set(TAU_TARGETS_EXPORT_NAME   ${PROJECT_NAME}Targets)
 set(TAU_TARGETS_CMAKE         ${CMAKE_CURRENT_BINARY_DIR}/${TAU_TARGET_NAME}.cmake)
 
-set(TAU_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Tau)
+set(TAU_HEADERS_INCLUDE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/tau)
 
 # CMake Configurations (from the ``cmake`` folder)
 set(TAU_CMAKE_CONFIGVERSION_IN      ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ConfigVersion.cmake.in)
@@ -205,7 +206,7 @@ target_include_directories(
     "$<BUILD_INTERFACE:${TAU_BUILD_INCLUDE_DIRS}>"
     # The path if Tau is installed
     # $<INSTALL_INTERFACE:"include">
-    "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}}>"
+    "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
 
@@ -286,7 +287,7 @@ install(
 
 # Header files are copied to the install directory
 install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tau
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tau
     DESTINATION include
 )
 
