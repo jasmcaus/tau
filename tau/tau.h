@@ -1275,14 +1275,14 @@ static inline FILE* tau_fopen(const char* const filename, const char* const mode
 
 
 static void tau_help_() {
-    printf("Usage: %s [options] [test...]\n", tau_argv0_);
+    printf("Usage: %s [options]\n", tau_argv0_);
     printf("\n");
     printf("Run the specified unit tests; or if the option '--skip' is used, run all\n");
     printf("tests in the suite but those listed. By default, if no tests are specified\n");
     printf("on the command line, all unit tests in the suite are run.\n");
     printf("\n");
     printf("Options:\n");
-    printf("  --failed-output-only     Output only failed Test Suites");
+    printf("  --failed-output-only     Output only failed Test Suites\n");
     printf("  --filter=<filter>        Filter the test suites to run (e.g: Suite1*.a\n");
     printf("                             would run Suite1Case.a but not Suite1Case.b}\n");
 #if defined(TAU_WIN_)
@@ -1365,7 +1365,7 @@ static tau_bool tauCmdLineRead(const int argc, const char* const * const argv) {
         }
 
         else {
-            printf("ERROR: Unrecognized option: %s", argv[i]);
+            printf("ERROR: Unrecognized option: %s\n", argv[i]);
             return tau_false;
         }
     }
