@@ -27,3 +27,13 @@ target_include_directories(
 
 # The Tau INTERFACE library
 target_link_libraries(TauInternalTests Tau)
+
+# Exercise the report as a CI consumer would, including deliberately failing tests.
+find_package(Python3 QUIET COMPONENTS Interpreter)
+if(Python3_Interpreter_FOUND)
+    add_executable(TauXmlReportTests xml_report.c)
+    target_link_libraries(TauXmlReportTests Tau)
+    add_test(NAME TauXmlReport
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/verify_xml_report.py
+                $<TARGET_FILE:TauXmlReportTests>)
+endif()
