@@ -1422,8 +1422,11 @@ static void tauRunTests() {
         // Stop the timer
         const double duration = tauClock() - start;
 
-        if(tauTestContext.foutput)
+        if(tauTestContext.foutput) {
+            if(hasCurrentTestFailed == 1)
+                fprintf(tauTestContext.foutput, "<failure message=\"Test assertions failed\"/>");
             fprintf(tauTestContext.foutput, "</testcase>\n");
+        }
 
         if(hasCurrentTestFailed == 1) {
             const tau_ull failed_testcase_index = tauStatsNumFailedTestSuites++;
