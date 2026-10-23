@@ -233,3 +233,21 @@ TEST_F(MyTestF, c2) {
 TEST(c11, filter_exact_name) {
     CHECK_EQ(tauShouldFilterTest("c11.filter_exact_name", "c11.filter_exact_name"), 0);
 }
+
+TEST(c11, signed_char_CHECK_EQ) {
+    signed char a = 42;
+    signed char b = 42;
+    CHECK_EQ(a, b);
+}
+
+TEST(c11, signed_char_REQUIRE_EQ_negative) {
+    signed char a = -100;
+    signed char b = -100;
+    REQUIRE_EQ(a, b);
+}
+
+TEST(c11, signed_char_CHECK_LT) {
+    signed char a = -50;
+    signed char b = 50;
+    CHECK_LT(a, b);
+}
