@@ -530,6 +530,7 @@ static inline int tauShouldDecomposeMacro(const char* const actual, const char* 
             _Generic((val),                                   \
                         _Bool : "%d",                         \
                         char : "'%c'",                        \
+                        signed char : "%hhd",                 \
                         char* : "%s",                         \
                         unsigned char : "%hhu",               \
                         short : "%hd",                        \
